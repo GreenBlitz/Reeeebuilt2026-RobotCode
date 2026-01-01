@@ -16,18 +16,18 @@ public class HoodConstants {
 		REAL_SLOT.kP = 28;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
-		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		REAL_SLOT.kS = 0;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
+		REAL_SLOT.GravityType = GravityTypeValue.Elevator_Static;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;
 		SIMULATION_SLOT.kD = 0;
 		SIMULATION_SLOT.kG = 0;
 		SIMULATION_SLOT.kS = 0;
-		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		SIMULATION_SLOT.GravityType = GravityTypeValue.Elevator_Static;
 
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
