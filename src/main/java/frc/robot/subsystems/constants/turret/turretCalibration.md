@@ -13,8 +13,12 @@ Turret Calibration
 - [ ] max acceleration
 
 #### Configs
-- [ ] Check invertion
+- [ ] Check invert
 - [ ] Check gear ratio
+
+### Sensor
+- [ ] Forward/Reverse
+- [ ] Sensor Position
 
 #### Motion magic
 - [ ] Calibrate kS

@@ -4,7 +4,7 @@ Omni calibrations
 #### IDs
 - [ ] Motor id
 
-#### Digital input
+#### Digital input - Look in funnel constants
 - [ ] Digital input name
 - [ ] Inverted
 - [ ] Forward or Backward

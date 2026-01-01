@@ -17,6 +17,10 @@ Hood calibrations
 - [ ] Neutral mode
 - [ ] Is Inverted
 
+### Sensor
+- [ ] Forward/Reverse
+- [ ] Sensor Position
+
 #### General Constants
 - [ ] Arm length
 - [ ] Arm weight
