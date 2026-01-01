@@ -246,6 +246,8 @@ public class TalonFXArmBuilder {
 		config.MotorOutput.Inverted = isInverted ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+		config.HardwareLimitSwitch = hardwareLimitSwitchConfigs;
+
 		return config;
 	}
 
