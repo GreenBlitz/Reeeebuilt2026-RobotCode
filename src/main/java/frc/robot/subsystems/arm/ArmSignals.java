@@ -7,5 +7,7 @@ public record ArmSignals(
 	InputSignal<Double> voltage,
 	InputSignal<Double> current,
 	InputSignal<Rotation2d> velocity,
-	InputSignal<Rotation2d> position
+	InputSignal<Rotation2d> position,
+	InputSignal<Double> hardwareForwardLimitActive,
+	InputSignal<Double> hardwareReverseLimitActive
 ) {}

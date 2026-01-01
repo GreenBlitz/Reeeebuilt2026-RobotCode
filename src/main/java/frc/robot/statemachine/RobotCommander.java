@@ -35,14 +35,7 @@ public class RobotCommander extends GBSubsystem {
 				new InstantCommand(
 					() -> new DeferredCommand(
 						() -> endState(currentState),
-						Set.of(
-							this,
-							swerve,
-							robot.getTurret(),
-							robot.getHood(),
-							robot.getOmni(),
-							robot.getFlyWheel()
-						)
+						Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
 					).schedule()
 				),
 				this::isSubsystemRunningIndependently
