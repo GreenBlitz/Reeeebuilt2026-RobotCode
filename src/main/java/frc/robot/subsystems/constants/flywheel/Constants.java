@@ -4,8 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Constants {
 
-	public final static double kP = 12;
-	public final static double kI = 2;
+	public final static double kP = 0;
+	public final static double kI = 0;
 	public final static double kD = 0;
 	public final static double kV = 0.0;
 	public final static double kS = 0.0;

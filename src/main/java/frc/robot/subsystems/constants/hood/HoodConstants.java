@@ -15,7 +15,7 @@ public class HoodConstants {
 	public static final HardwareLimitSwitchConfigs HARDWARE_LIMIT_SWITCH_CONFIGS = new HardwareLimitSwitchConfigs();
 
 	static {
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 0;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
 		REAL_SLOT.kS = 0;
