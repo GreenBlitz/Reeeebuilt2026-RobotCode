@@ -30,7 +30,7 @@ import frc.utils.AngleUnit;
 
 class KrakenX60SteerBuilder {
 
-	private static final double GEAR_RATIO = 12.8;
+	private static final double GEAR_RATIO = 150.0 / 7.0;
 	private static final double MOMENT_OF_INERTIA_METERS_SQUARED = 0.00001;
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
