@@ -12,6 +12,6 @@ public class OmniConstant {
 	public static final double DEBOUNCE_TIME = 0.01;
 	public static final boolean IS_FORWARD_LIMIT_SWITCH = false;
 	public static final boolean IS_FORWARD_LIMIT_SWITCH_INVERTED = false;
-	public static final boolean IS_INVERTED = true;
+	public static final boolean IS_INVERTED = false;
 
 }

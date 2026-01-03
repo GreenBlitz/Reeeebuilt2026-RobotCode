@@ -62,7 +62,7 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
-		robot.getFlyWheel().applyCalibrationsBindings(usedJoystick);
+		applyOmniCalibrationBindings(robot.getOmni(), usedJoystick, 0.5);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
@@ -165,8 +165,8 @@ public class JoysticksBindings {
 		joystick.POV_DOWN.onTrue(new InstantCommand(() -> omni.getCommandsBuilder().setIsSubsystemRunningIndependently(true)));
 		joystick.POV_UP.onTrue(new InstantCommand(() -> omni.getCommandsBuilder().setIsSubsystemRunningIndependently(false)));
 
-		joystick.X.onTrue(omni.getCommandsBuilder().setPower(0.5));
-		joystick.Y.onTrue(omni.getCommandsBuilder().setPower(-0.5));
+		joystick.X.onTrue(omni.getCommandsBuilder().setPower(maxCalibrationPower));
+		joystick.Y.onTrue(omni.getCommandsBuilder().setPower(-maxCalibrationPower));
 	}
 
 }
