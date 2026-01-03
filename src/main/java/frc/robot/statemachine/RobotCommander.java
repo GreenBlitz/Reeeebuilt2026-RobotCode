@@ -29,19 +29,19 @@ public class RobotCommander extends GBSubsystem {
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> robot.getPoseEstimator().getEstimatedPose());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
-		setDefaultCommand(
-			new ConditionalCommand(
-				asSubsystemCommand(Commands.none(), "Disabled"),
-				new InstantCommand(
-					() -> new DeferredCommand(
-						() -> endState(currentState),
-						Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
-					).schedule()
-				),
-				this::isSubsystemRunningIndependently
-			)
-
-		);
+//		setDefaultCommand(
+//			new ConditionalCommand(
+//				asSubsystemCommand(Commands.none(), "Disabled"),
+//				new InstantCommand(
+//					() -> new DeferredCommand(
+//						() -> endState(currentState),
+//						Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
+//					).schedule()
+//				),
+//				this::isSubsystemRunningIndependently
+//			)
+//
+//		);
 	}
 
 	public RobotState getCurrentState() {

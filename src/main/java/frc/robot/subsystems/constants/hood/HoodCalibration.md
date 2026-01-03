@@ -7,10 +7,10 @@ Hood calibrations
 
 #### Limits
 - [x] Current limit
-- [ ] Forward limit
-- [ ] Backwards limit
-- [ ] Max position
-- [ ] Min position
+- [x] Forward limit
+- [x] Backwards limit
+- [x] Max position
+- [x] Min position
 
 #### Motor config
 - [x] Gear ratio
@@ -29,7 +29,7 @@ Hood calibrations
 - [ ] Hood position tolerance
 
 #### PID
-- [ ] kP
+- [ w] kP
 - [ ] kI
 - [ ] kD
 

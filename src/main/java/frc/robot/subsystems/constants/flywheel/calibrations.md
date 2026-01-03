@@ -1,13 +1,13 @@
  Flywheel calibrations
 --------------------------------
-- [ ] Motor id
+- [x] Motor id
 - [ ] Follower id
-- [ ] Sensor to mechanism ratio
+- [x] Sensor to mechanism ratio
 - [ ] Follower sensor to mechanism ratio
-- [ ] Current limit
-- [ ] Bus chain
+- [x] Current limit
+- [x] Bus chain
 - [ ] Follower inverted
-- [ ] Master inverted
+- [x] Master inverted
 - [ ] kP
 - [ ] kI
 - [ ] kD

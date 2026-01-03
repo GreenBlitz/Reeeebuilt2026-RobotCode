@@ -32,7 +32,7 @@ public class HoodConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Elevator_Static;
 
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 9.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 32.95 * 4;
 
 		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitEnable = true;
 		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitAutosetPositionValue = Rotation2d.fromDegrees(10).getRotations();
@@ -44,10 +44,10 @@ public class HoodConstants {
 	public static final double CURRENT_LIMIT = 20;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double HOOD_LENGTH_METERS = 0.3;
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(80);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(0);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(BACKWARD_SOFTWARE_LIMIT.getDegrees() - 3);
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(FORWARD_SOFTWARE_LIMIT.getDegrees() + 3);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(55.0);
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(27);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(25.4);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(60.0);
 	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3);
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE = Rotation2d.fromDegrees(5);

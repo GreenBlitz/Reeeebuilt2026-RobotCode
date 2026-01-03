@@ -27,7 +27,7 @@ public class DynamicMotionMagicArm extends Arm {
 		this.defaultDynamicMotionAcceleration = defaultMotionMagicAcceleration;
 		this.defaultDynamicMotionVelocity = defaultMotionMagicVelocity;
 		this.dynamicMotionMagicCommandBuilder = new DynamicMotionMagicArmCommandBuilder(this);
-		setDefaultCommand(getCommandsBuilder().stayInPlace());
+//		setDefaultCommand(getCommandsBuilder().stayInPlace());
 	}
 
 	public DynamicMotionMagicArmCommandBuilder getCommandsBuilder() {
