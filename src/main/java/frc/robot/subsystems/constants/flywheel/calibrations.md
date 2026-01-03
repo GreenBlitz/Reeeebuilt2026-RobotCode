@@ -8,12 +8,12 @@
 - [x] Bus chain
 - [ ] Follower inverted
 - [x] Master inverted
-- [ ] kP
-- [ ] kI
-- [ ] kD
-- [ ] kS
-- [ ] kV
-- [ ] kA
+- [X] kP
+- [X] kI
+- [X] kD
+- [X] kS
+- [X] kV
+- [X] kA
 - [ ] Velocity tolerance rps
 
 
