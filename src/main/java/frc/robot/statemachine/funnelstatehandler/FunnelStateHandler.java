@@ -54,7 +54,10 @@ public class FunnelStateHandler {
 	}
 
 	private Command drive() {
-		return omni.getCommandsBuilder().stop();
+		return new SequentialCommandGroup(
+				omni.getCommandsBuilder().setVoltage(FunnelState.DRIVE.getOmniVoltage()).until(() -> sensorInputsAutoLogged.debouncedValue),
+				omni.getCommandsBuilder().stop()
+		);
 	}
 
 	private Command shoot() {

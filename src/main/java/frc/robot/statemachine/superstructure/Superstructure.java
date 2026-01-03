@@ -102,12 +102,8 @@ public class Superstructure {
 	}
 
 	private Command shoot() {
-		return new SequentialCommandGroup(
-			new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT))
-				.until(() -> !isObjectIn()),
-			new ParallelCommandGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT))
-				.withTimeout(StateMachineConstants.SECONDS_TO_WAIT_AFTER_SHOOT)
-		);
+		return new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT));
+		
 	}
 
 	private Command shootWhileIntake() {

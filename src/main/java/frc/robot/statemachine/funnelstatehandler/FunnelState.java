@@ -2,11 +2,11 @@ package frc.robot.statemachine.funnelstatehandler;
 
 public enum FunnelState {
 
-	STOP,
-	INTAKE(3),
-	SHOOT(3, 3),
-	SHOOT_WHILE_INTAKE(3, 3),
-	DRIVE(3),
+	STOP(3, 0),
+	INTAKE(),
+	SHOOT(10, 0),
+	SHOOT_WHILE_INTAKE(6, 0),
+	DRIVE(3, 0),
 	CALIBRATION;
 
 	private final double bellyVoltage;

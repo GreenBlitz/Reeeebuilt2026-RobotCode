@@ -62,7 +62,7 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
-		applyOmniCalibrationBindings(robot.getOmni(), usedJoystick, 0.5);
+		applySuperstructureCalibrationBindings(usedJoystick, robot);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
