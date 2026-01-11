@@ -80,6 +80,7 @@ public class RobotCommander extends GBSubsystem {
 		return driveWith(state, superstructure.setState(state));
 	}
 
+
 	private boolean isReadyToShoot() {
 		Supplier<Double> distanceFromTower = () -> ScoringHelpers.getDistanceFromClosestTower(robot.getPoseEstimator().getEstimatedPose());
 		return TargetChecks.isReadyToShoot(
