@@ -45,7 +45,7 @@ public class SimulationManager {
 
 	public Pose3d getTurretPosition3d(Rotation2d turretPosition) {
 		return new Pose3d(
-			new Translation3d(TurretConstants.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS, 0, 0.0),
+			new Translation3d(TurretConstants.TURRET_DISTANCE_FROM_ROBOT.getX(), 0, 0.0),
 			new Rotation3d(0.0, 0.0, turretPosition.getRadians() + MathConstants.QUARTER_CIRCLE.getRadians())
 		);
 	}

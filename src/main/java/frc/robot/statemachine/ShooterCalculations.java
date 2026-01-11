@@ -12,8 +12,8 @@ public class ShooterCalculations {
 
 	public static Pose2d getTurretPose(Pose2d robotPose) {
 		return new Pose2d(
-			robotPose.getX() + robotPose.getRotation().getCos() * TurretConstants.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
-			robotPose.getY() + robotPose.getRotation().getSin() * TurretConstants.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
+			robotPose.getX() + robotPose.getRotation().getCos() * TurretConstants.TURRET_DISTANCE_FROM_ROBOT.getX(),
+			robotPose.getY() + robotPose.getRotation().getSin() * TurretConstants.TURRET_DISTANCE_FROM_ROBOT.getX(),
 			robotPose.getRotation()
 		);
 	}
