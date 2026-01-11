@@ -10,6 +10,19 @@ public class DriverStationUtil {
 		return DriverStation.getAlliance().orElse(DEFAULT_ALLIANCE);
 	}
 
+	public static DriverStation.Alliance getCurrentActiveAlliance(){
+		String gameData = DriverStation.getGameSpecificMessage();
+		if (!gameData.isEmpty()) {
+			return switch (gameData.charAt(0)){
+				case 'B' -> DriverStation.Alliance.Blue;
+				case 'R' -> DriverStation.Alliance.Red;
+                default -> DEFAULT_ALLIANCE;
+            };
+		} else {
+			return DEFAULT_ALLIANCE;
+		}
+	}
+
 	public static boolean isBlueAlliance() {
 		return getAlliance().equals(DriverStation.Alliance.Blue);
 	}
