@@ -42,6 +42,7 @@ public class IDs {
 	}
 
 	public static class Pigeon2IDs {
+		public static final Phoenix6DeviceID PIGEON = new Phoenix6DeviceID()
 	}
 
 	public static class CANdleIDs {
