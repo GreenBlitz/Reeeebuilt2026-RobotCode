@@ -21,7 +21,6 @@ import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
-import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.omni.OmniConstant;
@@ -52,7 +51,6 @@ public class Robot {
 	private final Arm fourBar;
 	private final Arm hood;
 	private final IDigitalInput intakeRollerSensor;
-	private final Roller belly;
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
@@ -83,9 +81,6 @@ public class Robot {
 		this.intakeRoller = intakeRollerAndDigitalInput.getFirst();
 		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
-
-		this.belly = createBelly();
-		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
 
 		Pair<Roller, IDigitalInput> omniAndDigitalInput = createOmniAndSignal();
 		this.omni = omniAndDigitalInput.getFirst();
@@ -228,17 +223,6 @@ public class Robot {
 		);
 	}
 
-	private Roller createBelly() {
-		return SparkMaxRollerBuilder.build(
-			BellyConstants.LOG_PATH,
-			IDs.SparkMAXIDs.BELLY,
-			BellyConstants.INVERTED,
-			BellyConstants.GEAR_RATIO,
-			BellyConstants.CURRENT_LIMIT,
-			BellyConstants.MOMENT_OF_INERTIA
-		);
-	}
-
 	private Arm createHood() {
 		ArmSimulationConstants hoodSimulationConstants = new ArmSimulationConstants(
 			HoodConstants.MAXIMUM_POSITION,
@@ -289,10 +273,6 @@ public class Robot {
 
 	public Roller getIntakeRoller() {
 		return intakeRoller;
-	}
-
-	public Roller getBelly() {
-		return belly;
 	}
 
 	public Arm getTurret() {
