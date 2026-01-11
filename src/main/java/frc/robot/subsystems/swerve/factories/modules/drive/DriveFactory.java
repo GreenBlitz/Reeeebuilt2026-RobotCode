@@ -20,8 +20,6 @@ public class DriveFactory {
 					logPath,
 					IDs.TalonFXIDs.SWERVE_BACK_LEFT_DRIVE,
 					false
-
-
 				);
 			case BACK_RIGHT -> KrakenX60DriveBuilder.buildDrive(logPath, IDs.TalonFXIDs.SWERVE_BACK_RIGHT_DRIVE, true);
 		};
