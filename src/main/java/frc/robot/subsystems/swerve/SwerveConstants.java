@@ -1,11 +1,10 @@
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+//import com.pathplanner.lib.config.PIDConstants;
+//import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.constants.MathConstants;
 
 public record SwerveConstants(
 	String logPath,
@@ -15,16 +14,19 @@ public record SwerveConstants(
 	Rotation2d maxRotationalVelocityPerSecond,
 	PIDController xMetersPIDController,
 	PIDController yMetersPIDController,
-	PIDController rotationDegreesPIDController,
-	PPHolonomicDriveController pathPlannerHolonomicDriveController
+	PIDController rotationDegreesPIDController
+//	PPHolonomicDriveController pathPlannerHolonomicDriveController
 ) {
 
 	public SwerveConstants(
 		String logPath,
 		double velocityAt12VoltsMetersPerSecond,
 		Rotation2d maxRotationalVelocityPerSecond,
-		PIDConstants translationMetersPIDConstants,
-		PIDConstants rotationDegreesPIDConstants
+		PIDController xMetersPIDController,
+		PIDController yMetersPIDController,
+		PIDController rotationDegreesPIDController
+//		PIDConstants translationMetersPIDConstants,
+//		PIDConstants rotationDegreesPIDConstants
 	) {
 		this(
 			logPath,
@@ -32,14 +34,17 @@ public record SwerveConstants(
 			logPath + "/Velocity",
 			velocityAt12VoltsMetersPerSecond,
 			maxRotationalVelocityPerSecond,
-			new PIDController(translationMetersPIDConstants.kP, translationMetersPIDConstants.kI, translationMetersPIDConstants.kD),
-			new PIDController(translationMetersPIDConstants.kP, translationMetersPIDConstants.kI, translationMetersPIDConstants.kD),
-			new PIDController(rotationDegreesPIDConstants.kP, rotationDegreesPIDConstants.kI, rotationDegreesPIDConstants.kD),
-			new PPHolonomicDriveController(translationMetersPIDConstants, rotationDegreesPIDConstants)
+			xMetersPIDController,
+			yMetersPIDController,
+			rotationDegreesPIDController
+//			new PIDController(translationMetersPIDConstants.kP, translationMetersPIDConstants.kI, translationMetersPIDConstants.kD),
+//			new PIDController(translationMetersPIDConstants.kP, translationMetersPIDConstants.kI, translationMetersPIDConstants.kD),
+//			new PIDController(rotationDegreesPIDConstants.kP, rotationDegreesPIDConstants.kI, rotationDegreesPIDConstants.kD),
+//			new PPHolonomicDriveController(translationMetersPIDConstants, rotationDegreesPIDConstants)
 		);
 
-		this.rotationDegreesPIDController
-			.enableContinuousInput(MathConstants.HALF_CIRCLE.unaryMinus().getDegrees(), MathConstants.HALF_CIRCLE.getDegrees());
+//		this.rotationDegreesPIDController
+//			.enableContinuousInput(MathConstants.HALF_CIRCLE.unaryMinus().getDegrees(), MathConstants.HALF_CIRCLE.getDegrees());
 	}
 
 	static final Rotation2d WHEEL_RADIUS_CALIBRATION_VELOCITY_PER_SECOND = Rotation2d.fromRotations(0.5);

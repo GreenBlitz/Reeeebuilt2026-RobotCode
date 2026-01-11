@@ -1,22 +1,21 @@
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
+//import com.pathplanner.lib.path.PathConstraints;
+//import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.constants.field.Field;
-import frc.robot.autonomous.PathFollowingCommandsBuilder;
+//import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.subsystems.GBCommandsBuilder;
 import frc.robot.subsystems.swerve.module.ModuleConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.Modules;
 import frc.robot.subsystems.swerve.states.RotateAxis;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.utils.auto.PathPlannerUtil;
+//import frc.utils.auto.PathPlannerUtil;
 import frc.utils.calibration.swervecalibration.WheelRadiusCharacterization;
 import frc.utils.calibration.sysid.SysIdCalibrator;
 import frc.utils.utilcommands.InitExecuteCommand;
@@ -173,42 +172,42 @@ public class SwerveCommandsBuilder extends GBCommandsBuilder {
 	}
 
 
-	public Command driveToPose(Supplier<Pose2d> currentPose, Supplier<Pose2d> targetPose, PathConstraints pathfindingConstraints) {
-		return swerve.asSubsystemCommand(
-			new DeferredCommand(
-				() -> new SequentialCommandGroup(
-					pathToPose(currentPose.get(), targetPose.get(), pathfindingConstraints),
-					moveToPoseByPID(currentPose, targetPose.get())
-				),
-				Set.of(swerve)
-			),
-			"Drive to pose"
-		);
-	}
-
-	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints) {
-		Command pathFollowingCommand;
-		if (PathPlannerUtil.isRobotInPathfindingDeadband(currentPose, targetPose)) {
-			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints);
-		} else {
-			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints);
-		}
-
-		return swerve.asSubsystemCommand(
-			new SequentialCommandGroup(new InstantCommand(swerve::resetPIDControllers), pathFollowingCommand),
-			"Path to pose: " + targetPose
-		);
-	}
-
-	public Command driveToPath(Supplier<Pose2d> currentPose, PathPlannerPath path, Pose2d targetPose, PathConstraints pathfindingConstraints) {
-		return new DeferredCommand(
-			() -> new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints),
-				moveToPoseByPID(currentPose, Field.getAllianceRelative(targetPose))
-			),
-			Set.of(swerve)
-		);
-	}
+//	public Command driveToPose(Supplier<Pose2d> currentPose, Supplier<Pose2d> targetPose, PathConstraints pathfindingConstraints) {
+//		return swerve.asSubsystemCommand(
+//			new DeferredCommand(
+//				() -> new SequentialCommandGroup(
+//					pathToPose(currentPose.get(), targetPose.get(), pathfindingConstraints),
+//					moveToPoseByPID(currentPose, targetPose.get())
+//				),
+//				Set.of(swerve)
+//			),
+//			"Drive to pose"
+//		);
+//	}
+//
+//	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints) {
+//		Command pathFollowingCommand;
+//		if (PathPlannerUtil.isRobotInPathfindingDeadband(currentPose, targetPose)) {
+//			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints);
+//		} else {
+//			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints);
+//		}
+//
+//		return swerve.asSubsystemCommand(
+//			new SequentialCommandGroup(new InstantCommand(swerve::resetPIDControllers), pathFollowingCommand),
+//			"Path to pose: " + targetPose
+//		);
+//	}
+//
+//	public Command driveToPath(Supplier<Pose2d> currentPose, PathPlannerPath path, Pose2d targetPose, PathConstraints pathfindingConstraints) {
+//		return new DeferredCommand(
+//			() -> new SequentialCommandGroup(
+//				PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints),
+//				moveToPoseByPID(currentPose, Field.getAllianceRelative(targetPose))
+//			),
+//			Set.of(swerve)
+//		);
+//	}
 
 	public Command moveToPoseByPID(Supplier<Pose2d> currentPose, Pose2d targetPose) {
 		return swerve.asSubsystemCommand(

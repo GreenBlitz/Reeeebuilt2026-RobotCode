@@ -8,13 +8,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.utils.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
-import frc.utils.auto.PathPlannerAutoWrapper;
-import frc.utils.auto.PathPlannerUtil;
+//import frc.utils.auto.PathPlannerAutoWrapper;
+//import frc.utils.auto.PathPlannerUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
@@ -29,7 +30,7 @@ import org.littletonrobotics.junction.Logger;
 public class RobotManager extends LoggedRobot {
 
 	private final Robot robot;
-	private PathPlannerAutoWrapper autonomousCommand;
+	private Command autonomousCommand;
 	private int roborioCycles;
 
 	public RobotManager() {
@@ -38,8 +39,8 @@ public class RobotManager extends LoggedRobot {
 		}
 		DriverStation.silenceJoystickConnectionWarning(true);
 		LoggerFactory.initializeLogger();
-		PathPlannerUtil.startPathfinder();
-		PathPlannerUtil.setupPathPlannerLogging();
+//		PathPlannerUtil.startPathfinder();
+//		PathPlannerUtil.setupPathPlannerLogging();
 
 		this.roborioCycles = 0;
 		this.robot = new Robot();

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.pathplanner.lib.config.RobotConfig;
+//import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,12 +27,11 @@ import frc.robot.subsystems.swerve.states.heading.HeadingControl;
 import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
-import frc.utils.auto.PathPlannerUtil;
+//import frc.utils.auto.PathPlannerUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Swerve extends GBSubsystem {
@@ -111,18 +110,18 @@ public class Swerve extends GBSubsystem {
 	}
 
 
-	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
-		PathPlannerUtil.configPathPlanner(
-			currentPoseSupplier,
-			resetPoseConsumer,
-			this::getRobotRelativeVelocity,
-			(speeds) -> driveByState(speeds, SwerveState.DEFAULT_PATH_PLANNER),
-			constants.pathPlannerHolonomicDriveController(),
-			robotConfig,
-			() -> !Field.isFieldConventionAlliance(),
-			this
-		);
-	}
+//	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
+//		PathPlannerUtil.configPathPlanner(
+//			currentPoseSupplier,
+//			resetPoseConsumer,
+//			this::getRobotRelativeVelocity,
+//			(speeds) -> driveByState(speeds, SwerveState.DEFAULT_PATH_PLANNER),
+//			constants.pathPlannerHolonomicDriveController(),
+//			robotConfig,
+//			() -> !Field.isFieldConventionAlliance(),
+//			this
+//		);
+//	}
 
 	public void setHeadingSupplier(Supplier<Rotation2d> headingSupplier) {
 		this.headingSupplier = headingSupplier;
