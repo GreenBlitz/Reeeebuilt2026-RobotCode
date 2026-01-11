@@ -41,7 +41,6 @@ public class RobotCommander extends GBSubsystem {
 							robot.getIntakeRoller(),
 							robot.getTurret(),
 							robot.getFourBar(),
-							robot.getBelly(),
 							robot.getHood(),
 							robot.getOmni(),
 							robot.getFlyWheel()

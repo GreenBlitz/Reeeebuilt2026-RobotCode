@@ -24,8 +24,55 @@ public class Field {
 		return DriverStationUtil.getAlliance() == RELATIVE_FIELD_CONVENTION_ALLIANCE;
 	}
 
-	public static final double LENGTH_METERS = 17.548225;
-	public static final double WIDTH_METERS = 8.0518;
+	public static final double LENGTH_METERS = 16.54048;
+	public static final double WIDTH_METERS = 8.06958;
+
+	private static final Translation2d HUB_MIDDLE = new Translation2d(4.62, 4.03);
+
+	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
+	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
+	public static final double DEPOT_X_AXIS_LENGTH_METERS = 0.6858;
+
+	private static final Translation2d OUTPOST_MIDDLE = new Translation2d(0, 0.67);
+
+	private static final Translation2d TOWER_MIDDLE = new Translation2d(1.06, 3.75);
+
+	private static final Translation2d DEPOT_TRENCH_MIDDLE = new Translation2d(4.62, 7.43);
+	private static final Translation2d OUTPOST_TRENCH_MIDDLE = new Translation2d(4.62, 0.64);
+
+	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
+	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
+
+
+	public static Translation2d getHubMiddle() {
+		return getAllianceRelative(HUB_MIDDLE);
+	}
+
+	public static Translation2d getDepotMiddle() {
+		return getAllianceRelative(DEPOT_MIDDLE);
+	}
+
+	public static Translation2d getOutpostMiddle() {
+		return getAllianceRelative(OUTPOST_MIDDLE);
+	}
+
+	public static Translation2d getTowerMiddle() {
+		return getAllianceRelative(TOWER_MIDDLE);
+	}
+
+	public static Translation2d getTrenchMiddle(AllianceSide side) {
+		return getAllianceRelative(switch (side) {
+			case DEPOT -> DEPOT_TRENCH_MIDDLE;
+			case OUTPOST -> OUTPOST_TRENCH_MIDDLE;
+		});
+	}
+
+	public static Translation2d getBumpMiddle(AllianceSide side) {
+		return getAllianceRelative(switch (side) {
+			case DEPOT -> DEPOT_BUMP_MIDDLE;
+			case OUTPOST -> OUTPOST_BUMP_MIDDLE;
+		});
+	}
 
 	public static Pose2d getAllianceRelative(Pose2d pose2d) {
 		return new Pose2d(getAllianceRelative(pose2d.getTranslation()), getAllianceRelative(pose2d.getRotation()));
