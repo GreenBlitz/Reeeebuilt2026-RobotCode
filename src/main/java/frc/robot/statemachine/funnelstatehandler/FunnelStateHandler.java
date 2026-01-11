@@ -64,7 +64,7 @@ public class FunnelStateHandler {
 	}
 
 	private Command intake() {
-		return omni.getCommandsBuilder().stop();
+		return omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage());
 	}
 
 	private Command stop() {
