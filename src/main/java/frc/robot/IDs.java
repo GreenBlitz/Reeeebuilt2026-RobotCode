@@ -42,6 +42,9 @@ public class IDs {
 	}
 
 	public static class Pigeon2IDs {
+
+		public static final Phoenix6DeviceID SWERVE = new Phoenix6DeviceID(0, BusChain.ROBORIO);
+
 	}
 
 	public static class CANdleIDs {
@@ -50,7 +53,6 @@ public class IDs {
 	public static class SparkMAXIDs {
 
 		public final static SparkMaxDeviceID INTAKE_ROLLERS = new SparkMaxDeviceID(6, SparkLowLevel.MotorType.kBrushless);
-		public static final SparkMaxDeviceID BELLY = new SparkMaxDeviceID(35, SparkLowLevel.MotorType.kBrushless);
 
 		public final static SparkMaxDeviceID OMNI = new SparkMaxDeviceID(25, SparkLowLevel.MotorType.kBrushless);
 
