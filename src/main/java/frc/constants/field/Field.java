@@ -74,8 +74,8 @@ public class Field {
 		});
 	}
 
-	public static boolean isHubActive() {
-		return DriverStationUtil.getAlliance() == DriverStationUtil.getCurrentActiveAlliance();
+	public static boolean isAutoWinner() {
+		return DriverStationUtil.getAlliance() == DriverStationUtil.getAutoWinnerAlliance();
 	}
 
 	public static Pose2d getAllianceRelative(Pose2d pose2d) {

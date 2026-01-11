@@ -11,7 +11,7 @@ public class DriverStationUtil {
 		return DriverStation.getAlliance().orElse(DEFAULT_ALLIANCE);
 	}
 
-	public static DriverStation.Alliance getCurrentActiveAlliance() {
+	public static DriverStation.Alliance getAutoWinnerAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
 		if (!gameData.isEmpty()) {
 			return switch (gameData.charAt(0)) {
