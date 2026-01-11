@@ -89,9 +89,9 @@ public class ShooterStateHandler {
 
 	private Command calibration() {
 		return new ParallelCommandGroup(
-			turret.getCommandsBuilder().setTargetPosition(ShooterConstants.turretCalibrationAngle::get),
-			hood.getCommandsBuilder().setTargetPosition(ShooterConstants.hoodCalibrationAngle::get),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(ShooterConstants.flywheelCalibrationRotations::get)
+			turret.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.turretCalibrationAngle.get()),
+			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
 		);
 	}
 
