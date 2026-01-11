@@ -24,8 +24,55 @@ public class Field {
 		return DriverStationUtil.getAlliance() == RELATIVE_FIELD_CONVENTION_ALLIANCE;
 	}
 
-	public static final double LENGTH_METERS = 17.548225;
-	public static final double WIDTH_METERS = 8.0518;
+	public static final double LENGTH_METERS = 16.54048;
+	public static final double WIDTH_METERS = 8.06958;
+
+	private static final Translation2d HUB_MIDDLE = new Translation2d();
+
+	private static final Translation2d DEPOT_MIDDLE = new Translation2d();
+	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
+	public static final double DEPOT_X_AXIS_LENGTH_METERS = 0.6858;
+
+	private static final Translation2d OUTPOST_MIDDLE = new Translation2d();
+
+	private static final Translation2d TOWER_MIDDLE = new Translation2d();
+
+	private static final Translation2d DEPOT_TRENCH_MIDDLE = new Translation2d();
+	private static final Translation2d OUTPOST_TRENCH_MIDDLE = new Translation2d();
+
+	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d();
+	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d();
+
+
+	public static Translation2d getHubMiddle() {
+		return getAllianceRelative(HUB_MIDDLE);
+	}
+
+	public static Translation2d getDepotMiddle() {
+		return getAllianceRelative(DEPOT_MIDDLE);
+	}
+
+	public static Translation2d getOutpostMiddle() {
+		return getAllianceRelative(OUTPOST_MIDDLE);
+	}
+
+	public static Translation2d getTowerMiddle() {
+		return getAllianceRelative(TOWER_MIDDLE);
+	}
+
+	public static Translation2d getTrenchMiddle(AllianceSide side) {
+		return getAllianceRelative(switch (side) {
+			case DEPOT -> DEPOT_TRENCH_MIDDLE;
+			case OUTPOST -> OUTPOST_TRENCH_MIDDLE;
+		});
+	}
+
+	public static Translation2d getBumpMiddle(AllianceSide side) {
+		return getAllianceRelative(switch (side) {
+			case DEPOT -> DEPOT_BUMP_MIDDLE;
+			case OUTPOST -> OUTPOST_BUMP_MIDDLE;
+		});
+	}
 
 	public static Pose2d getAllianceRelative(Pose2d pose2d) {
 		return new Pose2d(getAllianceRelative(pose2d.getTranslation()), getAllianceRelative(pose2d.getRotation()));
