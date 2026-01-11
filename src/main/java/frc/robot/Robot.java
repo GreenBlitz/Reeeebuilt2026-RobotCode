@@ -12,6 +12,7 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
+import frc.robot.hardware.phoenix6.imu.Pigeon2IMU;
 import frc.robot.hardware.phoenix6.imu.Pigeon2Wrapper;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ScoringHelpers;
@@ -272,8 +273,8 @@ public class Robot {
 		);
 	}
 
-	private Pigeon2Wrapper createPigeon(){
-		Pigeon2Wrapper pigeon = new Pigeon2Wrapper(IDs.Pigeon2IDs.PIGEON);
+	private Pigeon2IMU createPigeon(){
+		Pigeon2IMU pigeon = Pi
 		Pigeon2Configuration pigeon2Config = new Pigeon2Configuration();
 		pigeon2Config.
 		pigeon.applyConfiguration(pigeon2Config);
