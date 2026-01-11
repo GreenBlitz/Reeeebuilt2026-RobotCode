@@ -31,8 +31,6 @@ public class LoggerFactory {
 	}
 
 	private static void startRealLogger() {
-//		SignalLogger.enableAutoLogging(true); // must be true to BusStatus to work
-
 		if (LogSavePath.USB.isWritable()) {
 			startLoggerOnUSB();
 		} else {

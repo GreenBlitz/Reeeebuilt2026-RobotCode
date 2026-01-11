@@ -92,7 +92,6 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
-		limitMotionUntilSensor(motor.getDevice(), configuration);
 		return new DynamicMotionMagicArm(
 			logPath,
 			motor,
@@ -157,7 +156,6 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
-		limitMotionUntilSensor(motor.getDevice(), configuration);
 		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
 	}
 
@@ -211,24 +209,7 @@ public class TalonFXArmBuilder {
 		);
 		motor.applyConfiguration(configuration);
 
-		limitMotionUntilSensor(motor.getDevice(), configuration);
 		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
-	}
-
-	private static void limitMotionUntilSensor(TalonFXWrapper wrapper, TalonFXConfiguration configuration) {
-//		configuration.Voltage.PeakForwardVoltage = 0;
-//		configuration.Voltage.PeakReverseVoltage = 0;
-//		wrapper.applyConfiguration(configuration);
-//
-//		configuration.Voltage.PeakForwardVoltage = 12;
-//		configuration.Voltage.PeakReverseVoltage = -12;
-//
-//
-//		new Trigger(
-//			() -> wrapper.getStickyFault_ForwardHardLimit(true).getValueAsDouble()
-//				+ wrapper.getStickyFault_ReverseHardLimit(true).getValueAsDouble()
-//				> 0
-//		).onTrue(new InstantCommand(() -> wrapper.applyConfiguration(configuration)));
 	}
 
 	private static TalonFXConfiguration buildConfiguration(
