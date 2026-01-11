@@ -25,13 +25,9 @@ public class TargetChecks {
 	}
 
     private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
-        Rotation2d wantedAngle = ShooterStateHandler.getRobotRelativeLookAtTowerAngleForTurret(
+        Rotation2d wantedAngle = ShooterCalculations.getRobotRelativeLookAtTowerAngleForTurret(
                 ScoringHelpers.getClosestTower(robotPose).getPose().getTranslation(),
-                new Pose2d(
-                        robotPose.getX() + robotPose.getRotation().getCos() * SimulationManager.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
-                        robotPose.getY() + robotPose.getRotation().getSin() * SimulationManager.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
-                        robotPose.getRotation()
-                )
+                ShooterCalculations.getTurretPose(robotPose)
         );
         boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
         Logger.recordOutput(isReadyToShootLogPath + "/isAtHeading", isAtHeading);
