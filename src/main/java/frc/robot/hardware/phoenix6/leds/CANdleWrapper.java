@@ -21,7 +21,7 @@ public class CANdleWrapper extends CANdle {
 	}
 
 	public CANdleWrapper(Phoenix6DeviceID deviceId, int numberOfLeds, String logPath) {
-		super(deviceId.id(), deviceId.busChain().getChainName());
+		super(deviceId.id(), deviceId.busChain().getCANBus().getName());
 		super.clearAnimation(0);
 		this.logPath = logPath;
 		this.numberOfLeds = numberOfLeds;
