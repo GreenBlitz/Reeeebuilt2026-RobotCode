@@ -15,13 +15,14 @@ public class DriveFactory {
 		return switch (modulePosition) {
 			case FRONT_LEFT -> KrakenX60DriveBuilder.buildDrive(logPath, IDs.TalonFXIDs.SWERVE_FRONT_LEFT_DRIVE, false);
 			case FRONT_RIGHT -> KrakenX60DriveBuilder.buildDrive(logPath, IDs.TalonFXIDs.SWERVE_FRONT_RIGHT_DRIVE, true);
-			case BACK_LEFT -> KrakenX60DriveBuilder.buildDrive(logPath, IDs.TalonFXIDs.SWERVE_BACK_LEFT_DRIVE, false
-			
-			
-			
-			
-			
-			);
+			case BACK_LEFT ->
+				KrakenX60DriveBuilder.buildDrive(
+					logPath,
+					IDs.TalonFXIDs.SWERVE_BACK_LEFT_DRIVE,
+					false
+
+
+				);
 			case BACK_RIGHT -> KrakenX60DriveBuilder.buildDrive(logPath, IDs.TalonFXIDs.SWERVE_BACK_RIGHT_DRIVE, true);
 		};
 	}
