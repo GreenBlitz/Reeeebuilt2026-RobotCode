@@ -53,7 +53,7 @@ public class Field {
 	public static Translation2d getTowerMiddle() {
 		return getAllianceRelative(TOWER_MIDDLE);
 	}
-	
+
 	public static Translation2d getTrenchMiddle(AllianceSide side) {
 		return getAllianceRelative(switch (side) {
 			case DEPOT -> DEPOT_TRENCH_MIDDLE;
