@@ -60,10 +60,6 @@ public class Arm extends GBSubsystem {
 		return signals.position().getLatestValue();
 	}
 
-	public boolean getHardwareLimitActive(boolean forward) {
-		return (forward ? signals.hardwareForwardLimitActive().getLatestValue() : signals.hardwareReverseLimitActive().getLatestValue()) > 0;
-	}
-
 	public SysIdCalibrator getSysIdCalibrator() {
 		return sysIdCalibrator;
 	}
@@ -88,14 +84,7 @@ public class Arm extends GBSubsystem {
 	}
 
 	private void updateInputs() {
-		motor.updateInputs(
-			signals.voltage(),
-			signals.current(),
-			signals.velocity(),
-			signals.position(),
-			signals.hardwareForwardLimitActive(),
-			signals.hardwareReverseLimitActive()
-		);
+		motor.updateInputs(signals.voltage(), signals.current(), signals.velocity(), signals.position());
 	}
 
 	public void log() {
