@@ -58,6 +58,7 @@ public class Robot {
 	private final Arm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
+
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
@@ -99,7 +100,8 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getGyroAbsoluteYaw().getValue(),
-			swerve.getGyroAbsoluteYaw().getTimestamp()
+			swerve.getGyroAbsoluteYaw().getTimestamp(),
+			swerve.getIMUAcceleration()
 		);
 
 		this.limelight = new Limelight("limelight", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG); // todo calibrate pose
@@ -246,7 +248,6 @@ public class Robot {
 			OmniConstant.MOMENT_OF_INERTIA
 		);
 	}
-
 
 	public Arm getTurret() {
 		return turret;
