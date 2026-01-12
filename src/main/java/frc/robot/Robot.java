@@ -6,8 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.RobotManager;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
@@ -59,6 +62,9 @@ public class Robot {
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
+
+	private final IDigitalInput mechanismsResetCheck;
+	private final DigitalInputInputsAutoLogged mechanismsResetCheckInputs;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -112,6 +118,24 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		mechanismsResetCheck = new ChooserDigitalInput("MechanismsResetCheck");
+		mechanismsResetCheckInputs = new DigitalInputInputsAutoLogged();
+		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
+
+		// Mechanisms reset check subsystem lock, should be last
+		new FunctionalCommand(
+			() -> {},
+			() -> {},
+			(isFinished) -> {},
+			() -> mechanismsResetCheckInputs.debouncedValue,
+			turret,
+			flyWheel,
+			intakeRoller,
+			fourBar,
+			hood,
+			omni
+		);
 	}
 
 	public void resetSubsystems() {
@@ -141,6 +165,7 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
+		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -313,6 +338,10 @@ public class Robot {
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
 		return new PathPlannerAutoWrapper();
+	}
+
+	public DigitalInputInputsAutoLogged getMechanismsResetCheckInputs() {
+		return mechanismsResetCheckInputs;
 	}
 
 }
