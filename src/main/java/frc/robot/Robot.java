@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.RobotManager;
@@ -127,7 +128,7 @@ public class Robot {
 		new FunctionalCommand(
 			() -> {},
 			() -> {},
-			(isFinished) -> {},
+			(interrupted) -> {},
 			() -> mechanismsResetCheckInputs.debouncedValue,
 			turret,
 			flyWheel,
@@ -135,7 +136,7 @@ public class Robot {
 			fourBar,
 			hood,
 			omni
-		);
+		).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true).schedule();
 	}
 
 	public void resetSubsystems() {
