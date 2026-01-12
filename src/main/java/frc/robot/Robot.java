@@ -124,7 +124,7 @@ public class Robot {
 		mechanismsResetCheckInputs = new DigitalInputInputsAutoLogged();
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 
-		// Mechanisms reset check subsystem lock, should be last
+		// Mechanisms reset check, should be last
 		new FunctionalCommand(
 			() -> {},
 			() -> {},
