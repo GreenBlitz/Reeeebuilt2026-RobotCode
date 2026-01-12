@@ -81,16 +81,15 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		Supplier<Double> distanceFromTower = () -> ScoringHelpers.getDistanceFromClosestTower(robot.getPoseEstimator().getEstimatedPose());
+		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShooterStateHandler.flywheelInterpolation(distanceFromTower).get(),
+			ShooterStateHandler.flywheelInterpolation(distanceFromHub).get(),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterStateHandler.hoodInterpolation((distanceFromTower)).get(),
+			ShooterStateHandler.hoodInterpolation((distanceFromHub)).get(),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
-			StateMachineConstants.TURRET_LOOK_AT_TOWER_TOLERANCE,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			ScoringHelpers.getClosestTower(robot.getPoseEstimator().getEstimatedPose()).getPose(),
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
 		);
 	}

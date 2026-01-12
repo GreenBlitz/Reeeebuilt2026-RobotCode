@@ -14,10 +14,6 @@ import frc.utils.math.FieldMath;
 
 public class Field {
 
-	public static final Translation2d Tower = new Translation2d(6.5, 4);
-
-	public static final double TOWER_SIDES_DISTANCE_FROM_MIDDLE_METERS = 0.27;
-
 	public static final DriverStation.Alliance RELATIVE_FIELD_CONVENTION_ALLIANCE = DriverStation.Alliance.Blue;
 
 	public static boolean isFieldConventionAlliance() {
@@ -34,8 +30,6 @@ public class Field {
 	public static final double DEPOT_X_AXIS_LENGTH_METERS = 0.6858;
 
 	private static final Translation2d OUTPOST_MIDDLE = new Translation2d(0, 0.67);
-
-	private static final Translation2d TOWER_MIDDLE = new Translation2d(1.06, 3.75);
 
 	private static final Translation2d DEPOT_TRENCH_MIDDLE = new Translation2d(4.62, 7.43);
 	private static final Translation2d OUTPOST_TRENCH_MIDDLE = new Translation2d(4.62, 0.64);
@@ -54,10 +48,6 @@ public class Field {
 
 	public static Translation2d getOutpostMiddle() {
 		return getAllianceRelative(OUTPOST_MIDDLE);
-	}
-
-	public static Translation2d getTowerMiddle() {
-		return getAllianceRelative(TOWER_MIDDLE);
 	}
 
 	public static Translation2d getTrenchMiddle(AllianceSide side) {

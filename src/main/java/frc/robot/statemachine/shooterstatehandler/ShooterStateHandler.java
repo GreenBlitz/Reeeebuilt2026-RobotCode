@@ -36,12 +36,12 @@ public class ShooterStateHandler {
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
-	public static Supplier<Rotation2d> hoodInterpolation(Supplier<Double> distanceFromTower) {
-		return () -> ShooterConstants.HOOD_INTERPOLATION_MAP.get(distanceFromTower.get());
+	public static Supplier<Rotation2d> hoodInterpolation(Supplier<Double> distanceFromHub) {
+		return () -> ShooterConstants.HOOD_INTERPOLATION_MAP.get(distanceFromHub.get());
 	}
 
-	public static Supplier<Rotation2d> flywheelInterpolation(Supplier<Double> distanceFromTower) {
-		return () -> ShooterConstants.FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower.get());
+	public static Supplier<Rotation2d> flywheelInterpolation(Supplier<Double> distanceFromHub) {
+		return () -> ShooterConstants.FLYWHEEL_INTERPOLATION_MAP.get(distanceFromHub.get());
 	}
 
 	public ShooterState getCurrentState() {
@@ -72,18 +72,18 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			aimAtTower(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+			aimAtHub(),
+			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			aimAtTower(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+			aimAtHub(),
+			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
 			flyWheel.getCommandBuilder()
-				.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get())))
+				.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation())))
 		);
 	}
 
@@ -95,11 +95,11 @@ public class ShooterStateHandler {
 		);
 	}
 
-	public Command aimAtTower() {
-		return new TurretAimAtTowerCommand(turret, robotPose, logPath);
+	public Command aimAtHub() {
+		return new TurretAimAtHubCommand(turret, robotPose, logPath);
 	}
 
-	public static Rotation2d getRobotRelativeLookAtTowerAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
+	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
 		Rotation2d targetAngle = Rotation2d
 			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
 		return Rotation2d
