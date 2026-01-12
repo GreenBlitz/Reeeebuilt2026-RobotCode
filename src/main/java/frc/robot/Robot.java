@@ -125,19 +125,22 @@ public class Robot {
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 
 		// Mechanisms reset check, should be last
-		new FunctionalCommand(
-			() -> {},
-			() -> {},
-			(interrupted) -> {},
-			() -> mechanismsResetCheckInputs.debouncedValue,
-			swerve,
-			turret,
-			flyWheel,
-			intakeRoller,
-			fourBar,
-			hood,
-			omni
-		).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true).schedule();
+		CommandScheduler.getInstance()
+			.schedule(
+				new FunctionalCommand(
+					() -> {},
+					() -> {},
+					(interrupted) -> {},
+					() -> mechanismsResetCheckInputs.debouncedValue,
+					swerve,
+					turret,
+					flyWheel,
+					intakeRoller,
+					fourBar,
+					hood,
+					omni
+				).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true)
+			);
 	}
 
 	public void resetSubsystems() {
