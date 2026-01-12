@@ -33,19 +33,22 @@ public class RobotCommander extends GBSubsystem {
 			new ConditionalCommand(
 				asSubsystemCommand(Commands.none(), "Disabled"),
 				new InstantCommand(
-					() -> new DeferredCommand(
-						() -> endState(currentState),
-						Set.of(
-							this,
-							swerve,
-							robot.getIntakeRoller(),
-							robot.getTurret(),
-							robot.getFourBar(),
-							robot.getHood(),
-							robot.getOmni(),
-							robot.getFlyWheel()
+					() -> CommandScheduler.getInstance()
+						.schedule(
+							new DeferredCommand(
+								() -> endState(currentState),
+								Set.of(
+									this,
+									swerve,
+									robot.getIntakeRoller(),
+									robot.getTurret(),
+									robot.getFourBar(),
+									robot.getHood(),
+									robot.getOmni(),
+									robot.getFlyWheel()
+								)
+							)
 						)
-					).schedule()
 				),
 				this::isSubsystemRunningIndependently
 			)

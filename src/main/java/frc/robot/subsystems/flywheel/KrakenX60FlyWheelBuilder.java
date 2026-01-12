@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -99,7 +100,7 @@ public class KrakenX60FlyWheelBuilder {
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		followerConfig.followerIDs = new TalonFXFollowerConfig.TalonFXFollowerID[] {
-			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, false)};
+			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, MotorAlignmentValue.Aligned)};
 		return followerConfig;
 	}
 
