@@ -16,7 +16,6 @@ public class FunnelStateHandler {
 
 	private final String logPath;
 
-	private final LoggedNetworkNumber bellyCalibrationVoltage;
 	private final LoggedNetworkNumber omniCalibrationVoltage;
 
 	protected FunnelState currentState;
@@ -27,7 +26,6 @@ public class FunnelStateHandler {
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
 		this.omniCalibrationVoltage = new LoggedNetworkNumber("Tunable/OmniPower", 0);
-		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyPower", 0);
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 		sensor.updateInputs(sensorInputsAutoLogged);
