@@ -9,8 +9,6 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.utils.time.TimeUtil;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -104,7 +102,6 @@ public class RobotCommander extends GBSubsystem {
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					superstructure.setState(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-					new InstantCommand(() -> Logger.recordOutput("working", TimeUtil.getCurrentTimeSeconds())),
 					superstructure.setState(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
 				)
 			)
