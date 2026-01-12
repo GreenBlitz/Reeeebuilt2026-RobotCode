@@ -44,7 +44,7 @@ public class FlyWheel extends GBSubsystem {
 		this.motor = motor;
 		this.flyWheelCommandBuilder = new FlyWheelCommandBuilder(this);
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, this::setVoltage);
-//		setDefaultCommand(getCommandBuilder().stop());
+		setDefaultCommand(getCommandBuilder().stop());
 	}
 
 	public FlyWheelCommandBuilder getCommandBuilder() {
@@ -93,8 +93,8 @@ public class FlyWheel extends GBSubsystem {
 	public void applyCalibrationsBindings(SmartJoystick joystick) {
 		joystick.L1.onTrue(new InstantCommand(() -> getCommandBuilder().setIsSubsystemRunningIndependently(true)));
 		joystick.L3.onTrue(new InstantCommand(() -> getCommandBuilder().setIsSubsystemRunningIndependently(false)));
-//		joystick.POV_LEFT.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(1)));
-//		joystick.POV_UP.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(2)));
+		joystick.POV_LEFT.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(1)));
+		joystick.POV_UP.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(2)));
 		joystick.POV_DOWN.onTrue(getCommandBuilder().stop());
 		sysIdCalibrator.setAllButtonsForCalibration(joystick);
 	}
