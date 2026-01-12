@@ -53,7 +53,7 @@ public class FunnelStateHandler {
 
 	private Command drive() {
 		return new SequentialCommandGroup(
-			omni.getCommandsBuilder().setVoltage(FunnelState.DRIVE.getOmniVoltage()).until(() -> sensorInputsAutoLogged.debouncedValue),
+			omni.getCommandsBuilder().setVoltage(FunnelState.DRIVE.getOmniVoltage()).until(() -> isBallAtSensor()),
 			omni.getCommandsBuilder().stop()
 		);
 	}
@@ -67,7 +67,10 @@ public class FunnelStateHandler {
 	}
 
 	private Command intake() {
-		return omni.getCommandsBuilder().stop();
+		return new SequentialCommandGroup(
+			omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()).until(() -> isBallAtSensor()),
+			omni.getCommandsBuilder().stop()
+		);
 	}
 
 	private Command stop() {
@@ -75,7 +78,7 @@ public class FunnelStateHandler {
 	}
 
 	private Command calibration() {
-		return omni.getCommandsBuilder().setVoltage(omniCalibrationVoltage::get);
+		return new ParallelCommandGroup(omni.getCommandsBuilder().setVoltage(() -> omniCalibrationVoltage.get()));
 	}
 
 	public void periodic() {

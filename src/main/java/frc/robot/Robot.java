@@ -248,7 +248,6 @@ public class Robot {
 		);
 	}
 
-
 	public Arm getTurret() {
 		return turret;
 	}
