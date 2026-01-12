@@ -9,9 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -146,17 +144,9 @@ public class Robot {
 		// Mechanisms reset check, should be last
 		CommandScheduler.getInstance()
 			.schedule(
-				new FunctionalCommand(
-					() -> {},
-					() -> {},
-					(interrupted) -> {},
-					() -> mechanismsResetCheckInputs.debouncedValue,
-					swerve,
-					turret,
-					flyWheel,
-					hood,
-					omni
-				).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming).ignoringDisable(true)
+				new RunCommand(() -> {}, swerve, turret, flyWheel, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
+					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+					.ignoringDisable(true)
 			);
 	}
 
