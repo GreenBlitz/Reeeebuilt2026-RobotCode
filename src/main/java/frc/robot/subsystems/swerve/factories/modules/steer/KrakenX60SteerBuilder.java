@@ -60,8 +60,8 @@ class KrakenX60SteerBuilder {
 		steerConfig.CurrentLimits.StatorCurrentLimit = 30;
 		steerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-		steerConfig.Feedback.SensorToMechanismRatio = GEAR_RATIO;
-		steerConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor; // FeedbackSensorSourceValue.FusedCANcoder;
+		steerConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
+		steerConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
 		if (Robot.ROBOT_TYPE.isReal()) {
 			steerConfig.Slot0.kS = 0.24;
@@ -85,7 +85,7 @@ class KrakenX60SteerBuilder {
 
 	static ControllableMotor buildSteer(String logPath, Phoenix6DeviceID deviceID, Phoenix6DeviceID encoderID, boolean inverted) {
 		TalonFXConfiguration configuration = buildMotorConfig(inverted);
-//		configuration.Feedback.FeedbackRemoteSensorID = encoderID.id();
+		configuration.Feedback.FeedbackRemoteSensorID = encoderID.id();
 
 		TalonFXMotor steer = new TalonFXMotor(logPath, deviceID, buildSysidConfig(logPath), buildMechanismSimulation());
 		steer.applyConfiguration(configuration);
