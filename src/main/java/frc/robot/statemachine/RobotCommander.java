@@ -86,7 +86,7 @@ public class RobotCommander extends GBSubsystem {
 			robot,
 			ShooterStateHandler.flywheelInterpolation(distanceFromHub).get(),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterStateHandler.hoodInterpolation((distanceFromHub)).get(),
+			ShooterStateHandler.hoodInterpolation(distanceFromHub).get(),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
