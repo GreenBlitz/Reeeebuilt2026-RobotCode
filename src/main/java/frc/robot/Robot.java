@@ -342,8 +342,4 @@ public class Robot {
 		return new PathPlannerAutoWrapper();
 	}
 
-	public DigitalInputInputsAutoLogged getMechanismsResetCheckInputs() {
-		return mechanismsResetCheckInputs;
-	}
-
 }
