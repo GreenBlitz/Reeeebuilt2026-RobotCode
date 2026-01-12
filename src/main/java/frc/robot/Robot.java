@@ -99,6 +99,7 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getGyroAbsoluteYaw().getValue(),
+			swerve.getIMUAcceleration(),
 			swerve.getGyroAbsoluteYaw().getTimestamp()
 		);
 

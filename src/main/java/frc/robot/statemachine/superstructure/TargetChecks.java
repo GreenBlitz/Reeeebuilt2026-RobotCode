@@ -85,11 +85,8 @@ public class TargetChecks {
 		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = true || isWithinDistance(
-			robotPose.getTranslation(),
-			maxShootingDistanceFromTargetMeters,
-			closestGoal.getTranslation()
-		);
+		boolean isWithinDistance = true
+			|| isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, closestGoal.getTranslation());
 
 		boolean isInRange = true || isInAngleRange(robotPose.getTranslation(), closestGoal, maxAngleFromGoalCenter);
 

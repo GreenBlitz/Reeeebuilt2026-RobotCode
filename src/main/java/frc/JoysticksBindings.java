@@ -1,9 +1,7 @@
 package frc;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -14,9 +12,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
-import frc.robot.subsystems.swerve.states.DriveRelative;
-import frc.robot.subsystems.swerve.states.LoopMode;
-import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
@@ -94,7 +89,13 @@ public class JoysticksBindings {
 	}
 
 	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT).until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor()));
+		joystick.A.onTrue(
+			robot.getRobotCommander()
+				.getSuperstructure()
+				.getFunnelStateHandler()
+				.setState(FunnelState.SHOOT)
+				.until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+		);
 		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT));
 //		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
 		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CALIBRATION));
