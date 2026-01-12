@@ -130,6 +130,7 @@ public class Robot {
 			() -> {},
 			(interrupted) -> {},
 			() -> mechanismsResetCheckInputs.debouncedValue,
+			swerve,
 			turret,
 			flyWheel,
 			intakeRoller,
