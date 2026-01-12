@@ -19,13 +19,8 @@ public class SimulationManager {
 	}
 
 	public void logPoses() {
-		logIntakePosition3d();
 		logTurretPosition3d();
 		logHoodPosition3d();
-	}
-
-	private void logIntakePosition3d() {
-//		Logger.recordOutput(logPath + "/Intake", getIntakePosition3d(robot.getFourBar().getPosition()));
 	}
 
 	public void logTurretPosition3d() {
