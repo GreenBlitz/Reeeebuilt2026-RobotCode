@@ -10,7 +10,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.RobotManager;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
@@ -68,6 +71,9 @@ public class Robot {
 	private final Limelight limelight;
 	private final IPoseEstimator poseEstimator;
 
+	private final IDigitalInput mechanismsResetCheck;
+	private final DigitalInputInputsAutoLogged mechanismsResetCheckInputs;
+
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
@@ -99,7 +105,8 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getGyroAbsoluteYaw().getValue(),
-			swerve.getGyroAbsoluteYaw().getTimestamp()
+			swerve.getGyroAbsoluteYaw().getTimestamp(),
+			swerve.getIMUAcceleration()
 		);
 
 		this.limelight = new Limelight("limelight", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG); // todo calibrate pose
@@ -131,6 +138,18 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		mechanismsResetCheck = new ChooserDigitalInput("MechanismsResetCheck");
+		mechanismsResetCheckInputs = new DigitalInputInputsAutoLogged();
+		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
+
+		// Mechanisms reset check, should be last
+		CommandScheduler.getInstance()
+			.schedule(
+				new RunCommand(() -> {}, swerve, turret, flyWheel, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
+					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+					.ignoringDisable(true)
+			);
 	}
 
 	public void resetSubsystems() {
@@ -157,6 +176,7 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
+		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 		swerve.update();
 		limelight.updateMT1();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
@@ -246,7 +266,6 @@ public class Robot {
 			OmniConstant.MOMENT_OF_INERTIA
 		);
 	}
-
 
 	public Arm getTurret() {
 		return turret;

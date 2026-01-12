@@ -9,6 +9,8 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
+
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -28,19 +30,19 @@ public class RobotCommander extends GBSubsystem {
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> robot.getPoseEstimator().getEstimatedPose());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
-//		setDefaultCommand(
-//			new ConditionalCommand(
-//				asSubsystemCommand(Commands.none(), "Disabled"),
-//				new InstantCommand(
-//					() -> new DeferredCommand(
-//						() -> endState(currentState),
-//						Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
-//					).schedule()
-//				),
-//				this::isSubsystemRunningIndependently
-//			)
-//
-//		);
+		setDefaultCommand(
+			new ConditionalCommand(
+				asSubsystemCommand(Commands.none(), "Disabled"),
+				new InstantCommand(
+					() -> new DeferredCommand(
+						() -> endState(currentState),
+						Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
+					).schedule()
+				),
+				this::isSubsystemRunningIndependently
+			)
+
+		);
 	}
 
 	public RobotState getCurrentState() {
@@ -89,9 +91,8 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				superstructure.setState(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				superstructure.setState(RobotState.SHOOT).until(() -> !superstructure.isObjectIn())
-//					,
-//				superstructure.setState(RobotState.SHOOT).withTimeout(0.2)
+				superstructure.setState(RobotState.SHOOT).until(() -> !superstructure.isObjectIn()),
+				superstructure.setState(RobotState.SHOOT).withTimeout(0.2)
 			)
 		);
 	}
