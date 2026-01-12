@@ -58,7 +58,6 @@ public class Robot {
 	private final Arm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
-
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;

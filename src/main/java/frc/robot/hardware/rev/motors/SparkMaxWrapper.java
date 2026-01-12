@@ -1,7 +1,6 @@
 package frc.robot.hardware.rev.motors;
 
 import com.revrobotics.REVLibError;
-import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.hardware.rev.REVUtil;
