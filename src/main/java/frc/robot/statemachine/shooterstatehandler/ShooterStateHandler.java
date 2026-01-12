@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.constants.MathConstants;
 import frc.robot.statemachine.ScoringHelpers;
+import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
@@ -32,12 +33,12 @@ public class ShooterStateHandler {
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
-	public static Supplier<Rotation2d> hoodInterpolation(Supplier<Double> distanceFromTower) {
-		return () -> ShooterConstants.HOOD_INTERPOLATION_MAP.get(distanceFromTower.get());
+	public static Rotation2d hoodInterpolation(Double distanceFromTower) {
+		return ShooterCalculations.HOOD_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
-	public static Supplier<Rotation2d> flywheelInterpolation(Supplier<Double> distanceFromTower) {
-		return () -> ShooterConstants.FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower.get());
+	public static Rotation2d flywheelInterpolation(Double distanceFromTower) {
+		return ShooterCalculations.FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
 	public ShooterState getCurrentState() {
@@ -69,7 +70,7 @@ public class ShooterStateHandler {
 	private Command idle() {
 		return new ParallelCommandGroup(
 			aimAtTower(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
@@ -77,9 +78,9 @@ public class ShooterStateHandler {
 	private Command shoot() {
 		return new ParallelCommandGroup(
 			aimAtTower(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+			hood.getCommandsBuilder().setTargetPosition(() -> hoodInterpolation(ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
 			flyWheel.getCommandBuilder()
-				.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get())))
+				.setVelocityAsSupplier(() -> flywheelInterpolation(ScoringHelpers.getDistanceFromClosestTower(robotPose.get())))
 		);
 	}
 

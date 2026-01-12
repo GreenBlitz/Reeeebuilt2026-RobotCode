@@ -4,11 +4,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.MathConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
+import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
+
+import java.util.Map;
 
 public class ShooterCalculations {
 
@@ -42,5 +46,36 @@ public class ShooterCalculations {
 
 		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
 	}
+
+
+	public static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+		InverseInterpolator.forDouble(),
+		InterpolationMap.interpolatorForRotation2d(),
+		Map.of(
+			0.8,
+			Rotation2d.fromDegrees(67),
+			1.5,
+			Rotation2d.fromDegrees(60),
+			2.5,
+			Rotation2d.fromDegrees(43),
+			3.7,
+			Rotation2d.fromDegrees(33)
+		)
+	);
+
+	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+		InverseInterpolator.forDouble(),
+		InterpolationMap.interpolatorForRotation2d(),
+		Map.of(
+			0.8,
+			Rotation2d.fromDegrees(7000),
+			1.5,
+			Rotation2d.fromDegrees(7800),
+			2.5,
+			Rotation2d.fromDegrees(10000),
+			3.7,
+			Rotation2d.fromDegrees(12000)
+		)
+	);
 
 }
