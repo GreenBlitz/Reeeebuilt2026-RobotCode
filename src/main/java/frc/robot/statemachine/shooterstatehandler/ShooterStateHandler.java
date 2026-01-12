@@ -97,22 +97,6 @@ public class ShooterStateHandler {
 		return new TurretAimAtTowerCommand(turret, robotPose, logPath);
 	}
 
-	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
-		boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
-			&& turret.getPosition().getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
-
-		boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
-			&& turret.getPosition().getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
-
-		boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
-			targetRobotRelative.getDegrees(),
-			TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees(),
-			TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees()
-		);
-
-		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
-	}
-
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
 		return Rotation2d.fromRadians(
 			MathUtil

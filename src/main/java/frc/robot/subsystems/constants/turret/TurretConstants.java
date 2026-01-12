@@ -51,7 +51,7 @@ public class TurretConstants {
 	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(5);
 	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(5);
 	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(355);
-	public static final Rotation2d MIDDLE_POSITION = Rotation2d.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
+	public static final Rotation2d MIDDLE_OF_SHOOTING_RANGE = Rotation2d.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
 	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3.0);
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3.0);
 	public static final boolean IS_CONTINUOUS_WRAP = false;

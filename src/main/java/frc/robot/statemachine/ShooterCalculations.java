@@ -5,8 +5,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.MathConstants;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.math.FieldMath;
+import frc.utils.math.ToleranceMath;
 
 public class ShooterCalculations {
 
@@ -24,5 +26,21 @@ public class ShooterCalculations {
 		return Rotation2d
 			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
 	}
+
+    public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
+        boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
+                && turret.getPosition().getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
+
+        boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
+                && turret.getPosition().getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
+
+        boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
+                targetRobotRelative.getDegrees(),
+                TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees(),
+                TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees()
+        );
+
+        return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
+    }
 
 }
