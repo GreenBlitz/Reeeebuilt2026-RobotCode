@@ -104,8 +104,9 @@ public class ShooterStateHandler {
 	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
 		Rotation2d targetAngle = Rotation2d
 			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
-		return Rotation2d
-			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), TurretConstants.MIN_POSITION.getDegrees(), TurretConstants.MAX_POSITION.getDegrees()));
+		return Rotation2d.fromDegrees(
+			MathUtil.inputModulus(targetAngle.getDegrees(), TurretConstants.MIN_POSITION.getDegrees(), TurretConstants.MAX_POSITION.getDegrees())
+		);
 	}
 
 	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
