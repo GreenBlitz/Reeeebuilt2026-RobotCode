@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
-import frc.robot.statemachine.ScoringHelpers;
+import frc.constants.field.Field;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -51,7 +51,7 @@ public class SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
-		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TOWER) {
+		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_HUB) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
 				return speeds;
@@ -61,19 +61,19 @@ public class SwerveStateHandler {
 				return speeds;
 			}
 			if (isTurretMoveLegalSupplier.get().get() == false) {
-				return handleLookAtTowerAimAssist(speeds);
+				return handleLookAtHubAimAssist(speeds);
 			}
 		}
 		return speeds;
 	}
 
-	private ChassisSpeeds handleLookAtTowerAimAssist(ChassisSpeeds speeds) {
+	private ChassisSpeeds handleLookAtHubAimAssist(ChassisSpeeds speeds) {
 		Pose2d robotPose = robotPoseSupplier.get().get();
-		Pose2d towerPose = ScoringHelpers.getClosestTower(robotPose).getPose();
+		Translation2d hub = Field.getHubMiddle();
 		Rotation2d turretAngle = turretAngleSupplier.get().get();
 
-		double dY = towerPose.getY() - robotPose.getY();
-		double dX = towerPose.getX() - robotPose.getX();
+		double dY = hub.getY() - robotPose.getY();
+		double dX = hub.getX() - robotPose.getX();
 
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX));

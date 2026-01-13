@@ -2,7 +2,6 @@ package frc.robot.statemachine;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
-import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.statemachine.superstructure.TargetChecks;
 import frc.robot.subsystems.GBSubsystem;
@@ -33,19 +32,22 @@ public class RobotCommander extends GBSubsystem {
 			new ConditionalCommand(
 				asSubsystemCommand(Commands.none(), "Disabled"),
 				new InstantCommand(
-					() -> new DeferredCommand(
-						() -> endState(currentState),
-						Set.of(
-							this,
-							swerve,
-							robot.getIntakeRoller(),
-							robot.getTurret(),
-							robot.getFourBar(),
-							robot.getHood(),
-							robot.getOmni(),
-							robot.getFlyWheel()
+					() -> CommandScheduler.getInstance()
+						.schedule(
+							new DeferredCommand(
+								() -> endState(currentState),
+								Set.of(
+									this,
+									swerve,
+									robot.getIntakeRoller(),
+									robot.getTurret(),
+									robot.getFourBar(),
+									robot.getHood(),
+									robot.getOmni(),
+									robot.getFlyWheel()
+								)
+							)
 						)
-					).schedule()
 				),
 				this::isSubsystemRunningIndependently
 			)
@@ -82,16 +84,15 @@ public class RobotCommander extends GBSubsystem {
 
 
 	private boolean isReadyToShoot() {
-		Supplier<Double> distanceFromTower = () -> ScoringHelpers.getDistanceFromClosestTower(robot.getPoseEstimator().getEstimatedPose());
+		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShooterStateHandler.flywheelInterpolation(distanceFromTower).get(),
+			ShooterCalculations.flywheelInterpolation(distanceFromHub.get()),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterStateHandler.hoodInterpolation((distanceFromTower)).get(),
+			ShooterCalculations.hoodInterpolation(distanceFromHub.get()),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
-			StateMachineConstants.TURRET_LOOK_AT_TOWER_TOLERANCE,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			ScoringHelpers.getClosestTower(robot.getPoseEstimator().getEstimatedPose()).getPose(),
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
 		);
 	}

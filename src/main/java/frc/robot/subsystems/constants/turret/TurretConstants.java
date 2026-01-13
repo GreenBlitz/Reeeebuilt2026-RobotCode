@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
-
-import static frc.robot.statemachine.shooterstatehandler.ShooterStateHandler.getRangeEdge;
+import static frc.robot.statemachine.ShooterCalculations.getRangeEdge;
 
 public class TurretConstants {
 

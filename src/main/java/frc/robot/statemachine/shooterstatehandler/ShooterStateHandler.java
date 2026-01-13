@@ -1,13 +1,11 @@
 package frc.robot.statemachine.shooterstatehandler;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.constants.MathConstants;
 import frc.robot.statemachine.ScoringHelpers;
+import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
@@ -30,14 +28,6 @@ public class ShooterStateHandler {
 		this.robotPose = robotPose;
 		this.currentState = ShooterState.STAY_IN_PLACE;
 		this.logPath = logPath + "/ShooterStateHandler";
-	}
-
-	public static Supplier<Rotation2d> hoodInterpolation(Supplier<Double> distanceFromTower) {
-		return () -> ShooterConstants.HOOD_INTERPOLATION_MAP.get(distanceFromTower.get());
-	}
-
-	public static Supplier<Rotation2d> flywheelInterpolation(Supplier<Double> distanceFromTower) {
-		return () -> ShooterConstants.FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower.get());
 	}
 
 	public ShooterState getCurrentState() {
@@ -68,18 +58,26 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			aimAtTower(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+			aimAtHub(),
+			hood.getCommandsBuilder()
+				.setTargetPosition(
+					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+				),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			aimAtTower(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+			aimAtHub(),
+			hood.getCommandsBuilder()
+				.setTargetPosition(
+					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+				),
 			flyWheel.getCommandBuilder()
-				.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get())))
+				.setVelocityAsSupplier(
+					() -> ShooterCalculations.flywheelInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+				)
 		);
 	}
 
@@ -91,15 +89,8 @@ public class ShooterStateHandler {
 		);
 	}
 
-	public Command aimAtTower() {
-		return new TurretAimAtTowerCommand(turret, robotPose, logPath);
-	}
-
-	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
-		return Rotation2d.fromRadians(
-			MathUtil
-				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
-		);
+	public Command aimAtHub() {
+		return new TurretAimAtHubCommand(turret, robotPose, logPath);
 	}
 
 }
