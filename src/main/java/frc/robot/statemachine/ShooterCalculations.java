@@ -81,13 +81,13 @@ public class ShooterCalculations {
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
 			0.8,
-			Rotation2d.fromDegrees(7000),
+			Rotation2d.fromRotations(10),
 			1.5,
-			Rotation2d.fromDegrees(7800),
+			Rotation2d.fromRotations(12),
 			2.5,
-			Rotation2d.fromDegrees(10000),
+			Rotation2d.fromRotations(14),
 			3.7,
-			Rotation2d.fromDegrees(12000)
+			Rotation2d.fromRotations(15)
 		)
 	);
 
