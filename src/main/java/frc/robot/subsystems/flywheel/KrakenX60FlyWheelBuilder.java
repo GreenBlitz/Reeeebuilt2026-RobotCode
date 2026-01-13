@@ -100,7 +100,7 @@ public class KrakenX60FlyWheelBuilder {
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		followerConfig.followerIDs = new TalonFXFollowerConfig.TalonFXFollowerID[] {
-			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, MotorAlignmentValue.Aligned)};
+			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, MotorAlignmentValue.Opposed)};
 		return followerConfig;
 	}
 

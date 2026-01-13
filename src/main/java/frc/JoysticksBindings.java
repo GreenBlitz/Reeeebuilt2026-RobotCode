@@ -59,7 +59,8 @@ public class JoysticksBindings {
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getPoseEstimator().setHeading(new Rotation2d())));
+		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
+		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

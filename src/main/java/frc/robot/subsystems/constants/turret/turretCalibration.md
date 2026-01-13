@@ -2,26 +2,26 @@ Turret Calibration
 ------------------------
 
 #### ID
-- [ ] Check motor ID
-- [ ] Check bus chain
+- [x] Check motor ID
+- [x] Check bus chain
 
 #### Limits
-- [ ] Check current limit
-- [ ] Check forward limit
-- [ ] Check backwards limit
+- [x] Check current limit
+- [x] Check forward limit
+- [x] Check backwards limit
 - [ ] Check max velocity
 - [ ] max acceleration
 
 #### Configs
-- [ ] Check invert
-- [ ] Check gear ratio
+- [x] Check invert
+- [x] Check gear ratio
 
-### Sensor
+### Sensor - no sensor
 - [ ] Forward/Reverse
 - [ ] Sensor Position
 
 #### Motion magic
-- [ ] Calibrate kS
+- [x] Calibrate kS
 - [ ] Calibrate kV
 - [ ] Calibrate kA
 
@@ -32,5 +32,5 @@ Turret Calibration
 
 #### General
 - [ ] Check turret radius
-- [ ] Max position
-- [ ] Min position
+- [x] Max position
+- [x] Min position

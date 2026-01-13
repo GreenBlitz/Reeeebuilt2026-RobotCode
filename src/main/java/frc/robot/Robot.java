@@ -146,7 +146,7 @@ public class Robot {
 		// Mechanisms reset check, should be last
 		CommandScheduler.getInstance()
 			.schedule(
-				new RunCommand(() -> {}, swerve, turret, flyWheel, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
+				new RunCommand(() -> {}, swerve, flyWheel, turret, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
 					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
 					.ignoringDisable(true)
 			);
