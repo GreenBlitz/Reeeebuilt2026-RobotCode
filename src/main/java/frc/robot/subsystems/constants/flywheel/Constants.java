@@ -4,12 +4,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Constants {
 
-	public final static double kP = 0.05;
+	public final static double kP = 0.08;
 	public final static double kI = 0;
 	public final static double kD = 0;
-	public final static double kV = 0.097688;
+	public final static double kV = 0.09968799692392349;
 	public final static double kS = 0.35;
-	public final static double kA = 0.018344;
+	public final static double kA = 0.018344 / 2;
 	public final static double kP_SIM = 0.4;
 	public final static double kI_SIM = 0;
 	public final static double kD_SIM = 0;

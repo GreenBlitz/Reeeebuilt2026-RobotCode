@@ -146,7 +146,7 @@ public class Robot {
 		// Mechanisms reset check, should be last
 		CommandScheduler.getInstance()
 			.schedule(
-				new RunCommand(() -> {}, swerve, turret, flyWheel, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
+				new RunCommand(() -> {}, swerve, turret, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
 					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
 					.ignoringDisable(true)
 			);
@@ -156,7 +156,7 @@ public class Robot {
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
-		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
+		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians() - Rotation2d.fromDegrees(3).getRadians()) {
 			turret.setPosition(TurretConstants.MIN_POSITION);
 		}
 	}
@@ -173,7 +173,7 @@ public class Robot {
 
 	public void periodic() {
 		BusChain.refreshAll();
-		resetSubsystems();
+//		resetSubsystems();
 		simulationManager.logPoses();
 
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
