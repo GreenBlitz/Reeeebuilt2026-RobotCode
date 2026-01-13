@@ -5,13 +5,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.constants.MathConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class SimulationManager {
 
 	private final String logPath;
 	private final Robot robot;
-	public static final double TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS = 0.25;
 
 	public SimulationManager(String logPath, Robot robot) {
 		this.logPath = logPath;
@@ -45,7 +45,7 @@ public class SimulationManager {
 
 	public Pose3d getTurretPosition3d(Rotation2d turretPosition) {
 		return new Pose3d(
-			new Translation3d(TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS, 0, 0.0),
+			TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT,
 			new Rotation3d(0.0, 0.0, turretPosition.getRadians() + MathConstants.QUARTER_CIRCLE.getRadians())
 		);
 	}
