@@ -1,45 +1,12 @@
 package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.interpolation.InverseInterpolator;
-import frc.utils.InterpolationMap;
 import frc.utils.LoggedNetworkRotation2d;
 
-import java.util.Map;
 
 public class ShooterConstants {
 
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(25);
-
-	public static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
-		InverseInterpolator.forDouble(),
-		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(
-			1.47,
-			Rotation2d.fromDegrees(35),
-			1.5,
-			Rotation2d.fromDegrees(47),
-			2.5,
-			Rotation2d.fromDegrees(43),
-			3.7,
-			Rotation2d.fromDegrees(33)
-		)
-	);
-
-	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
-		InverseInterpolator.forDouble(),
-		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(
-			1.47,
-			Rotation2d.fromRotations(70),
-			1.5,
-			Rotation2d.fromRotations(70),
-			2.5,
-			Rotation2d.fromRotations(70),
-			3.7,
-			Rotation2d.fromRotations(70)
-		)
-	);
 
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d(
 		"Tunable/TurretAngle",

@@ -20,8 +20,7 @@ import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.ScoringHelpers;
-import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
+import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.FunnelSensorConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -162,12 +161,9 @@ public class Robot {
 	}
 
 	public boolean isTurretMoveLegal() {
-		return ShooterStateHandler.isTurretMoveLegal(
-			ShooterStateHandler.getRobotRelativeLookAtTowerAngleForTurret(
-				ScoringHelpers.getClosestTower(poseEstimator.getEstimatedPose()).getPose().getTranslation(),
-				poseEstimator.getEstimatedPose()
-			),
-			turret
+		return ShooterCalculations.isTurretMoveLegal(
+			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
+			turret.getPosition()
 		);
 	}
 
