@@ -105,8 +105,8 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getGyroAbsoluteYaw().getValue(),
-			swerve.getGyroAbsoluteYaw().getTimestamp(),
-			swerve.getIMUAcceleration()
+			swerve.getIMUAcceleration(),
+			swerve.getGyroAbsoluteYaw().getTimestamp()
 		);
 
 		this.limelight = new Limelight("limelight", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG); // todo calibrate pose
