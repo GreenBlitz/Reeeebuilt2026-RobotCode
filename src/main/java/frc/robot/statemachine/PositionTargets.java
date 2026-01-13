@@ -10,21 +10,21 @@ import org.littletonrobotics.junction.Logger;
 public class PositionTargets {
 
 	private final Robot robot;
-	private static final String isInPoseToShootLogPath = "Statemachine/TargetChecks/IsInPoseToShoot";
+	private static final String isInPoseToShootLogPath = "Statemachine/PositionTargets/IsInPoseToShoot";
 
 	public PositionTargets(Robot robot) {
 		this.robot = robot;
 	}
 
-	public static boolean isInAngleRange(Translation2d robotPosition, Rotation2d maxAngleFromCenter) {
-		Rotation2d AngleBetweenRobotAndGoal = FieldMath.getRelativeTranslation(Field.getHubMiddle(), robotPosition).getAngle();
-		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndGoal.getDegrees()) <= maxAngleFromCenter.getDegrees();
+	public static boolean isInAngleRange(Translation2d robotPosition, Rotation2d maxAngleFromHubCenter) {
+		Rotation2d AngleBetweenRobotAndHub = FieldMath.getRelativeTranslation(Field.getHubMiddle(), robotPosition).getAngle();
+		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndHub.getDegrees()) <= maxAngleFromHubCenter.getDegrees();
 		Logger.recordOutput(isInPoseToShootLogPath + "/isInRange", isInAngleRange);
 		return isInAngleRange;
 	}
 
-	public static boolean isWithinDistance(Translation2d robotPosition, double maxShootingDistanceFromTargetMeters) {
-		boolean isWithinDistance = robotPosition.getDistance(Field.getHubMiddle()) <= maxShootingDistanceFromTargetMeters;
+	public static boolean isWithinDistance(Translation2d robotPosition, double maxShootingDistanceFromHubMeters) {
+		boolean isWithinDistance = robotPosition.getDistance(Field.getHubMiddle()) <= maxShootingDistanceFromHubMeters;
 		Logger.recordOutput(isInPoseToShootLogPath + "/isInDistance", isWithinDistance);
 		return isWithinDistance;
 	}
