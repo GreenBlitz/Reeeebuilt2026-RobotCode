@@ -4,10 +4,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.MathConstants;
-import frc.robot.subsystems.arm.Arm;
+import frc.constants.field.Field;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
@@ -17,17 +16,7 @@ import java.util.Map;
 
 public class ShooterCalculations {
 
-	public static Translation3d getFieldRelativeTurretTranslation3d(Pose2d robotPose) {
-		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
-			.rotateBy(robotPose.getRotation());
-		return new Translation3d(
-			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
-			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY(),
-			TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.getZ()
-		);
-	}
-
-	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose) {
+	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose, Rotation2d turretAngle) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Pose2d(
@@ -35,16 +24,16 @@ public class ShooterCalculations {
 				robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
 				robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
 			),
-			robotPose.getRotation()
+			Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + turretAngle.getDegrees())
 		);
 	}
 
-	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
+	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Rotation2d position) {
 		boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
-			&& turret.getPosition().getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
+			&& position.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
 
 		boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
-			&& turret.getPosition().getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
+			&& position.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
 
 		boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
 			targetRobotRelative.getDegrees(),
@@ -55,6 +44,20 @@ public class ShooterCalculations {
 		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
 	}
 
+	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition) {
+		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
+		return Rotation2d.fromDegrees(
+			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
+				- robotPose.getRotation().getDegrees()
+		);
+	}
+
+	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
+		return Rotation2d.fromRadians(
+			MathUtil
+				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
+		);
+	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
@@ -85,20 +88,6 @@ public class ShooterCalculations {
 			Rotation2d.fromDegrees(12000)
 		)
 	);
-
-	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
-		Rotation2d targetAngle = Rotation2d
-			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
-		return Rotation2d
-			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
-	}
-
-	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
-		return Rotation2d.fromRadians(
-			MathUtil
-				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
-		);
-	}
 
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
 		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);

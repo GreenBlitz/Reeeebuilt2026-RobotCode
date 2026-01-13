@@ -58,7 +58,7 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			aimAtHub(),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
 				.setTargetPosition(
 					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
@@ -69,7 +69,7 @@ public class ShooterStateHandler {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			aimAtHub(),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
 				.setTargetPosition(
 					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
@@ -87,10 +87,6 @@ public class ShooterStateHandler {
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
 		);
-	}
-
-	public Command aimAtHub() {
-		return new TurretAimAtHubCommand(turret, robotPose, logPath);
 	}
 
 }

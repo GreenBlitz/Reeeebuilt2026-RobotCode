@@ -2,10 +2,8 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachine.ShooterCalculations;
-import frc.constants.field.Field;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
@@ -21,19 +19,13 @@ public class TurretAimAtHubCommand extends Command {
 		this.turret = turret;
 		this.robotPose = robotPose;
 		this.logPath = logPath;
-		addRequirements(turret);
 	}
 
 	@Override
 	public void execute() {
-		Pose2d turretPose = new Pose2d(
-			ShooterCalculations.getFieldRelativeTurretPosition(robotPose.get()).getTranslation(),
-			turret.getPosition().plus(robotPose.get().getRotation())
-		);
-		Translation2d hub = Field.getHubMiddle();
-		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(hub, turretPose);
+		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition());
 
-		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret)) {
+		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
 		} else {
 			targetAngle = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()

@@ -23,8 +23,7 @@ public class TargetChecks {
 		this.superstructure = superstructure;
 	}
 	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
-		Rotation2d wantedAngle = ShooterCalculations
-			.getRobotRelativeLookAtHubAngleForTurret(Field.getHubMiddle(), ShooterCalculations.getFieldRelativeTurretPosition(robotPose));
+		Rotation2d wantedAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turret.getPosition());
 		boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
 		Logger.recordOutput(isReadyToShootLogPath + "/isAtHeading", isAtHeading);
 		return isAtHeading;
