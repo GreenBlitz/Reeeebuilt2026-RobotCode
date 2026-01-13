@@ -2,10 +2,8 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachine.ShooterCalculations;
-import frc.constants.field.Field;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
@@ -25,8 +23,6 @@ public class TurretAimAtHubCommand extends Command {
 
 	@Override
 	public void execute() {
-		Pose2d turretPose = (ShooterCalculations.getFieldRelativeTurretPosition(robotPose.get(), turret.getPosition()));
-		Translation2d hub = Field.getHubMiddle();
 		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition());
 
 		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret)) {
