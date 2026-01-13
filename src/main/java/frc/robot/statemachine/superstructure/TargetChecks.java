@@ -3,13 +3,10 @@ package frc.robot.statemachine.superstructure;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.PositionTargets;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
-import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.math.MathUtil.isNear;
@@ -22,6 +19,7 @@ public class TargetChecks {
 	public TargetChecks(Superstructure superstructure) {
 		this.superstructure = superstructure;
 	}
+
 	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
 		Rotation2d wantedAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turret.getPosition());
 		boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
