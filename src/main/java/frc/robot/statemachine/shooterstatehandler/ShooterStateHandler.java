@@ -1,7 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,14 +28,6 @@ public class ShooterStateHandler {
 		this.robotPose = robotPose;
 		this.currentState = ShooterState.STAY_IN_PLACE;
 		this.logPath = logPath + "/ShooterStateHandler";
-	}
-
-	public static Rotation2d hoodInterpolation(Double distanceFromTower) {
-		return ShooterCalculations.HOOD_INTERPOLATION_MAP.get(distanceFromTower);
-	}
-
-	public static Rotation2d flywheelInterpolation(Double distanceFromTower) {
-		return ShooterCalculations.FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
 	public ShooterState getCurrentState() {
@@ -69,7 +60,9 @@ public class ShooterStateHandler {
 		return new ParallelCommandGroup(
 			aimAtHub(),
 			hood.getCommandsBuilder()
-				.setTargetPosition(() -> hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
+				.setTargetPosition(
+					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+				),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
@@ -78,9 +71,13 @@ public class ShooterStateHandler {
 		return new ParallelCommandGroup(
 			aimAtHub(),
 			hood.getCommandsBuilder()
-				.setTargetPosition(() -> hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
+				.setTargetPosition(
+					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+				),
 			flyWheel.getCommandBuilder()
-				.setVelocityAsSupplier(() -> flywheelInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation())))
+				.setVelocityAsSupplier(
+					() -> ShooterCalculations.flywheelInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+				)
 		);
 	}
 

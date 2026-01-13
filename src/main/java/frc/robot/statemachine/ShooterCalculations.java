@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ShooterCalculations {
 
-	public static Translation3d getTurretTranslation3dFieldRelative(Pose2d robotPose) {
+	public static Translation3d getFieldRelativeTurretTranslation3d(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Translation3d(
@@ -27,7 +27,7 @@ public class ShooterCalculations {
 		);
 	}
 
-	public static Pose2d getTurretPositionFieldRelative(Pose2d robotPose) {
+	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Pose2d(
@@ -37,13 +37,6 @@ public class ShooterCalculations {
 			),
 			robotPose.getRotation()
 		);
-	}
-
-	public static Rotation2d getRobotRelativeLookAtTowerAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
-		Rotation2d targetAngle = Rotation2d
-			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
-		return Rotation2d
-			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
 	}
 
 	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
@@ -63,7 +56,7 @@ public class ShooterCalculations {
 	}
 
 
-	public static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -78,7 +71,7 @@ public class ShooterCalculations {
 		)
 	);
 
-	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -105,6 +98,14 @@ public class ShooterCalculations {
 			MathUtil
 				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
 		);
+	}
+
+	public static Rotation2d hoodInterpolation(double distanceFromTower) {
+		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
+	}
+
+	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
+		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
 }
