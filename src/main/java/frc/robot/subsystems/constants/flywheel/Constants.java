@@ -17,7 +17,7 @@ public class Constants {
 	public final static double kV_SIM = 0.1385;
 	public final static double kA_SIM = 0;
 	public final static double SENSOR_TO_MECHANISM_RATIO_MASTER = 1.0 / 1.0;
-	public final static double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 40.0 / 36.0;
+	public final static double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 1.0;
 	public final static double MOMENT_OF_INERTIA = 0.01;
 	public final static int CURRENT_LIMIT = 40;
 	public final static double WHEEL_RADIUS_METERS = 0.05;
