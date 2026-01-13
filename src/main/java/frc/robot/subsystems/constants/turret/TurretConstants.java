@@ -13,7 +13,7 @@ import static frc.robot.statemachine.shooterstatehandler.ShooterStateHandler.get
 public class TurretConstants {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Turret";
-	public static final boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 	public static final TalonFXFollowerConfig TALON_FX_FOLLOWER_CONFIG = new TalonFXFollowerConfig();
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
@@ -26,9 +26,11 @@ public class TurretConstants {
 		REAL_SLOTS_CONFIG.kI = 0;
 		REAL_SLOTS_CONFIG.kD = 0;
 		REAL_SLOTS_CONFIG.kG = 0;
-		REAL_SLOTS_CONFIG.kS = 0;
+		REAL_SLOTS_CONFIG.kS = 0.32;
 		REAL_SLOTS_CONFIG.kV = 0;
 		REAL_SLOTS_CONFIG.kA = 0;
+
+		REAL_SLOTS_CONFIG.GainSchedBehavior
 
 		SIMULATION_SLOTS_CONFIG.kP = 500;
 		SIMULATION_SLOTS_CONFIG.kI = 0;
@@ -45,10 +47,10 @@ public class TurretConstants {
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double TURRET_RADIUS = 0.0;
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(160);
-	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-160);
-	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-179);
-	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(179);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(45);
+	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-150);
+	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-183);
+	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(50);
 	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3.0);
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3.0);
 	public static final boolean IS_CONTINUOUS_WRAP = false;
