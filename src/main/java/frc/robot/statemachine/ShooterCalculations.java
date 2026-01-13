@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.MathConstants;
+import frc.constants.field.Field;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
@@ -27,7 +28,7 @@ public class ShooterCalculations {
 		);
 	}
 
-	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose) {
+	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose, Rotation2d turretAngle) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Pose2d(
@@ -35,7 +36,7 @@ public class ShooterCalculations {
 				robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
 				robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
 			),
-			robotPose.getRotation()
+			Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + turretAngle.getDegrees())
 		);
 	}
 
@@ -86,11 +87,12 @@ public class ShooterCalculations {
 		)
 	);
 
-	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
-		Rotation2d targetAngle = Rotation2d
-			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
-		return Rotation2d
-			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
+	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition) {
+		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
+		return Rotation2d.fromDegrees(
+			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
+				- robotPose.getRotation().getDegrees()
+		);
 	}
 
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {

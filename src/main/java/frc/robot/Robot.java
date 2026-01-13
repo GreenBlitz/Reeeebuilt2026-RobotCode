@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
-import frc.constants.field.Field;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -128,7 +127,7 @@ public class Robot {
 
 	public boolean isTurretMoveLegal() {
 		return ShooterCalculations.isTurretMoveLegal(
-			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(Field.getHubMiddle(), poseEstimator.getEstimatedPose()),
+			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
 			turret
 		);
 	}
