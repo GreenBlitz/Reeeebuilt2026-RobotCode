@@ -9,6 +9,8 @@ public class MTInputs {
 
 	public LimelightHelpers.PoseEstimate mtRawData = new LimelightHelpers.PoseEstimate();
 
-	public Pose3d primaryTagPoseInCameraSpace = new Pose3d();
+	public Pose3d cameraPoseFieldRelative = new Pose3d();
+
+    public Pose3d primaryTagPoseInCameraSpace = new Pose3d();
 
 }
