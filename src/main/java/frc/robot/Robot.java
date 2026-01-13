@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -108,7 +105,14 @@ public class Robot {
 			swerve.getGyroAbsoluteYaw().getTimestamp()
 		);
 
-		this.limelight = new Limelight("limelight", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG); // todo calibrate pose
+		Object Supplier;
+		this.limelight = new Limelight(
+			"limelight",
+			"Vision",
+			() -> new Pose3d(0.35, 0.08, 0.49, new Rotation3d(Math.toRadians(177.12), Math.toRadians(35.81), Math.toRadians(2.3)))
+				.rotateAround(TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT, new Rotation3d(turret.getPosition())),
+			LimelightPipeline.APRIL_TAG
+		);
 
 		limelight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(

@@ -140,21 +140,33 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
 			Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
 
-			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), calculateMT1RobotPose(), calculateMT1StdDevs.get());
+			mt1PoseObservation = new RobotPoseObservation(
+				getMT1RawData().timestampSeconds(),
+				calculateMT1RobotPose(),
+				calculateMT1StdDevs.get()
+			);
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
 			}
 		}
 	}
 
-    private Pose2d calculateMT1RobotPose() {
-        Pose3d robotRelativeCameraPose = getRobotRelativeCameraPose();
-        Translation3d invertedCameraTranslationRobotRelative = new Translation3d(-robotRelativeCameraPose.getX(), robotRelativeCameraPose.getY(), -robotRelativeCameraPose.getZ());
-        Rotation3d invertedCameraRotationRobotRelative = new Rotation3d(-robotRelativeCameraPose.getRotation().getX(), robotRelativeCameraPose.getRotation().getY(), -robotRelativeCameraPose.getRotation().getZ());
-        Pose3d invertedCameraPoseRobotRelative = new Pose3d(invertedCameraTranslationRobotRelative, invertedCameraRotationRobotRelative);
-        Pose3d robotPoseFieldRelative = inputs.mt1Inputs().cameraPoseFieldRelative.plus(invertedCameraPoseRobotRelative.minus(new Pose3d()));
-        return robotPoseFieldRelative.toPose2d();
-    }
+	private Pose2d calculateMT1RobotPose() {
+		Pose3d robotRelativeCameraPose = getRobotRelativeCameraPose();
+		Translation3d invertedCameraTranslationRobotRelative = new Translation3d(
+			-robotRelativeCameraPose.getX(),
+			robotRelativeCameraPose.getY(),
+			-robotRelativeCameraPose.getZ()
+		);
+		Rotation3d invertedCameraRotationRobotRelative = new Rotation3d(
+			-robotRelativeCameraPose.getRotation().getX(),
+			robotRelativeCameraPose.getRotation().getY(),
+			-robotRelativeCameraPose.getRotation().getZ()
+		);
+		Pose3d invertedCameraPoseRobotRelative = new Pose3d(invertedCameraTranslationRobotRelative, invertedCameraRotationRobotRelative);
+		Pose3d robotPoseFieldRelative = inputs.mt1Inputs().cameraPoseFieldRelative.plus(invertedCameraPoseRobotRelative.minus(new Pose3d()));
+		return robotPoseFieldRelative.toPose2d();
+	}
 
 	public void updateMT2() {
 		if (pipeline.isUsingMT()) {
