@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
-import frc.constants.MathConstants;
 import frc.constants.field.Field;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
@@ -54,8 +53,11 @@ public class ShooterCalculations {
 
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
 		return Rotation2d.fromRadians(
-			MathUtil
-				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
+			MathUtil.inputModulus(
+				angle.getRadians() + tolerance.getRadians(),
+				TurretConstants.MIN_POSITION.getRadians(),
+				TurretConstants.MAX_POSITION.getRadians()
+			)
 		);
 	}
 
