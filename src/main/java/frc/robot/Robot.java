@@ -109,7 +109,6 @@ public class Robot {
 			swerve.getGyroAbsoluteYaw().getTimestamp()
 		);
 
-		Object Supplier;
 		this.limelight = new Limelight(
 			"limelight",
 			"Vision",
