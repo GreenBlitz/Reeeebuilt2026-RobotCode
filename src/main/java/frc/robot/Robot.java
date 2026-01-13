@@ -173,7 +173,7 @@ public class Robot {
 
 	public void periodic() {
 		BusChain.refreshAll();
-//		resetSubsystems();
+		resetSubsystems();
 		simulationManager.logPoses();
 
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
