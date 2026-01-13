@@ -25,7 +25,7 @@ public class IDs {
 
 		public final static Phoenix6DeviceID HOOD = new Phoenix6DeviceID(20, BusChain.ROBORIO);
 
-		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(66, BusChain.ROBORIO);
+		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.ROBORIO);
 
 	}
 
