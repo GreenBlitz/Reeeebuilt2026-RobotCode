@@ -1,7 +1,6 @@
 package frc.robot.subsystems.constants.hood;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,7 +11,6 @@ public class HoodConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
-	public static final HardwareLimitSwitchConfigs HARDWARE_LIMIT_SWITCH_CONFIGS = new HardwareLimitSwitchConfigs();
 
 	static {
 		REAL_SLOT.kP = 350;
@@ -33,10 +31,6 @@ public class HoodConstants {
 
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 32.95 * 4;
-
-		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitEnable = true;
-		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitAutosetPositionValue = Rotation2d.fromDegrees(10).getRotations();
-		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitAutosetPositionEnable = true;
 	}
 
 	public static final boolean IS_INVERTED = true;

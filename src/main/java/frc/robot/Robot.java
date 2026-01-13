@@ -10,7 +10,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.RobotManager;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
@@ -67,6 +70,9 @@ public class Robot {
 	private final Swerve swerve;
 	private final Limelight limelight;
 	private final IPoseEstimator poseEstimator;
+
+	private final IDigitalInput mechanismsResetCheck;
+	private final DigitalInputInputsAutoLogged mechanismsResetCheckInputs;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -132,6 +138,18 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		mechanismsResetCheck = new ChooserDigitalInput("MechanismsResetCheck");
+		mechanismsResetCheckInputs = new DigitalInputInputsAutoLogged();
+		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
+
+		// Mechanisms reset check, should be last
+		CommandScheduler.getInstance()
+			.schedule(
+				new RunCommand(() -> {}, swerve, turret, flyWheel, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
+					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+					.ignoringDisable(true)
+			);
 	}
 
 	public void resetSubsystems() {
@@ -158,6 +176,7 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
+		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 		swerve.update();
 		limelight.updateMT1();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
@@ -187,7 +206,6 @@ public class Robot {
 			TurretConstants.FEEDBACK_CONFIGS,
 			TurretConstants.REAL_SLOTS_CONFIG,
 			TurretConstants.SIMULATION_SLOTS_CONFIG,
-			TurretConstants.HARDWARE_LIMIT_SWITCH_CONFIGS,
 			TurretConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			TurretConstants.ARBITRARY_FEED_FORWARD,
@@ -227,7 +245,6 @@ public class Robot {
 			HoodConstants.FEEDBACK_CONFIGS,
 			HoodConstants.REAL_SLOT,
 			HoodConstants.SIMULATION_SLOT,
-			HoodConstants.HARDWARE_LIMIT_SWITCH_CONFIGS,
 			HoodConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			HoodConstants.ARBITRARY_FEEDFORWARD,

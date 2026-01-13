@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
@@ -41,7 +40,6 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs realSlotsConfig,
 		Slot0Configs simulationSlotsConfig,
-		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		double currentLimit,
 		double signalsFrequency,
 		double arbitraryFeedForward,
@@ -80,7 +78,6 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
-			hardwareLimitSwitchConfigs,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
 			isInverted,
@@ -112,7 +109,6 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs realSlotsConfig,
 		Slot0Configs simulationSlotsConfig,
-		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		double currentLimit,
 		double signalsFrequency,
 		double arbitraryFeedForward,
@@ -144,7 +140,6 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
-			hardwareLimitSwitchConfigs,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
 			isInverted,
@@ -167,7 +162,6 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs realSlotsConfig,
 		Slot0Configs simulationSlotsConfig,
-		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		double currentLimit,
 		double signalsFrequency,
 		double arbitraryFeedForward,
@@ -198,7 +192,6 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
-			hardwareLimitSwitchConfigs,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
 			isInverted,
@@ -214,7 +207,6 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs simulationConfigSlots,
 		Slot0Configs realConfigSlots,
-		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		Rotation2d forwardSoftwareLimit,
 		Rotation2d reverseSoftwareLimit,
 		boolean isInverted,
@@ -245,8 +237,6 @@ public class TalonFXArmBuilder {
 
 		config.MotorOutput.Inverted = isInverted ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-
-		config.HardwareLimitSwitch = hardwareLimitSwitchConfigs;
 
 		return config;
 	}
@@ -291,9 +281,7 @@ public class TalonFXArmBuilder {
 			Phoenix6SignalBuilder.build(motor.getDevice().getMotorVoltage(), signalFrequency, busChain),
 			Phoenix6SignalBuilder.build(motor.getDevice().getStatorCurrent(), signalFrequency, busChain),
 			velocity,
-			Phoenix6SignalBuilder.build(motor.getDevice().getPosition(), velocity, signalFrequency, AngleUnit.ROTATIONS, busChain),
-			Phoenix6SignalBuilder.build(motor.getDevice().getFault_ForwardHardLimit(), signalFrequency, busChain),
-			Phoenix6SignalBuilder.build(motor.getDevice().getFault_ReverseHardLimit(), signalFrequency, busChain)
+			Phoenix6SignalBuilder.build(motor.getDevice().getPosition(), velocity, signalFrequency, AngleUnit.ROTATIONS, busChain)
 		);
 	}
 
