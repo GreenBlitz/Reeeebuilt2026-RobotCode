@@ -76,6 +76,8 @@ public class Superstructure {
 				case PRE_SHOOT -> preShoot();
 				case SHOOT -> shoot();
 				case SHOOT_WHILE_INTAKE -> shootWhileIntake();
+				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
+				case CALIBRATION_SHOOT -> calibrationShoot();
 			}
 		);
 	}
@@ -108,6 +110,20 @@ public class Superstructure {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.SHOOT),
 			funnelStateHandler.setState(FunnelState.SHOOT_WHILE_INTAKE)
+		);
+	}
+
+	private Command calibrationPreShoot() {
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.CALIBRATION),
+			funnelStateHandler.setState(FunnelState.DRIVE)
+		);
+	}
+
+	private Command calibrationShoot() {
+		return new ParallelDeadlineGroup(
+			shooterStateHandler.setState(ShooterState.CALIBRATION),
+			funnelStateHandler.setState(FunnelState.SHOOT)
 		);
 	}
 
