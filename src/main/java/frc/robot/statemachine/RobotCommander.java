@@ -86,15 +86,9 @@ public class RobotCommander extends GBSubsystem {
 		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-<<<<<<< Updated upstream
 			ShooterCalculations.flywheelInterpolation(distanceFromHub.get()),
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterCalculations.hoodInterpolation(distanceFromHub.get()),
-=======
-			ShooterConstants.flywheelCalibrationRotations.get(),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			ShooterConstants.hoodCalibrationAngle.get(),
->>>>>>> Stashed changes
+			ShooterCalculations.hoodInterpolation(distanceFromHub.get()),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
@@ -103,7 +97,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToShoot() {
-		return TargetChecks.calibrationIsReadyToShoot(robot, Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS, HoodConstants.HOOD_POSITION_TOLERANCE);
+		return TargetChecks.calibrationIsReadyToShoot(
+			robot,
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
+			HoodConstants.HOOD_POSITION_TOLERANCE
+		);
 	}
 
 	public Command shootSequence() {
