@@ -2,6 +2,7 @@ package frc.robot.statemachine;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.statemachine.superstructure.TargetChecks;
 import frc.robot.subsystems.GBSubsystem;
@@ -29,22 +30,22 @@ public class RobotCommander extends GBSubsystem {
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> robot.getPoseEstimator().getEstimatedPose());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
-		setDefaultCommand(
-			new ConditionalCommand(
-				asSubsystemCommand(Commands.none(), "Disabled"),
-				new InstantCommand(
-					() -> CommandScheduler.getInstance()
-						.schedule(
-							new DeferredCommand(
-								() -> endState(currentState),
-								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
-							)
-						)
-				),
-				this::isSubsystemRunningIndependently
-			)
-
-		);
+//		setDefaultCommand(
+//			new ConditionalCommand(
+//				asSubsystemCommand(Commands.none(), "Disabled"),
+//				new InstantCommand(
+//					() -> CommandScheduler.getInstance()
+//						.schedule(
+//							new DeferredCommand(
+//								() -> endState(currentState),
+//								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
+//							)
+//						)
+//				),
+//				this::isSubsystemRunningIndependently
+//			)
+//
+//		);
 	}
 
 	public RobotState getCurrentState() {
@@ -78,23 +79,26 @@ public class RobotCommander extends GBSubsystem {
 		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShooterCalculations.flywheelInterpolation(distanceFromHub.get()),
+				ShooterConstants.flywheelCalibrationRotations.get(),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterCalculations.hoodInterpolation(distanceFromHub.get()),
+				ShooterConstants.hoodCalibrationAngle.get(),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
-		);
+		) && superstructure.isObjectIn();
 	}
 
 	public Command shootSequence() {
-		return new RepeatCommand(
+		return
+				//new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor()),
+				driveWith(RobotState.SHOOT).withTimeout(0.05)
 			)
-		);
+		//)
+		;
 	}
 
 	public Command shootWhileIntakeSequence() {

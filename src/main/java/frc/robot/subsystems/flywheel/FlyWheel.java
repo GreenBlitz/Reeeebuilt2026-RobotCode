@@ -44,7 +44,7 @@ public class FlyWheel extends GBSubsystem {
 		this.motor = motor;
 		this.flyWheelCommandBuilder = new FlyWheelCommandBuilder(this);
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, this::setVoltage);
-		setDefaultCommand(getCommandBuilder().stop());
+//		setDefaultCommand(getCommandBuilder().stop());
 	}
 
 	public FlyWheelCommandBuilder getCommandBuilder() {

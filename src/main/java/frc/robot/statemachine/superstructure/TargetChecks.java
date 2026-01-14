@@ -80,7 +80,7 @@ public class TargetChecks {
 
 		boolean isInRange = true || isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter);
 
-		boolean isAtHeading = isTurretAtTarget(robotPose, robot.getTurret(), headingTolerance.getDegrees());
+		boolean isAtHeading = true || isTurretAtTarget(robotPose, robot.getTurret(), headingTolerance.getDegrees());
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			wantedFlywheelVelocityRPS,
