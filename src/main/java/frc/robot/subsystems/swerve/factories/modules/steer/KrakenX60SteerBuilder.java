@@ -85,16 +85,10 @@ class KrakenX60SteerBuilder {
 	}
 
 	static ControllableMotor buildSteer(String logPath, Phoenix6DeviceID deviceID, Phoenix6DeviceID encoderID, boolean inverted) {
-		TalonFXConfiguration configuration;
-		configuration = buildMotorConfig(inverted);
+		TalonFXConfiguration configuration = buildMotorConfig(inverted);
 		configuration.Feedback.FeedbackRemoteSensorID = encoderID.id();
-		
 		TalonFXMotor steer = new TalonFXMotor(logPath, deviceID, buildSysidConfig(logPath), buildMechanismSimulation());
 		steer.applyConfiguration(configuration);
-
-		if (deviceID.id() == 0){
-			steer.resetPosition(Rotation2d.fromDegrees(0));
-		}
 		return steer;
 	}
 
