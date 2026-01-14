@@ -64,8 +64,8 @@ public class TargetChecks {
 
 	public static boolean isReadyToShoot(
 		Robot robot,
-		Rotation2d wantedFlywheelVelocityRPS,
-		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d wantedFlywheelVelocityRotation2dPerSecond,
+		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
 		Rotation2d wantedHoodPosition,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
@@ -83,9 +83,9 @@ public class TargetChecks {
 		boolean isAtHeading = true || isTurretAtTarget(robotPose, robot.getTurret(), headingTolerance.getDegrees());
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			wantedFlywheelVelocityRPS,
+			wantedFlywheelVelocityRotation2dPerSecond,
 			flywheelVelocityRotation2dPerSecond,
-			flywheelVelocityToleranceRPS
+			flywheelVelocityToleranceRotation2dPerSecond
 		);
 
 		boolean isHoodAtPosition = isHoodAtPositon(wantedHoodPosition, hoodPosition, hoodPositionTolerance);

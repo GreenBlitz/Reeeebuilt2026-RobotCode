@@ -79,7 +79,7 @@ public class RobotCommander extends GBSubsystem {
 		return TargetChecks.isReadyToShoot(
 			robot,
 			ShooterConstants.flywheelCalibrationRotations.get(),
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
 			ShooterConstants.hoodCalibrationAngle.get(),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
