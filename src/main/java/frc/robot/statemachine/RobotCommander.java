@@ -97,7 +97,6 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToShoot() {
-		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.calibrationIsReadyToShoot(robot, Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS, HoodConstants.HOOD_POSITION_TOLERANCE);
 	}
 
@@ -113,7 +112,7 @@ public class RobotCommander extends GBSubsystem {
 	public Command calibrationShootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
-				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::isReadyToShoot),
+				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
 				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
 			)
 		);
