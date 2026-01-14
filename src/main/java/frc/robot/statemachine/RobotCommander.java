@@ -10,7 +10,6 @@ import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -79,9 +78,9 @@ public class RobotCommander extends GBSubsystem {
 		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-				ShooterConstants.flywheelCalibrationRotations.get(),
+			ShooterConstants.flywheelCalibrationRotations.get(),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-				ShooterConstants.hoodCalibrationAngle.get(),
+			ShooterConstants.hoodCalibrationAngle.get(),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
@@ -91,13 +90,13 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command shootSequence() {
 		return
-				//new RepeatCommand(
-			new SequentialCommandGroup(
-				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor()),
-				driveWith(RobotState.SHOOT).withTimeout(0.05)
-			)
-		//)
+		// new RepeatCommand(
+		new SequentialCommandGroup(
+			driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
+			driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor()),
+			driveWith(RobotState.SHOOT).withTimeout(0.05)
+		)
+		// )
 		;
 	}
 
