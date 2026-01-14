@@ -94,14 +94,14 @@ public class TargetChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtHeading;
 	}
 
-	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
+	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRotation2dPerSecond, Rotation2d hoodPositionTolerance) {
 		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			ShooterConstants.flywheelCalibrationRotations.get(),
 			flywheelVelocityRotation2dPerSecond,
-			flywheelVelocityToleranceRPS
+			flywheelVelocityToleranceRotation2dPerSecond
 		);
 
 		boolean isHoodAtPosition = isHoodAtPositon(ShooterConstants.hoodCalibrationAngle.get(), hoodPosition, hoodPositionTolerance);
