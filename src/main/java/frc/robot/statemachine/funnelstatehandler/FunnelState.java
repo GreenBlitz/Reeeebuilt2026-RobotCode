@@ -4,9 +4,9 @@ public enum FunnelState {
 
 	STOP,
 	INTAKE(3),
-	SHOOT(3),
+	SHOOT(11),
 	SHOOT_WHILE_INTAKE(3),
-	DRIVE(),
+	DRIVE(3),
 	CALIBRATION;
 
 	private final double omniVoltage;
