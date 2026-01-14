@@ -372,8 +372,8 @@ public class Swerve extends GBSubsystem {
 
 		Translation2d majority = getMajority(moduleToRobotDifferential);
 		for (int i = 0; i < moduleToRobotDifferential.length; i++) {
-			if(!moduleToRobotDifferential[i].equals(majority))
-				areModulesSkidding[i] =true;
+			areModulesSkidding[i] = !ToleranceMath
+				.isNear(moduleToRobotDifferential[i], majority, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND);
 		}
 	}
 
