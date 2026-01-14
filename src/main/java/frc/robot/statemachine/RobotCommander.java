@@ -85,14 +85,15 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
-		);
+		) && superstructure.isObjectIn();
 	}
 
 	public Command shootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor()),
+				driveWith(RobotState.SHOOT).withTimeout(StateMachineConstants.SECONDS_TO_WAIT_AFTER_SHOOT)
 			)
 		);
 	}
