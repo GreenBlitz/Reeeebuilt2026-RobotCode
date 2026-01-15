@@ -271,7 +271,7 @@ public class Robot {
 	private Roller createFunnelConveyorBelt() {
 		return SparkMaxRollerBuilder.build(
 			FunnelConveyorBeltConstants.LOG_PATH,
-			IDs.SparkMAXIDs.funnel_CONVEYOR_BELT,
+			IDs.SparkMAXIDs.FUNNEL_CONVEYOR_BELT,
 			FunnelConveyorBeltConstants.IS_INVERTED,
 			FunnelConveyorBeltConstants.GEAR_RATIO,
 			FunnelConveyorBeltConstants.CURRENT_LIMIT,
