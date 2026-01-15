@@ -48,7 +48,11 @@ public class ShooterCalculations {
 		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
 	}
 
-	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition, Translation2d targetOnField) {
+	public static Rotation2d getRobotRelativeLookAtTargetAngleForTurret(
+		Pose2d robotPose,
+		Rotation2d turretPosition,
+		Translation2d targetOnField
+	) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
 		Rotation2d targetAngle = Rotation2d.fromDegrees(
 			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, targetOnField).getAngle().getDegrees()
