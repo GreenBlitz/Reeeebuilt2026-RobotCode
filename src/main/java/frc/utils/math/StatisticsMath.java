@@ -27,22 +27,15 @@ public class StatisticsMath {
 			: arr[1];
 	}
 
-	public static Translation2d getMajority(Translation2d[] arr, double tolerance) {
-		int countEqual = 1;
-		int countNotEqual = 0;
-		for (int i = 1; i < arr.length; i++) {
-			if (ToleranceMath.isNear(arr[0], arr[i], tolerance))
-				countEqual++;
-			else
-				countNotEqual++;
-		}
-		if (countEqual >= countNotEqual)
+	public static Translation2d getMajority(Translation2d[] arr, double tolerance) { //assuming its four modules
+		if (ToleranceMath.isNear(arr[0], arr[1], tolerance)
+				|| ToleranceMath.isNear(arr[0], arr[2], tolerance)) {
 			return arr[0];
-		for (int i = 1; i < arr.length; i++) {
-			if (!ToleranceMath.isNear(arr[0], arr[i], tolerance))
-				return arr[i];
+		} else {
+			if (!ToleranceMath.isNear(arr[2], arr[1], tolerance))
+				return arr[3];
+			return arr[1];
 		}
-		return arr[0];
 	}
-
 }
+
