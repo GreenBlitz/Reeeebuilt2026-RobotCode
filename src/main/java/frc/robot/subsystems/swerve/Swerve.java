@@ -355,7 +355,6 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public Translation2d getModuleToRobotDifferential(int whichModule, double robotYawAngularVelocityRadiansPerSecond) {
-
 		SwerveModuleState moduleRotationalState = kinematics
 			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
 		SwerveModuleState moduleState = modules.getCurrentStates()[whichModule];
@@ -371,15 +370,18 @@ public class Swerve extends GBSubsystem {
 
 	private void updatesAreModulesSkidding() {
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
-		Translation2d[] moduleToRobotDiff = new Translation2d[]{new Translation2d(5,5), new Translation2d(5,7), new Translation2d(5,4.6), new Translation2d(5,5)};
+		Translation2d[] moduleToRobotDiff = new Translation2d[] {
+			new Translation2d(5, 5),
+			new Translation2d(5, 7),
+			new Translation2d(5, 5),
+			new Translation2d(5, 5)};
 		/*
-		for (int i = 0; i < moduleToRobotDifferentials.length; i++) {
-			moduleToRobotDifferentials[i] = getModuleToRobotDifferential(i, robotYawAngularVelocityRadiansPerSecond);
-		} */
-		Translation2d majority = StatisticsMath.getMajority(moduleToRobotDiff, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE);
+		 * for (int i = 0; i < moduleToRobotDifferentials.length; i++) { moduleToRobotDifferentials[i] = getModuleToRobotDifferential(i,
+		 * robotYawAngularVelocityRadiansPerSecond); }
+		 */
+		Translation2d majority = StatisticsMath.getMajority(moduleToRobotDiff, 0);
 		for (int i = 0; i < moduleToRobotDiff.length; i++) {
-			areModulesSkidding[i] = !ToleranceMath
-				.isNear(moduleToRobotDiff[i], majority, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
+			areModulesSkidding[i] = !ToleranceMath.isNear(majority, moduleToRobotDiff[i], 0.5);
 		}
 		Logger.recordOutput("modulesBS", moduleToRobotDiff);
 	}
