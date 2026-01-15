@@ -52,17 +52,17 @@ public class optimalPitchCalculation {
 		this.TOLARANCE = tolarance;
 	}
 
-	public double pitch(double height, double x) {
+	private double pitch(double height, double x) {
 		return Rotation2d.fromRadians(Math.atan2(height, x)).getDegrees();
 	}
 
-	public double calculateRangeStartingPoint(double max, double range, double important, double limit) {
+	private double calculateRangeStartingPoint(double max, double range, double important, double limit) {
 		if (important > max)
 			return limit - range;
 		return important;
 	}
 
-	public double calculateRangeEndingPoint(double max, double range, double important, double limit) {
+	private double calculateRangeEndingPoint(double max, double range, double important, double limit) {
 		if (important < max)
 			return important + range;
 		return limit;
@@ -79,7 +79,7 @@ public class optimalPitchCalculation {
 		return pitch(cameraRelativeTagHeight, calculateRangeStartingPoint(max, range, important, limit)) - fovUp;
 	}
 
-	public Optional<Double> sharedPitch(
+	private Optional<Double> sharedPitch(
 		double x,
 		double cameraRelativeTagHeight1,
 		double cameraRelativeTagHeight2,
@@ -114,4 +114,3 @@ public class optimalPitchCalculation {
 	public static void main(String[] args) {}
 
 }
-
