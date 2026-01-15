@@ -49,7 +49,7 @@ public class ShooterCalculations {
 	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition,Translation2d targetOnField) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
 		Rotation2d targetAngle = Rotation2d.fromDegrees(
-			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
+			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, targetOnField).getAngle().getDegrees()
 				- robotPose.getRotation().getDegrees()
 		);
 		return Rotation2d.fromRadians(
