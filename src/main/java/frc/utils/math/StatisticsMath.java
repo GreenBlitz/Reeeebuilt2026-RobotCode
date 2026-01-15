@@ -22,18 +22,18 @@ public class StatisticsMath {
 		return Math.sqrt(deviationsTotal / length);
 	}
 
-	public static <T extends Number> T getMajority(T[] arr) {
+	public static <T extends Number> T getMajority(T[] arr, double tolerance) {
 		return ToleranceMath
-			.isNear(arr[0], arr[1], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
+			.isNear(arr[0], arr[1], tolerance)
 			|| ToleranceMath
-				.isNear(arr[0].doubleValue(), arr[2].doubleValue(), SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
+				.isNear(arr[0].doubleValue(), arr[2].doubleValue(), tolerance)
 					? arr[0]
 					: arr[1];
 	}
 
-	public static Translation2d getMajority(Translation2d[] arr) {
-		return ToleranceMath.isNear(arr[0], arr[1], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
-			|| ToleranceMath.isNear(arr[0], arr[2], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
+	public static Translation2d getMajority(Translation2d[] arr, double tolerance) {
+		return ToleranceMath.isNear(arr[0], arr[1], tolerance)
+			|| ToleranceMath.isNear(arr[0], arr[2], tolerance)
 				? arr[0]
 				: arr[1];
 	}

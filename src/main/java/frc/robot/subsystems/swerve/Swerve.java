@@ -371,12 +371,12 @@ public class Swerve extends GBSubsystem {
 
 	private void updatesAreModulesSkidding() {
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
-		Translation2d[] moduleToRobotDiff = new Translation2d[]{new Translation2d(5,5), new Translation2d(5,5), new Translation2d(4,4.5), new Translation2d(5,5)};
+		Translation2d[] moduleToRobotDiff = new Translation2d[]{new Translation2d(5,5), new Translation2d(5,7), new Translation2d(5,4.6), new Translation2d(5,5)};
 		/*
 		for (int i = 0; i < moduleToRobotDifferentials.length; i++) {
 			moduleToRobotDifferentials[i] = getModuleToRobotDifferential(i, robotYawAngularVelocityRadiansPerSecond);
 		} */
-		Translation2d majority = StatisticsMath.getMajority(moduleToRobotDiff);
+		Translation2d majority = StatisticsMath.getMajority(moduleToRobotDiff, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE);
 		for (int i = 0; i < moduleToRobotDiff.length; i++) {
 			areModulesSkidding[i] = !ToleranceMath
 				.isNear(moduleToRobotDiff[i], majority, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);

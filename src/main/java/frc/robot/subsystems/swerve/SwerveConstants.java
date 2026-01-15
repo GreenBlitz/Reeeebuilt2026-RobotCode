@@ -46,7 +46,7 @@ public record SwerveConstants(
 
 	public static final double SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE = 0.0065;
 
-	public static final double SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT = 0.000002;
+	public static final double SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT = 0.5;
 
 	public static final double AIM_ASSIST_MAGNITUDE_FACTOR = 4;
 
