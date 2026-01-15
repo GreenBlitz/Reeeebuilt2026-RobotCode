@@ -22,7 +22,6 @@ public class FunnelStateHandler {
 
 	private final LoggedNetworkNumber conveyorBeltCalibrationVoltage;
 
-
 	protected FunnelState currentState;
 
 	public FunnelStateHandler(Roller omni, Roller conveyorBelt, String logPath, IDigitalInput sensor) {
