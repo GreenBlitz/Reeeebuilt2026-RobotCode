@@ -119,7 +119,6 @@ public class Robot {
 					Math.toRadians(2.44),
 					Math.toRadians(29.15),
 					Math.toRadians(-92.69)
-
 				)
 			),
 			LimelightPipeline.APRIL_TAG
