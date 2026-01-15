@@ -92,8 +92,7 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor()),
-				driveWith(RobotState.SHOOT).withTimeout(StateMachineConstants.SECONDS_TO_WAIT_AFTER_SHOOT)
+				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
 			)
 		);
 	}
