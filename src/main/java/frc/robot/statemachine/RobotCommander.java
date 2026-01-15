@@ -9,6 +9,7 @@ import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -95,7 +96,7 @@ public class RobotCommander extends GBSubsystem {
 					.getTranslation()
 					.getDistance(ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()))
 			),
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
 			ShooterCalculations.hoodInterpolation(
 				robot.getPoseEstimator()
 					.getEstimatedPose()
@@ -109,11 +110,28 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	private boolean calibrationIsReadyToShoot() {
+		return TargetChecks.calibrationIsReadyToShoot(
+			robot,
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
+			HoodConstants.HOOD_POSITION_TOLERANCE
+		);
+	}
+
 	public Command shootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
 				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+			)
+		);
+	}
+
+	public Command calibrationShootSequence() {
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
 			)
 		);
 	}
@@ -129,7 +147,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE -> driveWith(RobotState.DRIVE);
+			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}
