@@ -1,5 +1,8 @@
 package frc.utils.math;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.subsystems.swerve.SwerveConstants;
+
 import java.util.function.Function;
 
 public class StatisticsMath {
@@ -17,6 +20,11 @@ public class StatisticsMath {
 			deviationsTotal += Math.pow(getValue.apply(value) - mean, 2);
 		}
 		return Math.sqrt(deviationsTotal / length);
+	}
+
+	public static Translation2d getMajority(Translation2d[] arr) {
+		return ToleranceMath.isNear(arr[0], arr[1], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
+				|| ToleranceMath.isNear(arr[0], arr[2], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE) ? arr[0] : arr[1];
 	}
 
 }
