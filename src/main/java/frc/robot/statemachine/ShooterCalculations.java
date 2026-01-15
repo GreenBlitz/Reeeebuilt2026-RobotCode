@@ -45,15 +45,13 @@ public class ShooterCalculations {
 
 	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
-		Rotation2d targetAngle =  Rotation2d.fromDegrees(
-				FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
-						- robotPose.getRotation().getDegrees()
+		Rotation2d targetAngle = Rotation2d.fromDegrees(
+			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
+				- robotPose.getRotation().getDegrees()
 		);
-		return Rotation2d.fromRadians(MathUtil.inputModulus(
-				targetAngle.getRadians(),
-				TurretConstants.MIN_POSITION.getRadians(),
-				TurretConstants.MAX_POSITION.getRadians()
-		));
+		return Rotation2d.fromRadians(
+			MathUtil.inputModulus(targetAngle.getRadians(), TurretConstants.MIN_POSITION.getRadians(), TurretConstants.MAX_POSITION.getRadians())
+		);
 	}
 
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
