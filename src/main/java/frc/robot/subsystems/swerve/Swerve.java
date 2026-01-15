@@ -350,21 +350,20 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
-	public Translation2d getModuleToRobotDifferential(int whichModule){
+	public Translation2d getModuleToRobotDifferential(int whichModule) {
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
 
 		SwerveModuleState moduleRotationalState = kinematics
-				.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
+			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
 		SwerveModuleState moduleState = modules.getCurrentStates()[whichModule];
 
 		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
-				getRobotRelativeVelocity().vxMetersPerSecond,
-				getRobotRelativeVelocity().vyMetersPerSecond
+			getRobotRelativeVelocity().vxMetersPerSecond,
+			getRobotRelativeVelocity().vyMetersPerSecond
 		);
 		Translation2d moduleTranslationalState = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
-				.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
 		return robotTranslationalVelocityMetersPerSecond.minus(moduleTranslationalState);
-
 	}
 
 	private void updatesAreModulesSkidding() {

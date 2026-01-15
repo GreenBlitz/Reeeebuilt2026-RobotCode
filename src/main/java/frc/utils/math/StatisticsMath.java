@@ -24,7 +24,9 @@ public class StatisticsMath {
 
 	public static Translation2d getMajority(Translation2d[] arr) {
 		return ToleranceMath.isNear(arr[0], arr[1], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
-				|| ToleranceMath.isNear(arr[0], arr[2], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE) ? arr[0] : arr[1];
+			|| ToleranceMath.isNear(arr[0], arr[2], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
+				? arr[0]
+				: arr[1];
 	}
 
 }
