@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -106,7 +107,10 @@ public class Robot {
 		robotCommander = new RobotCommander("/RobotCommander", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
-		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
+		swerve.getStateHandler()
+			.setIsTurretMoveLegalSupplier(
+				() -> isTurretMoveLegal(ShooterCalculations.getDesiredTargetInMotion(poseEstimator.getEstimatedPose(), swerve))
+			);
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
@@ -125,9 +129,9 @@ public class Robot {
 		}
 	}
 
-	public boolean isTurretMoveLegal() {
+	public boolean isTurretMoveLegal(Translation2d target) {
 		return ShooterCalculations.isTurretMoveLegal(
-			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
+			ShooterCalculations.getRobotRelativeLookAtTargetAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition(), target),
 			turret.getPosition()
 		);
 	}
