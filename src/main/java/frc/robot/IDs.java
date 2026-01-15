@@ -56,7 +56,7 @@ public class IDs {
 
 		public final static SparkMaxDeviceID OMNI = new SparkMaxDeviceID(25, SparkLowLevel.MotorType.kBrushless);
 
-		public final static SparkMaxDeviceID funnel_CONVEYOR_BELT = new SparkMaxDeviceID(67, SparkLowLevel.MotorType.kBrushless);
+		public final static SparkMaxDeviceID FUNNEL_CONVEYOR_BELT = new SparkMaxDeviceID(67, SparkLowLevel.MotorType.kBrushless);
 
 	}
 
