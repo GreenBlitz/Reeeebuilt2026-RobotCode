@@ -81,8 +81,7 @@ public class FunnelStateHandler {
 				omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()),
 				conveyorBelt.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getConveyorBeltVoltage())
 			).until(() -> this.isBallAtSensor()),
-			omni.getCommandsBuilder().stop(),
-			conveyorBelt.getCommandsBuilder().stop()
+			new ParallelCommandGroup(omni.getCommandsBuilder().stop(), conveyorBelt.getCommandsBuilder().stop())
 		);
 	}
 
