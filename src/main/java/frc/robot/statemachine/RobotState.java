@@ -1,15 +1,14 @@
 package frc.robot.statemachine;
 
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 
 public enum RobotState {
 
 	STAY_IN_PLACE,
 	DRIVE,
 	INTAKE,
-	PRE_SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
-	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
+	PRE_SHOOT,
+	SHOOT,
 	SHOOT_WHILE_INTAKE;
 
 	private final SwerveState swerveState;

@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.FlyWheel;
@@ -23,7 +22,14 @@ public class ShooterStateHandler {
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<Pose2d> robotPose,Supplier<Translation2d> target, String logPath) {
+	public ShooterStateHandler(
+		Arm turret,
+		Arm hood,
+		FlyWheel flyWheel,
+		Supplier<Pose2d> robotPose,
+		Supplier<Translation2d> target,
+		String logPath
+	) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
@@ -61,22 +67,18 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose,target,"ShooterIdle/") ,"Aim at hub"),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, target, "ShooterIdle/"), "Aim at hub"),
 			hood.getCommandsBuilder()
-				.setTargetPosition(
-					() -> ShooterCalculations.hoodInterpolation(target.get().getDistance(robotPose.get().getTranslation()))
-				),
+				.setTargetPosition(() -> ShooterCalculations.hoodInterpolation(target.get().getDistance(robotPose.get().getTranslation()))),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose,target, logPath), "Aim at hub"),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, target, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
-				.setTargetPosition(
-					() -> ShooterCalculations.hoodInterpolation(robotPose.get().getTranslation().getDistance(target.get()))
-				),
+				.setTargetPosition(() -> ShooterCalculations.hoodInterpolation(robotPose.get().getTranslation().getDistance(target.get()))),
 			flyWheel.getCommandBuilder()
 				.setVelocityAsSupplier(
 					() -> ShooterCalculations.flywheelInterpolation(robotPose.get().getTranslation().getDistance(target.get()))
@@ -90,6 +92,10 @@ public class ShooterStateHandler {
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
 		);
+	}
+
+	public Translation2d getTarget() {
+		return target.get();
 	}
 
 }

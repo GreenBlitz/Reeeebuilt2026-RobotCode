@@ -9,7 +9,6 @@ import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -25,7 +24,12 @@ public class RobotCommander extends GBSubsystem {
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
 		this.positionTargets = new PositionTargets(robot);
-		this.superstructure = new Superstructure("StateMachine/Superstructure", robot,() ->ShooterCalculations.getDesiredTargetInMotion(robot), () -> robot.getPoseEstimator().getEstimatedPose());
+		this.superstructure = new Superstructure(
+			"StateMachine/Superstructure",
+			robot,
+			() -> ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()),
+			() -> robot.getPoseEstimator().getEstimatedPose()
+		);
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
@@ -83,12 +87,21 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShooterCalculations.flywheelInterpolation(robot.getPoseEstimator().getEstimatedPose().getTranslation().getDistance(ShooterCalculations.getDesiredTargetInMotion(robot))),
+			ShooterCalculations.flywheelInterpolation(
+				robot.getPoseEstimator()
+					.getEstimatedPose()
+					.getTranslation()
+					.getDistance(ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()))
+			),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterCalculations.hoodInterpolation(robot.getPoseEstimator().getEstimatedPose().getTranslation().getDistance(ShooterCalculations.getDesiredTargetInMotion(robot))),
+			ShooterCalculations.hoodInterpolation(
+				robot.getPoseEstimator()
+					.getEstimatedPose()
+					.getTranslation()
+					.getDistance(ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()))
+			),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,

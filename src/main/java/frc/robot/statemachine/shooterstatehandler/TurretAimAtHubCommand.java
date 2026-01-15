@@ -26,7 +26,8 @@ public class TurretAimAtHubCommand extends Command {
 
 	@Override
 	public void execute() {
-		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition(),targetOnField.get());
+		Rotation2d targetAngle = ShooterCalculations
+			.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition(), targetOnField.get());
 
 		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
