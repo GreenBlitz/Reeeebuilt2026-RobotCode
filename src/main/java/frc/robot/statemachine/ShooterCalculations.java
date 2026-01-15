@@ -12,6 +12,7 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
 
@@ -96,12 +97,15 @@ public class ShooterCalculations {
 		)
 	);
 
-	private static final InterpolationMap<Double, Double> TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
+	private static final InterpolationMap<Double, Double> DISTANCE_PROPORTION_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 			InverseInterpolator.forDouble(),
 			Interpolator.forDouble(),
 			Map.of(
-					0.8,
-					5.0
+					0.1,
+					0.2,
+
+					0.5,
+					0.4
 			)
 	);
 
@@ -116,12 +120,13 @@ public class ShooterCalculations {
 	public static Translation2d getDesiredTargetInMotion(Robot robot){
 		Translation2d robotToGoal = Field.getHubMiddle().minus(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		double fixedShotTime = TIME_INTERPOLATION_MAP.get(robotToGoal.getDistance(new Translation2d()));
+		double proportionalDistance = DISTANCE_PROPORTION_INTERPOLATION_MAP.get(robotToGoal.getDistance(new Translation2d()));
 
-		double movingGoalX = Field.getHubMiddle().getX()+(robot.getSwerve().getAllianceRelativeVelocity().vxMetersPerSecond+robot.getSwerve().getAccelerationFromIMUMetersPerSecondSquared().getX()*0.2);
-		double movingGoalY = Field.getHubMiddle().getY()+(robot.getSwerve().getAllianceRelativeVelocity().vyMetersPerSecond+robot.getSwerve().getAccelerationFromIMUMetersPerSecondSquared().getY()*0.2);
-
+		double movingGoalX = Field.getHubMiddle().getX()+(proportionalDistance*(robot.getSwerve().getAllianceRelativeVelocity().vxMetersPerSecond+(robot.getSwerve().getAccelerationFromIMUMetersPerSecondSquared().getX()*0.1)));
+		double movingGoalY = Field.getHubMiddle().getY()+(proportionalDistance*(robot.getSwerve().getAllianceRelativeVelocity().vyMetersPerSecond+(robot.getSwerve().getAccelerationFromIMUMetersPerSecondSquared().getY()*0.1)));
+		Logger.recordOutput("VirtualTargetInMotion",new Pose2d(movingGoalX,movingGoalY,new Rotation2d()));
 		return new Translation2d(movingGoalX,movingGoalY);
 	}
+
 
 }

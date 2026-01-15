@@ -75,11 +75,11 @@ public class ShooterStateHandler {
 			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose,target, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
 				.setTargetPosition(
-					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+					() -> ShooterCalculations.hoodInterpolation(robotPose.get().getTranslation().getDistance(target.get()))
 				),
 			flyWheel.getCommandBuilder()
 				.setVelocityAsSupplier(
-					() -> ShooterCalculations.flywheelInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
+					() -> ShooterCalculations.flywheelInterpolation(robotPose.get().getTranslation().getDistance(target.get()))
 				)
 		);
 	}
