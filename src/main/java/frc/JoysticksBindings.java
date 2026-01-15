@@ -1,6 +1,9 @@
 package frc;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
@@ -11,6 +14,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.calibration.camera.CameraPoseCalibration;
 
 public class JoysticksBindings {
 
@@ -62,6 +66,16 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
+		usedJoystick.A.onTrue(
+			new CameraPoseCalibration(
+				"Vision",
+				"limelight-left",
+				0.843,
+				0.165,
+				new Pose3d(new Translation3d(160.39, 130.17, 12.13), new Rotation3d(0, 0, Math.toRadians(240))),
+				3000
+			)
+		);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
