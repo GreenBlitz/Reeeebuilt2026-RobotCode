@@ -2,6 +2,7 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
@@ -13,17 +14,19 @@ public class TurretAimAtHubCommand extends Command {
 
 	private final Arm turret;
 	private final Supplier<Pose2d> robotPose;
+	private final Supplier<Translation2d> targetOnField;
 	private final String logPath;
 
-	public TurretAimAtHubCommand(Arm turret, Supplier<Pose2d> robotPose, String logPath) {
+	public TurretAimAtHubCommand(Arm turret, Supplier<Pose2d> robotPose, Supplier<Translation2d> targetOnField, String logPath) {
 		this.turret = turret;
 		this.robotPose = robotPose;
+		this.targetOnField = targetOnField;
 		this.logPath = logPath;
 	}
 
 	@Override
 	public void execute() {
-		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition());
+		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition(),targetOnField.get());
 
 		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);

@@ -4,8 +4,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.field.Field;
+import frc.robot.Robot;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
@@ -43,7 +45,7 @@ public class ShooterCalculations {
 		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
 	}
 
-	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition) {
+	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition,Translation2d targetOnField) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
 		Rotation2d targetAngle = Rotation2d.fromDegrees(
 			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
@@ -94,12 +96,32 @@ public class ShooterCalculations {
 		)
 	);
 
+	private static final InterpolationMap<Double, Double> TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
+			InverseInterpolator.forDouble(),
+			Interpolator.forDouble(),
+			Map.of(
+					0.8,
+					5.0
+			)
+	);
+
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
 		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
+	}
+
+	public static Translation2d getDesiredTargetInMotion(Robot robot){
+		Translation2d robotToGoal = Field.getHubMiddle().minus(robot.getPoseEstimator().getEstimatedPose().getTranslation());
+
+		double fixedShotTime = TIME_INTERPOLATION_MAP.get(robotToGoal.getDistance(new Translation2d()));
+
+		double movingGoalX = Field.getHubMiddle().getX()+(robot.getSwerve().getAllianceRelativeVelocity().vxMetersPerSecond+robot.getSwerve().getAccelerationFromIMUMetersPerSecondSquared().getX()*0.2);
+		double movingGoalY = Field.getHubMiddle().getY()+(robot.getSwerve().getAllianceRelativeVelocity().vyMetersPerSecond+robot.getSwerve().getAccelerationFromIMUMetersPerSecondSquared().getY()*0.2);
+
+		return new Translation2d(movingGoalX,movingGoalY);
 	}
 
 }

@@ -1,6 +1,7 @@
 package frc.robot.statemachine.superstructure;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
@@ -19,6 +20,7 @@ public class Superstructure {
 
 	private final Robot robot;
 	private final TargetChecks targetChecks;
+	private Supplier<Translation2d> target;
 	private boolean isSubsystemRunningIndependently;
 	private final String logPath;
 
@@ -28,13 +30,13 @@ public class Superstructure {
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<Pose2d> robotPoseSupplier) {
+	public Superstructure(String logPath, Robot robot,Supplier<Translation2d> target, Supplier<Pose2d> robotPoseSupplier) {
 		this.robot = robot;
 		this.logPath = logPath;
-
+		this.target = target;
 		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), logPath, robot.getFunnelDigitalInput());
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
-		this.shooterStateHandler = new ShooterStateHandler(robot.getTurret(), robot.getHood(), robot.getFlyWheel(), robotPoseSupplier, logPath);
+		this.shooterStateHandler = new ShooterStateHandler(robot.getTurret(), robot.getHood(), robot.getFlyWheel(), robotPoseSupplier, target,logPath);
 
 		this.targetChecks = new TargetChecks(this);
 
