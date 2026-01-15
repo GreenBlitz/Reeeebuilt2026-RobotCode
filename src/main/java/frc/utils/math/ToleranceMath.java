@@ -15,7 +15,7 @@ public class ToleranceMath {
 
 	public static boolean isNear(Pose2d wantedPose, Pose2d pose, Pose2d tolerance) {
 		return isNear(wantedPose.getTranslation(), pose.getTranslation(), tolerance.getTranslation())
-			&& isNearWrapped(wantedPose.getRotation(), pose.getRotation(), tolerance.getRotation());
+				&& isNearWrapped(wantedPose.getRotation(), pose.getRotation(), tolerance.getRotation());
 	}
 
 	public static boolean isNear(Translation2d wantedTranslation, Translation2d translation, double toleranceMeters) {
@@ -24,7 +24,7 @@ public class ToleranceMath {
 
 	public static boolean isNear(Translation2d wantedTranslation, Translation2d translation, Translation2d tolerance) {
 		return isNear(wantedTranslation.getX(), translation.getX(), tolerance.getX())
-			&& isNear(wantedTranslation.getY(), translation.getY(), tolerance.getY());
+				&& isNear(wantedTranslation.getY(), translation.getY(), tolerance.getY());
 	}
 
 	public static boolean isNearWrapped(Rotation2d wantedAngle, Rotation2d angle, Rotation2d tolerance) {
@@ -35,13 +35,12 @@ public class ToleranceMath {
 		return Math.abs(wanted - actual) <= tolerance;
 	}
 
-	public static boolean isInRange(double value, double min, double max, double tolerance) {
-		return (min - tolerance) <= value && value <= (max + tolerance);
+	public static <T extends Number> boolean isNear(T wanted, T actual, T tolerance) {
+		return Math.abs(wanted.doubleValue() - actual.doubleValue()) <= tolerance.doubleValue();
 	}
 
-	public static <T extends Number> boolean isInRange(T value, T min, T max, T tolerance) {
-		return (min.doubleValue() - tolerance.doubleValue()) <= value.doubleValue()
-			&& value.doubleValue() <= (max.doubleValue() + tolerance.doubleValue());
+	public static boolean isInRange(double value, double min, double max, double tolerance) {
+		return (min - tolerance) <= value && value <= (max + tolerance);
 	}
 
 	public static boolean isInRange(double value, double min, double max) {

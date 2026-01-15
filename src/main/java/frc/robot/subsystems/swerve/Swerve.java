@@ -29,6 +29,7 @@ import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
+import frc.utils.math.StatisticsMath;
 import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,8 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static frc.utils.math.StatisticsMath.getMajority;
 
 public class Swerve extends GBSubsystem {
 
@@ -367,15 +366,17 @@ public class Swerve extends GBSubsystem {
 	}
 
 	private void updatesAreModulesSkidding() {
+		Translation2d[] moduleToRobotDiff = new Translation2d[]{new Translation2d(5,5), new Translation2d(5,5), new Translation2d(4,4.5), new Translation2d(5,5)};
+		/*
 		for (int i = 0; i < moduleToRobotDifferentials.length; i++) {
 			moduleToRobotDifferentials[i] = getModuleToRobotDifferential(i);
-		}
-		Translation2d majority = getMajority(moduleToRobotDifferentials);
-		for (int i = 0; i < moduleToRobotDifferentials.length; i++) {
+		} */
+		Translation2d majority = StatisticsMath.getMajority(moduleToRobotDiff);
+		for (int i = 0; i < moduleToRobotDiff.length; i++) {
 			areModulesSkidding[i] = !ToleranceMath
-				.isNear(moduleToRobotDifferentials[i], majority, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
+				.isNear(moduleToRobotDiff[i], majority, SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
 		}
-		Logger.recordOutput("modulesBS", moduleToRobotDifferentials);
+		Logger.recordOutput("modulesBS", moduleToRobotDiff);
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {

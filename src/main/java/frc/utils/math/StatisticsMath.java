@@ -24,7 +24,7 @@ public class StatisticsMath {
 
 	public static <T extends Number> T getMajority(T[] arr) {
 		return ToleranceMath
-			.isNear(arr[0].doubleValue(), arr[1].doubleValue(), SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
+			.isNear(arr[0], arr[1], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
 			|| ToleranceMath
 				.isNear(arr[0].doubleValue(), arr[2].doubleValue(), SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_MODULE)
 					? arr[0]
