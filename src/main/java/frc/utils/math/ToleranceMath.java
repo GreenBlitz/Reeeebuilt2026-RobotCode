@@ -40,7 +40,8 @@ public class ToleranceMath {
 	}
 
 	public static <T extends Number> boolean isInRange(T value, T min, T max, T tolerance) {
-		return (min.doubleValue() - tolerance.doubleValue()) <= value.doubleValue() && value.doubleValue() <= (max.doubleValue() + tolerance.doubleValue());
+		return (min.doubleValue() - tolerance.doubleValue()) <= value.doubleValue()
+			&& value.doubleValue() <= (max.doubleValue() + tolerance.doubleValue());
 	}
 
 	public static boolean isInRange(double value, double min, double max) {
