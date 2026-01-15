@@ -132,7 +132,7 @@ public class ShooterCalculations {
 			+ (timeForBallInAir
 				* (swerve.getAllianceRelativeVelocity().vyMetersPerSecond
 					+ (swerve.getAccelerationFromIMUMetersPerSecondSquared().getY() * SHOOTING_TIME)));
-		Logger.recordOutput("VirtualTargetInMotion", new Pose2d(movingGoalX, movingGoalY, new Rotation2d()));
+		Logger.recordOutput("DesiredTargetInMotion", new Pose2d(movingGoalX, movingGoalY, new Rotation2d()));
 		return new Translation2d(movingGoalX, movingGoalY);
 	}
 

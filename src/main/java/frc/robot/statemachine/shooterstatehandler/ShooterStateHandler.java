@@ -67,7 +67,7 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, target, "ShooterIdle/"), "Aim at hub"),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, target, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
 				.setTargetPosition(() -> ShooterCalculations.hoodInterpolation(target.get().getDistance(robotPose.get().getTranslation()))),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
