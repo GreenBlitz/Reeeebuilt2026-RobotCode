@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.ShooterCalculations;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
@@ -64,8 +65,8 @@ public class TargetChecks {
 
 	public static boolean isReadyToShoot(
 		Robot robot,
-		Rotation2d wantedFlywheelVelocityRPS,
-		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d wantedFlywheelVelocityRotation2dPerSecond,
+		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
 		Rotation2d wantedHoodPosition,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
@@ -83,14 +84,33 @@ public class TargetChecks {
 		boolean isAtHeading = isTurretAtTarget(robotPose, robot.getTurret(), headingTolerance.getDegrees());
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			wantedFlywheelVelocityRPS,
+			wantedFlywheelVelocityRotation2dPerSecond,
 			flywheelVelocityRotation2dPerSecond,
-			flywheelVelocityToleranceRPS
+			flywheelVelocityToleranceRotation2dPerSecond
 		);
 
 		boolean isHoodAtPosition = isHoodAtPositon(wantedHoodPosition, hoodPosition, hoodPositionTolerance);
 
 		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtHeading;
+	}
+
+	public static boolean calibrationIsReadyToShoot(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
+		Rotation2d hoodPositionTolerance
+	) {
+		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
+		Rotation2d hoodPosition = robot.getHood().getPosition();
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+			ShooterConstants.flywheelCalibrationRotations.get(),
+			flywheelVelocityRotation2dPerSecond,
+			flywheelVelocityToleranceRotation2dPerSecond
+		);
+
+		boolean isHoodAtPosition = isHoodAtPositon(ShooterConstants.hoodCalibrationAngle.get(), hoodPosition, hoodPositionTolerance);
+
+		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
 }
