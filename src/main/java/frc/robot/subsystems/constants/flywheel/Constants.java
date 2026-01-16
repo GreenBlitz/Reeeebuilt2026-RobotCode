@@ -21,6 +21,6 @@ public class Constants {
 	public final static double MOMENT_OF_INERTIA = 0.01;
 	public final static int CURRENT_LIMIT = 40;
 	public final static double WHEEL_RADIUS_METERS = 0.05;
-	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS = Rotation2d.fromRotations(1);
+	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND = Rotation2d.fromRotations(1);
 
 }
