@@ -6,102 +6,93 @@ import java.util.Optional;
 
 public class optimalPitchCalculation {
 
-	private final double limit;
-	private final double important;
-	private final double minX;
-	private final double tolerance;
+	private final double maxCameraXDistanceFromTag;
+	private final double mustInRangeX;
+	private final double pitchRangeEndX;
 
-	private final double tagHeight1;
-	private final double tagHeight2;
-	private final double cameraHeight;
 	private final double cameraRelativeTagHeight1;
 	private final double cameraRelativeTagHeight2;
 
-	private final double fovUp;
-	private final double fovDown;
+	private final double fov;
 
-	private final double rangeLimit1;
-	private final double rangeLimit2;
+	private final double pitchRangeStartX1;
+	private final double pitchRangeStartX2;
 	private final double pitchRangeForTag1;
 	private final double pitchRangeForTag2;
 	private final double pitchRangeFor2Tags;
 
 	public optimalPitchCalculation(
-		double limit,
-		double important,
-		double minX,
-		double tolerance,
+		double maxCameraXDistanceFromTag,
+		double mustInRangeX,
+		double pitchRangeEndX,
 		double tagHeight1,
 		double tagHeight2,
+		double tagHeightTolerance,
 		double cameraHeight,
-		double fovUp,
-		double fovDown
+		double fov
 	) {
-		this.limit = limit;
-		this.important = important;
-		this.minX = minX;
-		this.tolerance = tolerance;
+		this.maxCameraXDistanceFromTag = maxCameraXDistanceFromTag;
+		this.mustInRangeX = mustInRangeX;
+		this.pitchRangeEndX = pitchRangeEndX;
 
-		this.tagHeight1 = tagHeight1;
-		this.tagHeight2 = tagHeight2;
-		this.cameraHeight = cameraHeight;
-		this.cameraRelativeTagHeight1 = this.tagHeight1 - this.cameraHeight + this.tolerance;
-		this.cameraRelativeTagHeight2 = this.tagHeight2 - this.cameraHeight + this.tolerance;
+		this.cameraRelativeTagHeight1 = tagHeight1 - cameraHeight + tagHeightTolerance;
+		this.cameraRelativeTagHeight2 = tagHeight2 - cameraHeight + tagHeightTolerance;
 
-		this.fovUp = fovUp;
-		this.fovDown = fovDown;
+		this.fov = fov;
 
-		this.rangeLimit1 = cameraRelativeTagHeight1
+		this.pitchRangeStartX1 = cameraRelativeTagHeight1
 			/ Math.tan(
-				Rotation2d.fromDegrees(calculateOptimalPitch(cameraRelativeTagHeight1, this.limit).getDegrees() + this.fovUp + this.fovDown)
+				Rotation2d.fromDegrees(calculateOptimalPitch(cameraRelativeTagHeight1, this.maxCameraXDistanceFromTag).getDegrees() + this.fov)
 					.getRadians()
 			);
-		this.rangeLimit2 = cameraRelativeTagHeight2
+		this.pitchRangeStartX2 = cameraRelativeTagHeight2
 			/ Math.tan(
-				Rotation2d.fromDegrees(calculateOptimalPitch(cameraRelativeTagHeight2, this.limit).getDegrees() + this.fovUp + this.fovDown)
+				Rotation2d.fromDegrees(calculateOptimalPitch(cameraRelativeTagHeight2, this.maxCameraXDistanceFromTag).getDegrees() + this.fov)
 					.getRadians()
 			);
-		this.pitchRangeForTag1 = this.limit - rangeLimit1;
-		this.pitchRangeForTag2 = this.limit - rangeLimit2;
-		this.pitchRangeFor2Tags = this.limit - minX;
+		this.pitchRangeForTag1 = this.maxCameraXDistanceFromTag - pitchRangeStartX1;
+		this.pitchRangeForTag2 = this.maxCameraXDistanceFromTag - pitchRangeStartX2;
+		this.pitchRangeFor2Tags = this.maxCameraXDistanceFromTag - pitchRangeEndX;
 	}
 
-	private Rotation2d calculateOptimalPitch(double height, double x) {
-		return Rotation2d.fromRadians(Math.atan2(height, x));
+	private Rotation2d calculateOptimalPitch(double cameraRelativeTagHeight, double cameraXDistanceFromTag) {
+		return Rotation2d.fromRadians(Math.atan2(cameraRelativeTagHeight, cameraXDistanceFromTag));
 	}
 
-	private double calculateRangeStartPoint(double rangeLimit, double pitchRangeForTag) {
-		if (important > rangeLimit)
-			return limit - pitchRangeForTag;
-		return important;
+	private double calculateRangeStartPoint(double pitchRangeStartX, double pitchRangeForTag) {
+		if (mustInRangeX > pitchRangeStartX)
+			return maxCameraXDistanceFromTag - pitchRangeForTag;
+		return mustInRangeX;
 	}
 
-	private double calculateRangeEndPoint(double rangeLimit, double pitchRangeForTag) {
-		if (important < rangeLimit)
-			return important + pitchRangeForTag;
-		return limit;
+	private double calculateRangeEndPoint(double pitchRangeStartX, double pitchRangeForTag) {
+		if (mustInRangeX < pitchRangeStartX)
+			return mustInRangeX + pitchRangeForTag;
+		return maxCameraXDistanceFromTag;
 	}
 
-	public double calculateOptimalPitchFor1Tag(double cameraRelativeTagHeight, double rangeLimit, double pitchRangeForTag) {
-		return calculateOptimalPitch(cameraRelativeTagHeight, calculateRangeStartPoint(rangeLimit, pitchRangeForTag)).getDegrees() - fovUp;
+	public double calculateOptimalPitchFor1Tag(double cameraRelativeTagHeight, double pitchRangeStartX, double pitchRangeForTag) {
+		return calculateOptimalPitch(cameraRelativeTagHeight, calculateRangeStartPoint(pitchRangeStartX, pitchRangeForTag)).getDegrees()
+			- fov / 2;
 	}
 
-	private Optional<Double> calculateOptimalSharedPitch(double x) {
+	private Optional<Double> calculateOptimalSharedPitch(double cameraXDistanceFromTag) {
 		if (
 			Math.abs(
-				calculateOptimalPitch(cameraRelativeTagHeight1, x).getDegrees() - calculateOptimalPitch(cameraRelativeTagHeight2, x).getDegrees()
-			) <= fovUp
+				calculateOptimalPitch(cameraRelativeTagHeight1, cameraXDistanceFromTag).getDegrees()
+					- calculateOptimalPitch(cameraRelativeTagHeight2, cameraXDistanceFromTag).getDegrees()
+			) <= fov
 		) {
 			return Optional.of(
-				(calculateOptimalPitch(cameraRelativeTagHeight1, x).getDegrees()
-					+ calculateOptimalPitch(cameraRelativeTagHeight2, x).getDegrees()) / 2
+				(calculateOptimalPitch(cameraRelativeTagHeight1, cameraXDistanceFromTag).getDegrees()
+					+ calculateOptimalPitch(cameraRelativeTagHeight2, cameraXDistanceFromTag).getDegrees()) / 2
 			);
 		}
 		return Optional.empty();
 	}
 
 	public double calculateOptimalPitchFor2Tags() {
-		return calculateOptimalSharedPitch(calculateRangeStartPoint(minX, pitchRangeFor2Tags)).get();
+		return calculateOptimalSharedPitch(calculateRangeStartPoint(pitchRangeEndX, pitchRangeFor2Tags)).get();
 	}
 
 }
