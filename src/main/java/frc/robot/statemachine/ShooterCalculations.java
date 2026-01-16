@@ -67,31 +67,13 @@ public class ShooterCalculations {
 	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(67),
-			1.5,
-			Rotation2d.fromDegrees(60),
-			2.5,
-			Rotation2d.fromDegrees(43),
-			3.7,
-			Rotation2d.fromDegrees(33)
-		)
+		Map.of(2.8125, Rotation2d.fromDegrees(53), 1.9325, Rotation2d.fromDegrees(60))
 	);
 
 	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(7000),
-			1.5,
-			Rotation2d.fromDegrees(7800),
-			2.5,
-			Rotation2d.fromDegrees(10000),
-			3.7,
-			Rotation2d.fromDegrees(12000)
-		)
+		Map.of(2.8125, Rotation2d.fromDegrees(26000), 1.9325, Rotation2d.fromDegrees(36000))
 	);
 
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
