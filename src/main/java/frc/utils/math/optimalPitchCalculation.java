@@ -8,7 +8,7 @@ public class optimalPitchCalculation {
 
 	private final double maxCameraXDistanceFromTag;
 	private final double mustInRangeX;
-	private final double xRangeEnd;
+	private final double xRangeStartFor2Tags;
 
 	private final double cameraRelativeTagHeight1;
 	private final double cameraRelativeTagHeight2;
@@ -24,7 +24,7 @@ public class optimalPitchCalculation {
 	public optimalPitchCalculation(
 		double maxCameraXDistanceFromTag,
 		double mustInRangeX,
-		double xRangeEnd,
+		double xRangeStartFor2Tags,
 		double tagHeight1,
 		double tagHeight2,
 		double tagHeightTolerance,
@@ -33,7 +33,7 @@ public class optimalPitchCalculation {
 	) {
 		this.maxCameraXDistanceFromTag = maxCameraXDistanceFromTag;
 		this.mustInRangeX = mustInRangeX;
-		this.xRangeEnd = xRangeEnd;
+		this.xRangeStartFor2Tags = xRangeStartFor2Tags;
 
 		this.cameraRelativeTagHeight1 = tagHeight1 - cameraHeight + tagHeightTolerance;
 		this.cameraRelativeTagHeight2 = tagHeight2 - cameraHeight + tagHeightTolerance;
@@ -52,7 +52,7 @@ public class optimalPitchCalculation {
 			);
 		this.xRangeForTag1 = this.maxCameraXDistanceFromTag - xRangeStart1;
 		this.xRangeForTag2 = this.maxCameraXDistanceFromTag - xRangeStart2;
-		this.xRangeFor2Tags = this.maxCameraXDistanceFromTag - xRangeEnd;
+		this.xRangeFor2Tags = this.maxCameraXDistanceFromTag - xRangeStartFor2Tags;
 	}
 
 	private Rotation2d calculateOptimalPitch(double cameraRelativeTagHeight, double cameraXDistanceFromTag) {
@@ -91,7 +91,7 @@ public class optimalPitchCalculation {
 	}
 
 	public double calculateOptimalPitchFor2Tags() {
-		return calculateOptimalSharedPitch(calculateRangeStartPoint(xRangeEnd, xRangeFor2Tags)).get();
+		return calculateOptimalSharedPitch(calculateRangeStartPoint(xRangeStartFor2Tags, xRangeFor2Tags)).get();
 	}
 
 }
