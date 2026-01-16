@@ -69,11 +69,11 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(
 			new CameraPoseCalibration(
 				"Vision",
-				"limelight-left",
-				0.843,
-				0.165,
+				"limelight-new",
+				1.215,
+				1.16,
 				new Pose3d(new Translation3d(160.39, 130.17, 12.13), new Rotation3d(0, 0, Math.toRadians(240))),
-				3000
+				15000
 			)
 		);
 	}
