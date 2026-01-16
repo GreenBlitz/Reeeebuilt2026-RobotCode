@@ -2,10 +2,8 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.constants.field.Field;
-import frc.robot.SimulationManager;
+import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
@@ -21,25 +19,16 @@ public class TurretAimAtHubCommand extends Command {
 		this.turret = turret;
 		this.robotPose = robotPose;
 		this.logPath = logPath;
-		addRequirements(turret);
 	}
 
 	@Override
 	public void execute() {
-		Pose2d turretOnField = new Pose2d(
-			robotPose.get().getX() + robotPose.get().getRotation().getCos() * SimulationManager.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
-			robotPose.get().getY() + robotPose.get().getRotation().getSin() * SimulationManager.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
-			robotPose.get().getRotation()
-		);
-		Translation2d hub = Field.getHubMiddle();
-		Rotation2d targetAngle = ShooterStateHandler.getRobotRelativeLookAtHubAngleForTurret(hub, turretOnField);
+		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose.get(), turret.getPosition());
 
-		if (ShooterStateHandler.isTurretMoveLegal(targetAngle, turret)) {
+		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
 		} else {
-			double rangeMidDegrees = (TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees()
-				+ TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees()) / 2.0;
-			targetAngle = turret.getPosition().getDegrees() < rangeMidDegrees
+			targetAngle = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
 				? TurretConstants.BACKWARDS_SOFTWARE_LIMIT
 				: TurretConstants.FORWARD_SOFTWARE_LIMIT;
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", false);

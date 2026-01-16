@@ -67,6 +67,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
+		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -99,6 +100,7 @@ public class JoysticksBindings {
 		joystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT_WHILE_INTAKE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
 		joystick.POV_UP.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
+		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 	}
 
 	private static void applyTurretCalibrationBindings(Arm turret, SmartJoystick joystick, double calibrationMaxPower) {
