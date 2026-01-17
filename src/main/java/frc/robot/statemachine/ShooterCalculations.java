@@ -20,23 +20,16 @@ public class ShooterCalculations {
 	private static final String LOG_PATH = "ShooterCalculations";
 
 	public static ShootingParams getShootingParams(Pose2d robotPose, Rotation2d turretPosition) {
-		Rotation2d targetTurretPosition = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turretPosition);
-
-		if (ShooterCalculations.isTurretMoveLegal(targetTurretPosition, turretPosition)) {
-			Logger.recordOutput(LOG_PATH + "/IsTurretGoingToPosition", true);
-		} else {
-			targetTurretPosition = turretPosition.getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
-				? TurretConstants.BACKWARDS_SOFTWARE_LIMIT
-				: TurretConstants.FORWARD_SOFTWARE_LIMIT;
-			Logger.recordOutput(LOG_PATH + "/IsTurretGoingToPosition", false);
-		}
+		Rotation2d turretTargetPosition = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turretPosition);
 
 		double distanceFromHubMeters = getDistanceFromHub(robotPose.getTranslation());
+		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromHubMeters);
+		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromHubMeters);
 
-		Rotation2d flywheelRPS = flywheelInterpolation(distanceFromHubMeters);
-		Rotation2d hoodPosition = hoodInterpolation(distanceFromHubMeters);
-
-		return new ShootingParams(flywheelRPS, hoodPosition, targetTurretPosition, new Rotation2d());
+		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
+		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
 	}
 
 	public static double getDistanceFromHub(Translation2d pose) {
