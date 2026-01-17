@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class ShooterCalculations {
 
+	private static Rotation2d targetAngle;
+
 	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose, Rotation2d turretAngle) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
@@ -47,12 +49,16 @@ public class ShooterCalculations {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
 		Rotation2d targetAngle = Rotation2d.fromDegrees(
 			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
-				- robotPose.getRotation().getDegrees()
+				* robotPose.getRotation().getDegrees()
 		);
 		return Rotation2d.fromRadians(
 			MathUtil.inputModulus(targetAngle.getRadians(), TurretConstants.MIN_POSITION.getRadians(), TurretConstants.MAX_POSITION.getRadians())
 		);
 	}
+	// בקומנד נק ויט פוזישן וויז ולוסיטי.
+	// ט פרמטר אחד מקבל ליצור חדש\\
+	// איי רקווס
+	// מימוש של איירקווסט שאפשר לעשות בו וולוסיטי ופוזישן
 
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
 		return Rotation2d.fromRadians(

@@ -3,10 +3,7 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +13,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.hardware.interfaces.IDynamicMotionMagicRequest;
+import frc.robot.hardware.interfaces.IRequest2;
 import frc.robot.hardware.mechanisms.wpilib.SingleJointedArmSimulation;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
@@ -63,7 +61,7 @@ public class TalonFXArmBuilder {
 
 		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
 
-		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
+		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
 		IDynamicMotionMagicRequest positionRequest = Phoenix6RequestBuilder.build(
 			new DynamicMotionMagicVoltage(
@@ -133,7 +131,6 @@ public class TalonFXArmBuilder {
 		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
 
 		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
-
 		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
 			.build(new MotionMagicVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
 		TalonFXConfiguration configuration = (buildConfiguration(
@@ -149,7 +146,15 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
-		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
+		return new Arm(
+			logPath,
+			motor,
+			signals,
+			voltageRequest,
+			buildPositionVelocityRequest(Rotation2d.kZero, Rotation2d.kZero),
+			positionRequest,
+			configuration.Slot0.kG
+		);
 	}
 
 	public static Arm buildArm(
@@ -183,8 +188,6 @@ public class TalonFXArmBuilder {
 
 		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
 
-		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
-
 		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
 			.build(new PositionVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
 
@@ -199,7 +202,15 @@ public class TalonFXArmBuilder {
 			currentLimit
 		);
 		motor.applyConfiguration(configuration);
-		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
+		return new Arm(
+			logPath,
+			motor,
+			signals,
+			buildVoltageRequest(),
+			buildPositionVelocityRequest(Rotation2d.kZero, Rotation2d.kZero),
+			positionRequest,
+			configuration.Slot0.kG
+		);
 	}
 
 	private static TalonFXConfiguration buildConfiguration(
@@ -266,6 +277,17 @@ public class TalonFXArmBuilder {
 				simulationConstants.startingPosition().getRadians()
 			),
 			gearing
+		);
+	}
+
+	private static IRequest2<Rotation2d, Rotation2d> buildPositionVelocityRequest(Rotation2d velocity, Rotation2d position) {
+		PositionVoltage positionVoltage = new PositionVoltage(0);
+		return Phoenix6RequestBuilder.build(
+			Rotation2d.fromRotations(velocity.getRotations()),
+			Rotation2d.fromRotations(position.getRotations()),
+			buildVoltageRequest().getControlRequest(),
+			(Rotation2d newPosition) -> positionVoltage.withPosition(newPosition.getRotations()),
+			(Rotation2d newVelocity) -> positionVoltage.withVelocity(newVelocity.getRotations())
 		);
 	}
 

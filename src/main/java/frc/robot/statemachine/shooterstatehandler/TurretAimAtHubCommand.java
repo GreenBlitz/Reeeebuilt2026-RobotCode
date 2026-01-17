@@ -3,6 +3,7 @@ package frc.robot.statemachine.shooterstatehandler;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -14,6 +15,7 @@ public class TurretAimAtHubCommand extends Command {
 	private final Arm turret;
 	private final Supplier<Pose2d> robotPose;
 	private final String logPath;
+	private IRequest posAndVelocity;
 
 	public TurretAimAtHubCommand(Arm turret, Supplier<Pose2d> robotPose, String logPath) {
 		this.turret = turret;
