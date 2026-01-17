@@ -56,6 +56,8 @@ public class IDs {
 
 		public final static SparkMaxDeviceID OMNI = new SparkMaxDeviceID(25, SparkLowLevel.MotorType.kBrushless);
 
+		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(60, SparkLowLevel.MotorType.kBrushless);
+
 	}
 
 	public static class DigitalInputsIDs {

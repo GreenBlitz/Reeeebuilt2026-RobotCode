@@ -14,18 +14,24 @@ public class FunnelStateHandler {
 	private final IDigitalInput sensor;
 	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
 
+	private final Roller belly;
+
 	private final String logPath;
 
 	private final LoggedNetworkNumber omniCalibrationVoltage;
 
+	private final LoggedNetworkNumber bellyCalibrationVoltage;
+
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(Roller omni, String logPath, IDigitalInput sensor) {
+	public FunnelStateHandler(Roller omni, Roller belly, String logPath, IDigitalInput sensor) {
 		this.omni = omni;
+		this.belly = belly;
 		this.sensor = sensor;
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
 		this.omniCalibrationVoltage = new LoggedNetworkNumber("Tunable/OmniPower", 0);
+		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyPower", 0);
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 		sensor.updateInputs(sensorInputsAutoLogged);
@@ -52,30 +58,42 @@ public class FunnelStateHandler {
 	}
 
 	private Command drive() {
-		return omni.getCommandsBuilder().stop();
+		return new ParallelCommandGroup(omni.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
 	}
 
 	private Command shoot() {
-		return omni.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getOmniVoltage());
+		return new ParallelCommandGroup(
+			omni.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getOmniVoltage()),
+			belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
+		);
 	}
 
 	private Command shootWhileIntake() {
-		return omni.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getOmniVoltage());
+		return new ParallelCommandGroup(
+			omni.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getOmniVoltage()),
+			belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getBellyVoltage())
+		);
 	}
 
 	private Command intake() {
 		return new SequentialCommandGroup(
-			omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()).until(() -> this.isBallAtSensor()),
-			omni.getCommandsBuilder().stop()
+			new ParallelCommandGroup(
+				omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()),
+				belly.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getBellyVoltage())
+			).until(() -> this.isBallAtSensor()),
+			new ParallelCommandGroup(omni.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
 		);
 	}
 
 	private Command stop() {
-		return omni.getCommandsBuilder().stop();
+		return new ParallelCommandGroup(omni.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
 	}
 
 	private Command calibration() {
-		return new ParallelCommandGroup(omni.getCommandsBuilder().setVoltage(() -> omniCalibrationVoltage.get()));
+		return new ParallelCommandGroup(
+			omni.getCommandsBuilder().setVoltage(() -> omniCalibrationVoltage.get()),
+			belly.getCommandsBuilder().setVoltage(() -> bellyCalibrationVoltage.get())
+		);
 	}
 
 	public void periodic() {
