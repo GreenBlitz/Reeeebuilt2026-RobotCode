@@ -42,10 +42,7 @@ public class OptimalCameraPitchCalculation {
 	}
 
 	public Rotation2d calculateOptimalPitchFor1Tag(double cameraRelativeTagHeight, double xRangeStart, double xRangeForTag) {
-		return Rotation2d.fromDegrees(
-			calculateOptimalPitch(cameraRelativeTagHeight, calculateRangeEndPoint(xRangeStart, xRangeForTag)).getDegrees()
-				+ cameraFovDown.getDegrees()
-		);
+		return calculateOptimalPitch(cameraRelativeTagHeight, calculateRangeEndPoint(xRangeStart, xRangeForTag)).plus(cameraFovDown);
 	}
 
 	public Optional<Rotation2d> calculateOptimalPitchFor2Tags() {
