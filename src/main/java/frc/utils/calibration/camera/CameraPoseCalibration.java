@@ -27,6 +27,8 @@ public class CameraPoseCalibration extends Command {
 
 	private Translation3d robotRelativeCameraTranslationSum;
 	private Pose3d currentRobotRelativeCameraPose;
+	private Pose3d expectedRobotPoseRotated;
+
 
 	/**
 	 *
@@ -69,12 +71,22 @@ public class CameraPoseCalibration extends Command {
 	public void initialize() {
 		Logger.recordOutput(logPath + "/tag/tagPoseFieldRelative", tagPoseFieldRelative);
 		Logger.recordOutput(logPath + "/robot/robotPoseFieldRelative", expectedRobotPoseFieldRelative);
+		expectedRobotPoseRotated = new Pose3d(
+			expectedRobotPoseFieldRelative.getX(),
+			expectedRobotPoseFieldRelative.getY(),
+			0.0,
+			new Rotation3d(0.0, 0.0, expectedRobotPoseFieldRelative.getRotation().getRadians())
+		).rotateAround(tagPoseFieldRelative.getTranslation(), tagPoseFieldRelative.getRotation().unaryMinus());
 	}
 
 	@Override
 	public void execute() {
 		cameraPoseCalibrationInputs.cameraPoseFieldRelative = LimelightHelpers.getBotPose3d_wpiBlue(cameraName);
 		Logger.processInputs(logPath, cameraPoseCalibrationInputs);
+		this.cameraPoseCalibrationInputs.cameraPoseFieldRelative = cameraPoseCalibrationInputs.cameraPoseFieldRelative
+			.rotateAround(tagPoseFieldRelative.getTranslation(), tagPoseFieldRelative.getRotation().unaryMinus());
+
+
 		currentRobotRelativeCameraPose = calculateRobotRelativeCameraPosition();
 		sumMeasurementsValues();
 		Logger.recordOutput(logPath + "/current/currentPose", currentRobotRelativeCameraPose);
@@ -101,14 +113,13 @@ public class CameraPoseCalibration extends Command {
 
 	private Pose3d calculateRobotRelativeCameraPosition() {
 		return new Pose3d(
-			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseFieldRelative.getX(),
-			-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseFieldRelative.getY()),
+			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseRotated.getX(),
+			-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseRotated.getY()),
 			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundInMeters,
 			new Rotation3d(
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getX(),
 				-cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getY(),
-				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getZ()
-					- expectedRobotPoseFieldRelative.getRotation().getRadians()
+				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getZ() - expectedRobotPoseRotated.getRotation().getZ()
 			)
 		);
 	}
