@@ -1,5 +1,6 @@
 package frc.utils.math;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 
 import java.util.function.Function;
@@ -21,21 +22,33 @@ public class StatisticsMath {
 		return Math.sqrt(deviationsTotal / length);
 	}
 
-	public static <T extends Number> T getMajority(T[] arr, double tolerance) {
+	public static <T extends Number> T getMajority(T[] arr, double tolerance) { //only one standout
 		return ToleranceMath.isNear(arr[0], arr[1], tolerance) || ToleranceMath.isNear(arr[0].doubleValue(), arr[2].doubleValue(), tolerance)
 			? arr[0]
 			: arr[1];
 	}
 
-	public static Translation2d getMajority(Translation2d[] arr, double tolerance) { //assuming its four modules
+	public static Pair<Integer, Translation2d> getMajority(Translation2d[] arr, double tolerance) { //assuming its four translations
+		if (arr.length != 4) {
+			System.out.println("BROTHER EWWWW");
+			return null;
+		}
+		Translation2d majority;
 		if (ToleranceMath.isNear(arr[0], arr[1], tolerance)
 				|| ToleranceMath.isNear(arr[0], arr[2], tolerance)) {
-			return arr[0];
+			majority = arr[0];
 		} else {
-			if (!ToleranceMath.isNear(arr[2], arr[1], tolerance))
-				return arr[3];
-			return arr[1];
+			if (!ToleranceMath.isNear(arr[1], arr[2], tolerance))
+				majority = arr[3];
+			else
+				majority =  arr[1];
 		}
+		int count = 0;
+		for (int i = 0; i < arr.length; i++) {
+			if(ToleranceMath.isNear(majority, arr[i], tolerance))
+				count++;
+		}
+		return new Pair<>(count, majority);
 	}
 }
 
