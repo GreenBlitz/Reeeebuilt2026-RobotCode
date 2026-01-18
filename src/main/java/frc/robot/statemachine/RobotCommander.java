@@ -32,7 +32,7 @@ public class RobotCommander extends GBSubsystem {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
-		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShooterCalculations.getShootingParams());
+		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
@@ -90,13 +90,14 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		Supplier<Double> distanceFromHub = () -> ShooterCalculations
+		Supplier<Double> distanceFromHub = () -> ShootingCalculations
 			.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShooterCalculations.flywheelInterpolation(distanceFromHub.get()),
+			ShootingCalculations.flywheelInterpolation(distanceFromHub.get()),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			ShooterCalculations.hoodInterpolation(distanceFromHub.get()),
+			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.hoodInterpolation(distanceFromHub.get()),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,

@@ -15,9 +15,9 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
 
-public class ShooterCalculations {
+public class ShootingCalculations {
 
-	private static final String LOG_PATH = "ShooterCalculations";
+	private static final String LOG_PATH = "ShootingCalculations";
 	private static ShootingParams shootingParams = new ShootingParams(
 		new Rotation2d(),
 		HoodConstants.MINIMUM_POSITION,
@@ -29,7 +29,7 @@ public class ShooterCalculations {
 		return shootingParams;
 	}
 
-	private static ShootingParams getShootingParams(Pose2d robotPose) {
+	private static ShootingParams calculateShootingParams(Pose2d robotPose) {
 		Rotation2d turretTargetPosition = getRobotRelativeLookAtHubAngleForTurret(robotPose);
 
 		double distanceFromHubMeters = getDistanceFromHub(robotPose.getTranslation());
@@ -105,7 +105,7 @@ public class ShooterCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose) {
-		shootingParams = getShootingParams(robotPose);
+		shootingParams = calculateShootingParams(robotPose);
 	}
 
 }
