@@ -29,7 +29,12 @@ public class Superstructure {
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<Translation2d> movementCompensatedShootingTarget, Supplier<Pose2d> robotPoseSupplier) {
+	public Superstructure(
+		String logPath,
+		Robot robot,
+		Supplier<Translation2d> movementCompensatedShootingTarget,
+		Supplier<Pose2d> robotPoseSupplier
+	) {
 		this.robot = robot;
 		this.logPath = logPath;
 
