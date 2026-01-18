@@ -22,11 +22,6 @@ public final class Main {
 	 */
 	public static void main(String... args) {
 		RobotBase.startRobot(RobotManager::new);
-		Translation2d[] a = new Translation2d[] {
-			new Translation2d(2, 2),
-			new Translation2d(2, 2),
-			new Translation2d(5, 5),
-			new Translation2d(5, 5),};
 	}
 
 }
