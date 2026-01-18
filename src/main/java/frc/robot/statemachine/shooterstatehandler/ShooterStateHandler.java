@@ -1,11 +1,8 @@
 package frc.robot.statemachine.shooterstatehandler;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.statemachine.ScoringHelpers;
-import frc.robot.statemachine.ShooterCalculations;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
@@ -17,15 +14,15 @@ public class ShooterStateHandler {
 	private final Arm turret;
 	private final Arm hood;
 	private final FlyWheel flyWheel;
-	private final Supplier<Pose2d> robotPose;
+	private final Supplier<ShootingParams> shootingParamsSupplier;
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<Pose2d> robotPose, String logPath) {
+	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
-		this.robotPose = robotPose;
+		this.shootingParamsSupplier = shootingParamsSupplier;
 		this.currentState = ShooterState.STAY_IN_PLACE;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
@@ -58,26 +55,23 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, logPath), "Aim at hub"),
-			hood.getCommandsBuilder()
-				.setTargetPosition(
-					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
-				),
+			turret.asSubsystemCommand(
+				new TurretSafeMoveToPosition(turret, () -> shootingParamsSupplier.get().targetTurretPosition(), logPath),
+				"Safe move to position"
+			),
+			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, logPath), "Aim at hub"),
-			hood.getCommandsBuilder()
-				.setTargetPosition(
-					() -> ShooterCalculations.hoodInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
-				),
-			flyWheel.getCommandBuilder()
-				.setVelocityAsSupplier(
-					() -> ShooterCalculations.flywheelInterpolation(ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))
-				)
+			turret.asSubsystemCommand(
+				new TurretSafeMoveToPosition(turret, () -> shootingParamsSupplier.get().targetTurretPosition(), logPath),
+				"Safe move to position"
+			),
+			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRotation2dPerSecond())
 		);
 	}
 
