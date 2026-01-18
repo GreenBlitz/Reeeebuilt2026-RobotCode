@@ -16,7 +16,6 @@ public class Arm extends GBSubsystem {
 	protected final ControllableMotor motor;
 	private final ArmSignals signals;
 	private final IRequest<Double> voltageRequest;
-	private final IRequest2<Rotation2d, Rotation2d> positionVelocityRequest;
 	private final IFeedForwardRequest positionRequest;
 	private final SysIdCalibrator sysIdCalibrator;
 	private final double kG;
@@ -27,7 +26,6 @@ public class Arm extends GBSubsystem {
 		ControllableMotor motor,
 		ArmSignals signals,
 		IRequest<Double> voltageRequest,
-		IRequest2<Rotation2d, Rotation2d> positionVelocityRequest,
 		IFeedForwardRequest positionRequest,
 		double kG
 	) {
@@ -35,7 +33,6 @@ public class Arm extends GBSubsystem {
 		this.motor = motor;
 		this.signals = signals;
 		this.voltageRequest = voltageRequest;
-		this.positionVelocityRequest = positionVelocityRequest;
 		this.positionRequest = positionRequest;
 		this.kG = kG;
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, (voltage) -> setVoltage(voltage + getKgVoltage()));
@@ -107,10 +104,6 @@ public class Arm extends GBSubsystem {
 		motor.applyRequest(positionRequest.withSetPoint(targetPosition));
 	}
 
-	public void setTarget(Rotation2d pos, Rotation2d vel) {
-		motor.applyRequest(positionVelocityRequest);
-	}
-
 	public void setPosition(Rotation2d targetPosition) {
 		motor.resetPosition(targetPosition);
 	}
@@ -121,10 +114,6 @@ public class Arm extends GBSubsystem {
 
 	public void setFeedForward(double arbitraryFeedForward) {
 		positionRequest.withArbitraryFeedForward(arbitraryFeedForward);
-	}
-
-	public void setPositionWithVelocity(Rotation2d velocity, Rotation2d position) {
-		positionVelocityRequest.withSetPoint1(position, velocity);
 	}
 
 	public void stayInPlace() {

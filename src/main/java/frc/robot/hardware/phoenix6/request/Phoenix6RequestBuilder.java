@@ -3,7 +3,6 @@ package frc.robot.hardware.phoenix6.request;
 import com.ctre.phoenix6.controls.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-import java.util.function.Consumer;
 
 public class Phoenix6RequestBuilder {
 
@@ -14,6 +13,23 @@ public class Phoenix6RequestBuilder {
 			setPoint -> positionVoltage.withPosition(setPoint.getRotations()),
 			positionVoltage::withFeedForward,
 			defaultArbitraryFeedForward
+		);
+	}
+
+	public static Phoenix6FeedForwardRequest build(
+		PositionVoltage positionVoltage,
+		double defaultArbitraryFeedForward,
+		boolean enableFOC,
+		ControlRequest controlRequest,
+		Rotation2d velocity
+	) {
+		return new Phoenix6VelocityPositionRequest(
+			setPoint -> positionVoltage.withVelocity(setPoint.getRotations()),
+			Rotation2d.fromRotations(positionVoltage.Position),
+			controlRequest,
+			positionVoltage::withFeedForward,
+			defaultArbitraryFeedForward,
+			velocity
 		);
 	}
 
@@ -73,16 +89,6 @@ public class Phoenix6RequestBuilder {
 
 	public static Phoenix6Request<Double> build(TorqueCurrentFOC torqueCurrentFOC) {
 		return new Phoenix6Request<>(torqueCurrentFOC.Output, torqueCurrentFOC, torqueCurrentFOC::withOutput);
-	}
-
-	public static Phoenix6Request2<Rotation2d, Rotation2d> build(
-		Rotation2d defaultSetPoint1,
-		Rotation2d defaultSetPoint2,
-		ControlRequest controlRequest,
-		Consumer<Rotation2d> setSetPoint1,
-		Consumer<Rotation2d> setSetPoint2
-	) {
-		return new Phoenix6Request2<Rotation2d, Rotation2d>(defaultSetPoint1, defaultSetPoint2, controlRequest, setSetPoint1, setSetPoint2);
 	}
 
 

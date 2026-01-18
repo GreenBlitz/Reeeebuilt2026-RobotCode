@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.hardware.interfaces.IDynamicMotionMagicRequest;
-import frc.robot.hardware.interfaces.IRequest2;
 import frc.robot.hardware.mechanisms.wpilib.SingleJointedArmSimulation;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
@@ -146,15 +145,7 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
-		return new Arm(
-			logPath,
-			motor,
-			signals,
-			voltageRequest,
-			buildPositionVelocityRequest(Rotation2d.kZero, Rotation2d.kZero),
-			positionRequest,
-			configuration.Slot0.kG
-		);
+		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
 	}
 
 	public static Arm buildArm(
@@ -189,7 +180,7 @@ public class TalonFXArmBuilder {
 		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
 
 		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
-			.build(new PositionVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
+			.build((new PositionVoltage(signals.position().getLatestValue().getRotations())), arbitraryFeedForward, true);
 
 		TalonFXConfiguration configuration = buildConfiguration(
 			feedbackConfigs,
@@ -202,15 +193,7 @@ public class TalonFXArmBuilder {
 			currentLimit
 		);
 		motor.applyConfiguration(configuration);
-		return new Arm(
-			logPath,
-			motor,
-			signals,
-			buildVoltageRequest(),
-			buildPositionVelocityRequest(Rotation2d.kZero, Rotation2d.kZero),
-			positionRequest,
-			configuration.Slot0.kG
-		);
+		return new Arm(logPath, motor, signals, buildVoltageRequest(), positionRequest, configuration.Slot0.kG);
 	}
 
 	private static TalonFXConfiguration buildConfiguration(
@@ -277,17 +260,6 @@ public class TalonFXArmBuilder {
 				simulationConstants.startingPosition().getRadians()
 			),
 			gearing
-		);
-	}
-
-	private static IRequest2<Rotation2d, Rotation2d> buildPositionVelocityRequest(Rotation2d velocity, Rotation2d position) {
-		PositionVoltage positionVoltage = new PositionVoltage(0);
-		return Phoenix6RequestBuilder.build(
-			Rotation2d.fromRotations(velocity.getRotations()),
-			Rotation2d.fromRotations(position.getRotations()),
-			buildVoltageRequest().getControlRequest(),
-			(Rotation2d newPosition) -> positionVoltage.withPosition(newPosition.getRotations()),
-			(Rotation2d newVelocity) -> positionVoltage.withVelocity(newVelocity.getRotations())
 		);
 	}
 
