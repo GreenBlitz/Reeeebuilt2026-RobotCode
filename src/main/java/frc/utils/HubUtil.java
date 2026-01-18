@@ -54,7 +54,7 @@ public class HubUtil {
 
 			double howMuchShiftsPassed = (howMuchTimeSinceTeleopInitSeconds - GameConstants.TRANSITION_SHIFT_TIME_SECONDS)
 				/ GameConstants.ALLIANCE_SHIFT_LENGTH_SECONDS;
-			boolean isShiftOfStartingAlliance = (int) Math.floor(howMuchShiftsPassed) % GameConstants.STARTING_ALLIANCE_SHIFT_MODULO != 0;
+			boolean isShiftOfStartingAlliance = (int) Math.floor(howMuchShiftsPassed) % GameConstants.STARTING_ALLIANCE_SHIFT_CYCLE != 0;
 
 			if (howMuchTimeSinceTeleopInitSeconds >= GameConstants.ENDGAME_END_TIME_SECONDS) {
 				return DriverStationUtil.DEFAULT_ALLIANCE;
