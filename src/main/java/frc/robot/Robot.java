@@ -32,9 +32,12 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.utils.DriverStationUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -136,6 +139,9 @@ public class Robot {
 		BusChain.refreshAll();
 		resetSubsystems();
 		simulationManager.logPoses();
+		DriverStationUtil.whichHubIsActive();
+		Logger.recordOutput("which hub is active", DriverStationUtil.whichHubIsActive());
+		Logger.recordOutput("time since teleop init", TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTime());
 
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());

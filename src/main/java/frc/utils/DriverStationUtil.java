@@ -49,24 +49,40 @@ public class DriverStationUtil {
 
 	public static DriverStation.Alliance whichHubIsActive() {
 		if (DriverStation.isAutonomous()) {
-			return DEFAULT_ALLIANCE;
+			return getAlliance();
 		}
 		if (RobotManager.getTeleopStartTime() == 0) {
-			new Alert("Unkown time since teleop started", Alert.AlertType.kInfo);
+			new Alert("Unknown time since teleop started", Alert.AlertType.kInfo);
 			return DEFAULT_ALLIANCE;
 		}
 		if (DriverStation.isTeleop()) {
-			int isTheCurrentShiftAShiftOfTheStartingAlliance = (((int) Math.floor(TimeUtil.getCurrentTimeSeconds())
-				- (int) Math.floor(RobotManager.getTeleopStartTime())) / 25) % 2;
+			double howMuchTimeSinceTeleopInit = (TimeUtil.getCurrentTimeSeconds() - (RobotManager.getTeleopStartTime()));
 
-			DriverStation.Alliance startingAlliance = getStartingAlliance();
+			if (howMuchTimeSinceTeleopInit <= 10) {
+				return getAlliance();
+			}
 
+			double howMuchShiftsPassed = (howMuchTimeSinceTeleopInit-10) / 25;
+			int isTheCurrentShiftAShiftOfTheStartingAlliance = (int)Math.floor(howMuchShiftsPassed) % 2;
+
+			if (howMuchTimeSinceTeleopInit >= 110) {
+				return getAlliance();
+			} else if (howMuchTimeSinceTeleopInit >= 140) {
+				return DEFAULT_ALLIANCE;
+			}
+
+			DriverStation.Alliance autoWinningAlliance = /*getStartingAlliance()*/ DriverStation.Alliance.Red;
 			return isCurrentShiftOfStartingAlliance(isTheCurrentShiftAShiftOfTheStartingAlliance)
-				? startingAlliance
-				: oppositeAllianceOfStartingAlliance(startingAlliance);
+				? autoWinningAlliance
+				: oppositeAllianceOfStartingAlliance(autoWinningAlliance);
 		}
 		return DEFAULT_ALLIANCE;
 	}
+	/*
+	when my hub active (seconds)
+	is my hub active (bool)
+	how much time left for my hub (seconds)
+	 */
 
 	public static boolean isBlueAlliance() {
 		return getAlliance().equals(DriverStation.Alliance.Blue);
