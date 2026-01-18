@@ -29,9 +29,10 @@ public class Superstructure {
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<Translation2d> target, Supplier<Pose2d> robotPoseSupplier) {
+	public Superstructure(String logPath, Robot robot, Supplier<Translation2d> movementCompensatedShootingTarget, Supplier<Pose2d> robotPoseSupplier) {
 		this.robot = robot;
 		this.logPath = logPath;
+
 		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), logPath, robot.getFunnelDigitalInput());
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
@@ -39,7 +40,7 @@ public class Superstructure {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			robotPoseSupplier,
-			target,
+			movementCompensatedShootingTarget,
 			logPath
 		);
 
