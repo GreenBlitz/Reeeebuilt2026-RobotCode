@@ -41,21 +41,14 @@ public class OptimalCameraPitchCalculation {
 
 	public Optional<Rotation2d> calculateOptimalPitchFor2Tags(
 		double xRangeStart,
-		double xRangeForTag,
 		double minCameraXDistanceFromTag,
 		double xRangeFor2Tags
 	) {
-		return calculateOptimalSharedPitch(calculateRangeEndPoint(minCameraXDistanceFromTag, xRangeFor2Tags), xRangeStart, xRangeForTag)
-			.isPresent()
-				? Optional.of(
-					calculateOptimalSharedPitch(calculateRangeEndPoint(minCameraXDistanceFromTag, xRangeFor2Tags), xRangeStart, xRangeForTag)
-						.get()
-				)
-				: Optional.empty();
+		return calculateOptimalSharedPitch(xRangeStart, xRangeFor2Tags);
 	}
 
 	private Rotation2d calculatePitch(double cameraRelativeTagHeight, double cameraXDistanceFromTag) {
-		return Rotation2d.fromRadians(Math.atan2(cameraRelativeTagHeight, cameraXDistanceFromTag));
+		return new Rotation2d(cameraXDistanceFromTag, cameraRelativeTagHeight);
 	}
 
 	private Rotation2d calculateOptimalPitch(double cameraRelativeTagHeight, double xRangeStart, double xRangeForTag) {
@@ -68,13 +61,8 @@ public class OptimalCameraPitchCalculation {
 		return maxCameraXDistanceFromTag;
 	}
 
-	public Optional<Rotation2d> calculateOptimalSharedPitch(double cameraXDistanceFromTag, double xRangeStart, double xRangeForTag) {
-		if (
-			Math.abs(
-				calculateOptimalPitch(cameraRelativeTag1Height, xRangeStart, xRangeForTag).getDegrees()
-					- calculateOptimalPitch(cameraRelativeTag2Height, xRangeStart, xRangeForTag).getDegrees()
-			) <= cameraFovUp.plus(cameraFovDown).getDegrees()
-		) {
+	public Optional<Rotation2d> calculateOptimalSharedPitch(double xRangeStart, double xRangeForTag) {
+		if (ToleranceMath.isNear(calculatePitch(cameraRelativeTag1Height, calculateAvgX(xRangeStart, xRangeForTag)).getDegrees(), calculatePitch(cameraRelativeTag2Height, calculateAvgX(xRangeStart, xRangeForTag)).getDegrees(), cameraFovUp.plus(cameraFovDown).getDegrees())){
 			System.out.println(("pitch1 " + calculateOptimalPitch(cameraRelativeTag1Height, xRangeStart, xRangeForTag)));
 			System.out.println(("pitch2 " + calculateOptimalPitch(cameraRelativeTag2Height, xRangeStart, xRangeForTag)));
 			return Optional.of(
@@ -84,6 +72,10 @@ public class OptimalCameraPitchCalculation {
 			);
 		}
 		return Optional.empty();
+	}
+
+	public double calculateAvgX(double xStartRange, double xRangeFor2Tags){
+		return (cameraRelativeTag1Height/Math.tan(calculateOptimalPitch(cameraRelativeTag1Height, xStartRange, xRangeFor2Tags).getRadians()) + cameraRelativeTag2Height/Math.tan(calculateOptimalPitch(cameraRelativeTag2Height, xStartRange, xRangeFor2Tags).getRadians()))/2;
 	}
 
 }
