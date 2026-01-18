@@ -42,7 +42,7 @@ public class ShooterCalculations {
 		Rotation2d turretFieldAngularVelocity = Rotation2d.fromRadians(-perpendicularVel / distanceFromHubMeters);
 		Rotation2d turretFeedforward = turretFieldAngularVelocity.minus(robotAngularVel);
 
-		Rotation2d turretTargetPosition = wrapTurretPosition(angleToTarget);
+		Rotation2d turretTargetPosition = wrapTurretPosition(angleToTarget.minus(robotPose.getRotation()));
 		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromHubMeters);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromHubMeters);
 
