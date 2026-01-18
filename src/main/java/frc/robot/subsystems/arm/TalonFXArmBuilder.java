@@ -131,6 +131,7 @@ public class TalonFXArmBuilder {
 		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
 
 		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
+
 		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
 			.build(new MotionMagicVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
 		TalonFXConfiguration configuration = (buildConfiguration(
