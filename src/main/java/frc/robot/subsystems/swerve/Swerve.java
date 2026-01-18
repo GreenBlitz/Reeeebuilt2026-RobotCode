@@ -50,9 +50,9 @@ public class Swerve extends GBSubsystem {
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
 
-	private final boolean[] areModulesSkidding;
 	private final Translation2d[] moduleTranslationalStates;
 
+	private boolean isSkidding;
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
 	private ChassisPowers driversPowerInputs;
@@ -71,9 +71,9 @@ public class Swerve extends GBSubsystem {
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 		this.stateHandler = new SwerveStateHandler(this);
 
-		this.areModulesSkidding = new boolean[ModuleUtil.ModulePosition.values().length];
 		this.moduleTranslationalStates = new Translation2d[ModuleUtil.ModulePosition.values().length];
 
+		this.isSkidding = false;
 		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
 		this.headingSupplier = () -> getIMUAbsoluteYaw().getValue();
 		this.driversPowerInputs = new ChassisPowers();
@@ -82,8 +82,8 @@ public class Swerve extends GBSubsystem {
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
 	}
 
-	public boolean[] getAreModulesSkidding() {
-		return areModulesSkidding;
+	public boolean getIsSkidding() {
+		return isSkidding;
 	}
 
 	public String getLogPath() {
@@ -190,9 +190,7 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
-		for (int i = 0; i < areModulesSkidding.length; i++) {
-			Logger.recordOutput(getLogPath() + "/isSkidding/" + ModuleUtil.ModulePosition.values()[i], areModulesSkidding[i]);
-		}
+			Logger.recordOutput(getLogPath() + "/isSkidding/", isSkidding);
 	}
 
 
@@ -376,14 +374,17 @@ public class Swerve extends GBSubsystem {
 			getRobotRelativeVelocity().vxMetersPerSecond,
 			getRobotRelativeVelocity().vyMetersPerSecond
 		);
-
+		int count = 0;
 		for (int i = 0; i < moduleTranslationalStates.length; i++) {
-			areModulesSkidding[i] = !ToleranceMath.isNear(
+			if( !ToleranceMath.isNear(
 				robotTranslationalVelocityMetersPerSecond,
 				moduleTranslationalStates[i],
 				SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT
-			);
+			))
+				count++;
 		}
+		if(count==1)
+			isSkidding = true;
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
