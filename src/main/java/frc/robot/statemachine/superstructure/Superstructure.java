@@ -4,11 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
-import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import org.littletonrobotics.junction.Logger;
@@ -31,7 +28,7 @@ public class Superstructure {
 		this.robot = robot;
 		this.logPath = logPath;
 
-		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(),robot.getBelly(), logPath, robot.getFunnelDigitalInput());
+		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), robot.getBelly(), logPath, robot.getFunnelDigitalInput());
 		this.shooterStateHandler = new ShooterStateHandler(robot.getTurret(), robot.getHood(), robot.getFlyWheel(), robotPoseSupplier, logPath);
 
 		this.targetChecks = new TargetChecks(this);

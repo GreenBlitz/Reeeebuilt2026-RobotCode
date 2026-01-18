@@ -25,7 +25,6 @@ import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.belly.BellyConstants;
-import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.FunnelSensorConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.poseestimator.IPoseEstimator;
