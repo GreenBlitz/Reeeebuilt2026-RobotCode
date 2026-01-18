@@ -18,4 +18,5 @@ public class StatisticsMath {
 		}
 		return Math.sqrt(deviationsTotal / length);
 	}
+
 }

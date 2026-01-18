@@ -190,7 +190,7 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
-			Logger.recordOutput(getLogPath() + "/isSkidding/", isSkidding);
+		Logger.recordOutput(getLogPath() + "/isSkidding/", isSkidding);
 	}
 
 
@@ -376,14 +376,16 @@ public class Swerve extends GBSubsystem {
 		);
 		int count = 0;
 		for (int i = 0; i < moduleTranslationalStates.length; i++) {
-			if( !ToleranceMath.isNear(
-				robotTranslationalVelocityMetersPerSecond,
-				moduleTranslationalStates[i],
-				SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT
-			))
+			if (
+				!ToleranceMath.isNear(
+					robotTranslationalVelocityMetersPerSecond,
+					moduleTranslationalStates[i],
+					SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT
+				)
+			)
 				count++;
 		}
-		if(count==1)
+		if (count == 1)
 			isSkidding = true;
 	}
 
