@@ -14,20 +14,20 @@ public class TurretAimAtHubCommand extends Command {
 
 	private final Arm turret;
 	private final Supplier<Pose2d> robotPose;
-	private final Supplier<Translation2d> targetOnField;
+	private final Supplier<Translation2d> movementCompensatedShootingTarget;
 	private final String logPath;
 
-	public TurretAimAtHubCommand(Arm turret, Supplier<Pose2d> robotPose, Supplier<Translation2d> targetOnField, String logPath) {
+	public TurretAimAtHubCommand(Arm turret, Supplier<Pose2d> robotPose, Supplier<Translation2d> movementCompensatedShootingTarget, String logPath) {
 		this.turret = turret;
 		this.robotPose = robotPose;
-		this.targetOnField = targetOnField;
+		this.movementCompensatedShootingTarget = movementCompensatedShootingTarget;
 		this.logPath = logPath;
 	}
 
 	@Override
 	public void execute() {
 		Rotation2d targetAngle = ShooterCalculations
-			.getRobotRelativeLookAtTargetAngleForTurret(robotPose.get(), turret.getPosition(), targetOnField.get());
+			.getRobotRelativeLookAtTargetAngleForTurret(robotPose.get(), turret.getPosition(), movementCompensatedShootingTarget.get());
 
 		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);

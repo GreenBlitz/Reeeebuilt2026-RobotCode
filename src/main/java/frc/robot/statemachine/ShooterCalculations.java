@@ -103,7 +103,7 @@ public class ShooterCalculations {
 		)
 	);
 
-	private static final InterpolationMap<Double, Double> DISTANCE_TO_AIR_BALL_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
+	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
 		Map.of(
@@ -124,20 +124,20 @@ public class ShooterCalculations {
 	}
 
 	public static Translation2d getDesiredTargetInMotion(Pose2d pose, Swerve swerve) {
-		Translation2d robotToGoal = Field.getHubMiddle().minus(pose.getTranslation());
+		Translation2d robotToHubError = Field.getHubMiddle().minus(pose.getTranslation());
 
-		double timeForBallInAir = DISTANCE_TO_AIR_BALL_TIME_INTERPOLATION_MAP.get(robotToGoal.getDistance(new Translation2d()));
+		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPLATION_MAP.get(robotToHubError.getDistance(Field.getHubMiddle()));
 
-		double movingGoalX = Field.getHubMiddle().getX()
-			+ (timeForBallInAir
+		double movementCompensatedShootingTargetX = Field.getHubMiddle().getX()
+			+ (ballFlightTime
 				* (swerve.getAllianceRelativeVelocity().vxMetersPerSecond
 					+ (swerve.getAccelerationFromIMUMetersPerSecondSquared().getX() * SHOOTING_TIME)));
-		double movingGoalY = Field.getHubMiddle().getY()
-			+ (timeForBallInAir
+		double movementCompensatedShootingTargetY = Field.getHubMiddle().getY()
+			+ (ballFlightTime
 				* (swerve.getAllianceRelativeVelocity().vyMetersPerSecond
 					+ (swerve.getAccelerationFromIMUMetersPerSecondSquared().getY() * SHOOTING_TIME)));
-		Logger.recordOutput("DesiredTargetInMotion", new Pose2d(movingGoalX, movingGoalY, new Rotation2d()));
-		return new Translation2d(movingGoalX, movingGoalY);
+		Logger.recordOutput("DesiredTargetInMotion", new Pose2d(movementCompensatedShootingTargetX, movementCompensatedShootingTargetY, new Rotation2d()));
+		return new Translation2d(movementCompensatedShootingTargetX, movementCompensatedShootingTargetY);
 	}
 
 

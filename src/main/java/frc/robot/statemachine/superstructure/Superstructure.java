@@ -20,7 +20,6 @@ public class Superstructure {
 
 	private final Robot robot;
 	private final TargetChecks targetChecks;
-	private Supplier<Translation2d> target;
 	private boolean isSubsystemRunningIndependently;
 	private final String logPath;
 
@@ -33,7 +32,6 @@ public class Superstructure {
 	public Superstructure(String logPath, Robot robot, Supplier<Translation2d> target, Supplier<Pose2d> robotPoseSupplier) {
 		this.robot = robot;
 		this.logPath = logPath;
-		this.target = target;
 		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), logPath, robot.getFunnelDigitalInput());
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
