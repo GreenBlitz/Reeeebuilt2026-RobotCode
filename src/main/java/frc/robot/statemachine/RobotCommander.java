@@ -35,7 +35,11 @@ public class RobotCommander extends GBSubsystem {
 		this.superstructure = new Superstructure(
 			"StateMachine/Superstructure",
 			robot,
-			() -> ShooterCalculations.getShootingParams(robot.getPoseEstimator().getEstimatedPose(), robot.getTurret().getPosition())
+			() -> ShooterCalculations.getShootingParams(
+				robot.getPoseEstimator().getEstimatedPose(),
+				robot.getSwerve().getFieldRelativeVelocity(),
+				robot.getTurret().getPosition()
+			)
 		);
 		this.currentState = RobotState.STAY_IN_PLACE;
 

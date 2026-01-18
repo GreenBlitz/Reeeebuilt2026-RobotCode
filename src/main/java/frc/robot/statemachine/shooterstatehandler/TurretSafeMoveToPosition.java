@@ -14,10 +14,12 @@ public class TurretSafeMoveToPosition extends Command {
 	private final Arm turret;
 	private final String logPath;
 	private final Supplier<Rotation2d> targetPosition;
+	private final Supplier<Rotation2d> targetVelocity;
 
-	public TurretSafeMoveToPosition(Arm turret, Supplier<Rotation2d> targetPosition, String logPath) {
+	public TurretSafeMoveToPosition(Arm turret, Supplier<Rotation2d> targetPosition, Supplier<Rotation2d> targetVelocity, String logPath) {
 		this.turret = turret;
 		this.targetPosition = targetPosition;
+		this.targetVelocity = targetVelocity;
 		this.logPath = logPath;
 	}
 
