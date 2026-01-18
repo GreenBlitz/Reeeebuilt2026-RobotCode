@@ -1,6 +1,5 @@
 package frc.robot.statemachine.superstructure;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
@@ -11,6 +10,7 @@ import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
+import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -28,13 +28,19 @@ public class Superstructure {
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<Pose2d> robotPoseSupplier) {
+	public Superstructure(String logPath, Robot robot, Supplier<ShootingParams> shootingParamsSupplier) {
 		this.robot = robot;
 		this.logPath = logPath;
 
 		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), robot.getBelly(), logPath, robot.getFunnelDigitalInput());
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
-		this.shooterStateHandler = new ShooterStateHandler(robot.getTurret(), robot.getHood(), robot.getFlyWheel(), robotPoseSupplier, logPath);
+		this.shooterStateHandler = new ShooterStateHandler(
+			robot.getTurret(),
+			robot.getHood(),
+			robot.getFlyWheel(),
+			shootingParamsSupplier,
+			logPath
+		);
 
 		this.targetChecks = new TargetChecks(this);
 
