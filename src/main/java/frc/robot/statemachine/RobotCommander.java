@@ -32,11 +32,7 @@ public class RobotCommander extends GBSubsystem {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
-		this.superstructure = new Superstructure(
-			"StateMachine/Superstructure",
-			robot,
-			() -> ShooterCalculations.getShootingParams(robot.getPoseEstimator().getEstimatedPose(), robot.getTurret().getPosition())
-		);
+		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShooterCalculations.getShootingParams());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(

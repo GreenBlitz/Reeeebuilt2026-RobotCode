@@ -6,6 +6,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.field.Field;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
+import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import frc.utils.TurretCalculations;
 import org.littletonrobotics.junction.Logger;
@@ -15,8 +17,18 @@ import java.util.Map;
 public class ShooterCalculations {
 
 	private static final String LOG_PATH = "ShooterCalculations";
+	private static ShootingParams shootingParams = new ShootingParams(
+		new Rotation2d(),
+		HoodConstants.MINIMUM_POSITION,
+		TurretConstants.MIN_POSITION,
+		new Rotation2d()
+	);
 
-	public static ShootingParams getShootingParams(Pose2d robotPose, Rotation2d turretPosition) {
+	public static ShootingParams getShootingParams() {
+		return shootingParams;
+	}
+
+	private static ShootingParams getShootingParams(Pose2d robotPose, Rotation2d turretPosition) {
 		Rotation2d turretTargetPosition = TurretCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turretPosition);
 
 		double distanceFromHubMeters = getDistanceFromHub(robotPose.getTranslation());
@@ -69,6 +81,10 @@ public class ShooterCalculations {
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
+	}
+
+	public static void updateShootingParams(Pose2d robotPose, Rotation2d turretPosition) {
+		shootingParams = getShootingParams(robotPose, turretPosition);
 	}
 
 }
