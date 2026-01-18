@@ -25,8 +25,8 @@ public class OptimalCameraPitchCalculation {
 		double tagHeight2,
 		double tagHeightTolerance,
 		double cameraHeight,
-		Rotation2d cameraFovUpInDegrees,
-		Rotation2d cameraFovDownInDegrees
+		Rotation2d cameraFovUp,
+		Rotation2d cameraFovDown
 	) {
 		this.maxCameraXDistanceFromTag = maxCameraXDistanceFromTag;
 		this.mustInRangeX = mustInRangeX;
@@ -35,8 +35,8 @@ public class OptimalCameraPitchCalculation {
 		this.cameraRelativeTag1Height = tagHeight1 - cameraHeight + tagHeightTolerance;
 		this.cameraRelativeTag2Height = tagHeight2 - cameraHeight + tagHeightTolerance;
 
-		this.cameraFovUp = cameraFovUpInDegrees;
-		this.cameraFovDown = cameraFovDownInDegrees;
+		this.cameraFovUp = cameraFovUp;
+		this.cameraFovDown = cameraFovDown;
 
 		this.xRangeFor2Tags = this.maxCameraXDistanceFromTag - minCameraXDistanceFromTag;
 	}
@@ -46,10 +46,9 @@ public class OptimalCameraPitchCalculation {
 	}
 
 	public Optional<Rotation2d> calculateOptimalPitchFor2Tags() {
-		return calculateOptimalSharedPitch(calculateRangeEndPoint(minCameraXDistanceFromTag, xRangeFor2Tags)).isEmpty()
-			? Optional.empty()
-			: Optional
-				.of(calculateOptimalSharedPitch(calculateRangeEndPoint(minCameraXDistanceFromTag, xRangeFor2Tags)).get().plus(cameraFovDown));
+		return calculateOptimalSharedPitch(calculateRangeEndPoint(minCameraXDistanceFromTag, xRangeFor2Tags)).isPresent()
+			? Optional.of(calculateOptimalSharedPitch(calculateRangeEndPoint(minCameraXDistanceFromTag, xRangeFor2Tags)).get())
+			: Optional.empty();
 	}
 
 	private Rotation2d calculateOptimalPitch(double cameraRelativeTagHeight, double cameraXDistanceFromTag) {
@@ -71,8 +70,9 @@ public class OptimalCameraPitchCalculation {
 		) {
 			return Optional.of(
 				Rotation2d.fromDegrees(
-					(calculateOptimalPitch(cameraRelativeTag1Height, cameraXDistanceFromTag).getDegrees()
-						+ calculateOptimalPitch(cameraRelativeTag2Height, cameraXDistanceFromTag).getDegrees()) / 2
+					(calculateOptimalPitch(cameraRelativeTag1Height, cameraXDistanceFromTag)
+						.plus(calculateOptimalPitch(cameraRelativeTag2Height, cameraXDistanceFromTag))
+						.plus(cameraFovDown)).getDegrees() / 2
 				)
 			);
 		}
