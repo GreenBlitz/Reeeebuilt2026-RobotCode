@@ -5,6 +5,7 @@
 package frc;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.utils.math.StatisticsMath;
 import frc.utils.math.ToleranceMath;
 
@@ -20,23 +21,12 @@ public final class Main {
 	 * <p>If you change your main robot class, change the parameter type.
 	 */
 	public static void main(String... args) {
-//		RobotBase.startRobot(RobotManager::new);
+		RobotBase.startRobot(RobotManager::new);
 		Translation2d[] a = new Translation2d[] {
 			new Translation2d(2, 2),
 			new Translation2d(2, 2),
 			new Translation2d(5, 5),
 			new Translation2d(5, 5),};
-		Translation2d maj = StatisticsMath.getMajority(a, 0);
-		System.out.println(maj);
-
-		boolean is[] = new boolean[4];
-		for (int i = 0; i < a.length; i++) {
-			is[i] = !ToleranceMath.isNear(maj, a[i], 0.5);
-		}
-		System.out.println(is[0]);
-		System.out.println(is[1]);
-		System.out.println(is[2]);
-		System.out.println(is[3]);
 	}
 
 }
