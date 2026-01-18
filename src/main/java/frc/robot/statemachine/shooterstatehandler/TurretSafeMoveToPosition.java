@@ -22,18 +22,18 @@ public class TurretSafeMoveToPosition extends Command {
 
 	@Override
 	public void execute() {
-		Rotation2d targetAngle = targetPosition.get();
+		Rotation2d targetPosition = this.targetPosition.get();
 
-		if (TurretCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
+		if (TurretCalculations.isTurretMoveLegal(targetPosition, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
 		} else {
-			targetAngle = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
+			targetPosition = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
 				? TurretConstants.BACKWARDS_SOFTWARE_LIMIT
 				: TurretConstants.FORWARD_SOFTWARE_LIMIT;
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", false);
 		}
 
-		turret.setTargetPosition(targetAngle);
+		turret.setTargetPosition(targetPosition);
 	}
 
 }

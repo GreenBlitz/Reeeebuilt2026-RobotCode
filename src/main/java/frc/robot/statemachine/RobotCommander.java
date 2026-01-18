@@ -94,10 +94,7 @@ public class RobotCommander extends GBSubsystem {
 			.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShootingCalculations.flywheelInterpolation(distanceFromHub.get()),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
-			ShootingCalculations.hoodInterpolation(distanceFromHub.get()),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,

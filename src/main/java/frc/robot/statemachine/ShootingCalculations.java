@@ -1,12 +1,12 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.field.Field;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
+import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
@@ -53,13 +53,11 @@ public class ShootingCalculations {
 
 	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
-		Rotation2d targetAngle = Rotation2d.fromDegrees(
+		Rotation2d targetPosition = Rotation2d.fromDegrees(
 			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
 				- robotPose.getRotation().getDegrees()
 		);
-		return Rotation2d.fromRadians(
-			MathUtil.inputModulus(targetAngle.getRadians(), TurretConstants.MIN_POSITION.getRadians(), TurretConstants.MAX_POSITION.getRadians())
-		);
+		return TurretCalculations.getWrappedTurretPosition(targetPosition);
 	}
 
 	public static double getDistanceFromHub(Translation2d pose) {
@@ -96,11 +94,11 @@ public class ShootingCalculations {
 		)
 	);
 
-	public static Rotation2d hoodInterpolation(double distanceFromTower) {
+	private static Rotation2d hoodInterpolation(double distanceFromTower) {
 		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
-	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
+	private static Rotation2d flywheelInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 

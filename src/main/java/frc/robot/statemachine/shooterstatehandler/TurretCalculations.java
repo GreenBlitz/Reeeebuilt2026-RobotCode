@@ -8,13 +8,7 @@ import frc.utils.math.ToleranceMath;
 public class TurretCalculations {
 
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
-		return Rotation2d.fromRadians(
-			MathUtil.inputModulus(
-				angle.getRadians() + tolerance.getRadians(),
-				TurretConstants.MIN_POSITION.getRadians(),
-				TurretConstants.MAX_POSITION.getRadians()
-			)
-		);
+		return getWrappedTurretPosition(Rotation2d.fromDegrees(angle.getDegrees() + tolerance.getDegrees()));
 	}
 
 	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Rotation2d position) {
@@ -31,6 +25,12 @@ public class TurretCalculations {
 		);
 
 		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
+	}
+
+	public static Rotation2d getWrappedTurretPosition(Rotation2d position) {
+		return Rotation2d.fromRadians(
+			MathUtil.inputModulus(position.getRadians(), TurretConstants.MIN_POSITION.getRadians(), TurretConstants.MAX_POSITION.getRadians())
+		);
 	}
 
 }
