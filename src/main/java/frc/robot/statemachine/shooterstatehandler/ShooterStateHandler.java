@@ -58,13 +58,13 @@ public class ShooterStateHandler {
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
 					turret,
-					() -> shootingParamsSupplier.get().turretPosition(),
-					() -> shootingParamsSupplier.get().turretVelocityRPS(),
+					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> shootingParamsSupplier.get().targetTurretVelocityRotation2dPerSecond(),
 					logPath
 				),
 				"Safe move to position"
 			),
-			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().hoodPosition()),
+			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
@@ -74,14 +74,14 @@ public class ShooterStateHandler {
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
 					turret,
-					() -> shootingParamsSupplier.get().turretPosition(),
-					() -> shootingParamsSupplier.get().turretVelocityRPS(),
+					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> shootingParamsSupplier.get().targetTurretVelocityRotation2dPerSecond(),
 					logPath
 				),
 				"Safe move to position"
 			),
-			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().hoodPosition()),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().flywheelVelocityRPS())
+			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRotation2dPerSecond())
 		);
 	}
 
