@@ -157,12 +157,28 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(5)));
 	}
 
+	public static void applyIntakeRollerCalibrationsBindings(SmartJoystick joystick, Robot robot) {
+		joystick.L1.onTrue(new InstantCommand(() -> robot.getIntakeRoller().getCommandsBuilder().setIsSubsystemRunningIndependently(true)));
+		joystick.L3.onTrue(new InstantCommand(() -> robot.getIntakeRoller().getCommandsBuilder().setIsSubsystemRunningIndependently(false)));
+
+		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(6));
+		joystick.POV_DOWN.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(-6));
+	}
+
 	private static void applyOmniCalibrationBindings(Roller omni, SmartJoystick joystick, double maxCalibrationPower) {
 		joystick.POV_DOWN.onTrue(new InstantCommand(() -> omni.getCommandsBuilder().setIsSubsystemRunningIndependently(true)));
 		joystick.POV_UP.onTrue(new InstantCommand(() -> omni.getCommandsBuilder().setIsSubsystemRunningIndependently(false)));
 
-		joystick.X.onTrue(omni.getCommandsBuilder().setPower(maxCalibrationPower));
-		joystick.Y.onTrue(omni.getCommandsBuilder().setPower(-maxCalibrationPower));
+		joystick.X.onTrue(omni.getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
+		joystick.Y.onTrue(omni.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
+	}
+
+	private static void applyBellyCalibrationBindings(Roller belly, SmartJoystick joystick, double maxCalibrationPower) {
+		joystick.POV_DOWN.onTrue(new InstantCommand(() -> belly.getCommandsBuilder().setIsSubsystemRunningIndependently(true)));
+		joystick.POV_UP.onTrue(new InstantCommand(() -> belly.getCommandsBuilder().setIsSubsystemRunningIndependently(false)));
+
+		joystick.X.onTrue(belly.getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
+		joystick.Y.onTrue(belly.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
 	}
 
 }

@@ -6,6 +6,7 @@ Funnel States Calibration
 
 #### shoot
 - [ ] Voltage for omni
+- [ ] time for omni to accelerate
 - #### shoot while intake
 - [ ] Voltage for omni
 
