@@ -136,7 +136,10 @@ public class ShooterCalculations {
 			+ (ballFlightTime
 				* (swerve.getAllianceRelativeVelocity().vyMetersPerSecond
 					+ (swerve.getAccelerationFromIMUMetersPerSecondSquared().getY() * SHOOTING_TIME)));
-		Logger.recordOutput("DesiredTargetInMotion", new Pose2d(movementCompensatedShootingTargetX, movementCompensatedShootingTargetY, new Rotation2d()));
+		Logger.recordOutput(
+			"DesiredTargetInMotion",
+			new Pose2d(movementCompensatedShootingTargetX, movementCompensatedShootingTargetY, new Rotation2d())
+		);
 		return new Translation2d(movementCompensatedShootingTargetX, movementCompensatedShootingTargetY);
 	}
 

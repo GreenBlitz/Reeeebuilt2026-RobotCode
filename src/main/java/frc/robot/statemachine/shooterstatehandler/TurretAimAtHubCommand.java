@@ -17,7 +17,12 @@ public class TurretAimAtHubCommand extends Command {
 	private final Supplier<Translation2d> movementCompensatedShootingTarget;
 	private final String logPath;
 
-	public TurretAimAtHubCommand(Arm turret, Supplier<Pose2d> robotPose, Supplier<Translation2d> movementCompensatedShootingTarget, String logPath) {
+	public TurretAimAtHubCommand(
+		Arm turret,
+		Supplier<Pose2d> robotPose,
+		Supplier<Translation2d> movementCompensatedShootingTarget,
+		String logPath
+	) {
 		this.turret = turret;
 		this.robotPose = robotPose;
 		this.movementCompensatedShootingTarget = movementCompensatedShootingTarget;

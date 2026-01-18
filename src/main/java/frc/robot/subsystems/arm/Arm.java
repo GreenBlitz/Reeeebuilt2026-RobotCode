@@ -100,6 +100,7 @@ public class Arm extends GBSubsystem {
 		motor.setBrake(brake);
 	}
 
+
 	public void setTargetPosition(Rotation2d targetPosition) {
 		motor.applyRequest(positionRequest.withSetPoint(targetPosition));
 	}
