@@ -27,7 +27,7 @@ public class RobotCommander extends GBSubsystem {
 		this.superstructure = new Superstructure(
 			"StateMachine/Superstructure",
 			robot,
-			() -> ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()),
+			() -> robot.getMovementCompensatedShootingTarget(),
 			() -> robot.getPoseEstimator().getEstimatedPose()
 		);
 		this.currentState = RobotState.STAY_IN_PLACE;
@@ -90,17 +90,11 @@ public class RobotCommander extends GBSubsystem {
 		return TargetChecks.isReadyToShoot(
 			robot,
 			ShooterCalculations.flywheelInterpolation(
-				robot.getPoseEstimator()
-					.getEstimatedPose()
-					.getTranslation()
-					.getDistance(ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()))
+				robot.getPoseEstimator().getEstimatedPose().getTranslation().getDistance(robot.getMovementCompensatedShootingTarget())
 			),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
 			ShooterCalculations.hoodInterpolation(
-				robot.getPoseEstimator()
-					.getEstimatedPose()
-					.getTranslation()
-					.getDistance(ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve()))
+				robot.getPoseEstimator().getEstimatedPose().getTranslation().getDistance(robot.getMovementCompensatedShootingTarget())
 			),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,

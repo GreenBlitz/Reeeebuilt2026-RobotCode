@@ -6,9 +6,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
 import frc.robot.subsystems.constants.turret.TurretConstants;
-import frc.robot.subsystems.swerve.Swerve;
 import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
@@ -123,19 +123,15 @@ public class ShooterCalculations {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
-	public static Translation2d getDesiredTargetInMotion(Pose2d pose, Swerve swerve) {
+	public static Translation2d getDesiredTargetInMotion(Pose2d pose, ChassisSpeeds chassisSpeeds, Translation2d accelerations) {
 		Translation2d robotToHubError = Field.getHubMiddle().minus(pose.getTranslation());
 
 		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPLATION_MAP.get(robotToHubError.getDistance(Field.getHubMiddle()));
 
 		double movementCompensatedShootingTargetX = Field.getHubMiddle().getX()
-			+ (ballFlightTime
-				* (swerve.getAllianceRelativeVelocity().vxMetersPerSecond
-					+ (swerve.getAccelerationFromIMUMetersPerSecondSquared().getX() * SHOOTING_TIME)));
+			+ (ballFlightTime * (chassisSpeeds.vxMetersPerSecond + (accelerations.getX() * SHOOTING_TIME)));
 		double movementCompensatedShootingTargetY = Field.getHubMiddle().getY()
-			+ (ballFlightTime
-				* (swerve.getAllianceRelativeVelocity().vyMetersPerSecond
-					+ (swerve.getAccelerationFromIMUMetersPerSecondSquared().getY() * SHOOTING_TIME)));
+			+ (ballFlightTime * (chassisSpeeds.vyMetersPerSecond + (accelerations.getY() * SHOOTING_TIME)));
 		Logger.recordOutput(
 			"DesiredTargetInMotion",
 			new Pose2d(movementCompensatedShootingTargetX, movementCompensatedShootingTargetY, new Rotation2d())

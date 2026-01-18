@@ -75,12 +75,16 @@ public class TargetChecks {
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
-		Translation2d target = ShooterCalculations.getDesiredTargetInMotion(robot.getPoseEstimator().getEstimatedPose(), robot.getSwerve());
-		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), target, maxShootingDistanceFromTargetMeters);
+		Translation2d movementCompensatedShootingTarget = robot.getMovementCompensatedShootingTarget();
+		boolean isWithinDistance = isWithinDistance(
+			robotPose.getTranslation(),
+			movementCompensatedShootingTarget,
+			maxShootingDistanceFromTargetMeters
+		);
 
-		boolean isInRange = isInAngleRange(robotPose.getTranslation(), target, maxAngleFromHubCenter);
+		boolean isInRange = isInAngleRange(robotPose.getTranslation(), movementCompensatedShootingTarget, maxAngleFromHubCenter);
 
-		boolean isAtHeading = isTurretAtTarget(robotPose, target, robot.getTurret(), headingTolerance.getDegrees());
+		boolean isAtHeading = isTurretAtTarget(robotPose, movementCompensatedShootingTarget, robot.getTurret(), headingTolerance.getDegrees());
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			wantedFlywheelVelocityRotation2dPerSecond,

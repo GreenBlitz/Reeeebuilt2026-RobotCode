@@ -106,10 +106,7 @@ public class Robot {
 
 		robotCommander = new RobotCommander("/RobotCommander", this);
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
-		swerve.getStateHandler()
-			.setIsTurretMoveLegalSupplier(
-				() -> isTurretMoveLegal(ShooterCalculations.getDesiredTargetInMotion(poseEstimator.getEstimatedPose(), swerve))
-			);
+		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal(getMovementCompensatedShootingTarget()));
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
@@ -312,6 +309,14 @@ public class Robot {
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
 		return new PathPlannerAutoWrapper();
+	}
+
+	public Translation2d getMovementCompensatedShootingTarget() {
+		return ShooterCalculations.getDesiredTargetInMotion(
+			poseEstimator.getEstimatedPose(),
+			swerve.getRobotRelativeVelocity(),
+			swerve.getAccelerationFromIMUMetersPerSecondSquared().toTranslation2d()
+		);
 	}
 
 }
