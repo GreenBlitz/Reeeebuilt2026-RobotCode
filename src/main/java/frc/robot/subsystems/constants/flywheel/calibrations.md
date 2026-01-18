@@ -14,6 +14,5 @@
 - [ ] kS
 - [ ] kV
 - [ ] kA
-- [ ] Velocity tolerance rps
-
+- [ ] Velocity tolerance rotation2d per second
 
