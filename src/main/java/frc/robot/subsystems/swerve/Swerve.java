@@ -355,17 +355,17 @@ public class Swerve extends GBSubsystem {
 
 	public Translation2d getModuleTranslation(int whichModule, double robotYawAngularVelocityRadiansPerSecond) {
 		SwerveModuleState moduleRotationalState = kinematics
-				.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
+			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
 		SwerveModuleState moduleState = modules.getCurrentStates()[whichModule];
 
 		return new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
-				.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
 	}
 
-	public void updateModuleTranslations(){
+	public void updateModuleTranslations() {
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
 		for (int i = 0; i < ModuleUtil.ModulePosition.values().length; i++) {
-			moduleTranslationalStates[i] = getModuleTranslation(i, robotYawAngularVelocityRadiansPerSecond );
+			moduleTranslationalStates[i] = getModuleTranslation(i, robotYawAngularVelocityRadiansPerSecond);
 		}
 	}
 
@@ -373,12 +373,16 @@ public class Swerve extends GBSubsystem {
 		updateModuleTranslations();
 
 		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
-				getRobotRelativeVelocity().vxMetersPerSecond,
-				getRobotRelativeVelocity().vyMetersPerSecond
+			getRobotRelativeVelocity().vxMetersPerSecond,
+			getRobotRelativeVelocity().vyMetersPerSecond
 		);
 
 		for (int i = 0; i < moduleTranslationalStates.length; i++) {
-			areModulesSkidding[i] = !ToleranceMath.isNear(robotTranslationalVelocityMetersPerSecond, moduleTranslationalStates[i], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
+			areModulesSkidding[i] = !ToleranceMath.isNear(
+				robotTranslationalVelocityMetersPerSecond,
+				moduleTranslationalStates[i],
+				SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT
+			);
 		}
 	}
 
