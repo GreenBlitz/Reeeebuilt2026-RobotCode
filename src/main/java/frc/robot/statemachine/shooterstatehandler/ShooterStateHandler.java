@@ -18,7 +18,7 @@ public class ShooterStateHandler {
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<Pose2d> robotPose;
-	private final Supplier<Translation2d> target;
+	private final Supplier<Translation2d> movementCompensatedShootingTarget;
 	private final String logPath;
 	private ShooterState currentState;
 
@@ -27,14 +27,14 @@ public class ShooterStateHandler {
 		Arm hood,
 		FlyWheel flyWheel,
 		Supplier<Pose2d> robotPose,
-		Supplier<Translation2d> target,
+		Supplier<Translation2d> movementCompensatedShootingTarget,
 		String logPath
 	) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
 		this.robotPose = robotPose;
-		this.target = target;
+		this.movementCompensatedShootingTarget = movementCompensatedShootingTarget;
 		this.currentState = ShooterState.STAY_IN_PLACE;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
@@ -67,21 +67,28 @@ public class ShooterStateHandler {
 
 	private Command idle() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, target, logPath), "Aim at hub"),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, movementCompensatedShootingTarget, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
-				.setTargetPosition(() -> ShooterCalculations.hoodInterpolation(target.get().getDistance(robotPose.get().getTranslation()))),
+				.setTargetPosition(
+					() -> ShooterCalculations
+						.hoodInterpolation(movementCompensatedShootingTarget.get().getDistance(robotPose.get().getTranslation()))
+				),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, target, logPath), "Aim at hub"),
+			turret.asSubsystemCommand(new TurretAimAtHubCommand(turret, robotPose, movementCompensatedShootingTarget, logPath), "Aim at hub"),
 			hood.getCommandsBuilder()
-				.setTargetPosition(() -> ShooterCalculations.hoodInterpolation(robotPose.get().getTranslation().getDistance(target.get()))),
+				.setTargetPosition(
+					() -> ShooterCalculations
+						.hoodInterpolation(robotPose.get().getTranslation().getDistance(movementCompensatedShootingTarget.get()))
+				),
 			flyWheel.getCommandBuilder()
 				.setVelocityAsSupplier(
-					() -> ShooterCalculations.flywheelInterpolation(robotPose.get().getTranslation().getDistance(target.get()))
+					() -> ShooterCalculations
+						.flywheelInterpolation(robotPose.get().getTranslation().getDistance(movementCompensatedShootingTarget.get()))
 				)
 		);
 	}
@@ -94,8 +101,8 @@ public class ShooterStateHandler {
 		);
 	}
 
-	public Translation2d getTarget() {
-		return target.get();
+	public Translation2d getMovementCompensatedShootingTarget() {
+		return movementCompensatedShootingTarget.get();
 	}
 
 }
