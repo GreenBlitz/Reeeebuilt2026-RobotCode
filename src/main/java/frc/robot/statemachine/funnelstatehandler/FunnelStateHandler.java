@@ -79,8 +79,8 @@ public class FunnelStateHandler {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
 				belly.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getBellyVoltage()),
-                    new SequentialCommandGroup(new WaitCommand(0.05),omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()))
-                    ).until(() -> this.isBallAtSensor()),
+				new SequentialCommandGroup(new WaitCommand(0.05), omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()))
+			).until(() -> this.isBallAtSensor()),
 			new ParallelCommandGroup(omni.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
 		);
 	}
