@@ -31,6 +31,22 @@ public class DriverStationUtil {
 		return alliance;
 	}
 
+	public static boolean isCurrentShiftOfStartingAlliance(int isCurrentShiftOfStartingAlliance) {
+		return isCurrentShiftOfStartingAlliance != 0;
+	}
+
+	public static DriverStation.Alliance oppositeAllianceOfStartingAlliance(DriverStation.Alliance startingAlliance) {
+		switch (startingAlliance) {
+			case Red -> {
+				return DriverStation.Alliance.Blue;
+			}
+			case Blue -> {
+				return DriverStation.Alliance.Red;
+			}
+		}
+		return DEFAULT_ALLIANCE;
+	}
+
 	public static DriverStation.Alliance whichHubIsActive() {
 		if (DriverStation.isAutonomous()) {
 			return DEFAULT_ALLIANCE;
@@ -40,23 +56,14 @@ public class DriverStationUtil {
 			return DEFAULT_ALLIANCE;
 		}
 		if (DriverStation.isTeleop()) {
-			int currentTime = (int) Math.floor(TimeUtil.getCurrentTimeSeconds());
-			int timeSinceTeleopInit = currentTime - (int) Math.floor(RobotManager.getTeleopStartTime());
-			int howMuchShiftsPassed = (timeSinceTeleopInit / 25);
-			int shiftEvenOrOdd = howMuchShiftsPassed % 2;
+			int isTheCurrentShiftAShiftOfTheStartingAlliance = (((int) Math.floor(TimeUtil.getCurrentTimeSeconds())
+				- (int) Math.floor(RobotManager.getTeleopStartTime())) / 25) % 2;
+
 			DriverStation.Alliance startingAlliance = getStartingAlliance();
-			if ((startingAlliance == DriverStation.Alliance.Red) && (shift == 0)) {
-				return DriverStation.Alliance.Blue;
-			}
-			if ((startingAlliance == DriverStation.Alliance.Red)) {
-				return DriverStation.Alliance.Red;
-			}
-			if ((startingAlliance == DriverStation.Alliance.Blue) && (shift != 0)) {
-				return DriverStation.Alliance.Blue;
-			}
-			if ((startingAlliance == DriverStation.Alliance.Blue)) {
-				return DriverStation.Alliance.Red;
-			}
+
+			return isCurrentShiftOfStartingAlliance(isTheCurrentShiftAShiftOfTheStartingAlliance)
+				? startingAlliance
+				: oppositeAllianceOfStartingAlliance(startingAlliance);
 		}
 		return DEFAULT_ALLIANCE;
 	}
