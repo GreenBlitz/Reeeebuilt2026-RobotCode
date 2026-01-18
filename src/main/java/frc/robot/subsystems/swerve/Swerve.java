@@ -29,7 +29,6 @@ import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
-import frc.utils.math.StatisticsMath;
 import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -52,7 +51,7 @@ public class Swerve extends GBSubsystem {
 	private final SwerveStateHandler stateHandler;
 
 	private final boolean[] areModulesSkidding;
-	private final Translation2d[] moduleDifferentials;
+	private final Translation2d[] moduleTranslationalStates;
 
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
@@ -73,7 +72,7 @@ public class Swerve extends GBSubsystem {
 		this.stateHandler = new SwerveStateHandler(this);
 
 		this.areModulesSkidding = new boolean[ModuleUtil.ModulePosition.values().length];
-		this.moduleDifferentials = new Translation2d[ModuleUtil.ModulePosition.values().length];
+		this.moduleTranslationalStates = new Translation2d[ModuleUtil.ModulePosition.values().length];
 
 		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
 		this.headingSupplier = () -> getIMUAbsoluteYaw().getValue();
@@ -354,7 +353,7 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
-	public Translation2d getModuleDifferential(int whichModule, double robotYawAngularVelocityRadiansPerSecond) {
+	public Translation2d getModuleTranslation(int whichModule, double robotYawAngularVelocityRadiansPerSecond) {
 		SwerveModuleState moduleRotationalState = kinematics
 				.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
 		SwerveModuleState moduleState = modules.getCurrentStates()[whichModule];
@@ -363,24 +362,23 @@ public class Swerve extends GBSubsystem {
 				.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
 	}
 
-	public void updateModuleDifferentials(){
+	public void updateModuleTranslations(){
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
 		for (int i = 0; i < ModuleUtil.ModulePosition.values().length; i++) {
-			moduleDifferentials[i] = getModuleDifferential(i, robotYawAngularVelocityRadiansPerSecond );
+			moduleTranslationalStates[i] = getModuleTranslation(i, robotYawAngularVelocityRadiansPerSecond );
 		}
 	}
 
 	private void updatesAreModulesSkidding() {
-		updateModuleDifferentials();
+		updateModuleTranslations();
 
 		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
 				getRobotRelativeVelocity().vxMetersPerSecond,
 				getRobotRelativeVelocity().vyMetersPerSecond
 		);
 
-		Translation2d majority = StatisticsMath.getMajority(moduleDifferentials, 0).getSecond();
-		for (int i = 0; i < moduleDifferentials.length; i++) {
-			areModulesSkidding[i] = !ToleranceMath.isNear(robotTranslationalVelocityMetersPerSecond, moduleDifferentials[i], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
+		for (int i = 0; i < moduleTranslationalStates.length; i++) {
+			areModulesSkidding[i] = !ToleranceMath.isNear(robotTranslationalVelocityMetersPerSecond, moduleTranslationalStates[i], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
 		}
 	}
 
