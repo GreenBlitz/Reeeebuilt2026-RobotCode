@@ -52,7 +52,7 @@ public class Swerve extends GBSubsystem {
 	private final SwerveStateHandler stateHandler;
 
 	private final boolean[] areModulesSkidding;
-	private final Translation2d[] moduleToRobotDifferentials;
+	private final Translation2d[] moduleDifferentials;
 
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
@@ -73,7 +73,7 @@ public class Swerve extends GBSubsystem {
 		this.stateHandler = new SwerveStateHandler(this);
 
 		this.areModulesSkidding = new boolean[ModuleUtil.ModulePosition.values().length];
-		this.moduleToRobotDifferentials = new Translation2d[ModuleUtil.ModulePosition.values().length];
+		this.moduleDifferentials = new Translation2d[ModuleUtil.ModulePosition.values().length];
 
 		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
 		this.headingSupplier = () -> getIMUAbsoluteYaw().getValue();
@@ -354,36 +354,34 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
-	public Translation2d getModuleToRobotDifferential(int whichModule, double robotYawAngularVelocityRadiansPerSecond) {
+	public Translation2d getModuleDifferential(int whichModule, double robotYawAngularVelocityRadiansPerSecond) {
 		SwerveModuleState moduleRotationalState = kinematics
-			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
+				.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[whichModule];
 		SwerveModuleState moduleState = modules.getCurrentStates()[whichModule];
 
-		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
-			getRobotRelativeVelocity().vxMetersPerSecond,
-			getRobotRelativeVelocity().vyMetersPerSecond
-		);
-		Translation2d moduleTranslationalState = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
-			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
-		return robotTranslationalVelocityMetersPerSecond.minus(moduleTranslationalState);
+		return new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
+				.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+	}
+
+	public void updateModuleDifferentials(){
+		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
+		for (int i = 0; i < ModuleUtil.ModulePosition.values().length; i++) {
+			moduleDifferentials[i] = getModuleDifferential(i, robotYawAngularVelocityRadiansPerSecond );
+		}
 	}
 
 	private void updatesAreModulesSkidding() {
-		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
-		Translation2d[] moduleToRobotDiff = new Translation2d[] {
-			new Translation2d(5, 5),
-			new Translation2d(5, 7),
-			new Translation2d(5, 5),
-			new Translation2d(5, 5)};
-		/*
-		 * for (int i = 0; i < moduleToRobotDifferentials.length; i++) { moduleToRobotDifferentials[i] = getModuleToRobotDifferential(i,
-		 * robotYawAngularVelocityRadiansPerSecond); }
-		 */
-		Translation2d majority = StatisticsMath.getMajority(moduleToRobotDiff, 0).getSecond();
-		for (int i = 0; i < moduleToRobotDiff.length; i++) {
-			areModulesSkidding[i] = !ToleranceMath.isNear(majority, moduleToRobotDiff[i], 0.5);
+		updateModuleDifferentials();
+
+		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
+				getRobotRelativeVelocity().vxMetersPerSecond,
+				getRobotRelativeVelocity().vyMetersPerSecond
+		);
+
+		Translation2d majority = StatisticsMath.getMajority(moduleDifferentials, 0).getSecond();
+		for (int i = 0; i < moduleDifferentials.length; i++) {
+			areModulesSkidding[i] = !ToleranceMath.isNear(robotTranslationalVelocityMetersPerSecond, moduleDifferentials[i], SwerveConstants.SKID_TOLERANCE_VELOCITY_METERS_PER_SECOND_MODULE_TO_ROBOT);
 		}
-		Logger.recordOutput("modulesBS", moduleToRobotDiff);
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
