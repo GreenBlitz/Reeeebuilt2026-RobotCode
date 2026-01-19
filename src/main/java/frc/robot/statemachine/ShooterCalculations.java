@@ -69,13 +69,19 @@ public class ShooterCalculations {
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
 			2.0,
-			Rotation2d.fromDegrees(62),
+			Rotation2d.fromDegrees(45),
 			2.5,
-			Rotation2d.fromDegrees(62),
+			Rotation2d.fromDegrees(45),
 			3.0,
-			Rotation2d.fromDegrees(43),
-			3.7,
-			Rotation2d.fromDegrees(33)
+			Rotation2d.fromDegrees(45),
+			3.5,
+			Rotation2d.fromDegrees(45),
+			4.0,
+			Rotation2d.fromDegrees(40),
+			4.5,
+			Rotation2d.fromDegrees(40),
+			5.0,
+			Rotation2d.fromDegrees(40)
 		)
 	);
 
@@ -84,13 +90,19 @@ public class ShooterCalculations {
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
 			2.0,
-			Rotation2d.fromDegrees(39600),
+			Rotation2d.fromDegrees(17000),
 			2.5,
-			Rotation2d.fromDegrees(28000),
+			Rotation2d.fromDegrees(18000),
 			3.0,
-			Rotation2d.fromDegrees(10000),
-			3.7,
-			Rotation2d.fromDegrees(12000)
+			Rotation2d.fromDegrees(19000),
+			3.5,
+			Rotation2d.fromDegrees(20000),
+			4.0,
+			Rotation2d.fromDegrees(22000),
+			4.5,
+			Rotation2d.fromDegrees(24000),
+			5.0,
+			Rotation2d.fromDegrees(26000)
 		)
 	);
 
