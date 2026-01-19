@@ -28,7 +28,6 @@ public class CameraPoseCalibration extends Command {
 	private Translation3d robotRelativeCameraTranslationSum;
 	private Pose3d currentRobotRelativeCameraPose;
 
-
 	/**
 	 *
 	 * @param cameraName                        - the name of the limelight in use
@@ -76,8 +75,6 @@ public class CameraPoseCalibration extends Command {
 		Logger.processInputs(logPath, cameraPoseCalibrationInputs);
 		this.cameraPoseCalibrationInputs.cameraPoseFieldRelative = cameraPoseCalibrationInputs.cameraPoseFieldRelative
 			.rotateAround(tagPoseFieldRelative.getTranslation(), tagPoseFieldRelative.getRotation().unaryMinus());
-
-
 		currentRobotRelativeCameraPose = calculateRobotRelativeCameraPosition();
 		sumMeasurementsValues();
 		Logger.recordOutput(logPath + "/current/currentPose", currentRobotRelativeCameraPose);
