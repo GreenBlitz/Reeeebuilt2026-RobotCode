@@ -9,6 +9,7 @@ import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -28,22 +29,22 @@ public class RobotCommander extends GBSubsystem {
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> robot.getPoseEstimator().getEstimatedPose());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
-//		setDefaultCommand(
-//			new ConditionalCommand(
-//				asSubsystemCommand(Commands.none(), "Disabled"),
-//				new InstantCommand(
-//					() -> CommandScheduler.getInstance()
-//						.schedule(
-//							new DeferredCommand(
-//								() -> endState(currentState),
-//								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
-//							)
-//						)
-//				),
-//				this::isSubsystemRunningIndependently
-//			)
-//
-//		);
+		setDefaultCommand(
+			new ConditionalCommand(
+				asSubsystemCommand(Commands.none(), "Disabled"),
+				new InstantCommand(
+					() -> CommandScheduler.getInstance()
+						.schedule(
+							new DeferredCommand(
+								() -> endState(currentState),
+								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getOmni(), robot.getFlyWheel())
+							)
+						)
+				),
+				this::isSubsystemRunningIndependently
+			)
+
+		);
 	}
 
 	public RobotState getCurrentState() {
@@ -84,7 +85,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
-		);
+		)&& superstructure.isObjectIn();
 	}
 
 	private boolean calibrationIsReadyToShoot() {

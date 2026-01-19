@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.RobotManager;
-import frc.constants.field.Field;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
@@ -52,7 +51,6 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -195,13 +193,6 @@ public class Robot {
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
-
-		Logger.recordOutput(
-			"distance",
-			ShooterCalculations.getFieldRelativeTurretPosition(poseEstimator.getEstimatedPose(), turret.getPosition())
-				.getTranslation()
-				.getDistance(Field.getHubMiddle())
-		);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
