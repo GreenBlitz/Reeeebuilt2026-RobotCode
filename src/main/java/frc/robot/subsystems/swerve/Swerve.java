@@ -339,8 +339,9 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
-	public boolean isOnBump(){
-		return imuSignals.rollSignal().isGreater(SwerveConstants.ROLL_ON_BUMP) || imuSignals.pitchSignal().isGreater(SwerveConstants.PITCH_ON_BUMP);
+	public boolean isOnBump() {
+		return imuSignals.rollSignal().isGreater(SwerveConstants.ROLL_ON_BUMP)
+			|| imuSignals.pitchSignal().isGreater(SwerveConstants.PITCH_ON_BUMP);
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
