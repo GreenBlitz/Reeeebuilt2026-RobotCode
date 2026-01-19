@@ -13,6 +13,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.poseestimator.IPoseEstimator;
@@ -53,6 +54,7 @@ public class Robot {
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
+	private final Roller belly;
 
 	private final RobotCommander robotCommander;
 
@@ -85,6 +87,9 @@ public class Robot {
 		this.omni = omniAndDigitalInput.getFirst();
 		this.funnelDigitalInput = omniAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> omni.setBrake(true), () -> omni.setBrake(false));
+
+		this.belly = createBelly();
+		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -263,6 +268,17 @@ public class Robot {
 		);
 	}
 
+	private Roller createBelly() {
+		return SparkMaxRollerBuilder.build(
+			BellyConstants.LOG_PATH,
+			IDs.SparkMAXIDs.BELLY,
+			BellyConstants.IS_INVERTED,
+			BellyConstants.GEAR_RATIO,
+			BellyConstants.CURRENT_LIMIT,
+			BellyConstants.MOMENT_OF_INERTIA
+		);
+	}
+
 	public IDigitalInput getIntakeRollerSensor() {
 		return intakeRollerSensor;
 	}
@@ -285,6 +301,10 @@ public class Robot {
 
 	public Roller getOmni() {
 		return omni;
+	}
+
+	public Roller getBelly() {
+		return belly;
 	}
 
 	public IDigitalInput getFunnelDigitalInput() {
