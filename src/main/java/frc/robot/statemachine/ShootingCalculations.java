@@ -53,10 +53,9 @@ public class ShootingCalculations {
 
 	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
-		Rotation2d targetPosition = Rotation2d.fromDegrees(
-			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
-				- robotPose.getRotation().getDegrees()
-		);
+		Rotation2d targetPosition = FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle())
+			.getAngle()
+			.minus(robotPose.getRotation());
 		return TurretCalculations.getWrappedTurretPosition(targetPosition);
 	}
 
@@ -94,11 +93,11 @@ public class ShootingCalculations {
 		)
 	);
 
-	private static Rotation2d hoodInterpolation(double distanceFromTower) {
+	public static Rotation2d hoodInterpolation(double distanceFromTower) {
 		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
-	private static Rotation2d flywheelInterpolation(double distanceFromTower) {
+	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
