@@ -31,11 +31,11 @@ public class CameraPoseCalibration extends Command {
 	/**
 	 *
 	 * @param cameraName                        - the name of the limelight in use
-	 * @param robotXAxisDistanceFromTag         -themiddle of the robot's distance from the tag , IMPORTANT "real life measurement"
+	 * @param robotXAxisDistanceFromTag         -the middle of the robot's distance from the tag , IMPORTANT "real life measurement"
 	 * @param tagCenterHeightFromGroundInMeters - IMPORTANT !!! the middle of the tag height relative to THE FLOOR , "real life measurement"
 	 * @param tagPoseFieldRelative              - synthetic measurement
-	 * @param neededNumberOfCycles              - number of measurements decided by user* IMPORTANT SPECIFICATIONS; limelight is funny so we
-	 *                                          invert y-axis; tag must be 180 to the field.; Y difference from the tag is 0.;
+	 * @param neededNumberOfCycles              - number of measurements decided by user IMPORTANT SPECIFICATIONS; limelight is funny so we
+	 *                                          invert y-axis; Y difference from the tag is 0.;
 	 *
 	 */
 	public CameraPoseCalibration(
