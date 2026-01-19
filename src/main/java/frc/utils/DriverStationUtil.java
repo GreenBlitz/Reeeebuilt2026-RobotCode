@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class DriverStationUtil {
 
-	protected static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
+	static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
 
 	public static DriverStation.Alliance getAlliance() {
 		return DriverStation.getAlliance().orElse(DEFAULT_ALLIANCE);
