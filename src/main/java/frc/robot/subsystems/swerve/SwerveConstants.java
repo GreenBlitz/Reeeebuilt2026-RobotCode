@@ -48,8 +48,8 @@ public record SwerveConstants(
 
 	public static final double MIN_COLLISION_G_FORCE = 2;
 
-	public static final Rotation2d ROLL_ON_BUMP = new Rotation2d();
-	public static final Rotation2d PITCH_ON_BUMP = new Rotation2d();
+	public static final Rotation2d TILTED_ROBOT_ROLL_TOLERANCE = new Rotation2d();
+	public static final Rotation2d TILTED_ROBOT_PITCH_TOLERANCE = new Rotation2d();
 
 	public static final Pose2d DEADBANDS = new Pose2d(0.0092, 0.0092, Rotation2d.fromRadians(0.0115));
 	static final Rotation2d CALIBRATION_MODULE_ANGLE_TOLERANCE = Rotation2d.fromDegrees(3);
