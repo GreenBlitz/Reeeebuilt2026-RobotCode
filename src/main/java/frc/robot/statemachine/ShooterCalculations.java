@@ -100,9 +100,9 @@ public class ShooterCalculations {
 			4.0,
 			Rotation2d.fromDegrees(22000),
 			4.5,
-			Rotation2d.fromDegrees(24000),
+			Rotation2d.fromDegrees(23000),
 			5.0,
-			Rotation2d.fromDegrees(26000)
+			Rotation2d.fromDegrees(24500)
 		)
 	);
 
