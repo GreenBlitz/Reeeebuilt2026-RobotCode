@@ -195,8 +195,13 @@ public class Robot {
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
-		
-		Logger.recordOutput("distance", ShooterCalculations.getFieldRelativeTurretPosition(poseEstimator.getEstimatedPose(), turret.getPosition()).getTranslation().getDistance(Field.getHubMiddle()));
+
+		Logger.recordOutput(
+			"distance",
+			ShooterCalculations.getFieldRelativeTurretPosition(poseEstimator.getEstimatedPose(), turret.getPosition())
+				.getTranslation()
+				.getDistance(Field.getHubMiddle())
+		);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();

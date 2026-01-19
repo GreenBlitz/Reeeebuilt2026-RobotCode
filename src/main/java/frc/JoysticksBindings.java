@@ -29,7 +29,7 @@ public class JoysticksBindings {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
 
 		mainJoystickButtons(robot);
-		
+
 		secondJoystickButtons(robot);
 		thirdJoystickButtons(robot);
 		fourthJoystickButtons(robot);

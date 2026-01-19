@@ -9,7 +9,6 @@ import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -98,10 +97,7 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command shootSequence() {
 		return new RepeatCommand(
-			new SequentialCommandGroup(
-				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT)
-			)
+			new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT))
 		);
 	}
 
