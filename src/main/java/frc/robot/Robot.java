@@ -130,6 +130,17 @@ public class Robot {
 		}
 	}
 
+	private void updateAllSubsystems() {
+		turret.update();
+		fourBar.update();
+		hood.update();
+		flyWheel.update();
+		omni.update();
+		intakeRoller.update();
+		belly.update();
+	}
+
+
 	public boolean isTurretMoveLegal() {
 		return ShooterCalculations.isTurretMoveLegal(
 			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
