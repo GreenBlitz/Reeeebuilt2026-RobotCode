@@ -72,7 +72,7 @@ public class ShooterCalculations {
 			Rotation2d.fromDegrees(62),
 			2.5,
 			Rotation2d.fromDegrees(62),
-			2.5,
+			3.0,
 			Rotation2d.fromDegrees(43),
 			3.7,
 			Rotation2d.fromDegrees(33)
@@ -87,7 +87,7 @@ public class ShooterCalculations {
 			Rotation2d.fromDegrees(39600),
 			2.5,
 			Rotation2d.fromDegrees(28000),
-			2.5,
+			3.0,
 			Rotation2d.fromDegrees(10000),
 			3.7,
 			Rotation2d.fromDegrees(12000)

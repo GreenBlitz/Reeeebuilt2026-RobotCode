@@ -16,9 +16,9 @@ import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
 
-	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
+	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN, 0.15);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
-	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD);
+	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD, 0.15);
 	private static final SmartJoystick FOURTH_JOYSTICK = new SmartJoystick(JoystickPorts.FOURTH);
 	private static final SmartJoystick FIFTH_JOYSTICK = new SmartJoystick(JoystickPorts.FIFTH);
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
@@ -29,6 +29,7 @@ public class JoysticksBindings {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
 
 		mainJoystickButtons(robot);
+		
 		secondJoystickButtons(robot);
 		thirdJoystickButtons(robot);
 		fourthJoystickButtons(robot);
