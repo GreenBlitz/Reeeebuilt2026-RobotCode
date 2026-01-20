@@ -2,13 +2,14 @@ package frc.utils;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.RobotManager;
 import frc.constants.GamePeriodConstants;
-import frc.utils.driverstation.DriverStationConstants;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 
 import java.util.Optional;
+
 
 public class HubUtil {
 
@@ -18,9 +19,9 @@ public class HubUtil {
 			new Alert("Unknown starting alliance", Alert.AlertType.kWarning).set(true);
 			return Optional.empty();
 		}
-		Optional<DriverStation.Alliance> alliance = switch (gameData.charAt(0)) {
-			case DriverStationConstants.BLUE_ALLIANCE -> Optional.of(DriverStation.Alliance.Blue);
-			case DriverStationConstants.RED_ALLIANCE -> Optional.of(DriverStation.Alliance.Red);
+		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.responseToEnum(gameData.charAt(0))) {
+			case BLUE -> Optional.of(DriverStation.Alliance.Blue);
+			case RED -> Optional.of(DriverStation.Alliance.Red);
 			default -> Optional.empty();
 		};
 		if (alliance.isEmpty()) {
@@ -72,7 +73,8 @@ public class HubUtil {
 		}
 
 		if (getAutoWinnerAlliance().isPresent() && isShiftOfStartingAlliance().isPresent()) {
-			return isAutoWinnerShift() ? getAutoWinnerAlliance() : isShiftOfStartingAlliance();
+//			return isAutoWinnerShift() ? getAutoWinnerAlliance() : isShiftOfStartingAlliance();
+			return Optional.of(DriverStation.Alliance.Blue);
 		}
 		return Optional.empty();
 	}
