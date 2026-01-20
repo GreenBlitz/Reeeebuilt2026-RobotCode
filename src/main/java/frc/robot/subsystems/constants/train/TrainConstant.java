@@ -1,10 +1,10 @@
-package frc.robot.subsystems.constants.omni;
+package frc.robot.subsystems.constants.train;
 
 import frc.robot.RobotConstants;
 
-public class OmniConstant {
+public class TrainConstant {
 
-	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Omni";
+	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Train";
 	public static final String FUNNEL_INPUT_NAME = "FunnelSensor";
 	public static final double GEAR_RATIO = 25.0 / 6.0;
 	public static final int CURRENT_LIMIT = 20;
