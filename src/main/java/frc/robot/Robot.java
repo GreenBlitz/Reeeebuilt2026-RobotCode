@@ -33,11 +33,9 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
-import frc.utils.HubUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -143,23 +141,6 @@ public class Robot {
 		BusChain.refreshAll();
 		resetSubsystems();
 		simulationManager.logPoses();
-		Logger.recordOutput("shifts passed", HubUtil.getShiftsPassed());
-		Logger.recordOutput("time left for active", HubUtil.getTimeLeftUntilInactive());
-		Logger.recordOutput("time since teleop init", HubUtil.getTimeSinceTeleopInitSeconds());
-		Logger.recordOutput("is auto winner shift", HubUtil.isAutoWinnerShift());
-		Logger.recordOutput("time until shift ends", HubUtil.timeUntilCurrentShiftEndsSeconds());
-		Logger.recordOutput("is my robot alliance auto winner", HubUtil.isRobotAllianceAutoWinner());
-		Logger.recordOutput("is my hub active", HubUtil.isMyHubActive());
-		if (HubUtil.getActiveHub().isPresent()) {
-			Logger.recordOutput("get active hub", HubUtil.getActiveHub().get());
-		}
-		if (HubUtil.getAutoWinnerAlliance().isPresent()) {
-			Logger.recordOutput("get auto winner alliance", HubUtil.getAutoWinnerAlliance().get());
-		}
-		Logger.recordOutput("time until active", HubUtil.getTimeLeftUntilActive());
-		if (HubUtil.getStartingAlliance().isPresent()) {
-			Logger.recordOutput("is shift of starting alliance", HubUtil.getStartingAlliance().get());
-		}
 
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
