@@ -33,7 +33,7 @@ import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
 import frc.robot.subsystems.constants.hood.HoodConstants;
-import frc.robot.subsystems.constants.omni.OmniConstant;
+import frc.robot.subsystems.constants.train.TrainConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
@@ -63,7 +63,7 @@ public class Robot {
 	private final Arm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
-	private final Roller omni;
+	private final Roller train;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -90,8 +90,8 @@ public class Robot {
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		this.omni = createOmniAndSignal();
-		BrakeStateManager.add(() -> omni.setBrake(true), () -> omni.setBrake(false));
+		this.train = createTrain();
+		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
 		this.funnelDigitalInput = createFunnelDI();
 
@@ -160,7 +160,7 @@ public class Robot {
 		// Mechanisms reset check, should be last
 		CommandScheduler.getInstance()
 			.schedule(
-				new RunCommand(() -> {}, swerve, flyWheel, turret, hood, omni).until(() -> mechanismsResetCheckInputs.debouncedValue)
+				new RunCommand(() -> {}, swerve, flyWheel, turret, hood, train).until(() -> mechanismsResetCheckInputs.debouncedValue)
 					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
 					.ignoringDisable(true)
 			);
@@ -263,14 +263,14 @@ public class Robot {
 		);
 	}
 
-	private Roller createOmniAndSignal() {
+	private Roller createTrain() {
 		return SparkMaxRollerBuilder.build(
-			OmniConstant.LOG_PATH,
-			IDs.SparkMAXIDs.OMNI,
-			OmniConstant.IS_INVERTED,
-			OmniConstant.GEAR_RATIO,
-			OmniConstant.CURRENT_LIMIT,
-			OmniConstant.MOMENT_OF_INERTIA
+			TrainConstant.LOG_PATH,
+			IDs.SparkMAXIDs.TRAIN,
+			TrainConstant.IS_INVERTED,
+			TrainConstant.GEAR_RATIO,
+			TrainConstant.CURRENT_LIMIT,
+			TrainConstant.MOMENT_OF_INERTIA
 		);
 	}
 
@@ -293,8 +293,8 @@ public class Robot {
 		return flyWheel;
 	}
 
-	public Roller getOmni() {
-		return omni;
+	public Roller getTrain() {
+		return train;
 	}
 
 	public Roller getBelly() {
