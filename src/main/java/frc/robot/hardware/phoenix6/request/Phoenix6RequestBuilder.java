@@ -10,7 +10,7 @@ public class Phoenix6RequestBuilder {
 			setPoint -> positionVoltage.withVelocity(setPoint.getRotations()),
 			setPoint -> positionVoltage.withPosition(setPoint.getRotations()),
 			Rotation2d.fromRotations(positionVoltage.Position),
-			positionVoltage,
+			positionVoltage.withEnableFOC(enableFOC),
 			positionVoltage::withFeedForward,
 			defaultArbitraryFeedForward,
 			Rotation2d.fromRotations(positionVoltage.Velocity)
