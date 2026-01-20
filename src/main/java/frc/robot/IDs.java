@@ -54,7 +54,7 @@ public class IDs {
 
 		public final static SparkMaxDeviceID INTAKE_ROLLERS = new SparkMaxDeviceID(6, SparkLowLevel.MotorType.kBrushless);
 
-		public final static SparkMaxDeviceID OMNI = new SparkMaxDeviceID(25, SparkLowLevel.MotorType.kBrushless);
+		public final static SparkMaxDeviceID TRAIN = new SparkMaxDeviceID(25, SparkLowLevel.MotorType.kBrushless);
 
 		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(60, SparkLowLevel.MotorType.kBrushless);
 
