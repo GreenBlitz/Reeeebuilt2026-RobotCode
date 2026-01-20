@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -33,9 +34,14 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightPipeline;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.math.StandardDeviations2D;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -60,6 +66,8 @@ public class Robot {
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
+
+	private final Limelight limelight;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -107,6 +115,32 @@ public class Robot {
 			swerve.getGyroAbsoluteYaw().getTimestamp(),
 			swerve.getIMUAcceleration()
 		);
+
+        this.limelight = new Limelight(
+                "limelight",
+                "Vision",
+                new Pose3d(1.2087, 0.021429, 0.110145, new Rotation3d(Math.toRadians(-179.8), Math.toRadians(27.65), Math.toRadians(-1.09))),
+                LimelightPipeline.APRIL_TAG
+        );
+
+        limelight.setMT1StdDevsCalculation(
+                LimelightStdDevCalculations.getMT1StdDevsCalculation(
+                        limelight,
+                        new StandardDeviations2D(0.5),
+                        new StandardDeviations2D(0.05),
+                        new StandardDeviations2D(0.5),
+                        new StandardDeviations2D(-0.02)
+                )
+        );
+        limelight.setMT1PoseFilter(
+                LimelightFilters.megaTag1Filter(
+                        limelight,
+                        timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+                        poseEstimator::isIMUOffsetCalibrated,
+                        new Translation2d(0.1, 0.1),
+                        Rotation2d.fromDegrees(10)
+                )
+        );
 
 		robotCommander = new RobotCommander("/RobotCommander", this);
 
