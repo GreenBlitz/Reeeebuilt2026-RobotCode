@@ -31,8 +31,8 @@ public class FunnelStateHandler {
 		this.sensor = sensor;
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
-		this.trainCalibrationVoltage = new LoggedNetworkNumber("Tunable/TrainPower", 0);
-		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyPower", 0);
+		this.trainCalibrationVoltage = new LoggedNetworkNumber("Tunable/TrainVoltage", 0);
+		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyVoltage", 0);
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 		sensor.updateInputs(sensorInputsAutoLogged);
