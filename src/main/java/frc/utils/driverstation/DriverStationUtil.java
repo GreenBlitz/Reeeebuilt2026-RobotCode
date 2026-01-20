@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public class DriverStationUtil {
 
-	static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
-
 	public static Optional<DriverStation.Alliance> getAlliance() {
 		return DriverStation.getAlliance();
 	}
@@ -58,50 +56,27 @@ public class DriverStationUtil {
 		return DriverStation.getMatchType() != DriverStation.MatchType.None;
 	}
 
-	public static Optional<DriverStation.Alliance> isTransitionShift() {
-		if (HubUtil.getTimeSinceTeleopInitSeconds() <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS) {
-			return DriverStationUtil.getAlliance();
-		}
-		return Optional.empty();
+	public static boolean isTransitionShift() {
+		return HubUtil.getTimeSinceTeleopInitSeconds() <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS;
 	}
 
-	public static Optional<Boolean> hasGameEnded() {
-		if (HubUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodConstants.GAME_END_TIME_SECONDS) {
-			return Optional.of(true);
-		}
-		return Optional.empty();
+	public static boolean hasGameEnded() {
+		return HubUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodConstants.GAME_END_TIME_SECONDS;
 	}
 
-	public static Optional<DriverStation.Alliance> hasEndGameStarted() {
-		if (HubUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
-			return DriverStationUtil.getAlliance();
-		}
-		return Optional.empty();
-	}
-
-	public static Optional<Boolean> isNotTeleop() {
-		if (!DriverStation.isTeleop()) {
-			return Optional.of(true);
-		}
-		return Optional.empty();
-	}
-
-	public static Optional<DriverStation.Alliance> isAuto() {
-		if (DriverStation.isAutonomous()) {
-			return DriverStationUtil.getAlliance();
-		}
-		return Optional.empty();
+	public static boolean hasEndGameStarted() {
+		return HubUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP;
 	}
 
 	public static double timeUntilTransitionShiftEnds() {
-		if (DriverStationUtil.isTransitionShift().isPresent()) {
+		if (DriverStationUtil.isTransitionShift()) {
 			return GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS - HubUtil.getTimeSinceTeleopInitSeconds();
 		}
 		return -1;
 	}
 
 	public static double timeUntilEndgameEnds() {
-		if (DriverStationUtil.hasEndGameStarted().isPresent()) {
+		if (DriverStationUtil.hasEndGameStarted()) {
 			return GamePeriodConstants.ENDGAME_LENGTH_SECONDS
 				- (HubUtil.getTimeSinceTeleopInitSeconds() - GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP);
 		}
@@ -109,7 +84,7 @@ public class DriverStationUtil {
 	}
 
 	public static double timeUntilShiftEnds() {
-		if (DriverStationUtil.isNotTeleop().isEmpty()) {
+		if (DriverStation.isTeleop()) {
 			return GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS
 				- ((HubUtil.getTimeSinceTeleopInitSeconds() - GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS)
 					% GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS);

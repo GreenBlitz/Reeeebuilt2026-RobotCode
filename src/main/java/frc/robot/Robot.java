@@ -149,11 +149,17 @@ public class Robot {
 		Logger.recordOutput("is auto winner shift", HubUtil.isAutoWinnerShift());
 		Logger.recordOutput("time until shift ends", HubUtil.timeUntilCurrentShiftEndsSeconds());
 		Logger.recordOutput("is my robot alliance auto winner", HubUtil.isRobotAllianceAutoWinner());
-		Logger.recordOutput("is my hub active", HubUtil.isMyHubActive().get());
-		Logger.recordOutput("get active hub", HubUtil.getActiveHub().get());
-		Logger.recordOutput("get auto winner alliance", HubUtil.getAutoWinnerAlliance().get());
-		Logger.recordOutput("time until active", HubUtil.getTimeLeftUntilActive().get());
-		Logger.recordOutput("is shift of starting alliance", HubUtil.isShiftOfStartingAlliance().get());
+		Logger.recordOutput("is my hub active", HubUtil.isMyHubActive());
+		if (HubUtil.getActiveHub().isPresent()) {
+			Logger.recordOutput("get active hub", HubUtil.getActiveHub().get());
+		}
+		if (HubUtil.getAutoWinnerAlliance().isPresent()) {
+			Logger.recordOutput("get auto winner alliance", HubUtil.getAutoWinnerAlliance().get());
+		}
+		Logger.recordOutput("time until active", HubUtil.getTimeLeftUntilActive());
+		if (HubUtil.getStartingAlliance().isPresent()) {
+			Logger.recordOutput("is shift of starting alliance", HubUtil.getStartingAlliance().get());
+		}
 
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());

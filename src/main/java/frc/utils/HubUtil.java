@@ -35,12 +35,11 @@ public class HubUtil {
 		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
 	}
 
-	public static Optional<DriverStation.Alliance> isShiftOfStartingAlliance() {
+	public static Optional<DriverStation.Alliance> getStartingAlliance() {
 		if (getAutoWinnerAlliance().isPresent()) {
 			return switch (getAutoWinnerAlliance().get()) {
 				case Red -> Optional.of(DriverStation.Alliance.Blue);
 				case Blue -> Optional.of(DriverStation.Alliance.Red);
-				default -> Optional.empty();
 			};
 		}
 		return Optional.empty();
@@ -56,59 +55,40 @@ public class HubUtil {
 	}
 
 	public static Optional<DriverStation.Alliance> getActiveHub() {
-		if (DriverStationUtil.isAuto().isPresent()) {
-			return DriverStationUtil.isAuto();
-		} else if (DriverStationUtil.isNotTeleop().isPresent()) {
+		if (DriverStation.isAutonomous()) {
+			return DriverStationUtil.getAlliance();
+		} else if (!DriverStation.isTeleop()) {
 			return Optional.empty();
-		} else if (DriverStationUtil.isDisabled()) {
-			return Optional.empty();
+		} else if (DriverStationUtil.isTransitionShift()) {
+			return DriverStationUtil.getAlliance();
 		}
 
-		if (DriverStationUtil.isTransitionShift().isPresent()) {
-			return DriverStationUtil.isTransitionShift();
-		} else if (DriverStationUtil.hasGameEnded().isPresent()) {
-			return Optional.empty();
-		} else if (DriverStationUtil.hasEndGameStarted().isPresent()) {
-			return DriverStationUtil.hasEndGameStarted();
-		}
-
-		if (getAutoWinnerAlliance().isPresent() && isShiftOfStartingAlliance().isPresent()) {
-//			return isAutoWinnerShift() ? getAutoWinnerAlliance() : isShiftOfStartingAlliance();
-			return Optional.of(DriverStation.Alliance.Blue);
-		}
-		return Optional.empty();
+		return isAutoWinnerShift() ? getAutoWinnerAlliance() : getStartingAlliance();
 	}
 
-	public static Optional<Boolean> isMyHubActive() {
-		if (getActiveHub().isPresent()) {
-			return Optional.of(getActiveHub() == DriverStationUtil.getAlliance());
-		}
-		return Optional.empty();
+	public static boolean isMyHubActive() {
+		return getActiveHub().equals(DriverStationUtil.getAlliance());
 	}
 
 	public static double timeUntilCurrentShiftEndsSeconds() {
-		if (DriverStationUtil.isTransitionShift().isPresent()) {
+		if (DriverStationUtil.isTransitionShift()) {
 			return DriverStationUtil.timeUntilTransitionShiftEnds();
-		} else if (DriverStationUtil.hasEndGameStarted().isPresent()) {
+		} else if (DriverStationUtil.hasEndGameStarted()) {
 			return DriverStationUtil.timeUntilEndgameEnds();
 		}
 		return DriverStationUtil.timeUntilShiftEnds();
 	}
 
-	public static Optional<Double> getTimeLeftUntilActive() {
-		if (isMyHubActive().isPresent()) {
-			if (isMyHubActive().get()) {
-				return Optional.of(0.0);
-			}
+	public static double getTimeLeftUntilActive() {
+		if (isMyHubActive()) {
+			return 0.0;
 		}
-		return Optional.of(timeUntilCurrentShiftEndsSeconds());
+		return timeUntilCurrentShiftEndsSeconds();
 	}
 
 	public static double getTimeLeftUntilInactive() {
-		if (isMyHubActive().isPresent()) {
-			if (!isMyHubActive().get() || DriverStationUtil.hasGameEnded().isPresent()) {
-				return 0;
-			}
+		if (!isMyHubActive() || DriverStationUtil.hasGameEnded()) {
+			return 0.0;
 		}
 		return timeUntilCurrentShiftEndsSeconds();
 	}
