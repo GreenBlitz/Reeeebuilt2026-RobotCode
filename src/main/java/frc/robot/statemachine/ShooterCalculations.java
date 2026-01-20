@@ -43,9 +43,9 @@ public class ShooterCalculations {
 		// TODO: add prediction to pose...
 
 		Rotation2d angleToTarget = hubTranslation.minus(turretFieldRelativeTranslation).getAngle();
-		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(angleToTarget.unaryMinus());
 
 		// Turret FeedForward
+		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(angleToTarget.unaryMinus());
 		Rotation2d targetTurretVelocityCausedByTranslation = Rotation2d
 			.fromRadians(-targetRelativeTurretVelocity.getY() / turretToHubDistanceMeters);
 		Rotation2d turretTargetVelocityRPS = Rotation2d
