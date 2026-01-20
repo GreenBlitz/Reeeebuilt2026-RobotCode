@@ -21,8 +21,6 @@ public class IDs {
 		public final static Phoenix6DeviceID FLYWHEEL = new Phoenix6DeviceID(10, BusChain.ROBORIO);
 		public final static Phoenix6DeviceID FLYWHEEL_FOLLOWER = new Phoenix6DeviceID(11, BusChain.ROBORIO);
 
-		public final static Phoenix6DeviceID FOUR_BAR = new Phoenix6DeviceID(12, BusChain.ROBORIO);
-
 		public final static Phoenix6DeviceID HOOD = new Phoenix6DeviceID(20, BusChain.ROBORIO);
 
 		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.ROBORIO);
@@ -52,9 +50,7 @@ public class IDs {
 
 	public static class SparkMAXIDs {
 
-		public final static SparkMaxDeviceID INTAKE_ROLLERS = new SparkMaxDeviceID(6, SparkLowLevel.MotorType.kBrushless);
-
-		public final static SparkMaxDeviceID OMNI = new SparkMaxDeviceID(4, SparkLowLevel.MotorType.kBrushless);
+		public final static SparkMaxDeviceID TRAIN = new SparkMaxDeviceID(4, SparkLowLevel.MotorType.kBrushless);
 
 		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(7, SparkLowLevel.MotorType.kBrushless);
 
