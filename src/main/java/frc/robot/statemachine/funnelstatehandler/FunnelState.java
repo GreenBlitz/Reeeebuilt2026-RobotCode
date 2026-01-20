@@ -9,21 +9,21 @@ public enum FunnelState {
 	DRIVE,
 	CALIBRATION;
 
-	private final double omniVoltage;
+	private final double trainVoltage;
 	private final double bellyVoltage;
 
-	FunnelState(double omniVoltage, double bellyVoltage) {
-		this.omniVoltage = omniVoltage;
+	FunnelState(double trainVoltage, double bellyVoltage) {
+		this.trainVoltage = trainVoltage;
 		this.bellyVoltage = bellyVoltage;
 	}
 
 	FunnelState() {
-		this.omniVoltage = 0;
+		this.trainVoltage = 0;
 		this.bellyVoltage = 0;
 	}
 
-	public double getOmniVoltage() {
-		return omniVoltage;
+	public double getTrainVoltage() {
+		return trainVoltage;
 	}
 
 	public double getBellyVoltage() {
