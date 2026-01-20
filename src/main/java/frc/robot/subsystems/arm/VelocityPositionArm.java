@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.VelocityPositionRequest;
+import org.littletonrobotics.junction.Logger;
 
 public class VelocityPositionArm extends Arm {
 
@@ -30,6 +31,12 @@ public class VelocityPositionArm extends Arm {
 	@Override
 	public void setTargetPosition(Rotation2d targetPosition) {
 		setTargetPositionVelocity(targetPosition, Rotation2d.kZero);
+	}
+
+	@Override
+	public void log() {
+		super.log();
+		Logger.recordOutput(getLogPath() + "/VelocityPositionArmTargetVelocity", velocityPositionRequest.getVelocityRPS());
 	}
 
 }

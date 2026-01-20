@@ -97,7 +97,7 @@ public class TalonFXArmBuilder {
 		);
 	}
 
-	public static Arm buildMotionMagicArm(
+	public static VelocityPositionArm buildMotionMagicArm(
 		String logPath,
 		Phoenix6DeviceID deviceID,
 		boolean isInverted,
@@ -132,6 +132,9 @@ public class TalonFXArmBuilder {
 
 		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
 
+		VelocityPositionRequest velocityPositionRequest = Phoenix6RequestBuilder
+			.build(new PositionVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
+
 		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
 			.build(new MotionMagicVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
 		TalonFXConfiguration configuration = (buildConfiguration(
@@ -147,7 +150,7 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
-		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
+		return new VelocityPositionArm(logPath, motor, signals, voltageRequest, velocityPositionRequest, configuration.Slot0.kG);
 	}
 
 	public static VelocityPositionArm buildVelocityPositionArm(

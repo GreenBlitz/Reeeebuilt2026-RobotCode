@@ -3,7 +3,7 @@ package frc.robot.statemachine.shooterstatehandler;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.statemachine.ShooterCalculations;
-import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,11 +11,11 @@ import java.util.function.Supplier;
 
 public class TurretSafeMoveToPosition extends Command {
 
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final String logPath;
 	private final Supplier<Rotation2d> targetPosition;
 
-	public TurretSafeMoveToPosition(Arm turret, Supplier<Rotation2d> targetPosition, String logPath) {
+	public TurretSafeMoveToPosition(VelocityPositionArm turret, Supplier<Rotation2d> targetPosition, String logPath) {
 		this.turret = turret;
 		this.targetPosition = targetPosition;
 		this.logPath = logPath;
@@ -34,7 +34,9 @@ public class TurretSafeMoveToPosition extends Command {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", false);
 		}
 
-		turret.setTargetPosition(targetAngle);
+//		turret.setTargetPosition(targetAngle);
+
+		turret.setTargetPositionVelocity(Rotation2d.fromRotations(19), Rotation2d.fromRotations(0.2));
 	}
 
 }
