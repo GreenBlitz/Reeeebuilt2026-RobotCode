@@ -51,6 +51,7 @@ public class RobotCommander extends GBSubsystem {
 									robot.getFourBar(),
 									robot.getHood(),
 									robot.getTrain(),
+									robot.getBelly(),
 									robot.getFlyWheel()
 								)
 							)
