@@ -5,6 +5,12 @@ Turret Calibration
 - [ ] Check motor ID
 - [ ] Check bus chain
 
+#### General
+- [ ] Check turret offset from robot
+- [ ] Decide 0 (should be 0 when heads like robot)
+- [ ] Max position
+- [ ] Min position
+
 #### Limits
 - [ ] Check current limit
 - [ ] Check forward limit
@@ -13,7 +19,7 @@ Turret Calibration
 - [ ] max acceleration
 
 #### Configs
-- [ ] Check invertion
+- [ ] Check inverted (should be the same as robot heading direction)
 - [ ] Check gear ratio
 
 #### Motion magic
@@ -25,8 +31,3 @@ Turret Calibration
 - [ ] Calibrate kP
 - [ ] Calibrate kI
 - [ ] Calibrate kD
-
-#### General
-- [ ] Check turret radius
-- [ ] Max position
-- [ ] Min position

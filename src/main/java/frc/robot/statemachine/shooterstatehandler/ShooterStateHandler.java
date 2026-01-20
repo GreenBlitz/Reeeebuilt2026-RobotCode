@@ -59,7 +59,7 @@ public class ShooterStateHandler {
 				new TurretSafeMoveToPosition(
 					turret,
 					() -> shootingParamsSupplier.get().targetTurretPosition(),
-					() -> shootingParamsSupplier.get().targetTurretVelocityRotation2dPerSecond(),
+					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
 					logPath
 				),
 				"Safe move to position"
@@ -75,13 +75,13 @@ public class ShooterStateHandler {
 				new TurretSafeMoveToPosition(
 					turret,
 					() -> shootingParamsSupplier.get().targetTurretPosition(),
-					() -> shootingParamsSupplier.get().targetTurretVelocityRotation2dPerSecond(),
+					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
 					logPath
 				),
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRotation2dPerSecond())
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 		);
 	}
 
