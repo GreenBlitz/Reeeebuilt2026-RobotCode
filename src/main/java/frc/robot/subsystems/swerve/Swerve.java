@@ -110,19 +110,15 @@ public class Swerve extends GBSubsystem {
 			.times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
 
-	public Rotation2d getFixedGyroYaw() {
-		Rotation2d roll = imuSignals.rollSignal().getLatestValue();
-		Rotation2d pitch = imuSignals.pitchSignal().getLatestValue();
-		Rotation2d yaw = imuSignals.yawSignal().getLatestValue();
-		Rotation3d original = new Rotation3d(roll.getRadians(), pitch.getRadians(), yaw.getRadians());
+    public Rotation2d getFixedGyroYaw() {
+        Rotation2d roll = imuSignals.rollSignal().getLatestValue();
+        Rotation2d pitch = imuSignals.pitchSignal().getLatestValue();
+        Rotation2d yaw = imuSignals.yawSignal().getLatestValue();
+        Rotation3d original = new Rotation3d(roll.getRadians(), pitch.getRadians(), yaw.getRadians());
 
-		Rotation3d fixedYawPose = new Rotation3d(original.getQuaternion());
-		fixedYawPose.rotateBy(new Rotation3d(0, original.getY(), 0));
-		fixedYawPose.rotateBy(new Rotation3d(original.getX(), 0, 0));
-
-		Rotation2d fixedYaw = Rotation2d.fromRadians(fixedYawPose.getZ());
-		return fixedYaw;
-	}
+        Rotation2d fixedYaw = Rotation2d.fromRadians(original.getZ() - ((original.getY() + original.getX())));
+        return fixedYaw;
+    }
 
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
 		PathPlannerUtil.configPathPlanner(
