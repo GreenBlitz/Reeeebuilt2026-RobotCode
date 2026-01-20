@@ -165,8 +165,7 @@ public class TalonFXArmBuilder {
 		double arbitraryFeedForward,
 		Rotation2d forwardSoftwareLimit,
 		Rotation2d reverseSoftwareLimit,
-		ArmSimulationConstants simulationConstants,
-		VelocityPositionRequest velocityPositionRequest
+		ArmSimulationConstants simulationConstants
 	) {
 		TalonFXMotor motor = new TalonFXMotor(
 			logPath,
@@ -187,6 +186,9 @@ public class TalonFXArmBuilder {
 		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
 			.build(new PositionVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
 
+
+		VelocityPositionRequest velocityPositionRequest = Phoenix6RequestBuilder.build(new PositionVoltage(0), arbitraryFeedForward, true);
+
 		TalonFXConfiguration configuration = buildConfiguration(
 			feedbackConfigs,
 			simulationSlotsConfig,
@@ -198,15 +200,7 @@ public class TalonFXArmBuilder {
 			currentLimit
 		);
 		motor.applyConfiguration(configuration);
-		return new VelocityPositionArm(
-			logPath,
-			motor,
-			signals,
-			voltageRequest,
-			velocityPositionRequest,
-			positionRequest,
-			configuration.Slot0.kG
-		);
+		return new VelocityPositionArm(logPath, motor, signals, voltageRequest, velocityPositionRequest, configuration.Slot0.kG);
 	}
 
 	private static TalonFXConfiguration buildConfiguration(

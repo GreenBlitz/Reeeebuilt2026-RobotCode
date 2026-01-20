@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public class Phoenix6VelocityPositionRequest extends Phoenix6FeedForwardRequest implements VelocityPositionRequest {
 
-	private Consumer<Rotation2d> setVelocity;
+	private final Consumer<Rotation2d> setVelocity;
 	private Rotation2d velocity;
 	private Consumer<Rotation2d> setPosition;
 
@@ -22,13 +22,9 @@ public class Phoenix6VelocityPositionRequest extends Phoenix6FeedForwardRequest 
 		Rotation2d velocity
 
 	) {
-		super(position, controlRequest, setVelocity, setFeedForward, defaultArbitraryFeedForward);
+		super(position, controlRequest, setPosition, setFeedForward, defaultArbitraryFeedForward);
 		this.setVelocity = setVelocity;
 		this.velocity = velocity;
-	}
-
-	public void withPosition(Rotation2d position) {
-		setPosition.accept(position);
 	}
 
 	@Override
