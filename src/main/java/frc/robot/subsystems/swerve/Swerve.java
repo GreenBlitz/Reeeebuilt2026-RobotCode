@@ -59,6 +59,8 @@ public class Swerve extends GBSubsystem {
 
 	public Swerve(SwerveConstants constants, Modules modules, IIMU imu, IMUSignals imuSignals) {
 		super(constants.logPath());
+		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
+		this.driversPowerInputs = new ChassisPowers();
 
 		this.constants = constants;
 		this.driveRadiusMeters = SwerveMath.calculateDriveRadiusMeters(modules.getModulePositionsFromCenterMeters());
@@ -66,17 +68,14 @@ public class Swerve extends GBSubsystem {
 		this.imu = imu;
 		this.imuSignals = imuSignals;
 
+		moduleTranslationalVectors = new Translation2d[ModuleUtil.ModulePosition.values().length];
+		isSkidding = false;
+
 		this.kinematics = new SwerveDriveKinematics(modules.getModulePositionsFromCenterMeters());
-		this.headingStabilizer = new HeadingStabilizer(this.constants);
-		this.commandsBuilder = new SwerveCommandsBuilder(this);
-		this.stateHandler = new SwerveStateHandler(this);
-
-		this.moduleTranslationalVectors = new Translation2d[ModuleUtil.ModulePosition.values().length];
-		this.isSkidding = false;
-
-		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
 		this.headingSupplier = () -> getIMUAbsoluteYaw().getValue();
-		this.driversPowerInputs = new ChassisPowers();
+		this.headingStabilizer = new HeadingStabilizer(this.constants);
+		this.stateHandler = new SwerveStateHandler(this);
+		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
 		update();
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
@@ -190,6 +189,7 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
+
 		Logger.recordOutput(getLogPath() + "/isSkidding/", isSkidding);
 	}
 
