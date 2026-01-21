@@ -1,6 +1,7 @@
 package frc.utils.time;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.RobotManager;
 import frc.utils.alerts.Alert;
 import frc.utils.alerts.AlertManager;
 import frc.utils.alerts.PeriodicAlert;
@@ -42,6 +43,10 @@ public class TimeUtil {
 
 	public static double getLatestCycleTimeSeconds() {
 		return currentCycleStartingTimeSeconds - lastCycleStartingTimeSeconds;
+	}
+
+	public static double getTimeSinceTeleopInitSeconds() {
+		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
 	}
 
 }

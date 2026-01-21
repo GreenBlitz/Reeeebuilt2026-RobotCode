@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
+import frc.utils.HubUtil;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -99,6 +100,7 @@ public class RobotManager extends LoggedRobot {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
 		robot.periodic();
+		HubUtil.refreshAlliances();
 		AlertManager.reportAlerts();
 	}
 

@@ -2,12 +2,13 @@ package frc.utils.driverstation;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-import java.util.Optional;
 
 public class DriverStationUtil {
 
-	public static Optional<DriverStation.Alliance> getAlliance() {
-		return DriverStation.getAlliance();
+	public static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
+
+	public static DriverStation.Alliance getAlliance() {
+		return DriverStation.Alliance.Blue;
 	}
 
 	public static boolean isBlueAlliance() {

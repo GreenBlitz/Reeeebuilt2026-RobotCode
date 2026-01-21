@@ -11,14 +11,13 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.AngleTransform;
 import frc.utils.math.FieldMath;
 
-import java.util.Optional;
 
 public class Field {
 
-	public static final Optional<DriverStation.Alliance> RELATIVE_FIELD_CONVENTION_ALLIANCE = Optional.of(DriverStation.Alliance.Blue);
+	public static final DriverStation.Alliance RELATIVE_FIELD_CONVENTION_ALLIANCE = DriverStation.Alliance.Blue;
 
 	public static boolean isFieldConventionAlliance() {
-		return DriverStationUtil.getAlliance().equals(RELATIVE_FIELD_CONVENTION_ALLIANCE);
+		return DriverStationUtil.getAlliance() == RELATIVE_FIELD_CONVENTION_ALLIANCE;
 	}
 
 	public static final double LENGTH_METERS = 16.54048;

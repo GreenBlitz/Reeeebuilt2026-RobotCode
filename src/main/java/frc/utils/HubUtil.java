@@ -2,59 +2,57 @@ package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.GameSpecificMessageResponse;
-import frc.RobotManager;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 
-import java.util.Optional;
-
 
 public class HubUtil {
 
-	public static Optional<DriverStation.Alliance> autoWinnerAlliance = getAutoWinnerAlliance();
-	public static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
+	private static DriverStation.Alliance autoWinnerAlliance = getAutoWinningAlliance();
+	private static DriverStation.Alliance autoLosingAlliance = getAutoLosingAlliance();
 
-	public static Optional<DriverStation.Alliance> getAutoWinnerAlliance() {
-		String gameData = DriverStation.getGameSpecificMessage();
-		if (gameData.isEmpty()) {
-			alertWarningForEmptyAlliance("Unknown auto winner alliance");
-		}
-		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.responseToEnum(gameData.charAt(0))) {
-			case BLUE -> Optional.of(DriverStation.Alliance.Blue);
-			case RED -> Optional.of(DriverStation.Alliance.Red);
-			case EMPTY -> Optional.empty();
+	private static DriverStation.Alliance getAutoWinningAlliance() {
+//		String gameData = DriverStation.getGameSpecificMessage();
+//		if (gameData.isEmpty()) {
+//			alertWarningForEmptyAlliance("Unknown auto winner alliance");
+//		}
+		DriverStation.Alliance alliance = switch (GameSpecificMessageResponse.responseToEnum('B')) {
+			case BLUE -> DriverStation.Alliance.Blue;
+			case RED -> DriverStation.Alliance.Red;
+			case DEFAULT -> DriverStationUtil.DEFAULT_ALLIANCE;
 		};
-		if (alliance.isEmpty()) {
-			alertWarningForEmptyAlliance("Didnt get auto winning alliance");
+		if (alliance == DriverStationUtil.DEFAULT_ALLIANCE) {
+			alertWarningForEmptyAlliance("Didn't get auto winning alliance");
 		}
 		return alliance;
 	}
 
-	public static Optional<DriverStation.Alliance> alertWarningForEmptyAlliance(String name) {
+	public static DriverStation.Alliance alertWarningForEmptyAlliance(String name) {
 		new Alert(Alert.AlertType.WARNING, name).report();
-		return Optional.empty();
+		return DriverStationUtil.DEFAULT_ALLIANCE;
 	}
 
 	public static void refreshAlliances() {
-		if (autoWinnerAlliance.isEmpty()) {
-			autoWinnerAlliance = getAutoWinnerAlliance();
+		if (autoWinnerAlliance == DriverStationUtil.DEFAULT_ALLIANCE) {
+			autoWinnerAlliance = getAutoWinningAlliance();
 			autoLosingAlliance = getAutoLosingAlliance();
 		}
 	}
 
-	public static double getTimeSinceTeleopInitSeconds() {
-		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
+	private static DriverStation.Alliance getAutoLosingAlliance() {
+		return switch (autoWinnerAlliance) {
+			case Red -> DriverStation.Alliance.Blue;
+			case Blue -> DriverStation.Alliance.Red;
+		};
 	}
 
-	public static Optional<DriverStation.Alliance> getAutoLosingAlliance() {
-		if (autoWinnerAlliance.isPresent()) {
-			return switch (autoWinnerAlliance.get()) {
-				case Red -> Optional.of(DriverStation.Alliance.Blue);
-				case Blue -> Optional.of(DriverStation.Alliance.Red);
-			};
-		}
-		return Optional.empty();
+	public static DriverStation.Alliance getAutoWinnerAlliance() {
+		return autoWinnerAlliance;
+	}
+
+	public static DriverStation.Alliance getAutoLoserAlliance() {
+		return autoLosingAlliance;
 	}
 
 	public static boolean isAutoWinnerShift() {
@@ -62,15 +60,15 @@ public class HubUtil {
 	}
 
 	public static int getShiftsPassed() {
-		return (int) (getTimeSinceTeleopInitSeconds() - GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS)
+		return (int) (TimeUtil.getTimeSinceTeleopInitSeconds() - GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS)
 			/ GamePeriodUtils.ALLIANCE_SHIFT_LENGTH_SECONDS;
 	}
 
-	public static Optional<DriverStation.Alliance> getActiveHub() {
+	public static DriverStation.Alliance getActiveHub() {
 		if (DriverStation.isAutonomous()) {
 			return DriverStationUtil.getAlliance();
 		} else if (!DriverStation.isTeleop() || GamePeriodUtils.hasGameEnded()) {
-			return Optional.empty();
+			return DriverStationUtil.DEFAULT_ALLIANCE;
 		} else if (GamePeriodUtils.isTransitionShift() || GamePeriodUtils.hasEndGameStarted()) {
 			return DriverStationUtil.getAlliance();
 		}

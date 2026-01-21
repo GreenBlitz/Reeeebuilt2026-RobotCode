@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -33,9 +34,14 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.utils.HubUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
+
+import java.util.logging.LoggingPermission;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -141,6 +147,13 @@ public class Robot {
 		BusChain.refreshAll();
 		resetSubsystems();
 		simulationManager.logPoses();
+		Logger.recordOutput("which hub is active", HubUtil.getActiveHub());
+		Logger.recordOutput("shifts passed", HubUtil.getShiftsPassed());
+		Logger.recordOutput("is our hub active", HubUtil.isOurHubActive());
+		Logger.recordOutput("time left until active", HubUtil.getTimeLeftUntilActive());
+		Logger.recordOutput("time until shift ends", HubUtil.timeUntilCurrentShiftEndsSeconds());
+		Logger.recordOutput("time until inactive", HubUtil.getTimeLeftUntilInactive());
+		Logger.recordOutput("time since teleop init", TimeUtil.getTimeSinceTeleopInitSeconds());
 
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());

@@ -5,7 +5,7 @@ public enum GameSpecificMessageResponse {
 
 	RED('R'),
 	BLUE('B'),
-	EMPTY(' ');
+	DEFAULT(' ');
 
 	private final char value;
 
@@ -21,7 +21,7 @@ public enum GameSpecificMessageResponse {
 		return switch (value) {
 			case 'R' -> RED;
 			case 'B' -> BLUE;
-			default -> EMPTY;
+			default -> DEFAULT;
 		};
 	}
 
