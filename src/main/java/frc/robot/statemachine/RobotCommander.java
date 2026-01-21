@@ -120,7 +120,7 @@ public class RobotCommander extends GBSubsystem {
 	public Command CalibrateShootInMotion() {
 		return new SequentialCommandGroup(
 			driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-			driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+			driveWith(RobotState.SHOOT)
 		);
 	}
 
