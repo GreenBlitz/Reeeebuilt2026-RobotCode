@@ -93,8 +93,7 @@ public class Roller extends GBSubsystem {
 		return isBehindPosition(targetPosition);
 	}
 
-	@Override
-	public void subsystemPeriodic() {
+	public void update() {
 		roller.updateSimulation();
 		roller.updateInputs(voltageSignal, currentSignal, positionSignal);
 		Logger.recordOutput(getLogPath() + "/PositionTarget", targetPosition);

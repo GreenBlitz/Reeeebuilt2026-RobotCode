@@ -131,16 +131,27 @@ public class Robot {
 		}
 	}
 
+	private void updateAllSubsystems() {
+		swerve.update();
+		fourBar.update();
+		intakeRoller.update();
+		belly.update();
+		train.update();
+		turret.update();
+		hood.update();
+		flyWheel.update();
+	}
+
 	public boolean isTurretMoveLegal() {
 		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {
 		BusChain.refreshAll();
+		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
 
-		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
