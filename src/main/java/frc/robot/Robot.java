@@ -211,7 +211,7 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	private Arm createTurret() {
+	private VelocityPositionArm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
 			TurretConstants.MAX_POSITION,
 			TurretConstants.MIN_POSITION,
@@ -219,7 +219,7 @@ public class Robot {
 			TurretConstants.MOMENT_OF_INERTIA,
 			TurretConstants.TURRET_RADIUS
 		);
-		return TalonFXArmBuilder.buildArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			TurretConstants.LOG_PATH,
 			IDs.TalonFXIDs.TURRET,
 			TurretConstants.IS_INVERTED,
@@ -256,7 +256,7 @@ public class Robot {
 			HoodConstants.MOMENT_OF_INERTIA,
 			HoodConstants.HOOD_LENGTH_METERS
 		);
-		return TalonFXArmBuilder.buildArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
 			IDs.TalonFXIDs.HOOD,
 			HoodConstants.IS_INVERTED,
@@ -297,7 +297,7 @@ public class Robot {
 		);
 	}
 
-	public Arm getTurret() {
+	public VelocityPositionArm getTurret() {
 		return turret;
 	}
 

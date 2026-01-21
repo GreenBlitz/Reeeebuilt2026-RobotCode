@@ -67,7 +67,6 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
 		applySuperstructureCalibrationBindings(usedJoystick, robot);
-
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
