@@ -179,7 +179,6 @@ public class Robot {
 
 	private void updateAllSubsystems() {
 		swerve.update();
-		train.update();
 		belly.update();
 		train.update();
 		turret.update();
@@ -198,9 +197,9 @@ public class Robot {
 		simulationManager.logPoses();
 
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
-		swerve.update();
-		limelight.updateMT1();
+
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		limelight.updateMT1();
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 		ShootingCalculations
