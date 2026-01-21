@@ -1,7 +1,6 @@
 package frc.robot.statemachine.superstructure;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
@@ -80,7 +79,7 @@ public class TargetChecks {
 		boolean isAtTurretAtTarget = isTurretAtTarget(
 			robot.getTurret().getPosition(),
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
-				turretTolerance
+			turretTolerance
 		);
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
