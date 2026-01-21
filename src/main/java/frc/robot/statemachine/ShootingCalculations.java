@@ -10,7 +10,6 @@ import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
-import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
@@ -81,15 +80,6 @@ public class ShootingCalculations {
 			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
 			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
 		);
-	}
-
-	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
-		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
-		return FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().minus(robotPose.getRotation());
-	}
-
-	public static double getDistanceFromHub(Translation2d pose) {
-		return Field.getHubMiddle().getDistance(pose);
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
