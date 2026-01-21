@@ -30,18 +30,18 @@ public class ShootingCalculations {
 
 	public static ShootingParams calculateShootingParams(
 		Pose2d robotPose,
-		ChassisSpeeds speedsFieldRelative,
+		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
 		// Calculate distance from turret to target
 		Translation2d hubTranslation = Field.getHubMiddle();
-		Translation2d turretFieldRelativeTranslation = getFieldRelativeTurretPosition(robotPose);
-		double turretToHubDistanceMeters = hubTranslation.getDistance(turretFieldRelativeTranslation);
+		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
+		double turretToHubDistanceMeters = hubTranslation.getDistance(fieldRelativeTurretTranslation);
 
 		// Split Robot's Speeds
 		Translation2d robotTranslationalVelocity = new Translation2d(
-			speedsFieldRelative.vxMetersPerSecond,
-			speedsFieldRelative.vyMetersPerSecond
+			fieldRelativeSpeeds.vxMetersPerSecond,
+			fieldRelativeSpeeds.vyMetersPerSecond
 		);
 
 		// Turret Field Relative Velocity
@@ -53,7 +53,7 @@ public class ShootingCalculations {
 
 		// TODO: add prediction to pose...
 
-		Rotation2d angleToTarget = hubTranslation.minus(turretFieldRelativeTranslation).getAngle();
+		Rotation2d angleToTarget = hubTranslation.minus(fieldRelativeTurretTranslation).getAngle();
 
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(angleToTarget.unaryMinus());
