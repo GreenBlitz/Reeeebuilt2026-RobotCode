@@ -6,9 +6,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
-import frc.robot.statemachine.ShooterCalculations;
+import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
-import frc.robot.subsystems.arm.Arm;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,9 +35,8 @@ public class TargetChecks {
 		return isInAngleRange;
 	}
 
-	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
-		Rotation2d wantedAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turret.getPosition());
-		boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
+	private static boolean isTurretAtTarget(Rotation2d turretPosition, Rotation2d target, Rotation2d tolerance) {
+		boolean isAtHeading = MathUtil.isNear(target.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
 		Logger.recordOutput(isReadyToShootLogPath + "/isAtHeading", isAtHeading);
 		return isAtHeading;
 	}
@@ -65,9 +63,7 @@ public class TargetChecks {
 
 	public static boolean isReadyToShoot(
 		Robot robot,
-		Rotation2d wantedFlywheelVelocityRotation2dPerSecond,
 		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
-		Rotation2d wantedHoodPosition,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
@@ -81,17 +77,25 @@ public class TargetChecks {
 
 		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter);
 
-		boolean isAtHeading = isTurretAtTarget(robotPose, robot.getTurret(), headingTolerance.getDegrees());
+		boolean isAtTurretAtTarget = isTurretAtTarget(
+			robot.getTurret().getPosition(),
+			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			headingTolerance
+		);
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			wantedFlywheelVelocityRotation2dPerSecond,
+			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
 			flywheelVelocityRotation2dPerSecond,
 			flywheelVelocityToleranceRotation2dPerSecond
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(wantedHoodPosition, hoodPosition, hoodPositionTolerance);
+		boolean isHoodAtPosition = isHoodAtPositon(
+			ShootingCalculations.getShootingParams().targetHoodPosition(),
+			hoodPosition,
+			hoodPositionTolerance
+		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtHeading;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
 	public static boolean calibrationIsReadyToShoot(

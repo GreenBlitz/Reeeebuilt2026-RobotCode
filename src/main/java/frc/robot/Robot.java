@@ -5,14 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.ShooterCalculations;
+import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
@@ -35,13 +34,13 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.utils.HubUtil;
+import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.logging.LoggingPermission;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -136,15 +135,24 @@ public class Robot {
 		}
 	}
 
+	private void updateAllSubsystems() {
+		swerve.update();
+		fourBar.update();
+		intakeRoller.update();
+		belly.update();
+		train.update();
+		turret.update();
+		hood.update();
+		flyWheel.update();
+	}
+
 	public boolean isTurretMoveLegal() {
-		return ShooterCalculations.isTurretMoveLegal(
-			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
-			turret.getPosition()
-		);
+		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {
 		BusChain.refreshAll();
+		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
 		Logger.recordOutput("which hub is active", HubUtil.getActiveHub());
@@ -155,9 +163,9 @@ public class Robot {
 		Logger.recordOutput("time until inactive", HubUtil.getTimeLeftUntilInactive());
 		Logger.recordOutput("time since teleop init", TimeUtil.getTimeSinceTeleopInitSeconds());
 
-		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
+		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
