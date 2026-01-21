@@ -15,6 +15,8 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
 
+	public static final StandardDeviations2D VISION_STD_DEV_ON_BUMP_REDUCTION = new StandardDeviations2D();
+
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 
 	public static final Pose2d STARTING_ODOMETRY_POSE = new Pose2d();
@@ -26,5 +28,9 @@ public class WPILibPoseEstimatorConstants {
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
 	public static double IMU_ACCELERATION_BUFFER_SIZE_SECONDS = 2;
+
+	public static double IMU_ROLL_BUFFER_SIZE_SECONDS = 2;
+
+	public static double IMU_PITCH_BUFFER_SIZE_SECONDS = 2;
 
 }

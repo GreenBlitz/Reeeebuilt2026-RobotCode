@@ -9,6 +9,8 @@ public class OdometryData {
 
 	private double timestampSeconds = 0;
 	private SwerveModulePosition[] wheelPositions = new SwerveModulePosition[4];
+	private Optional<Rotation2d> imuRoll = Optional.empty();
+	private Optional<Rotation2d> imuPitch = Optional.empty();
 	private Optional<Rotation2d> imuYaw = Optional.empty();
 	private Optional<Double> imuAccelerationMagnitudeG = Optional.empty();
 
@@ -17,11 +19,15 @@ public class OdometryData {
 	public OdometryData(
 		double timestampSeconds,
 		SwerveModulePosition[] wheelPositions,
+		Optional<Rotation2d> imuRoll,
+		Optional<Rotation2d> imuPitch,
 		Optional<Rotation2d> imuYaw,
 		Optional<Double> imuAccelerationMagnitudeG
 	) {
 		this.timestampSeconds = timestampSeconds;
 		this.wheelPositions = wheelPositions;
+		this.imuRoll = imuRoll;
+		this.imuPitch = imuPitch;
 		this.imuYaw = imuYaw;
 		this.imuAccelerationMagnitudeG = imuAccelerationMagnitudeG;
 	}
@@ -32,6 +38,14 @@ public class OdometryData {
 
 	public SwerveModulePosition[] getWheelPositions() {
 		return wheelPositions;
+	}
+
+	public Optional<Rotation2d> getIMURoll() {
+		return imuRoll;
+	}
+
+	public Optional<Rotation2d> getIMUPitch() {
+		return imuPitch;
 	}
 
 	public Optional<Rotation2d> getIMUYaw() {
@@ -48,6 +62,14 @@ public class OdometryData {
 
 	public void setWheelPositions(SwerveModulePosition[] wheelPositions) {
 		this.wheelPositions = wheelPositions;
+	}
+
+	public void setIMURoll(Optional<Rotation2d> imuRoll) {
+		this.imuRoll = imuRoll;
+	}
+
+	public void setImuPitch(Optional<Rotation2d> imuPitch) {
+		this.imuPitch = imuPitch;
 	}
 
 	public void setIMUYaw(Optional<Rotation2d> imuYaw) {

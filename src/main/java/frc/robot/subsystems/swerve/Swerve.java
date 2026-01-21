@@ -239,6 +239,14 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().getNorm();
 	}
 
+	public Rotation2d getRobotRoll() {
+		return imuSignals.rollSignal().getLatestValue();
+	}
+
+	public Rotation2d getRobotPitch() {
+		return imuSignals.pitchSignal().getLatestValue();
+	}
+
 
 	protected void moveToPoseByPID(Pose2d currentPose, Pose2d targetPose) {
 		double xVelocityMetersPerSecond = constants.xMetersPIDController().calculate(currentPose.getX(), targetPose.getX());
