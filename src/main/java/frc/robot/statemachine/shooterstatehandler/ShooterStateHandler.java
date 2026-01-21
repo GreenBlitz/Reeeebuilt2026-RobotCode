@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,14 +12,20 @@ import java.util.function.Supplier;
 
 public class ShooterStateHandler {
 
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<ShootingParams> shootingParamsSupplier;
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
+	public ShooterStateHandler(
+		VelocityPositionArm turret,
+		Arm hood,
+		FlyWheel flyWheel,
+		Supplier<ShootingParams> shootingParamsSupplier,
+		String logPath
+	) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
