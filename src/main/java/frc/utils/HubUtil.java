@@ -88,7 +88,9 @@ public class HubUtil {
 	}
 
 	public static double timeUntilCurrentShiftEndsSeconds() {
-		if (TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_TIME_SECONDS) {
+		if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_TIME_SECONDS || TimeUtil.getTimeSinceTeleopInitSeconds() == -1
+		) {
 			return 0;
 		}
 		if (GamePeriodUtils.isTransitionShift()) {
