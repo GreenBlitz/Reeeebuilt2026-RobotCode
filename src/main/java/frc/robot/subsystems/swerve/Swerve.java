@@ -383,6 +383,8 @@ public class Swerve extends GBSubsystem {
 				)
 			)
 				isSkidding = true;
+			else
+				isSkidding = false;
 		}
 	}
 
