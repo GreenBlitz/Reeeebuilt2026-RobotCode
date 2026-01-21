@@ -141,7 +141,6 @@ public class Robot {
 		flyWheel.update();
 	}
 
-
 	public boolean isTurretMoveLegal() {
 		return ShooterCalculations.isTurretMoveLegal(
 			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
