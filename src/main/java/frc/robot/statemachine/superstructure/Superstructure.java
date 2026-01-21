@@ -70,6 +70,7 @@ public class Superstructure {
 			|| robot.getFlyWheel().getCommandBuilder().isSubsystemRunningIndependently()
 			|| robot.getHood().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getTrain().getCommandsBuilder().isSubsystemRunningIndependently()
+			|| robot.getBelly().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getTurret().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getFourBar().getCommandsBuilder().isSubsystemRunningIndependently();
 	}

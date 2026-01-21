@@ -1,6 +1,5 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,27 +7,36 @@ import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
+import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
-import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
 
-public class ShooterCalculations {
+public class ShootingCalculations {
 
-	private static final String LOG_PATH = "ShooterCalculations";
+	private static final String LOG_PATH = "ShootingCalculations";
+	private static ShootingParams shootingParams = new ShootingParams(
+		new Rotation2d(),
+		HoodConstants.MINIMUM_POSITION,
+		TurretConstants.MIN_POSITION,
+		new Rotation2d()
+	);
 
-	public static ShootingParams getShootingParams(
+	public static ShootingParams getShootingParams() {
+		return shootingParams;
+	}
+
+	public static ShootingParams calculateShootingParams(
 		Pose2d robotPose,
 		ChassisSpeeds speedsFieldRelative,
-		Rotation2d gyroYawAngularVelocity,
-		Rotation2d turretPosition
+		Rotation2d gyroYawAngularVelocity
 	) {
 		// Calculate distance from turret to target
 		Translation2d hubTranslation = Field.getHubMiddle();
-		Translation2d turretFieldRelativeTranslation = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
+		Translation2d turretFieldRelativeTranslation = getFieldRelativeTurretPosition(robotPose);
 		double turretToHubDistanceMeters = hubTranslation.getDistance(turretFieldRelativeTranslation);
 
 		// Split Robot's Speeds
@@ -55,7 +63,7 @@ public class ShooterCalculations {
 		Rotation2d turretTargetVelocityRPS = Rotation2d
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
-		Rotation2d turretTargetPosition = wrapTurretPosition(angleToTarget.minus(robotPose.getRotation()));
+		Rotation2d turretTargetPosition = angleToTarget.minus(robotPose.getRotation());
 		Rotation2d hoodTargetPosition = hoodInterpolation(turretToHubDistanceMeters);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation(turretToHubDistanceMeters);
 
@@ -66,62 +74,22 @@ public class ShooterCalculations {
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS);
 	}
 
-	public static double getDistanceFromHub(Translation2d pose) {
-		return Field.getHubMiddle().getDistance(pose);
-	}
-
-	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose, Rotation2d turretAngle) {
+	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
-		return new Pose2d(
-			new Translation2d(
-				robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
-				robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
-			),
-			Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + turretAngle.getDegrees())
+		return new Translation2d(
+			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
+			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
 		);
 	}
 
-	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Rotation2d position) {
-		boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
-			&& position.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
-
-		boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
-			&& position.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
-
-		boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
-			targetRobotRelative.getDegrees(),
-			TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees(),
-			TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees()
-		);
-
-		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
+	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
+		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
+		return FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().minus(robotPose.getRotation());
 	}
 
-	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose, Rotation2d turretPosition) {
-		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
-		Rotation2d targetAngle = Rotation2d.fromDegrees(
-			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
-				- robotPose.getRotation().getDegrees()
-		);
-		return wrapTurretPosition(targetAngle);
-	}
-
-	public static Rotation2d wrapTurretPosition(Rotation2d turretPosition) {
-		return Rotation2d.fromRadians(
-			MathUtil
-				.inputModulus(turretPosition.getRadians(), TurretConstants.MIN_POSITION.getRadians(), TurretConstants.MAX_POSITION.getRadians())
-		);
-	}
-
-	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
-		return Rotation2d.fromRadians(
-			MathUtil.inputModulus(
-				angle.getRadians() + tolerance.getRadians(),
-				TurretConstants.MIN_POSITION.getRadians(),
-				TurretConstants.MAX_POSITION.getRadians()
-			)
-		);
+	public static double getDistanceFromHub(Translation2d pose) {
+		return Field.getHubMiddle().getDistance(pose);
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
@@ -160,6 +128,10 @@ public class ShooterCalculations {
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
+	}
+
+	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
+		shootingParams = calculateShootingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 	}
 
 }

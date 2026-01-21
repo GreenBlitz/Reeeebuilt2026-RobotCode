@@ -3,7 +3,6 @@ package frc.robot.statemachine.shooterstatehandler;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.utils.LoggedNetworkRotation2d;
 
-
 public class ShooterConstants {
 
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
@@ -20,6 +19,5 @@ public class ShooterConstants {
 		"Tunable/FlywheelRotations",
 		Rotation2d.fromRotations(0.0)
 	);
-	public static final Rotation2d MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
 
 }

@@ -30,4 +30,14 @@ Turret Calibration
 #### PID
 - [ ] Calibrate kP
 - [ ] Calibrate kI
+<<<<<<< HEAD
 - [ ] Calibrate kD
+=======
+- [ ] Calibrate kD
+
+#### General
+- [ ] Check turret radius
+- [ ] Amount of degrees for the look at hub not to move
+- [ ] Max position
+- [ ] Min position
+>>>>>>> master

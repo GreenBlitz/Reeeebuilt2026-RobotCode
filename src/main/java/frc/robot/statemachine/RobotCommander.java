@@ -18,7 +18,6 @@ import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -32,16 +31,7 @@ public class RobotCommander extends GBSubsystem {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
-		this.superstructure = new Superstructure(
-			"StateMachine/Superstructure",
-			robot,
-			() -> ShooterCalculations.getShootingParams(
-				robot.getPoseEstimator().getEstimatedPose(),
-				robot.getSwerve().getFieldRelativeVelocity(),
-				robot.getSwerve().getYawAngularVelocityRPS(),
-				robot.getTurret().getPosition()
-			)
-		);
+		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
@@ -60,6 +50,7 @@ public class RobotCommander extends GBSubsystem {
 									robot.getFourBar(),
 									robot.getHood(),
 									robot.getTrain(),
+									robot.getBelly(),
 									robot.getFlyWheel()
 								)
 							)
@@ -99,13 +90,9 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		Supplier<Double> distanceFromHub = () -> ShooterCalculations
-			.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
-			ShooterCalculations.flywheelInterpolation(distanceFromHub.get()),
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			ShooterCalculations.hoodInterpolation(distanceFromHub.get()),
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
