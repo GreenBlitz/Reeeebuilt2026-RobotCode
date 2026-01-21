@@ -4,6 +4,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -40,9 +41,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		String logPath,
 		SwerveDriveKinematics kinematics,
 		SwerveModulePosition[] initialModulePositions,
-		Rotation2d initialIMURoll,
-		Rotation2d initialIMUPitch,
-		Rotation2d initialIMUYaw,
+		Rotation3d initialGyroOrientation,
 		double initialIMUAccelerationMagnitudeG,
 		double initialTimestampSeconds
 	) {
@@ -50,7 +49,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.kinematics = kinematics;
 		this.odometryEstimator = new Odometry<>(
 			kinematics,
-			initialIMUYaw,
+			Rotation2d.fromRadians(initialGyroOrientation.getY()),
 			initialModulePositions,
 			WPILibPoseEstimatorConstants.STARTING_ODOMETRY_POSE
 		);
@@ -63,9 +62,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.lastOdometryData = new OdometryData(
 			initialTimestampSeconds,
 			initialModulePositions,
-			Optional.of(initialIMURoll),
-			Optional.of(initialIMUPitch),
-			Optional.of(initialIMUYaw),
+			Optional.of(Rotation2d.fromRadians(initialGyroOrientation.getX())),
+			Optional.of(Rotation2d.fromRadians(initialGyroOrientation.getY())),
+			Optional.of(Rotation2d.fromRadians(initialGyroOrientation.getZ())),
 			Optional.of(initialIMUAccelerationMagnitudeG)
 		);
 		this.isIMUOffsetCalibrated = false;
@@ -211,11 +210,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		poseEstimator.addVisionMeasurement(
-			visionObservation.robotPose(),
-			visionObservation.timestampSeconds(),
-			getCollisionCompensatedVisionStdDevs(visionObservation)
-		);
+		Matrix<N3, N1> stdDevsForVisionObservation = getCollisionCompensatedVisionStdDevs(visionObservation);
+		stdDevsForVisionObservation = getBumpCompensatedVisionStdDevs(visionObservation);
+		poseEstimator.addVisionMeasurement(visionObservation.robotPose(), visionObservation.timestampSeconds(), stdDevsForVisionObservation);
 		this.lastVisionObservation = visionObservation;
 	}
 
@@ -232,8 +229,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public Matrix<N3, N1> getBumpCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
 		Optional<Rotation2d> imuRollAtVisionObservationTimestamp = imuRollBuffer.getSample(visionObservation.timestampSeconds());
 		Optional<Rotation2d> imuPitchAtVisionObservationTimestamp = imuPitchBuffer.getSample(visionObservation.timestampSeconds());
-		boolean isOnBump = imuRollAtVisionObservationTimestamp.get().getRadians() >= SwerveConstants.ROLL_ON_BUMP.getRadians()
-			|| imuPitchAtVisionObservationTimestamp.get().getRadians() >= SwerveConstants.PITCH_ON_BUMP.getRadians();
+		boolean isOnBump = imuRollAtVisionObservationTimestamp.get().getRadians()
+			>= SwerveConstants.ROLL_ON_BUMP.plus(SwerveConstants.ROLL_ON_BUMP_TOLERANCE).getRadians()
+			|| imuPitchAtVisionObservationTimestamp.get().getRadians()
+				>= SwerveConstants.PITCH_ON_BUMP.plus(SwerveConstants.PITCH_ON_BUMP_TOLERANCE).getRadians();
 
 		return isOnBump
 			? visionObservation.stdDevs().asColumnVector().minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_ON_BUMP_REDUCTION.asColumnVector())

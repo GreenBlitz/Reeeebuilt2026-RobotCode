@@ -350,8 +350,8 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isOnBump() {
-		return imuSignals.rollSignal().isGreater(SwerveConstants.ROLL_ON_BUMP)
-			|| imuSignals.pitchSignal().isGreater(SwerveConstants.PITCH_ON_BUMP);
+		return imuSignals.rollSignal().isGreater(SwerveConstants.ROLL_ON_BUMP.plus(SwerveConstants.ROLL_ON_BUMP_TOLERANCE))
+			|| imuSignals.pitchSignal().isGreater(SwerveConstants.PITCH_ON_BUMP.plus(SwerveConstants.PITCH_ON_BUMP_TOLERANCE));
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
