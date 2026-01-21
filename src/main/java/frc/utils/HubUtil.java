@@ -6,7 +6,6 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 
-
 public class HubUtil {
 
 	private static DriverStation.Alliance autoWinnerAlliance = getAutoWinningAlliance();

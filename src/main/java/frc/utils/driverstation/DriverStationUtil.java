@@ -2,7 +2,6 @@ package frc.utils.driverstation;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-
 public class DriverStationUtil {
 
 	public static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;

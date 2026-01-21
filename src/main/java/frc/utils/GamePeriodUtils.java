@@ -47,5 +47,4 @@ public class GamePeriodUtils {
 		return -1;
 	}
 
-
 }

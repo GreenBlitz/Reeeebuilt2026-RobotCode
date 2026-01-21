@@ -1,6 +1,5 @@
 package frc.utils.driverstation;
 
-
 public enum GameSpecificMessageResponse {
 
 	RED('R'),
