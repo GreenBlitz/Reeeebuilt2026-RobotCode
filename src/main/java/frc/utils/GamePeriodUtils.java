@@ -12,37 +12,41 @@ public class GamePeriodUtils {
 	public static final int GAME_END_TIME_SECONDS = ENDGAME_START_TIME_SECONDS_SINCE_TELEOP + ENDGAME_LENGTH_SECONDS;
 
 	public static boolean isTransitionShift() {
-		return TimeUtil.getTimeSinceTeleopInitSeconds() <= GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS;
+		if (TimeUtil.getTimeSinceTeleopInitSeconds() == -1) {
+			return false;
+		}
+		return TimeUtil.getTimeSinceTeleopInitSeconds() <= TRANSITION_SHIFT_TIME_SECONDS;
 	}
 
 	public static boolean hasGameEnded() {
-		return TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_TIME_SECONDS;
+		return TimeUtil.getTimeSinceTeleopInitSeconds() >= GAME_END_TIME_SECONDS;
 	}
 
 	public static boolean hasEndGameStarted() {
-		return TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP;
+		if (TimeUtil.getTimeSinceTeleopInitSeconds() == -1) {
+			return false;
+		}
+		return TimeUtil.getTimeSinceTeleopInitSeconds() >= ENDGAME_START_TIME_SECONDS_SINCE_TELEOP;
 	}
 
-	public static double timeUntilTransitionShiftEnds() {
-		if (GamePeriodUtils.isTransitionShift()) {
-			return GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds();
+	public static double getTimeUntilTransitionShiftEnds() {
+		if (isTransitionShift()) {
+			return TRANSITION_SHIFT_TIME_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds();
 		}
 		return -1;
 	}
 
-	public static double timeUntilEndgameEnds() {
-		if (GamePeriodUtils.hasEndGameStarted()) {
-			return GamePeriodUtils.ENDGAME_LENGTH_SECONDS
-				- (TimeUtil.getTimeSinceTeleopInitSeconds() - GamePeriodUtils.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP);
+	public static double getTimeUntilEndgameEnds() {
+		if (hasEndGameStarted()) {
+			return ENDGAME_LENGTH_SECONDS - (TimeUtil.getTimeSinceTeleopInitSeconds() - ENDGAME_START_TIME_SECONDS_SINCE_TELEOP);
 		}
 		return -1;
 	}
 
-	public static double timeUntilShiftEnds() {
+	public static double getTimeUntilShiftEnds() {
 		if (DriverStation.isTeleop()) {
-			return GamePeriodUtils.ALLIANCE_SHIFT_LENGTH_SECONDS
-				- ((TimeUtil.getTimeSinceTeleopInitSeconds() - GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS)
-					% GamePeriodUtils.ALLIANCE_SHIFT_LENGTH_SECONDS);
+			return ALLIANCE_SHIFT_LENGTH_SECONDS
+				- ((TimeUtil.getTimeSinceTeleopInitSeconds() - TRANSITION_SHIFT_TIME_SECONDS) % GamePeriodUtils.ALLIANCE_SHIFT_LENGTH_SECONDS);
 		}
 		return -1;
 	}

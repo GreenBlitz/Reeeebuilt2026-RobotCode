@@ -19,9 +19,9 @@ public class HubUtil {
 		DriverStation.Alliance alliance = switch (GameSpecificMessageResponse.responseToEnum(gameData.charAt(0))) {
 			case BLUE -> DriverStation.Alliance.Blue;
 			case RED -> DriverStation.Alliance.Red;
-			case DEFAULT -> DriverStationUtil.DEFAULT_ALLIANCE;
+			case DEFAULT -> null;
 		};
-		if (alliance == DriverStationUtil.DEFAULT_ALLIANCE) {
+		if (alliance == null) {
 			alertWarningForEmptyAlliance("Didn't get auto winning alliance");
 		}
 		return alliance;
@@ -33,7 +33,7 @@ public class HubUtil {
 	}
 
 	public static void refreshAlliances() {
-		if (autoWinnerAlliance == DriverStationUtil.DEFAULT_ALLIANCE) {
+		if (autoWinnerAlliance == null) {
 			autoWinnerAlliance = getAutoWinningAlliance();
 			autoLosingAlliance = getAutoLosingAlliance();
 		}
@@ -88,12 +88,15 @@ public class HubUtil {
 	}
 
 	public static double timeUntilCurrentShiftEndsSeconds() {
-		if (GamePeriodUtils.isTransitionShift()) {
-			return GamePeriodUtils.timeUntilTransitionShiftEnds();
-		} else if (GamePeriodUtils.hasEndGameStarted()) {
-			return GamePeriodUtils.timeUntilEndgameEnds();
+		if (TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_TIME_SECONDS) {
+			return 0;
 		}
-		return GamePeriodUtils.timeUntilShiftEnds();
+		if (GamePeriodUtils.isTransitionShift()) {
+			return GamePeriodUtils.getTimeUntilTransitionShiftEnds();
+		} else if (GamePeriodUtils.hasEndGameStarted()) {
+			return GamePeriodUtils.getTimeUntilEndgameEnds();
+		}
+		return GamePeriodUtils.getTimeUntilShiftEnds();
 	}
 
 	public static double getTimeLeftUntilActive() {

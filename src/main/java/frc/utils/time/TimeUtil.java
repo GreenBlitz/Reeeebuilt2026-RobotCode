@@ -46,6 +46,9 @@ public class TimeUtil {
 	}
 
 	public static double getTimeSinceTeleopInitSeconds() {
+		if (RobotManager.getTeleopStartTimeSeconds() == -1) {
+			return -1;
+		}
 		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
 	}
 

@@ -11,7 +11,6 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.AngleTransform;
 import frc.utils.math.FieldMath;
 
-
 public class Field {
 
 	public static final DriverStation.Alliance RELATIVE_FIELD_CONVENTION_ALLIANCE = DriverStation.Alliance.Blue;
