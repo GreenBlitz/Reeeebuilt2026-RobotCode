@@ -2,6 +2,14 @@ Turret Calibration
 ------------------------
 
 #### ID
+- [ ] Check motor ID
+- [ ] Check bus chain
+
+#### General
+- [ ] Check turret offset from robot
+- [ ] Decide 0 (should be 0 when heads like robot)
+- [ ] Max position
+- [ ] Min position
 - [x] Check motor ID
 - [x] Check bus chain
 

@@ -24,6 +24,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.FunnelSensorConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -61,7 +62,7 @@ import frc.utils.math.StandardDeviations2D;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
 	private final Roller train;
