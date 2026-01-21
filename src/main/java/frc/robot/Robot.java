@@ -13,6 +13,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -176,7 +177,7 @@ public class Robot {
 		);
 	}
 
-	private Arm createTurret() {
+	private VelocityPositionArm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
 			TurretConstants.MAX_POSITION,
 			TurretConstants.MIN_POSITION,
@@ -184,7 +185,7 @@ public class Robot {
 			TurretConstants.MOMENT_OF_INERTIA,
 			TurretConstants.TURRET_RADIUS
 		);
-		return TalonFXArmBuilder.buildMotionMagicArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			TurretConstants.LOG_PATH,
 			IDs.TalonFXIDs.TURRET,
 			TurretConstants.IS_INVERTED,
@@ -199,9 +200,7 @@ public class Robot {
 			TurretConstants.ARBITRARY_FEED_FORWARD,
 			TurretConstants.FORWARD_SOFTWARE_LIMIT,
 			TurretConstants.BACKWARDS_SOFTWARE_LIMIT,
-			turretSimulationConstants,
-			TurretConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
-			TurretConstants.DEFAULT_MAX_VELOCITY_PER_SECOND
+			turretSimulationConstants
 		);
 	}
 
