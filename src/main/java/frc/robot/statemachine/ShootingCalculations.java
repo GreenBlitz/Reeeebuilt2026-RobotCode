@@ -31,7 +31,7 @@ public class ShootingCalculations {
 		return shootingParams;
 	}
 
-	public static ShootingParams calculateShootingParams(
+	private static ShootingParams calculateShootingParams(
 			Pose2d robotPose,
 			ChassisSpeeds speedsFieldRelative,
 			Rotation2d gyroYawAngularVelocity
@@ -142,7 +142,7 @@ public class ShootingCalculations {
 			)
 	);
 
-	public static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
+	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
 		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 
 		double turretPosePredictionX = turretPose.getX() + (turretVelocities.getX() * ballFlightTime);
