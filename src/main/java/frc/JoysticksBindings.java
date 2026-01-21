@@ -72,13 +72,15 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
+//		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
+		usedJoystick.R1.onTrue(robot.getRobotCommander().CalibrateShootInMotion());
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FOURTH_JOYSTICK;
 		// bindings...
-		usedJoystick.R1.onTrue(robot.getRobotCommander().CalibrateShootInMotion());
 	}
 
 	private static void fifthJoystickButtons(Robot robot) {
