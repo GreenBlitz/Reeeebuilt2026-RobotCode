@@ -67,7 +67,6 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
 		applySuperstructureCalibrationBindings(usedJoystick, robot);
-		usedJoystick.R1.onTrue(robot.getRobotCommander().CalibrateShootInMotion());
 
 	}
 
@@ -80,6 +79,7 @@ public class JoysticksBindings {
 	private static void fourthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FOURTH_JOYSTICK;
 		// bindings...
+		usedJoystick.R1.onTrue(robot.getRobotCommander().CalibrateShootInMotion());
 	}
 
 	private static void fifthJoystickButtons(Robot robot) {
