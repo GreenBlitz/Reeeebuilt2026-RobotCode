@@ -48,8 +48,8 @@ public class HubUtil {
 	}
 
 	public static Optional<DriverStation.Alliance> getAutoLosingAlliance() {
-		if (getAutoWinnerAlliance().isPresent()) {
-			return switch (getAutoWinnerAlliance().get()) {
+		if (autoWinnerAlliance.isPresent()) {
+			return switch (autoWinnerAlliance.get()) {
 				case Red -> Optional.of(DriverStation.Alliance.Blue);
 				case Blue -> Optional.of(DriverStation.Alliance.Red);
 			};
@@ -75,7 +75,7 @@ public class HubUtil {
 			return DriverStationUtil.getAlliance();
 		}
 
-		return isAutoWinnerShift() ? getAutoWinnerAlliance() : getAutoLosingAlliance();
+		return isAutoWinnerShift() ? autoWinnerAlliance : autoLosingAlliance;
 	}
 
 	public static boolean isOurHubActive() {
@@ -106,7 +106,7 @@ public class HubUtil {
 	}
 
 	public static boolean isRobotAllianceAutoWinner() {
-		return DriverStationUtil.getAlliance() == getAutoWinnerAlliance();
+		return DriverStationUtil.getAlliance() == autoWinnerAlliance;
 	}
 
 }
