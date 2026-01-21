@@ -12,6 +12,7 @@ import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
+import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -32,20 +33,18 @@ public class Superstructure {
 	public Superstructure(
 		String logPath,
 		Robot robot,
-		Supplier<Translation2d> movementCompensatedShootingTarget,
-		Supplier<Pose2d> robotPoseSupplier
+		Supplier<ShootingParams> shootingParamsSupplier
 	) {
 		this.robot = robot;
 		this.logPath = logPath;
 
-		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), logPath, robot.getFunnelDigitalInput());
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getFunnelDigitalInput());
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
 			robot.getFlyWheel(),
-			robotPoseSupplier,
-			movementCompensatedShootingTarget,
+			shootingParamsSupplier,
 			logPath
 		);
 
@@ -76,7 +75,8 @@ public class Superstructure {
 			|| robot.getIntakeRoller().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getFlyWheel().getCommandBuilder().isSubsystemRunningIndependently()
 			|| robot.getHood().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getOmni().getCommandsBuilder().isSubsystemRunningIndependently()
+			|| robot.getTrain().getCommandsBuilder().isSubsystemRunningIndependently()
+			|| robot.getBelly().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getTurret().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getFourBar().getCommandsBuilder().isSubsystemRunningIndependently();
 	}

@@ -10,22 +10,17 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
 import java.util.function.Supplier;
 
-public class TurretAimAtHubCommand extends Command {
+public class TurretSafeMoveToPosition extends Command {
 
 	private final Arm turret;
 	private final Supplier<Pose2d> robotPose;
 	private final Supplier<Translation2d> movementCompensatedShootingTarget;
 	private final String logPath;
 
-	public TurretAimAtHubCommand(
-		Arm turret,
-		Supplier<Pose2d> robotPose,
-		Supplier<Translation2d> movementCompensatedShootingTarget,
-		String logPath
-	) {
+	public TurretSafeMoveToPosition(Arm turret,Supplier<Pose2d> robotPose,Supplier<Translation2d> movementCompensatedShootingTarget, String logPath) {
 		this.turret = turret;
-		this.robotPose = robotPose;
 		this.movementCompensatedShootingTarget = movementCompensatedShootingTarget;
+        this.robotPose = robotPose;
 		this.logPath = logPath;
 	}
 

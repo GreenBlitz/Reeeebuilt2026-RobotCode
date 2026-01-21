@@ -5,9 +5,10 @@ Funnel States Calibration
 - [ ] Voltage for one circle
 
 #### shoot
-- [ ] Voltage for omni
+- [ ] Voltage for train
+- [ ] time for train to accelerate
 - #### shoot while intake
-- [ ] Voltage for omni
+- [ ] Voltage for train
 
 #### general calibration
 - [ ] put periodic in periodic

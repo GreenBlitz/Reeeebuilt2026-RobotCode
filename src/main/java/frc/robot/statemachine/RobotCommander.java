@@ -1,6 +1,14 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Robot;
 import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.statemachine.superstructure.TargetChecks;
@@ -8,14 +16,15 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
+
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;
 	private final Swerve swerve;
 	private final Superstructure superstructure;
-	private final PositionTargets positionTargets;
 
 	private RobotState currentState;
 
@@ -23,12 +32,10 @@ public class RobotCommander extends GBSubsystem {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
-		this.positionTargets = new PositionTargets(robot);
 		this.superstructure = new Superstructure(
 			"StateMachine/Superstructure",
 			robot,
-			() -> robot.getMovementCompensatedShootingTarget(),
-			() -> robot.getPoseEstimator().getEstimatedPose()
+			() -> ShooterCalculations.getShootingParams(robot.getPoseEstimator().getEstimatedPose(), robot.getTurret().getPosition())
 		);
 		this.currentState = RobotState.STAY_IN_PLACE;
 
@@ -47,7 +54,8 @@ public class RobotCommander extends GBSubsystem {
 									robot.getTurret(),
 									robot.getFourBar(),
 									robot.getHood(),
-									robot.getOmni(),
+									robot.getTrain(),
+									robot.getBelly(),
 									robot.getFlyWheel()
 								)
 							)
@@ -87,6 +95,8 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
+		Supplier<Double> distanceFromHub = () -> ShooterCalculations
+			.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		return TargetChecks.isReadyToShoot(
 			robot,
 			ShooterCalculations.flywheelInterpolation(
