@@ -16,8 +16,8 @@ public class TurretSafeMoveToPosition extends Command {
 
 	public TurretSafeMoveToPosition(Arm turret, Supplier<Rotation2d> targetPosition, String logPath) {
 		this.turret = turret;
-		this.logPath = logPath;
 		this.targetPosition = targetPosition;
+		this.logPath = logPath;
 	}
 
 	@Override
