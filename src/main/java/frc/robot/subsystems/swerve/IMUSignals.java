@@ -15,27 +15,32 @@ public record IMUSignals(
 	InputSignal<Double> zAccelerationSignalEarthGravitationalAcceleration
 ) {
 
+	public Rotation2d getYawAngularVelocityRPS() {
+		return yawAngularVelocitySignal.getLatestValue();
+	}
+
+	@Deprecated(since = "Wrapping the velocity")
 	public Rotation3d getAngularVelocity() {
 		return new Rotation3d(
-			this.rollAngularVelocitySignal().getLatestValue().getRadians(),
-			this.pitchAngularVelocitySignal().getLatestValue().getRadians(),
-			this.yawAngularVelocitySignal().getLatestValue().getRadians()
+			rollAngularVelocitySignal.getLatestValue().getRadians(),
+			pitchAngularVelocitySignal.getLatestValue().getRadians(),
+			yawAngularVelocitySignal.getLatestValue().getRadians()
 		);
 	}
 
 	public Rotation3d getOrientation() {
 		return new Rotation3d(
-			this.rollSignal().getLatestValue().getRadians(),
-			this.pitchSignal().getLatestValue().getRadians(),
-			this.yawSignal().getLatestValue().getRadians()
+			rollSignal.getLatestValue().getRadians(),
+			pitchSignal.getLatestValue().getRadians(),
+			yawSignal.getLatestValue().getRadians()
 		);
 	}
 
 	public Translation3d getAccelerationEarthGravitationalAcceleration() {
 		return new Translation3d(
-			this.xAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
-			this.yAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
-			this.zAccelerationSignalEarthGravitationalAcceleration().getLatestValue()
+			xAccelerationSignalEarthGravitationalAcceleration.getLatestValue(),
+			yAccelerationSignalEarthGravitationalAcceleration.getLatestValue(),
+			zAccelerationSignalEarthGravitationalAcceleration.getLatestValue()
 		);
 	}
 

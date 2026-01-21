@@ -97,8 +97,8 @@ public class Swerve extends GBSubsystem {
 		return stateHandler;
 	}
 
-	public Rotation3d getAngularVelocityFromIMURotation2dPerSecond() {
-		return imuSignals.getAngularVelocity();
+	public Rotation2d getYawAngularVelocityRPS() {
+		return imuSignals.getYawAngularVelocityRPS();
 	}
 
 	public Rotation3d getOrientationFromIMU() {

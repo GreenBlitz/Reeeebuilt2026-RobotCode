@@ -38,6 +38,7 @@ public class RobotCommander extends GBSubsystem {
 			() -> ShooterCalculations.getShootingParams(
 				robot.getPoseEstimator().getEstimatedPose(),
 				robot.getSwerve().getFieldRelativeVelocity(),
+				robot.getSwerve().getYawAngularVelocityRPS(),
 				robot.getTurret().getPosition()
 			)
 		);
