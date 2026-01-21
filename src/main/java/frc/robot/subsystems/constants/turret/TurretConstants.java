@@ -12,7 +12,7 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 public class TurretConstants {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Turret";
-	public static final boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 	public static final TalonFXFollowerConfig TALON_FX_FOLLOWER_CONFIG = new TalonFXFollowerConfig();
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
@@ -21,11 +21,11 @@ public class TurretConstants {
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
 	static {
-		REAL_SLOTS_CONFIG.kP = 1;
+		REAL_SLOTS_CONFIG.kP = 70;
 		REAL_SLOTS_CONFIG.kI = 0;
 		REAL_SLOTS_CONFIG.kD = 0;
 		REAL_SLOTS_CONFIG.kG = 0;
-		REAL_SLOTS_CONFIG.kS = 0;
+		REAL_SLOTS_CONFIG.kS = 0.32;
 		REAL_SLOTS_CONFIG.kV = 0;
 		REAL_SLOTS_CONFIG.kA = 0;
 

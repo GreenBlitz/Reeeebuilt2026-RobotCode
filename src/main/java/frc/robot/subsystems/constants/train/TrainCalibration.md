@@ -2,14 +2,14 @@ Train calibrations
 ---------------------
 
 #### IDs
-- [ ] Motor id
+- [x] Motor id
 
-#### Digital input
-- [ ] Digital input name
-- [ ] Inverted
-- [ ] Forward or Backward
+#### Digital input - Look in funnel constants
+- [x] Digital input name
+- [x] Inverted
+- [x] Forward or Backward
 
 #### Config
-- [ ] Gear ratio
-- [ ] Current limit
-- [ ] Is inverted
+- [x] Gear ratio
+- [x] Current limit
+- [x] Is inverted

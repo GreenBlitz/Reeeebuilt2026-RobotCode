@@ -42,17 +42,7 @@ public class RobotCommander extends GBSubsystem {
 						.schedule(
 							new DeferredCommand(
 								() -> endState(currentState),
-								Set.of(
-									this,
-									swerve,
-									robot.getIntakeRoller(),
-									robot.getTurret(),
-									robot.getFourBar(),
-									robot.getHood(),
-									robot.getTrain(),
-									robot.getBelly(),
-									robot.getFlyWheel()
-								)
+								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getFlyWheel())
 							)
 						)
 				),
@@ -110,10 +100,7 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command shootSequence() {
 		return new RepeatCommand(
-			new SequentialCommandGroup(
-				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
-			)
+			new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT))
 		);
 	}
 

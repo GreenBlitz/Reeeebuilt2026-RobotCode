@@ -7,7 +7,8 @@ public class SwerveConstantsFactory {
 
 	public static SwerveConstants create(String logPath) {
 		return switch (Robot.ROBOT_TYPE) {
-			case REAL, REPLAY, SIMULATION -> SimulationSwerveConstants.getSwerveConstants(logPath);
+			case REAL, REPLAY -> RealSwerveConstants.getSwerveConstants(logPath);
+			case SIMULATION -> SimulationSwerveConstants.getSwerveConstants(logPath);
 		};
 	}
 
