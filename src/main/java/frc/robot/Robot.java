@@ -135,7 +135,7 @@ public class Robot {
 		fourBar.update();
 		intakeRoller.update();
 		belly.update();
-		omni.update();
+		train.update();
 		turret.update();
 		hood.update();
 		flyWheel.update();
