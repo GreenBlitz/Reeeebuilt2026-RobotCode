@@ -14,7 +14,6 @@ public class HubUtil {
 
 	private static DriverStation.Alliance getAutoWinningAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
-		;
 		if (gameData.isEmpty()) {
 			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
 		}
