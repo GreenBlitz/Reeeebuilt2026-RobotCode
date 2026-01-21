@@ -22,8 +22,9 @@ import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.ShooterCalculations;
+import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.FunnelSensorConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -47,6 +48,7 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
+import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
@@ -175,31 +177,39 @@ public class Robot {
 		}
 	}
 
+	private void updateAllSubsystems() {
+		swerve.update();
+		belly.update();
+		train.update();
+		turret.update();
+		hood.update();
+		flyWheel.update();
+	}
+
 	public boolean isTurretMoveLegal() {
-		return ShooterCalculations.isTurretMoveLegal(
-			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
-			turret.getPosition()
-		);
+		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {
 		BusChain.refreshAll();
+		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
 
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
-		swerve.update();
-		limelight.updateMT1();
+
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		limelight.updateMT1();
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
+		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	private Arm createTurret() {
+	private VelocityPositionArm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
 			TurretConstants.MAX_POSITION,
 			TurretConstants.MIN_POSITION,
@@ -207,7 +217,7 @@ public class Robot {
 			TurretConstants.MOMENT_OF_INERTIA,
 			TurretConstants.TURRET_RADIUS
 		);
-		return TalonFXArmBuilder.buildArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			TurretConstants.LOG_PATH,
 			IDs.TalonFXIDs.TURRET,
 			TurretConstants.IS_INVERTED,
@@ -244,7 +254,7 @@ public class Robot {
 			HoodConstants.MOMENT_OF_INERTIA,
 			HoodConstants.HOOD_LENGTH_METERS
 		);
-		return TalonFXArmBuilder.buildArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
 			IDs.TalonFXIDs.HOOD,
 			HoodConstants.IS_INVERTED,
