@@ -236,8 +236,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			|| imuPitchAtVisionObservationTimestamp.get().getRadians() >= SwerveConstants.PITCH_ON_BUMP.getRadians();
 
 		return isOnBump
-			? visionObservation.stdDevs().asColumnVector()
-				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_ON_BUMP_REDUCTION.asColumnVector())
+			? visionObservation.stdDevs().asColumnVector().minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_ON_BUMP_REDUCTION.asColumnVector())
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
