@@ -8,6 +8,7 @@ Turret Calibration
 #### General
 - [ ] Check turret offset from robot
 - [ ] Decide 0 (should be 0 when heads like robot)
+- [ ] Amount of degrees for the look at hub not to move
 - [ ] Max position
 - [ ] Min position
 
@@ -30,14 +31,4 @@ Turret Calibration
 #### PID
 - [ ] Calibrate kP
 - [ ] Calibrate kI
-<<<<<<< HEAD
 - [ ] Calibrate kD
-=======
-- [ ] Calibrate kD
-
-#### General
-- [ ] Check turret radius
-- [ ] Amount of degrees for the look at hub not to move
-- [ ] Max position
-- [ ] Min position
->>>>>>> master
