@@ -76,8 +76,7 @@ public class Arm extends GBSubsystem {
 		return signals.position().isLess(position);
 	}
 
-	@Override
-	protected void subsystemPeriodic() {
+	public void update() {
 		motor.updateSimulation();
 		updateInputs();
 		log();

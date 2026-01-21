@@ -2,7 +2,6 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
@@ -23,18 +22,17 @@ public class TurretSafeMoveToPosition extends Command {
 
 	@Override
 	public void execute() {
-		Rotation2d targetAngle = targetPosition.get();
-
-		if (ShooterCalculations.isTurretMoveLegal(targetAngle, turret.getPosition())) {
+		Rotation2d targetPosition = TurretCalculations.getWrappedTurretPosition(this.targetPosition.get());
+		if (TurretCalculations.isTurretMoveLegal(targetPosition, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
 		} else {
-			targetAngle = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
+			targetPosition = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
 				? TurretConstants.BACKWARDS_SOFTWARE_LIMIT
 				: TurretConstants.FORWARD_SOFTWARE_LIMIT;
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", false);
 		}
 
-		turret.setTargetPosition(targetAngle);
+		turret.setTargetPosition(targetPosition);
 	}
 
 }

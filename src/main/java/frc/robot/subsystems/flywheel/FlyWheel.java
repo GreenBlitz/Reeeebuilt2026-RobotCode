@@ -83,8 +83,7 @@ public class FlyWheel extends GBSubsystem {
 		motor.setBrake(brake);
 	}
 
-	@Override
-	protected void subsystemPeriodic() {
+	public void update() {
 		motor.updateSimulation();
 		motor.updateInputs(velocitySignal, voltageSignal, currentSignal);
 		Logger.recordOutput(getLogPath() + "/targetVelocity", velocityRequest.getSetPoint());
