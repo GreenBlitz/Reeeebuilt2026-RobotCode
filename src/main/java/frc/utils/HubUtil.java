@@ -6,7 +6,6 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 
-import java.util.Optional;
 
 public class HubUtil {
 
@@ -14,7 +13,7 @@ public class HubUtil {
 	private static DriverStation.Alliance autoLosingAlliance = getAutoLosingAlliance();
 
 	private static DriverStation.Alliance getAutoWinningAlliance() {
-		String gameData = /*DriverStation.getGameSpecificMessage();*/"GGG";
+		String gameData = /* DriverStation.getGameSpecificMessage(); */"GGG";
 		if (gameData.isEmpty()) {
 			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
 		}
