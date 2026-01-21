@@ -53,11 +53,11 @@ public class TurretConstants {
 		.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
 	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3.0);
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3.0);
-	public static final Rotation2d MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
+	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE  = Rotation2d.fromDegrees(7);
 	public static final Rotation2d SCREW_MAX_RANGE_EDGE = TurretCalculations
-		.getRangeEdge(TurretConstants.MAX_POSITION, MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE.times(-1));
+		.getRangeEdge(TurretConstants.MAX_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE.times(-1));
 	public static final Rotation2d SCREW_MIN_RANGE_EDGE = TurretCalculations
-		.getRangeEdge(TurretConstants.MIN_POSITION, MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE);
+		.getRangeEdge(TurretConstants.MIN_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE);
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
 }
