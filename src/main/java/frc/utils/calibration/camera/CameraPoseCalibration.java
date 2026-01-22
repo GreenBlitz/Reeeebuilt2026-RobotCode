@@ -2,8 +2,9 @@ package frc.utils.calibration.camera;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.constants.MathConstants;
 import frc.utils.limelight.LimelightHelpers;
+import frc.utils.math.AngleTransform;
+import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 public class CameraPoseCalibration extends Command {
@@ -34,7 +35,7 @@ public class CameraPoseCalibration extends Command {
 	 * @param tagCenterHeightFromGroundMeters - IMPORTANT !!! the middle of the tag height relative to THE FLOOR , "real life measurement"
 	 * @param tagPoseFieldRelative            - synthetic measurement
 	 * @param neededNumberOfCycles            - number of measurements decided by user IMPORTANT SPECIFICATIONS; limelight is funny so we invert
-	 *                                        y-axis; Y difference from the tag is 0.;
+	 *                                        y-axis; tag must be 180 to the field; * Y difference from the tag is 0.
 	 *
 	 */
 	public CameraPoseCalibration(
@@ -52,10 +53,7 @@ public class CameraPoseCalibration extends Command {
 		this.expectedRobotPoseFieldRelative = new Pose2d(
 			tagPoseFieldRelative.getX() - robotXAxisDistanceFromTag,
 			tagPoseFieldRelative.getY(),
-			new Rotation2d()
-		).rotateAround(
-			tagPoseFieldRelative.getTranslation().toTranslation2d(),
-			tagPoseFieldRelative.getRotation().toRotation2d().rotateBy(MathConstants.HALF_CIRCLE)
+			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
 		);
 		this.tagCenterHeightFromGroundMeters = tagCenterHeightFromGroundMeters;
 
