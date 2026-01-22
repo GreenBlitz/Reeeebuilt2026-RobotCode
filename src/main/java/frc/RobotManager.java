@@ -92,9 +92,6 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	public static double getTeleopStartTimeSeconds() {
-		if (teleopStartTimeSeconds == -1) {
-			return -1;
-		}
 		return teleopStartTimeSeconds;
 	}
 

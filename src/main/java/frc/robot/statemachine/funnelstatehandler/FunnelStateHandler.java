@@ -55,7 +55,8 @@ public class FunnelStateHandler {
 	}
 
 	public boolean isBallAtSensor() {
-		return sensorInputsAutoLogged.debouncedValue;
+//		return sensorInputsAutoLogged.debouncedValue;
+		return true;
 	}
 
 	private Command drive() {
