@@ -6,7 +6,6 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 
-
 public class HubUtil {
 
 	private static DriverStation.Alliance autoWinnerAlliance = getAutoWinningAlliance();
@@ -17,7 +16,7 @@ public class HubUtil {
 		if (gameData.isEmpty()) {
 			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
 		}
-		DriverStation.Alliance alliance = switch (GameSpecificMessageResponse.responseToEnum(gameData.charAt(0))) {
+		DriverStation.Alliance alliance = switch (GameSpecificMessageResponse.fromChar(gameData.charAt(0))) {
 			case BLUE -> DriverStation.Alliance.Blue;
 			case RED -> DriverStation.Alliance.Red;
 			case DEFAULT -> null;
@@ -64,14 +63,14 @@ public class HubUtil {
 
 	public static int getShiftsPassed() {
 		if (
-			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_TIME_SECONDS
-				|| TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP
+			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_DURATION_SECONDS
+				|| TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.ENDGAME_DURATION_SECONDS_SINCE_TELEOP
 		) {
-			return (GamePeriodUtils.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP - GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS)
-				/ GamePeriodUtils.ALLIANCE_SHIFT_LENGTH_SECONDS;
+			return (GamePeriodUtils.ENDGAME_DURATION_SECONDS_SINCE_TELEOP - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
+				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
 		} else {
-			return (int) (TimeUtil.getTimeSinceTeleopInitSeconds() - GamePeriodUtils.TRANSITION_SHIFT_TIME_SECONDS)
-				/ GamePeriodUtils.ALLIANCE_SHIFT_LENGTH_SECONDS;
+			return (int) (TimeUtil.getTimeSinceTeleopInitSeconds() - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
+				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
 		}
 	}
 
@@ -96,14 +95,15 @@ public class HubUtil {
 
 	public static double timeUntilCurrentShiftEndsSeconds() {
 		if (
-			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_TIME_SECONDS || TimeUtil.getTimeSinceTeleopInitSeconds() == -1
+			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_END_DURATION_SECONDS
+				|| TimeUtil.getTimeSinceTeleopInitSeconds() == -1
 		) {
 			return 0;
 		}
 		if (GamePeriodUtils.isTransitionShift()) {
 			return GamePeriodUtils.getTimeUntilTransitionShiftEnds();
 		} else if (GamePeriodUtils.hasEndGameStarted()) {
-			return GamePeriodUtils.getTimeUntilEndgameEnds();
+			return GamePeriodUtils.getTimeUntilGameEnds();
 		}
 		return GamePeriodUtils.getTimeUntilShiftEnds();
 	}

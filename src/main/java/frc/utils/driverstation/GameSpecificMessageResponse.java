@@ -16,7 +16,7 @@ public enum GameSpecificMessageResponse {
 		return value;
 	}
 
-	public static GameSpecificMessageResponse responseToEnum(char value) {
+	public static GameSpecificMessageResponse fromChar(char value) {
 		return switch (value) {
 			case 'R' -> RED;
 			case 'B' -> BLUE;
