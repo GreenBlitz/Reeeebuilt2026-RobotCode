@@ -50,7 +50,7 @@ public class Swerve extends GBSubsystem {
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
 
-	private final Translation2d[] moduleTranslationalVelocityVectors;
+	private final Translation2d[] moduleTranslationalVelocityVectorsMeterPerSecond;
 	private boolean isSkidding;
 
 	private SwerveState currentState;
@@ -68,7 +68,7 @@ public class Swerve extends GBSubsystem {
 		this.imu = imu;
 		this.imuSignals = imuSignals;
 
-		moduleTranslationalVelocityVectors = new Translation2d[ModuleUtil.ModulePosition.values().length];
+		moduleTranslationalVelocityVectorsMeterPerSecond = new Translation2d[ModuleUtil.ModulePosition.values().length];
 		isSkidding = false;
 
 		this.kinematics = new SwerveDriveKinematics(modules.getModulePositionsFromCenterMeters());
@@ -174,7 +174,7 @@ public class Swerve extends GBSubsystem {
 	public void update() {
 		updateIMU();
 		modules.updateInputs();
-		updatesAreModulesSkidding();
+		updateAreModulesSkidding();
 
 		currentState.log(constants.stateLogPath());
 
@@ -365,11 +365,11 @@ public class Swerve extends GBSubsystem {
 	public void updateModuleTranslationVectors() {
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
 		for (int i = 0; i < ModuleUtil.ModulePosition.values().length; i++) {
-			moduleTranslationalVelocityVectors[i] = getModuleTranslationVector(i, robotYawAngularVelocityRadiansPerSecond);
+			moduleTranslationalVelocityVectorsMeterPerSecond[i] = getModuleTranslationVector(i, robotYawAngularVelocityRadiansPerSecond);
 		}
 	}
 
-	private void updatesAreModulesSkidding() {
+	private void updateAreModulesSkidding() {
 		updateModuleTranslationVectors();
 		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
 			getRobotRelativeVelocity().vxMetersPerSecond,
@@ -377,7 +377,7 @@ public class Swerve extends GBSubsystem {
 		);
 
 		isSkidding = false;
-		for (Translation2d moduleTranslationalVector : moduleTranslationalVelocityVectors) {
+		for (Translation2d moduleTranslationalVector : moduleTranslationalVelocityVectorsMeterPerSecond) {
 			isSkidding |= !ToleranceMath.isNear(
 				robotTranslationalVelocityMetersPerSecond,
 				moduleTranslationalVector,
