@@ -225,7 +225,12 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	private Matrix<N3, N1> getSkidCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {}
+	private boolean hasSkiddedInGivenTimeStamp(RobotPoseObservation visionObservation) {
+        TimedValue<Boolean> closestTo
+        for (TimedValue<Boolean> currentValue: skidDetectionTimedValues){
+
+        }
+    }
 
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
