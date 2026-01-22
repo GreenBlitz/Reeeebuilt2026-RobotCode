@@ -378,14 +378,11 @@ public class Swerve extends GBSubsystem {
 
 		isSkidding = false;
 		for (Translation2d moduleTranslationalVector : moduleTranslationalVelocityVectors) {
-			if (
-				!ToleranceMath.isNear(
-					robotTranslationalVelocityMetersPerSecond,
-					moduleTranslationalVector,
-					SwerveConstants.MODULE_TO_ROBOT_SKID_VELOCITY_TOLERANCE_METERS_PER_SECOND
-				)
-			)
-				isSkidding = true;
+			isSkidding |= !ToleranceMath.isNear(
+				robotTranslationalVelocityMetersPerSecond,
+				moduleTranslationalVector,
+				SwerveConstants.MODULE_TO_ROBOT_SKID_VELOCITY_TOLERANCE_METERS_PER_SECOND
+			);
 		}
 	}
 
