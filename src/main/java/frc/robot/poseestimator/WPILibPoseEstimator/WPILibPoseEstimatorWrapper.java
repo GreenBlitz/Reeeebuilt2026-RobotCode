@@ -158,7 +158,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			lastOdometryData.getIMUYaw().get(),
 			lastOdometryData.getImuAccelerationMagnitudeG().get(),
 			lastOdometryData.getWheelPositions(),
-			poseMeters
+			poseMeters,
+			lastOdometryData.getIsSkidding() // check
 		);
 	}
 
@@ -226,11 +227,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private boolean hasSkiddedInGivenTimeStamp(RobotPoseObservation visionObservation) {
-        TimedValue<Boolean> closestTo
-        for (TimedValue<Boolean> currentValue: skidDetectionTimedValues){
-
-        }
-    }
+		TimedValue<Boolean> closestToVisionTimeStamp = new TimedValue<>(false, 0); // defult place holder
+		for (TimedValue<Boolean> currentValue : skidDetectionTimedValues) {
+			if (currentValue.getTimestamp() <= visionObservation.timestampSeconds()) {
+				closestToVisionTimeStamp = currentValue;
+			}
+		}
+		return closestToVisionTimeStamp.getValue();
+	}
 
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
