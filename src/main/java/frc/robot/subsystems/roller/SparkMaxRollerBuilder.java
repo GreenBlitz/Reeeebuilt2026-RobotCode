@@ -4,6 +4,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -50,12 +51,20 @@ public class SparkMaxRollerBuilder {
 			() -> sparkMaxWrapper.getEncoder().getPosition(),
 			AngleUnit.ROTATIONS
 		);
+		SuppliedAngleSignal velocitySignal = new SuppliedAngleSignal(
+				"velocity",
+				() -> sparkMaxWrapper.getVelocityAnglePerSecond().getRotations(),
+				AngleUnit.ROTATIONS
+
+		);
 
 		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
 
 		SparkMaxRequest<Double> voltageRequest = SparkMaxRequestBuilder.build(0.0, SparkBase.ControlType.kVoltage, ClosedLoopSlot.kSlot0);
+		SparkMaxRequest<Rotation2d> velocity = SparkMaxRequestBuilder
+			.build(new Rotation2d(), SparkBase.ControlType.kVoltage, ClosedLoopSlot.kSlot0);
 
-		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest);
+		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest, velocity);
 	}
 
 	public static Roller build(

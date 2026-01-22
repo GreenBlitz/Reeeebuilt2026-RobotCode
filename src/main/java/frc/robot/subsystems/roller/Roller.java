@@ -14,9 +14,12 @@ public class Roller extends GBSubsystem {
 	private final InputSignal<Double> voltageSignal;
 	private final InputSignal<Double> currentSignal;
 	private final InputSignal<Rotation2d> positionSignal;
+	private final InputSignal<Rotation2d> velocitySignal;
 	private final IRequest<Double> voltageRequest;
+	private final IRequest<Rotation2d> velocityRequest;
 	private final RollerCommandsBuilder commandsBuilder;
 	private Rotation2d targetPosition;
+	private Rotation2d targetVelocity;
 
 	public Roller(
 		String logPath,
@@ -24,17 +27,22 @@ public class Roller extends GBSubsystem {
 		InputSignal<Double> voltageSignal,
 		InputSignal<Double> currentSignal,
 		InputSignal<Rotation2d> positionSignal,
-		IRequest<Double> voltageRequest
+		InputSignal<Rotation2d> velocitySignal,
+		IRequest<Double> voltageRequest,
+		IRequest<Rotation2d> velocityRequest
 	) {
 		super(logPath);
 		this.roller = roller;
 		this.voltageSignal = voltageSignal;
 		this.currentSignal = currentSignal;
 		this.positionSignal = positionSignal;
+		this.velocitySignal = velocitySignal;
 		this.voltageRequest = voltageRequest;
 		this.commandsBuilder = new RollerCommandsBuilder(this);
 		this.roller.resetPosition(Rotation2d.fromRotations(0));
 		this.targetPosition = Rotation2d.fromRotations(0);
+		this.velocityRequest = velocityRequest;
+		this.targetVelocity = Rotation2d.fromRotations(0);
 	}
 
 	public RollerCommandsBuilder getCommandsBuilder() {
@@ -45,12 +53,20 @@ public class Roller extends GBSubsystem {
 		this.targetPosition = targetPosition;
 	}
 
+	public void updateTargetVelocity(Rotation2d velocity){
+		this.targetVelocity = velocity;
+	}
+
 	public void setVoltage(double voltage) {
 		roller.applyRequest(voltageRequest.withSetPoint(voltage));
 	}
 
 	public void setPower(double power) {
 		roller.setPower(power);
+	}
+
+	public void setVelocity(Rotation2d velocity) {
+		roller.applyRequest(velocityRequest.withSetPoint(velocity));
 	}
 
 	public void stop() {
@@ -95,8 +111,9 @@ public class Roller extends GBSubsystem {
 
 	public void update() {
 		roller.updateSimulation();
-		roller.updateInputs(voltageSignal, currentSignal, positionSignal);
+		roller.updateInputs(voltageSignal, currentSignal, positionSignal, velocitySignal);
 		Logger.recordOutput(getLogPath() + "/PositionTarget", targetPosition);
+		Logger.recordOutput(getLogPath() + "/VelocityTarget", targetVelocity);
 	}
 
 }

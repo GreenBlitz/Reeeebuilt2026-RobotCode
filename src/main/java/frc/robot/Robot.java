@@ -40,6 +40,7 @@ import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -274,10 +275,9 @@ public class Robot {
 	}
 
 	private Roller createTrain() {
-		return SparkMaxRollerBuilder.build(
+		return TalonFXRollerBuilder.build(
 			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
-			TrainConstant.IS_INVERTED,
+			IDs.TalonFXIDs.TRAIN,
 			TrainConstant.GEAR_RATIO,
 			TrainConstant.CURRENT_LIMIT,
 			TrainConstant.MOMENT_OF_INERTIA

@@ -64,7 +64,7 @@ public class FunnelStateHandler {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			train.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getTrainVoltage()),
+			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
 			new SequentialCommandGroup(
 				new WaitCommand(StateMachineConstants.TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS),
 				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
@@ -74,7 +74,7 @@ public class FunnelStateHandler {
 
 	private Command shootWhileIntake() {
 		return new ParallelCommandGroup(
-			train.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getTrainVoltage()),
+			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT_WHILE_INTAKE.getTrainVelocity()),
 			new SequentialCommandGroup(
 				new WaitCommand(StateMachineConstants.TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS),
 				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getBellyVoltage())
@@ -86,7 +86,7 @@ public class FunnelStateHandler {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
 				belly.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getBellyVoltage()),
-				train.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getTrainVoltage())
+				train.getCommandsBuilder().setVelocity(FunnelState.INTAKE.getTrainVelocity())
 			).until(() -> this.isBallAtSensor()),
 			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
 		);

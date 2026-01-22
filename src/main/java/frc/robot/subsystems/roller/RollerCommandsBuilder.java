@@ -1,9 +1,7 @@
 package frc.robot.subsystems.roller;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.GBCommandsBuilder;
 import frc.utils.utilcommands.InitExecuteCommand;
 
@@ -22,6 +20,16 @@ public class RollerCommandsBuilder extends GBCommandsBuilder {
 
 	public Command setVoltage(double voltage) {
 		return roller.asSubsystemCommand(new RunCommand(() -> roller.setVoltage(voltage)), "Set roller voltage to " + voltage);
+	}
+
+	public Command setVelocity(Rotation2d velocity) {
+		return roller
+			.asSubsystemCommand(
+					new ParallelCommandGroup(
+							new RunCommand(() -> roller.setVelocity(velocity)),
+							new InstantCommand(() -> roller.updateTargetVelocity(velocity))
+					),
+					 "set velocity to " + velocity.getRotations() + " rps");
 	}
 
 	public Command setVoltage(Supplier<Double> voltage) {
