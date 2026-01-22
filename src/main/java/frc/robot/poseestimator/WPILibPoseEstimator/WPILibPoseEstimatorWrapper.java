@@ -76,7 +76,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
-        this.skidDetectionTimedValues = new PriorityQueue<>(Comparator.comparing(TimedValue::getValue));
+        this.skidDetectionTimedValues = new PriorityQueue<>(Comparator.comparing((timedValue -> -timedValue.getTimestamp())));
 	}
 
 
@@ -104,7 +104,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void updateOdometry(OdometryData data) {
-		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
+        skidDetectionTimedValues.add(new TimedValue<>(data.getIsSkidding(),data.getTimestampSeconds()));
+        while(
+                (!skidDetectionTimedValues.isEmpty())
+                        && data.getTimestampSeconds() - skidDetectionTimedValues.peek().getTimestamp() < 2
+        ) {
+            skidDetectionTimedValues.remove();
+        }
+        Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		data.setIMUYaw(data.getIMUYaw().orElseGet(() -> lastOdometryData.getIMUYaw().get().plus(Rotation2d.fromRadians(changeInPose.dtheta))));
 		poseEstimator.updateWithTime(data.getTimestampSeconds(), data.getIMUYaw().get(), data.getWheelPositions());
 
@@ -217,7 +224,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
     private  Matrix<N3,N1> getSkidCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
-        skidDetectionTimedValues.
+
+
+
+
+
+
+
     }
 
 	private void updateIsIMUOffsetCalibrated() {
