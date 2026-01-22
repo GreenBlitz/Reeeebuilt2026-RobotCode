@@ -53,7 +53,7 @@ public class Roller extends GBSubsystem {
 		this.targetPosition = targetPosition;
 	}
 
-	public void updateTargetVelocity(Rotation2d velocity){
+	public void updateTargetVelocity(Rotation2d velocity) {
 		this.targetVelocity = velocity;
 	}
 
