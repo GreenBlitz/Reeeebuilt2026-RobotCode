@@ -15,8 +15,8 @@ public class HubUtil {
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
-		if (gameData.isEmpty() && !DriverStation.isAutonomous()) {
-			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
+		if (gameData.isEmpty() && DriverStationUtil.isTeleop()) {
+			return alertWarningForEmptyAlliance("Didn't get auto winning alliance");
 		}
 		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.fromChar(gameData.charAt(0))) {
 			case BLUE -> Optional.of(DriverStation.Alliance.Blue);
@@ -24,7 +24,7 @@ public class HubUtil {
 			case DEFAULT -> Optional.empty();
 		};
 		if (alliance.equals(Optional.empty()) && !DriverStation.isAutonomous()) {
-			return alertWarningForEmptyAlliance("Didn't get auto winning alliance");
+			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
 		}
 		return alliance;
 	}
@@ -66,7 +66,6 @@ public class HubUtil {
 	public static int getShiftsPassed() {
 		if (
 			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_DURATION_SECONDS
-				|| TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.TELEOP_DURATION_SECONDS
 		) {
 			return (GamePeriodUtils.TELEOP_DURATION_SECONDS - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
 				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
@@ -77,12 +76,10 @@ public class HubUtil {
 	}
 
 	public static Optional<DriverStation.Alliance> getActiveHub() {
-		if (DriverStation.isAutonomous()) {
+		if (DriverStation.isAutonomous() || GamePeriodUtils.isTransitionShift() || GamePeriodUtils.hasEndGameStarted()) {
 			return Optional.of(DriverStationUtil.getAlliance());
 		} else if (!DriverStationUtil.isTeleop() || GamePeriodUtils.hasGameEnded()) {
-			return Optional.of(DriverStationUtil.DEFAULT_ALLIANCE);
-		} else if (GamePeriodUtils.isTransitionShift() || GamePeriodUtils.hasEndGameStarted()) {
-			return Optional.of(DriverStationUtil.getAlliance());
+			return Optional.empty();
 		}
 
 		return isAutoWinnerShift() ? autoWinnerAlliance : autoLosingAlliance;

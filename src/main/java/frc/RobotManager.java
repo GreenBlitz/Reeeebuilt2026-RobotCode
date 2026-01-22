@@ -99,8 +99,8 @@ public class RobotManager extends LoggedRobot {
 	public void robotPeriodic() {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
-		robot.periodic();
 		HubUtil.refreshAlliances();
+		robot.periodic();
 		AlertManager.reportAlerts();
 	}
 
