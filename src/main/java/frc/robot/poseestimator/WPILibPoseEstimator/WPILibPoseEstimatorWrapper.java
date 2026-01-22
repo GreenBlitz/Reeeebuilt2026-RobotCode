@@ -1,5 +1,6 @@
 package frc.robot.poseestimator.WPILibPoseEstimator;
 
+import com.google.flatbuffers.BooleanVector;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,11 +16,14 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
+import frc.utils.TimedValue;
 import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
 
+import java.nio.Buffer;
 import java.util.Optional;
+import java.util.PriorityQueue;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
@@ -28,7 +32,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final Odometry<SwerveModulePosition[]> odometryEstimator;
 	private final PoseEstimator<SwerveModulePosition[]> poseEstimator;
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
-	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
+
+    private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
+    private final PriorityQueue<TimedValue<Boolean>> skidDetectionTimedValues = new PriorityQueue<TimedValue<Boolean>>(); // change name before violent activity by superiors
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
@@ -186,10 +192,12 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		poseEstimator.addVisionMeasurement(
+		Matrix<N3,N1> moreValuableStd =
+// add a thing for the more val or higher std
+        poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getCollisionCompensatedVisionStdDevs(visionObservation)
+			getCollisionCompensatedVisionStdDevs(moreValuableStd)
 		);
 		this.lastVisionObservation = visionObservation;
 	}
@@ -205,6 +213,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
 			: visionObservation.stdDevs().asColumnVector();
 	}
+
+    private  Matrix<N3,N1> getSkidCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
+
+    }
 
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
