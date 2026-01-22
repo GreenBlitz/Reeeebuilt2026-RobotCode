@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
 import frc.constants.field.Field;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -76,7 +77,14 @@ public class SwerveStateHandler {
 		double dX = hub.getX() - robotPose.getX();
 
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
-		Rotation2d targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX)).plus(Rotation2d.fromDegrees(2));
+		Rotation2d targetHeading;
+
+		if (turretAngle.getRotations() >= TurretConstants.MAX_POSITION.getRotations()) {
+			targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX)).plus(Rotation2d.fromDegrees(2));
+		} else {
+			targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX)).minus(Rotation2d.fromDegrees(2));
+		}
+
 
 		return AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
 	}
