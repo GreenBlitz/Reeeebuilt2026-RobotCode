@@ -64,9 +64,7 @@ public class HubUtil {
 	}
 
 	public static int getShiftsPassed() {
-		if (
-			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_DURATION_SECONDS
-		) {
+		if (TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_DURATION_SECONDS) {
 			return (GamePeriodUtils.TELEOP_DURATION_SECONDS - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
 				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
 		} else {
