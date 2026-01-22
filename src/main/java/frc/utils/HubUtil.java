@@ -16,15 +16,16 @@ public class HubUtil {
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
 		if (gameData.isEmpty() && DriverStationUtil.isTeleop()) {
-			return alertWarningForEmptyAlliance("Didn't get auto winning alliance");
+			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 		}
 		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.fromChar(gameData.charAt(0))) {
 			case BLUE -> Optional.of(DriverStation.Alliance.Blue);
 			case RED -> Optional.of(DriverStation.Alliance.Red);
 			case DEFAULT -> Optional.empty();
 		};
-		if (alliance.equals(Optional.empty()) && !DriverStation.isAutonomous()) {
-			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
+		if (alliance.isEmpty() && DriverStationUtil.isTeleop()) {
+			new Alert(Alert.AlertType.WARNING, "Unknown auto winner alliance").report();
+			return Optional.empty();
 		}
 		return alliance;
 	}
@@ -37,11 +38,6 @@ public class HubUtil {
 			case Red -> Optional.of(DriverStation.Alliance.Blue);
 			case Blue -> Optional.of(DriverStation.Alliance.Red);
 		};
-	}
-
-	public static Optional<DriverStation.Alliance> alertWarningForEmptyAlliance(String name) {
-		new Alert(Alert.AlertType.WARNING, name).report();
-		return Optional.empty();
 	}
 
 	public static void refreshAlliances() {
@@ -64,7 +60,7 @@ public class HubUtil {
 	}
 
 	public static int getShiftsPassed() {
-		if (TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_DURATION_SECONDS) {
+		if (TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.TELEOP_DURATION_SECONDS) {
 			return (GamePeriodUtils.TELEOP_DURATION_SECONDS - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
 				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
 		} else {
@@ -112,7 +108,7 @@ public class HubUtil {
 	}
 
 	public static double getTimeLeftUntilInactive() {
-		if (!isOurHubActive() || GamePeriodUtils.hasGameEnded()) {
+		if (!isOurHubActive()) {
 			return 0;
 		}
 		return timeUntilCurrentShiftEndsSeconds();
