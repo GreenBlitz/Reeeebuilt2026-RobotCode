@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public class OdometryData {
 
+	private boolean isSkidding;
 	private double timestampSeconds = 0;
 	private SwerveModulePosition[] wheelPositions = new SwerveModulePosition[4];
 	private Optional<Rotation2d> imuYaw = Optional.empty();
@@ -18,12 +19,14 @@ public class OdometryData {
 		double timestampSeconds,
 		SwerveModulePosition[] wheelPositions,
 		Optional<Rotation2d> imuYaw,
-		Optional<Double> imuAccelerationMagnitudeG
+		Optional<Double> imuAccelerationMagnitudeG,
+		boolean isSkidding
 	) {
 		this.timestampSeconds = timestampSeconds;
 		this.wheelPositions = wheelPositions;
 		this.imuYaw = imuYaw;
 		this.imuAccelerationMagnitudeG = imuAccelerationMagnitudeG;
+		this.isSkidding = isSkidding;
 	}
 
 	public double getTimestampSeconds() {
@@ -56,6 +59,14 @@ public class OdometryData {
 
 	public void setIMUYaw(Rotation2d imuYaw) {
 		setIMUYaw(Optional.of(imuYaw));
+	}
+
+	public boolean getIsSkidding() {
+		return isSkidding;
+	}
+
+	public void setIsSkidding(boolean isSkidding) {
+		this.isSkidding = isSkidding;
 	}
 
 	public void setIMUAcceleration(Optional<Double> imuAccelerationMagnitudeG) {

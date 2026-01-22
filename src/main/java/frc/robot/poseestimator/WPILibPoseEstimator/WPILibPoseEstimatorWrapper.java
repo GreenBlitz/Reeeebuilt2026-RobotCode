@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
@@ -46,7 +47,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		SwerveModulePosition[] initialModulePositions,
 		Rotation2d initialIMUYaw,
 		double initialIMUAccelerationMagnitudeG,
-		double initialTimestampSeconds
+		double initialTimestampSeconds,
+        boolean initialSkiddingState
 	) {
 		this.logPath = logPath;
 		this.kinematics = kinematics;
@@ -66,7 +68,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			initialTimestampSeconds,
 			initialModulePositions,
 			Optional.of(initialIMUYaw),
-			Optional.of(initialIMUAccelerationMagnitudeG)
+			Optional.of(initialIMUAccelerationMagnitudeG),initialSkiddingState
 		);
 		this.isIMUOffsetCalibrated = false;
 		this.poseToIMUYawDifferenceBuffer = new RingBuffer<>(WPILibPoseEstimatorConstants.POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE);
@@ -128,11 +130,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Rotation2d imuYaw,
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
-		Pose2d poseMeters
+		Pose2d poseMeters, boolean isSkidding
 	) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
 		poseEstimator.resetPosition(imuYaw, wheelPositions, poseMeters);
-		this.lastOdometryData = new OdometryData(timestampSeconds, wheelPositions, Optional.of(imuYaw), Optional.of(imuAccelerationMagnitudeG));
+		this.lastOdometryData = new OdometryData(timestampSeconds, wheelPositions, Optional.of(imuYaw), Optional.of(imuAccelerationMagnitudeG),isSkidding);
 		poseToIMUYawDifferenceBuffer.clear();
 		imuYawBuffer.addSample(timestampSeconds, imuYaw);
 		imuAccelerationBuffer.addSample(timestampSeconds, imuAccelerationMagnitudeG);
