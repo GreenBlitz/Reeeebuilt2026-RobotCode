@@ -211,14 +211,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
 		Matrix<N3, N1> stdDevsForVisionObservation = getCollisionCompensatedVisionStdDevs(visionObservation);
-		stdDevsForVisionObservation = getBumpCompensatedVisionStdDevs(visionObservation);
+		stdDevsForVisionObservation = getTiltedCompensatedVisionStdDevs(visionObservation);
 		poseEstimator.addVisionMeasurement(visionObservation.robotPose(), visionObservation.timestampSeconds(), stdDevsForVisionObservation);
 		this.lastVisionObservation = visionObservation;
 	}
 
 	private Matrix<N3, N1> getCollisionCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
 		Optional<Double> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer.getSample(visionObservation.timestampSeconds());
-		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.isPresent() && imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
+		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.isPresent()
+			&& imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
 
 		return isColliding
 			? WPILibPoseEstimatorConstants.DEFAULT_VISION_STD_DEV.asColumnVector()
@@ -226,16 +227,16 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: WPILibPoseEstimatorConstants.DEFAULT_VISION_STD_DEV.asColumnVector();
 	}
 
-	public Matrix<N3, N1> getBumpCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
+	public Matrix<N3, N1> getTiltedCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
 		Optional<Rotation2d> imuRollAtVisionObservationTimestamp = imuRollBuffer.getSample(visionObservation.timestampSeconds());
 		Optional<Rotation2d> imuPitchAtVisionObservationTimestamp = imuPitchBuffer.getSample(visionObservation.timestampSeconds());
-		boolean isOnBump = imuRollAtVisionObservationTimestamp.get().getRadians()
-			>= SwerveConstants.ROLL_ON_BUMP.plus(SwerveConstants.ROLL_ON_BUMP_TOLERANCE).getRadians()
+		boolean isTilted = imuRollAtVisionObservationTimestamp.get().getRadians()
+			>= SwerveConstants.TILTED_ROLL.plus(SwerveConstants.TILTED_ROLL_TOLERANCE).getRadians()
 			|| imuPitchAtVisionObservationTimestamp.get().getRadians()
-				>= SwerveConstants.PITCH_ON_BUMP.plus(SwerveConstants.PITCH_ON_BUMP_TOLERANCE).getRadians();
+				>= SwerveConstants.TILTED_PITCH.plus(SwerveConstants.TILTED_PITCH_TOLERANCE).getRadians();
 
-		return isOnBump
-			? visionObservation.stdDevs().asColumnVector().minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_ON_BUMP_REDUCTION.asColumnVector())
+		return isTilted
+			? visionObservation.stdDevs().asColumnVector().minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_TILTED_REDUCTION.asColumnVector())
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
