@@ -61,12 +61,12 @@ public class TalonFXRollerBuilder {
 		configs.Feedback.SensorToMechanismRatio = gearRatio;
 		configs.Voltage.PeakForwardVoltage = BatteryUtil.DEFAULT_VOLTAGE;
 		configs.Voltage.PeakReverseVoltage = -BatteryUtil.DEFAULT_VOLTAGE;
-		configs.Slot0.kP = 0;
+		configs.Slot0.kP = 1;
 		configs.Slot0.kI = 0;
 		configs.Slot0.kD = 0;
 		configs.Slot0.kG = 0;
-		configs.Slot0.kS = 0.32;
-		configs.Slot0.kV = 8;
+		configs.Slot0.kS = 0.13;
+		configs.Slot0.kV = 0.43;
 		configs.Slot0.kA = 0;
 		return (configs);
 	}
