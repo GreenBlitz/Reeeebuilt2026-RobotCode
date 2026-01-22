@@ -52,9 +52,9 @@ public class IDs {
 
 	public static class SparkMAXIDs {
 
-		public final static SparkMaxDeviceID TRAIN = new SparkMaxDeviceID(4, SparkLowLevel.MotorType.kBrushless);
+		public final static SparkMaxDeviceID TRAIN = new SparkMaxDeviceID(10, SparkLowLevel.MotorType.kBrushless);
 
-		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(7, SparkLowLevel.MotorType.kBrushless);
+		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(4, SparkLowLevel.MotorType.kBrushless);
 
 	}
 
