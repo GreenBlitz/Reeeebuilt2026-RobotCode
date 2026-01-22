@@ -1,4 +1,4 @@
-package frc.robot.statemachine.superstructure;
+package frc.robot.statemachine;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -6,20 +6,20 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
-import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.robot.statemachine.superstructure.Superstructure;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.math.MathUtil.isNear;
 
-public class TargetChecks {
+public class ShootingChecks {
 
 	private final Superstructure superstructure;
-	private static final String isReadyToShootLogPath = "Statemachine/TargetChecks/IsReadyToShoot";
-	private static final String canContinueShootingLogPath = "Statemachine/TargetChecks/canContinueShooting";
+	private static final String isReadyToShootLogPath = "Statemachine/ShootingChecks/IsReadyToShoot";
+	private static final String canContinueShootingLogPath = "Statemachine/ShootingChecks/canContinueShooting";
 
-	public TargetChecks(Superstructure superstructure) {
+	public ShootingChecks(Superstructure superstructure) {
 		this.superstructure = superstructure;
 	}
 

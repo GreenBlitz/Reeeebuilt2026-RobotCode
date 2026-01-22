@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Robot;
 import frc.robot.statemachine.superstructure.Superstructure;
-import frc.robot.statemachine.superstructure.TargetChecks;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
@@ -90,7 +89,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		return TargetChecks.isReadyToShoot(
+		return ShootingChecks.isReadyToShoot(
 			robot,
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
 			HoodConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
@@ -101,7 +100,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean canContinueShooting() {
-		return TargetChecks.canContinueShooting(
+		return ShootingChecks.canContinueShooting(
 			robot,
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_CONTINUE_SHOOTING,
 			HoodConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
@@ -112,7 +111,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToShoot() {
-		return TargetChecks.calibrationIsReadyToShoot(
+		return ShootingChecks.calibrationIsReadyToShoot(
 			robot,
 			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
 			HoodConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING
