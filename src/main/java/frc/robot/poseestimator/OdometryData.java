@@ -1,6 +1,7 @@
 package frc.robot.poseestimator;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import java.util.Optional;
@@ -9,9 +10,7 @@ public class OdometryData {
 
 	private double timestampSeconds = 0;
 	private SwerveModulePosition[] wheelPositions = new SwerveModulePosition[4];
-	private Optional<Rotation2d> imuRoll = Optional.empty();
-	private Optional<Rotation2d> imuPitch = Optional.empty();
-	private Optional<Rotation2d> imuYaw = Optional.empty();
+	private Optional<Rotation3d> imuOrientation = Optional.empty();
 	private Optional<Double> imuAccelerationMagnitudeG = Optional.empty();
 
 	public OdometryData() {}
@@ -19,16 +18,12 @@ public class OdometryData {
 	public OdometryData(
 		double timestampSeconds,
 		SwerveModulePosition[] wheelPositions,
-		Optional<Rotation2d> imuRoll,
-		Optional<Rotation2d> imuPitch,
-		Optional<Rotation2d> imuYaw,
+		Optional<Rotation3d> imuOrientation,
 		Optional<Double> imuAccelerationMagnitudeG
 	) {
 		this.timestampSeconds = timestampSeconds;
 		this.wheelPositions = wheelPositions;
-		this.imuRoll = imuRoll;
-		this.imuPitch = imuPitch;
-		this.imuYaw = imuYaw;
+		this.imuOrientation = imuOrientation;
 		this.imuAccelerationMagnitudeG = imuAccelerationMagnitudeG;
 	}
 
@@ -40,16 +35,8 @@ public class OdometryData {
 		return wheelPositions;
 	}
 
-	public Optional<Rotation2d> getIMURoll() {
-		return imuRoll;
-	}
-
-	public Optional<Rotation2d> getIMUPitch() {
-		return imuPitch;
-	}
-
-	public Optional<Rotation2d> getIMUYaw() {
-		return imuYaw;
+	public Optional<Rotation3d> getImuOrientation() {
+		return imuOrientation;
 	}
 
 	public Optional<Double> getImuAccelerationMagnitudeG() {
@@ -64,20 +51,12 @@ public class OdometryData {
 		this.wheelPositions = wheelPositions;
 	}
 
-	public void setIMURoll(Optional<Rotation2d> imuRoll) {
-		this.imuRoll = imuRoll;
-	}
-
-	public void setImuPitch(Optional<Rotation2d> imuPitch) {
-		this.imuPitch = imuPitch;
-	}
-
-	public void setIMUYaw(Optional<Rotation2d> imuYaw) {
-		this.imuYaw = imuYaw;
+	public void setIMUOrientation(Optional<Rotation3d> imuOrientation) {
+		this.imuOrientation = imuOrientation;
 	}
 
 	public void setIMUYaw(Rotation2d imuYaw) {
-		setIMUYaw(Optional.of(imuYaw));
+		setIMUOrientation(Optional.of(new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians())));
 	}
 
 	public void setIMUAcceleration(Optional<Double> imuAccelerationMagnitudeG) {

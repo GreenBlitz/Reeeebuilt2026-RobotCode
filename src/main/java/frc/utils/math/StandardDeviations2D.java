@@ -19,12 +19,18 @@ public record StandardDeviations2D(double xStandardDeviations, double yStandardD
 		this(standardDeviations2D.xStandardDeviations, standardDeviations2D.yStandardDeviations, standardDeviations2D.angleStandardDeviations);
 	}
 
+	public StandardDeviations2D(Matrix<N3, N1> standardDeviation2D) { this(standardDeviation2D.get(0,0), standardDeviation2D.get(0,1), standardDeviation2D.get(0,2)); }
+
 	public Matrix<N3, N1> asColumnVector() {
 		return VecBuilder.fill(xStandardDeviations, yStandardDeviations, angleStandardDeviations);
 	}
 
 	public double[] asPoseArray() {
 		return new double[] {xStandardDeviations, yStandardDeviations, angleStandardDeviations};
+	}
+
+	public Matrix<N3, N1> getMaxStdDevs(Matrix<N3, N1> other){
+		return new StandardDeviations2D(Math.max(this.xStandardDeviations, other.get(0,0)), Math.max(this.yStandardDeviations, other.get(0,1)), Math.max(this.angleStandardDeviations, other.get(0,2))).asColumnVector();
 	}
 
 }

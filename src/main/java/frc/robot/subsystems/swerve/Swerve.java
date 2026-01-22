@@ -192,9 +192,7 @@ public class Swerve extends GBSubsystem {
 			odometryData[i] = new OdometryData(
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.rollSignal().asArray()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.pitchSignal().asArray()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.yawSignal().asArray()[i]),
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getOrientation()),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(getIMUAcceleration())
 			);
 		}
