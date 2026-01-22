@@ -1,10 +1,8 @@
 package frc.utils.calibration.camera;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.constants.MathConstants;
 import frc.utils.limelight.LimelightHelpers;
 import frc.utils.math.AngleTransform;
 import frc.utils.math.FieldMath;
@@ -55,9 +53,8 @@ public class CameraPoseCalibration extends Command {
 			tagPoseFieldRelative.getX() - robotXAxisDistanceFromTag,
 			tagPoseFieldRelative.getY(),
 			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
-		).rotateAround(tagPoseFieldRelative.getTranslation().toTranslation2d(), tagPoseFieldRelative.getRotation().toRotation2d().unaryMinus());
-		Logger.recordOutput("a", tagPoseFieldRelative.getX() - robotXAxisDistanceFromTag);
-		Logger.recordOutput("b", tagPoseFieldRelative.getRotation().toRotation2d());
+		).rotateAround(tagPoseFieldRelative.getTranslation().toTranslation2d(), tagPoseFieldRelative.getRotation().toRotation2d().rotateBy(MathConstants.HALF_CIRCLE));
+
 		this.cameraPoseCalibrationInputs = new CameraPoseCalibrationInputsAutoLogged();
 		this.robotRelativeCameraTranslationSum = new Translation3d();
 		this.currentRobotRelativeCameraPose = new Pose3d();
@@ -101,7 +98,10 @@ public class CameraPoseCalibration extends Command {
 
 
 	private Pose3d calculateRobotRelativeCameraPosition() {
-		return new Pose3d(
+        Logger.recordOutput("a", cameraPoseCalibrationInputs.cameraPoseFieldRelative);
+        Logger.recordOutput("b", expectedRobotPoseFieldRelative.getX());
+
+        return new Pose3d(
 			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseFieldRelative.getX(),
 			-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseFieldRelative.getY()),
 			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundInMeters,

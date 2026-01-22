@@ -180,7 +180,7 @@ public class Robot {
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
-		Logger.recordOutput("AAAAAAAAAA", 123);
+		Logger.recordOutput("EEEEEEEEEE", 123);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
