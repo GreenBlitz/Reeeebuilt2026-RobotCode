@@ -227,7 +227,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private boolean hasSkiddedInGivenTimeStamp(RobotPoseObservation visionObservation) {
-		TimedValue<Boolean> closestToVisionTimeStamp = new TimedValue<>(false, 0); // defult place holder
+		TimedValue<Boolean> closestToVisionTimeStamp = new TimedValue<>(false, 0); // default place holder
 		for (TimedValue<Boolean> currentValue : skidDetectionTimedValues) {
 			if (currentValue.getTimestamp() <= visionObservation.timestampSeconds()) {
 				closestToVisionTimeStamp = currentValue;
