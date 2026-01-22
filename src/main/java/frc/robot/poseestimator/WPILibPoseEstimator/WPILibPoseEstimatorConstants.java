@@ -13,9 +13,11 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D DEFAULT_VISION_STD_DEV = new StandardDeviations2D(0.0003, 0.0003, 0.003);
 
-	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
+	public static final double VISION_STD_DEV_COLLISION_FACTOR = new StandardDeviations2D();
 
-	public static final double VISION_STD_DEV_TILTED_REDUCTION = 0;
+	public static final double VISION_STD_DEV_TILTED_FACTOR = 0;
+
+	public static final StandardDeviations2D MIN_STD_DEVS = new StandardDeviations2D();
 
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 

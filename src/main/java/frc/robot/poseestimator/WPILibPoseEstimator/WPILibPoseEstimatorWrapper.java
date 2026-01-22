@@ -1,6 +1,7 @@
 package frc.robot.poseestimator.WPILibPoseEstimator;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,10 +18,12 @@ import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
 import frc.utils.buffers.RingBuffer.RingBuffer;
+import frc.utils.math.StandardDeviations2D;
 import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
@@ -197,36 +200,43 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		Matrix<N3, N1> stdDevsForVisionObservation = getCollisionCompensatedVisionStdDevs(visionObservation);
-		stdDevsForVisionObservation = getTiltedCompensatedVisionStdDevs(visionObservation);
+		Pair<Supplier<Boolean>, Double> collisionCompensation = new Pair<>((() -> isColliding(visionObservation)), WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR);
+		Pair<Supplier<Boolean>, Double> tiltedCompensation = new Pair<>((() -> isTilted(visionObservation)), WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR);
+		Pair<Supplier<Boolean>, Double> [] compensations = {collisionCompensation, tiltedCompensation};
+		Matrix<N3, N1> stdDevsForVisionObservation = StatisticsMath.applyDivisionFactorOnStandardDeviations()
 		poseEstimator.addVisionMeasurement(visionObservation.robotPose(), visionObservation.timestampSeconds(), stdDevsForVisionObservation);
 		this.lastVisionObservation = visionObservation;
 	}
 
 	private Matrix<N3, N1> getCollisionCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
-		Optional<Double> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer.getSample(visionObservation.timestampSeconds());
-		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.isPresent()
-			&& imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
-
-		return isColliding
+		return isColliding(visionObservation)
 			? WPILibPoseEstimatorConstants.DEFAULT_VISION_STD_DEV.asColumnVector()
-				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
+				.div(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR)
 			: WPILibPoseEstimatorConstants.DEFAULT_VISION_STD_DEV.asColumnVector();
 	}
 
 	public Matrix<N3, N1> getTiltedCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
-		Optional<Rotation2d> imuRollAtVisionObservationTimestamp = Optional
-			.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
-		Optional<Rotation2d> imuPitchAtVisionObservationTimestamp = Optional
-			.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
-		boolean isTilted = imuRollAtVisionObservationTimestamp.get().getRadians()
-			>= SwerveConstants.TILTED_ROLL.plus(SwerveConstants.TILTED_ROLL_TOLERANCE).getRadians()
-			|| imuPitchAtVisionObservationTimestamp.get().getRadians()
-				>= SwerveConstants.TILTED_PITCH.plus(SwerveConstants.TILTED_PITCH_TOLERANCE).getRadians();
-
-		return isTilted
-			? visionObservation.stdDevs().asColumnVector().div(WPILibPoseEstimatorConstants.VISION_STD_DEV_TILTED_REDUCTION;
+		return isTilted(visionObservation)
+			? StandardDeviations2D.getMaxStdDevs(visionObservation.stdDevs().asColumnVector().div(WPILibPoseEstimatorConstants.VISION_STD_DEV_TILTED_FACTOR), WPILibPoseEstimatorConstants.MIN_STD_DEVS.asColumnVector())
 			: visionObservation.stdDevs().asColumnVector();
+	}
+
+	public boolean isColliding(RobotPoseObservation visionObservation){
+		Optional<Double> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer.getSample(visionObservation.timestampSeconds());
+		return imuAccelerationAtVisionObservationTimestamp.isPresent()
+				&& imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
+	}
+
+	public boolean isTilted(RobotPoseObservation visionObservation){
+		Optional<Rotation2d> imuRollAtVisionObservationTimestamp = Optional
+				.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
+		Optional<Rotation2d> imuPitchAtVisionObservationTimestamp = Optional
+				.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
+
+		return imuRollAtVisionObservationTimestamp.get().getRadians()
+				>= SwerveConstants.TILTED_ROLL.plus(SwerveConstants.TILTED_ROLL_TOLERANCE).getRadians()
+				|| imuPitchAtVisionObservationTimestamp.get().getRadians()
+				>= SwerveConstants.TILTED_PITCH.plus(SwerveConstants.TILTED_PITCH_TOLERANCE).getRadians();
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
