@@ -76,7 +76,7 @@ public class SwerveStateHandler {
 		double dX = hub.getX() - robotPose.getX();
 
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
-		Rotation2d targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX));
+		Rotation2d targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX)).plus(Rotation2d.fromDegrees(2));
 
 		return AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
 	}
