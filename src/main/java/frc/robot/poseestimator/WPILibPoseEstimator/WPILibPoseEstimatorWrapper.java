@@ -192,12 +192,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		Matrix<N3,N1> moreValuableStd =
-// add a thing for the more val or higher std
         poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getCollisionCompensatedVisionStdDevs(moreValuableStd)
+			getCollisionCompensatedVisionStdDevs(visionObservation)
 		);
 		this.lastVisionObservation = visionObservation;
 	}
