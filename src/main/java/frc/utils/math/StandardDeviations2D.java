@@ -19,7 +19,9 @@ public record StandardDeviations2D(double xStandardDeviations, double yStandardD
 		this(standardDeviations2D.xStandardDeviations, standardDeviations2D.yStandardDeviations, standardDeviations2D.angleStandardDeviations);
 	}
 
-	public StandardDeviations2D(Matrix<N3, N1> standardDeviation2D) { this(standardDeviation2D.get(0,0), standardDeviation2D.get(0,1), standardDeviation2D.get(0,2)); }
+	public StandardDeviations2D(Matrix<N3, N1> standardDeviation2D) {
+		this(standardDeviation2D.get(0, 0), standardDeviation2D.get(0, 1), standardDeviation2D.get(0, 2));
+	}
 
 	public Matrix<N3, N1> asColumnVector() {
 		return VecBuilder.fill(xStandardDeviations, yStandardDeviations, angleStandardDeviations);
@@ -29,9 +31,12 @@ public record StandardDeviations2D(double xStandardDeviations, double yStandardD
 		return new double[] {xStandardDeviations, yStandardDeviations, angleStandardDeviations};
 	}
 
-	public static Matrix<N3, N1> getMaxStdDevs(Matrix<N3, N1> std1, Matrix<N3, N1> std2){
-		return new StandardDeviations2D(Math.max(std1.get(0, 0), std2.get(0,0)), Math.max(std1.get(0,1), std2.get(0,1)), Math.max(
-				std1.get(0,2), std2.get(0,2))).asColumnVector();
+	public static Matrix<N3, N1> getMaxStdDevs(Matrix<N3, N1> std1, Matrix<N3, N1> std2) {
+		return new StandardDeviations2D(
+			Math.max(std1.get(0, 0), std2.get(0, 0)),
+			Math.max(std1.get(0, 1), std2.get(0, 1)),
+			Math.max(std1.get(0, 2), std2.get(0, 2))
+		).asColumnVector();
 	}
 
 }

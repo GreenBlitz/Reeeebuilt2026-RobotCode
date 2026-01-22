@@ -25,10 +25,14 @@ public class StatisticsMath {
 		return Math.sqrt(deviationsTotal / length);
 	}
 
-	public static Matrix<N3, N1> applyDivisionFactorOnStandardDeviations(StandardDeviations2D currentStdDevs, Pair<Supplier<Boolean>, Double>... compensationApplying){
+	public static Matrix<N3, N1> applyDivisionFactorOnStandardDeviations(
+		StandardDeviations2D currentStdDevs,
+		Pair<Supplier<Boolean>, Double>... compensationApplying
+	) {
 		double factor = 1;
-		for(Pair<Supplier<Boolean>, Double> current : compensationApplying){
-			if(current.getFirst().get()) factor *= current.getSecond();
+		for (Pair<Supplier<Boolean>, Double> current : compensationApplying) {
+			if (current.getFirst().get())
+				factor *= current.getSecond();
 		}
 		return currentStdDevs.asColumnVector().div(factor);
 	}

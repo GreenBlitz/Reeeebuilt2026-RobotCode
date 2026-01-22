@@ -200,10 +200,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		Pair<Supplier<Boolean>, Double> collisionCompensation = new Pair<>((() -> isColliding(visionObservation)), WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR);
-		Pair<Supplier<Boolean>, Double> tiltedCompensation = new Pair<>((() -> isTilted(visionObservation)), WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR);
-		Pair<Supplier<Boolean>, Double> [] compensations = {collisionCompensation, tiltedCompensation};
-		Matrix<N3, N1> stdDevsForVisionObservation = StatisticsMath.applyDivisionFactorOnStandardDeviations()
+		Pair<Supplier<Boolean>, Double> collisionCompensation = new Pair<>(
+			(() -> isColliding(visionObservation)),
+			WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR
+		);
+		Pair<Supplier<Boolean>, Double> tiltedCompensation = new Pair<>(
+			(() -> isTilted(visionObservation)),
+			WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_FACTOR
+		);
+		Pair<Supplier<Boolean>, Double>[] compensations = new Pair[] {collisionCompensation, tiltedCompensation};
+		Matrix<N3, N1> stdDevsForVisionObservation = StatisticsMath
+			.applyDivisionFactorOnStandardDeviations(visionObservation.stdDevs(), compensations);
 		poseEstimator.addVisionMeasurement(visionObservation.robotPose(), visionObservation.timestampSeconds(), stdDevsForVisionObservation);
 		this.lastVisionObservation = visionObservation;
 	}
@@ -217,25 +224,28 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	public Matrix<N3, N1> getTiltedCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
 		return isTilted(visionObservation)
-			? StandardDeviations2D.getMaxStdDevs(visionObservation.stdDevs().asColumnVector().div(WPILibPoseEstimatorConstants.VISION_STD_DEV_TILTED_FACTOR), WPILibPoseEstimatorConstants.MIN_STD_DEVS.asColumnVector())
+			? StandardDeviations2D.getMaxStdDevs(
+				visionObservation.stdDevs().asColumnVector().div(WPILibPoseEstimatorConstants.VISION_STD_DEV_TILTED_FACTOR),
+				WPILibPoseEstimatorConstants.MIN_STD_DEVS.asColumnVector()
+			)
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	public boolean isColliding(RobotPoseObservation visionObservation){
+	public boolean isColliding(RobotPoseObservation visionObservation) {
 		Optional<Double> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer.getSample(visionObservation.timestampSeconds());
 		return imuAccelerationAtVisionObservationTimestamp.isPresent()
-				&& imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
+			&& imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
-	public boolean isTilted(RobotPoseObservation visionObservation){
+	public boolean isTilted(RobotPoseObservation visionObservation) {
 		Optional<Rotation2d> imuRollAtVisionObservationTimestamp = Optional
-				.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
+			.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
 		Optional<Rotation2d> imuPitchAtVisionObservationTimestamp = Optional
-				.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
+			.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
 
 		return imuRollAtVisionObservationTimestamp.get().getRadians()
-				>= SwerveConstants.TILTED_ROLL.plus(SwerveConstants.TILTED_ROLL_TOLERANCE).getRadians()
-				|| imuPitchAtVisionObservationTimestamp.get().getRadians()
+			>= SwerveConstants.TILTED_ROLL.plus(SwerveConstants.TILTED_ROLL_TOLERANCE).getRadians()
+			|| imuPitchAtVisionObservationTimestamp.get().getRadians()
 				>= SwerveConstants.TILTED_PITCH.plus(SwerveConstants.TILTED_PITCH_TOLERANCE).getRadians();
 	}
 
