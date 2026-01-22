@@ -42,6 +42,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -50,7 +51,7 @@ import frc.utils.math.StandardDeviations2D;
  */
 public class Robot {
 
-	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
+	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(true);
 	private final Arm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
@@ -117,9 +118,9 @@ public class Robot {
 		);
 
 		this.limelight = new Limelight(
-			"limelight",
+			"limelight-left",
 			"Vision",
-			new Pose3d(1.2087, 0.021429, 0.110145, new Rotation3d(Math.toRadians(-179.8), Math.toRadians(27.65), Math.toRadians(-1.09))),
+			new Pose3d(0.408, 0.558, 0.110145, new Rotation3d(Math.toRadians(-179.8), Math.toRadians(27.65), Math.toRadians(-1.09))),
 			LimelightPipeline.APRIL_TAG
 		);
 
@@ -179,6 +180,7 @@ public class Robot {
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
+		Logger.recordOutput("AAAAAAAAAA", 123);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();

@@ -1,5 +1,7 @@
 package frc;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
@@ -11,6 +13,8 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.calibration.camera.CameraPoseCalibration;
+import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
@@ -58,7 +62,17 @@ public class JoysticksBindings {
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
-		// bindings...
+		usedJoystick.A.onTrue(
+			new CameraPoseCalibration(
+				"CamPoseCalib",
+				"limelight-left",
+				0.65 + 0.345,
+				1.1425,
+				AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getTagPose(10).get(),
+				500
+			)
+		);
+		usedJoystick.A.onTrue(new InstantCommand(() -> Logger.recordOutput("AAAAAAAAAAAAa", 1)));
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {

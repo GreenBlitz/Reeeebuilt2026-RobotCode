@@ -56,6 +56,8 @@ public class CameraPoseCalibration extends Command {
 			tagPoseFieldRelative.getY(),
 			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
 		).rotateAround(tagPoseFieldRelative.getTranslation().toTranslation2d(), tagPoseFieldRelative.getRotation().toRotation2d().unaryMinus());
+		Logger.recordOutput("a", tagPoseFieldRelative.getX() - robotXAxisDistanceFromTag);
+		Logger.recordOutput("b", tagPoseFieldRelative.getRotation().toRotation2d());
 		this.cameraPoseCalibrationInputs = new CameraPoseCalibrationInputsAutoLogged();
 		this.robotRelativeCameraTranslationSum = new Translation3d();
 		this.currentRobotRelativeCameraPose = new Pose3d();
