@@ -27,6 +27,7 @@ import frc.robot.subsystems.swerve.states.SwerveStateHandler;
 import frc.robot.subsystems.swerve.states.heading.HeadingControl;
 import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.utils.AngleUnit;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.math.ToleranceMath;
@@ -356,8 +357,8 @@ public class Swerve extends GBSubsystem {
 			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[moduleIndex];
 		SwerveModuleState moduleState = modules.getCurrentStates()[moduleIndex];
 
-		return new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
-			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+		return new Translation2d(moduleState.speedMetersPerSecond - moduleRotationalState.speedMetersPerSecond,
+				   AngleUnit.ROTATIONS.toRotation2d(moduleState.angle.getRotations()-moduleRotationalState.angle.getRotations()));
 	}
 
 	public void updateModuleTranslationVectors() {
