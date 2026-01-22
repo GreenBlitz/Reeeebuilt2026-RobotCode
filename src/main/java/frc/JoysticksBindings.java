@@ -75,7 +75,6 @@ public class JoysticksBindings {
 //		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
 		usedJoystick.R1.onTrue(robot.getRobotCommander().CalibrateShootInMotion());
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
