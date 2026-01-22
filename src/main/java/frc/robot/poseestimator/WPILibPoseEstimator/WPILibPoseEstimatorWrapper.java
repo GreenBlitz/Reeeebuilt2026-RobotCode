@@ -23,6 +23,7 @@ import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.nio.Buffer;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
@@ -35,7 +36,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 
     private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
-    private final PriorityQueue<TimedValue<Boolean>> skidDetectionTimedValues = new PriorityQueue<TimedValue<Boolean>>(); // change name before violent activity by superiors
+    private final PriorityQueue<TimedValue<Boolean>> skidDetectionTimedValues; // change name before violent activity by superiors
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
@@ -75,6 +76,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
+        this.skidDetectionTimedValues = new PriorityQueue<>(Comparator.comparing(TimedValue::getValue));
 	}
 
 
@@ -215,7 +217,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
     private  Matrix<N3,N1> getSkidCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
-
+        skidDetectionTimedValues.
     }
 
 	private void updateIsIMUOffsetCalibrated() {
