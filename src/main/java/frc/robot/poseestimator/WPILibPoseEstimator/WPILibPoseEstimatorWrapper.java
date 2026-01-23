@@ -33,9 +33,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
-	private final PriorityQueue<TimedValue<Boolean>> skidDetectionTimedValues; // change name before violent activity by superiors
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
-	private RobotPoseObservation lastVisionObservation;
+    private final PriorityQueue<TimedValue<Boolean>> isSkiddingTimedBuffer;
+    private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
 
@@ -45,8 +45,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		SwerveModulePosition[] initialModulePositions,
 		Rotation2d initialIMUYaw,
 		double initialIMUAccelerationMagnitudeG,
-		double initialTimestampSeconds,
-		boolean initialSkiddingState
+		boolean initialSkiddingState,
+		double initialTimestampSeconds
+
 	) {
 		this.logPath = logPath;
 		this.kinematics = kinematics;
@@ -74,7 +75,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
-		this.skidDetectionTimedValues = new PriorityQueue<>(Comparator.comparing((timedValue -> -timedValue.getTimestamp())));
+        this.isSkiddingTimedBuffer = new PriorityQueue<>(Comparator.comparing(timedValue -> -timedValue.getTimestamp()));
 	}
 
 
@@ -102,9 +103,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void updateOdometry(OdometryData data) {
-		skidDetectionTimedValues.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
-		while ((!skidDetectionTimedValues.isEmpty()) && data.getTimestampSeconds() - skidDetectionTimedValues.peek().getTimestamp() < 2) {
-			skidDetectionTimedValues.remove();
+		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
+		while ((!isSkiddingTimedBuffer.isEmpty()) && data.getTimestampSeconds() - isSkiddingTimedBuffer.peek().getTimestamp() < 2) {
+			isSkiddingTimedBuffer.remove();
 		}
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		data.setIMUYaw(data.getIMUYaw().orElseGet(() -> lastOdometryData.getIMUYaw().get().plus(Rotation2d.fromRadians(changeInPose.dtheta))));
@@ -159,7 +160,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			lastOdometryData.getImuAccelerationMagnitudeG().get(),
 			lastOdometryData.getWheelPositions(),
 			poseMeters,
-			lastOdometryData.getIsSkidding() // check
+			lastOdometryData.getIsSkidding()
 		);
 	}
 
@@ -226,10 +227,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	private boolean hasSkiddedInGivenTimeStamp(RobotPoseObservation visionObservation) {
+	private boolean hasSkiddedAtTimeStamp(double timeStamp) {
 		TimedValue<Boolean> closestToVisionTimeStamp = new TimedValue<>(false, 0); // default place holder
-		for (TimedValue<Boolean> currentValue : skidDetectionTimedValues) {
-			if (currentValue.getTimestamp() <= visionObservation.timestampSeconds()) {
+		for (TimedValue<Boolean> currentValue : isSkiddingTimedBuffer) {
+			if (currentValue.getTimestamp() <= timeStamp) {
 				closestToVisionTimeStamp = currentValue;
 			}
 		}
