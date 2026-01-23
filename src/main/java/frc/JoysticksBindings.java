@@ -61,20 +61,7 @@ public class JoysticksBindings {
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
-<<<<<<< HEAD
-		usedJoystick.A.onTrue(
-			new CameraPoseCalibration(
-				"CamPoseCalib",
-				"limelight-left",
-				1.315,
-				0.855,
-				AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getTagPose(11).get(),
-				1000
-			)
-		);
-=======
 		// bindings...
->>>>>>> 941a3ee0d10dd16523f5b7fe21799f392da4f714
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
