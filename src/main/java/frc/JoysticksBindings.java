@@ -1,7 +1,5 @@
 package frc;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
@@ -13,7 +11,6 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
-import frc.utils.calibration.camera.CameraPoseCalibration;
 
 public class JoysticksBindings {
 
@@ -64,6 +61,7 @@ public class JoysticksBindings {
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
+<<<<<<< HEAD
 		usedJoystick.A.onTrue(
 			new CameraPoseCalibration(
 				"CamPoseCalib",
@@ -74,6 +72,9 @@ public class JoysticksBindings {
 				1000
 			)
 		);
+=======
+		// bindings...
+>>>>>>> 941a3ee0d10dd16523f5b7fe21799f392da4f714
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
