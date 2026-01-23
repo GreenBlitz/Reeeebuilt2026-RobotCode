@@ -34,8 +34,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
-    private final PriorityQueue<TimedValue<Boolean>> isSkiddingTimedBuffer;
-    private RobotPoseObservation lastVisionObservation;
+	private final PriorityQueue<TimedValue<Boolean>> isSkiddingTimedBuffer;
+	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
 
@@ -75,7 +75,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
-        this.isSkiddingTimedBuffer = new PriorityQueue<>(Comparator.comparing(timedValue -> -timedValue.getTimestamp()));
+		this.isSkiddingTimedBuffer = new PriorityQueue<>(Comparator.comparing(timedValue -> -timedValue.getTimestamp()));
 	}
 
 
@@ -103,10 +103,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void updateOdometry(OdometryData data) {
-		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
-		while ((!isSkiddingTimedBuffer.isEmpty()) && data.getTimestampSeconds() - isSkiddingTimedBuffer.peek().getTimestamp() < 2) {
-			isSkiddingTimedBuffer.remove();
-		}
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		data.setIMUYaw(data.getIMUYaw().orElseGet(() -> lastOdometryData.getIMUYaw().get().plus(Rotation2d.fromRadians(changeInPose.dtheta))));
 		poseEstimator.updateWithTime(data.getTimestampSeconds(), data.getIMUYaw().get(), data.getWheelPositions());
@@ -120,6 +116,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
+
+		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
+		while ((!isSkiddingTimedBuffer.isEmpty()) && data.getTimestampSeconds() - isSkiddingTimedBuffer.peek().getTimestamp() < 2) {
+			isSkiddingTimedBuffer.remove();
+		}
 	}
 
 	@Override
