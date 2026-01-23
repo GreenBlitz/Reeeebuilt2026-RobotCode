@@ -32,13 +32,14 @@ public class CameraPoseCalibration extends Command {
 	private int currentCycle;
 
 	/**
+	 * limelight is funny so we invert the solution's y-axis </br>
+	 * IMPORTANT SPECIFICATIONS: tag pose in the field (tagPoseFieldRelative) yaw must be 180 degrees, Y difference from the tag should be 0.
 	 *
-	 * @param cameraName                      - the name of the limelight in use
-	 * @param robotXAxisDistanceFromTag       - the middle of the robot's distance from the tag , IMPORTANT "real life measurement"
-	 * @param tagCenterHeightFromGroundMeters - IMPORTANT !!! the middle of the tag height relative to THE FLOOR , "real life measurement"
-	 * @param tagPoseFieldRelative            - synthetic measurement
-	 * @param neededNumberOfCycles            - number of measurements decided by user IMPORTANT SPECIFICATIONS; limelight is funny so we invert
-	 *                                        y-axis; tag must be 180 to the field; * Y difference from the tag is 0.
+	 * @param cameraName                      - name of the limelight in use
+	 * @param neededNumberOfCycles            - number of measurements decided by user
+	 * @param robotXAxisDistanceFromTag       - distance of the middle of the robot from the tag , "real life measurement"
+	 * @param tagCenterHeightFromGroundMeters - distance of the middle of the tag from the floor , "real life measurement"
+	 * @param tagPoseFieldRelative            - position of the tag in the apriltag map on the camera
 	 *
 	 */
 	public CameraPoseCalibration(
