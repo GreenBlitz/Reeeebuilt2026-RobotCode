@@ -223,7 +223,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private boolean hasSkiddedAtTimeStamp(double timeStamp) {
-		TimedValue<Boolean> closestToVisionTimeStamp = new TimedValue<>(false, 0); // default place holder
 		for (TimedValue<Boolean> currentValue : isSkiddingTimedBuffer) {
 			if (currentValue.getTimestamp() <= timeStamp) {
 				return currentValue.getValue();
