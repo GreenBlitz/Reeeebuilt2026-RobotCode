@@ -79,7 +79,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.isSkiddingTimedBuffer = new PriorityQueue<>(Comparator.comparing(timedValue -> -timedValue.getTimestamp()));
 	}
 
-
 	@Override
 	public Pose2d getEstimatedPose() {
 		return poseEstimator.getEstimatedPosition();
