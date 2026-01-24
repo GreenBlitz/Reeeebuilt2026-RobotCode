@@ -35,10 +35,6 @@ public class ToleranceMath {
 		return Math.abs(wanted - actual) <= tolerance;
 	}
 
-	public static <T extends Number> boolean isNear(T wanted, T actual, T tolerance) {
-		return Math.abs(wanted.doubleValue() - actual.doubleValue()) <= tolerance.doubleValue();
-	}
-
 	public static boolean isInRange(double value, double min, double max, double tolerance) {
 		return (min - tolerance) <= value && value <= (max + tolerance);
 	}

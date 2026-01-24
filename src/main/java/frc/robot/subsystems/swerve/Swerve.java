@@ -50,7 +50,7 @@ public class Swerve extends GBSubsystem {
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
 
-	private final Translation2d[] moduleTranslationalVectors;
+	private final Translation2d[] moduleTranslationalVelocityVectorsMeterPerSecond;
 	private boolean isSkidding;
 
 	private SwerveState currentState;
@@ -68,7 +68,7 @@ public class Swerve extends GBSubsystem {
 		this.imu = imu;
 		this.imuSignals = imuSignals;
 
-		moduleTranslationalVectors = new Translation2d[ModuleUtil.ModulePosition.values().length];
+		moduleTranslationalVelocityVectorsMeterPerSecond = new Translation2d[ModuleUtil.ModulePosition.values().length];
 		isSkidding = false;
 
 		this.kinematics = new SwerveDriveKinematics(modules.getModulePositionsFromCenterMeters());
@@ -174,7 +174,7 @@ public class Swerve extends GBSubsystem {
 	public void update() {
 		updateIMU();
 		modules.updateInputs();
-		updatesAreModulesSkidding();
+		updateAreModulesSkidding();
 
 		currentState.log(constants.stateLogPath());
 
@@ -190,7 +190,7 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
 
-		Logger.recordOutput(getLogPath() + "/isSkidding/", isSkidding);
+		Logger.recordOutput(getLogPath() + "/isSkidding", isSkidding);
 	}
 
 
@@ -357,18 +357,20 @@ public class Swerve extends GBSubsystem {
 			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[moduleIndex];
 		SwerveModuleState moduleState = modules.getCurrentStates()[moduleIndex];
 
-		return new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
-			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+		return new Translation2d(
+			moduleState.speedMetersPerSecond - moduleRotationalState.speedMetersPerSecond,
+			moduleState.angle.minus(moduleRotationalState.angle)
+		);
 	}
 
 	public void updateModuleTranslationVectors() {
 		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
 		for (int i = 0; i < ModuleUtil.ModulePosition.values().length; i++) {
-			moduleTranslationalVectors[i] = getModuleTranslationVector(i, robotYawAngularVelocityRadiansPerSecond);
+			moduleTranslationalVelocityVectorsMeterPerSecond[i] = getModuleTranslationVector(i, robotYawAngularVelocityRadiansPerSecond);
 		}
 	}
 
-	private void updatesAreModulesSkidding() {
+	private void updateAreModulesSkidding() {
 		updateModuleTranslationVectors();
 		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
 			getRobotRelativeVelocity().vxMetersPerSecond,
@@ -376,15 +378,12 @@ public class Swerve extends GBSubsystem {
 		);
 
 		isSkidding = false;
-		for (Translation2d moduleTranslationalVector : moduleTranslationalVectors) {
-			if (
-				!ToleranceMath.isNear(
-					robotTranslationalVelocityMetersPerSecond,
-					moduleTranslationalVector,
-					SwerveConstants.MODULE_TO_ROBOT_SKID_VELOCITY_TOLERANCE_METERS_PER_SECOND
-				)
-			)
-				isSkidding = true;
+		for (Translation2d moduleTranslationalVector : moduleTranslationalVelocityVectorsMeterPerSecond) {
+			isSkidding |= !ToleranceMath.isNear(
+				robotTranslationalVelocityMetersPerSecond,
+				moduleTranslationalVector,
+				SwerveConstants.MODULE_TO_ROBOT_SKID_VELOCITY_TOLERANCE_METERS_PER_SECOND
+			);
 		}
 	}
 
