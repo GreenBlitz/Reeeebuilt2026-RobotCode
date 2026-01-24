@@ -38,7 +38,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
-
+    private final int skidBufferTimeLimit =2;
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
 		SwerveDriveKinematics kinematics,
@@ -118,7 +118,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
 
 		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
-		while ((!isSkiddingTimedBuffer.isEmpty()) && data.getTimestampSeconds() - isSkiddingTimedBuffer.peek().getTimestamp() < 2) {
+		while ((!isSkiddingTimedBuffer.isEmpty()) && data.getTimestampSeconds() - isSkiddingTimedBuffer.peek().getTimestamp() < skidBufferTimeLimit) {
 			isSkiddingTimedBuffer.remove();
 		}
 	}
