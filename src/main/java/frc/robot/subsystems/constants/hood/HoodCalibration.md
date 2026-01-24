@@ -2,11 +2,11 @@ Hood calibrations
 ---------------------
 
 #### IDs
-- [x] Motor id
-- [x] Motor buschain
+- [] Motor id
+- [] Motor buschain
 
 #### Limits
-- [x] Current limit
+- [ ] Current limit
 - [x] Forward limit
 - [x] Backwards limit
 - [x] Max position
@@ -17,10 +17,6 @@ Hood calibrations
 - [x] Neutral mode
 - [x] Is Inverted
 
-### Sensor
-- [ ] Forward/Reverse
-- [ ] Sensor Position
-
 #### General Constants
 - [ ] Arm length
 - [ ] Arm weight
@@ -29,7 +25,7 @@ Hood calibrations
 - [ ] Hood position tolerance
 
 #### PID
-- [ w] kP
+- [ ] kP
 - [ ] kI
 - [ ] kD
 

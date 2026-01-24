@@ -21,6 +21,7 @@ import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
+import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -285,10 +287,9 @@ public class Robot {
 	}
 
 	private Roller createBelly() {
-		return SparkMaxRollerBuilder.build(
+		return TalonFXRollerBuilder.build(
 			BellyConstants.LOG_PATH,
-			IDs.SparkMAXIDs.BELLY,
-			BellyConstants.IS_INVERTED,
+			new Phoenix6DeviceID(40),
 			BellyConstants.GEAR_RATIO,
 			BellyConstants.CURRENT_LIMIT,
 			BellyConstants.MOMENT_OF_INERTIA
