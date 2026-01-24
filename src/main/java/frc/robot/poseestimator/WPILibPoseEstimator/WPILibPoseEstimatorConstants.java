@@ -27,4 +27,6 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_ACCELERATION_BUFFER_SIZE_SECONDS = 2;
 
+	public static final int SKID_BUFFER_TIME_LIMIT = 2;
+
 }
