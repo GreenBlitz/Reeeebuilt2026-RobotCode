@@ -112,8 +112,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
 		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
-		isSkiddingTimedBuffer
-			.removeIf(sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT);
+		isSkiddingTimedBuffer.removeIf(
+			sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
+		);
 	}
 
 	@Override
