@@ -137,8 +137,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Rotation2d imuYaw,
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
-		Pose2d poseMeters,
-		boolean isSkidding
+		boolean isSkidding,
+
+		Pose2d poseMeters
 	) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
 		poseEstimator.resetPosition(imuYaw, wheelPositions, poseMeters);
@@ -161,8 +162,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			lastOdometryData.getIMUYaw().get(),
 			lastOdometryData.getImuAccelerationMagnitudeG().get(),
 			lastOdometryData.getWheelPositions(),
-			poseMeters,
-			lastOdometryData.getIsSkidding()
+			lastOdometryData.getIsSkidding(),
+
+			poseMeters
 		);
 	}
 
