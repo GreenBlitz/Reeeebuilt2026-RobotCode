@@ -16,7 +16,6 @@ public interface IOdometryEstimator {
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
 		boolean isSkidding,
-
 		Pose2d poseMeters
 	);
 
