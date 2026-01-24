@@ -31,7 +31,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final Odometry<SwerveModulePosition[]> odometryEstimator;
 	private final PoseEstimator<SwerveModulePosition[]> poseEstimator;
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
-
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
 	private final PriorityQueue<TimedValue<Boolean>> isSkiddingTimedBuffer;
@@ -48,7 +47,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double initialIMUAccelerationMagnitudeG,
 		boolean initialSkiddingState,
 		double initialTimestampSeconds
-
 	) {
 		this.logPath = logPath;
 		this.kinematics = kinematics;
