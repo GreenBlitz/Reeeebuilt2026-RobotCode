@@ -61,7 +61,7 @@ public class KrakenX60FlyWheelBuilder {
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
 			.build(motor.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
 
-		Phoenix6Request<Rotation2d> velocityRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
+		Phoenix6Request<Rotation2d> velocityRequest = Phoenix6RequestBuilder.build(new MotionMagicVelocityVoltage(0), 0, true);
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
 		motor.applyConfiguration(buildConfig());
@@ -72,8 +72,11 @@ public class KrakenX60FlyWheelBuilder {
 	public static TalonFXConfiguration buildConfig() {
 		TalonFXConfiguration configuration = new TalonFXConfiguration();
 		configuration.CurrentLimits.StatorCurrentLimit = Constants.CURRENT_LIMIT;
+		configuration.CurrentLimits.SupplyCurrentLimit = Constants.CURRENT_LIMIT;
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
+		configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
 		configuration.Feedback.SensorToMechanismRatio = Constants.SENSOR_TO_MECHANISM_RATIO_MASTER;
+		configuration.MotionMagic.MotionMagicAcceleration = 1000;
 		configuration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
 			configuration.Slot0.kP = Constants.kP;

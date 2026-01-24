@@ -13,7 +13,7 @@ public class HoodConstants {
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
 
 	static {
-		REAL_SLOT.kP = 200;
+		REAL_SLOT.kP = 130;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
 		REAL_SLOT.kS = 0.34;

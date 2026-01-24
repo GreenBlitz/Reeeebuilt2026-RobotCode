@@ -104,7 +104,8 @@ public class JoysticksBindings {
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().shootSequence());
 	}
 
-	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
+	private static void
+	applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));

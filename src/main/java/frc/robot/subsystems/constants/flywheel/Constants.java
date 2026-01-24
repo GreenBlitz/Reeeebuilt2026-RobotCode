@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Constants {
 
-	public final static double kP = 0;
+	public final static double kP = 0.4;
 	public final static double kI = 0;
 	public final static double kD = 0;
 	public final static double kV = 0.063322;
@@ -20,7 +20,7 @@ public class Constants {
 	public final static double SENSOR_TO_MECHANISM_RATIO_MASTER = 1.0 / 1.5;
 	public final static double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 1.0 / 1.5;
 	public final static double MOMENT_OF_INERTIA = 0.01;
-	public final static int CURRENT_LIMIT = 40;
+	public final static int CURRENT_LIMIT = 80;
 	public final static double WHEEL_RADIUS_METERS = 0.05;
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND = Rotation2d.fromRotations(1);
 
