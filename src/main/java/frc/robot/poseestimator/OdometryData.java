@@ -11,7 +11,7 @@ public class OdometryData {
 	private SwerveModulePosition[] wheelPositions = new SwerveModulePosition[4];
 	private Optional<Rotation2d> imuYaw = Optional.empty();
 	private Optional<Double> imuAccelerationMagnitudeG = Optional.empty();
-	private boolean isSkidding;
+	private boolean isSkidding = false;
 
 	public OdometryData() {}
 
@@ -65,16 +65,16 @@ public class OdometryData {
 		setIMUYaw(Optional.of(imuYaw));
 	}
 
-	public void setIsSkidding(boolean isSkidding) {
-		this.isSkidding = isSkidding;
-	}
-
 	public void setIMUAcceleration(Optional<Double> imuAccelerationMagnitudeG) {
 		this.imuAccelerationMagnitudeG = imuAccelerationMagnitudeG;
 	}
 
 	public void setIMUAcceleration(double imuAccelerationMagnitudeG) {
 		setIMUAcceleration(Optional.of(imuAccelerationMagnitudeG));
+	}
+
+	public void setIsSkidding(boolean isSkidding) {
+		this.isSkidding = isSkidding;
 	}
 
 }

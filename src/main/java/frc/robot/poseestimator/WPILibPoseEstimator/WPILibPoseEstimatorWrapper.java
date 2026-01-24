@@ -34,10 +34,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
 	private final PriorityQueue<TimedValue<Boolean>> isSkiddingTimedBuffer;
+	private final int skidBufferTimeLimit = 2;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
-	private final int skidBufferTimeLimit = 2;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
