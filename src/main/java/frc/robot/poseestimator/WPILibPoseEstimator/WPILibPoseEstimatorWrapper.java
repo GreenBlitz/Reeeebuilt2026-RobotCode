@@ -111,6 +111,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setIMUYaw(data.getIMUYaw());
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
+		lastOdometryData.setIsSkidding(data.getIsSkidding());
 
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
