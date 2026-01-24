@@ -72,7 +72,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
+		applyHoodCalibrationBindings(robot.getHood(), usedJoystick, 0);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -141,8 +141,8 @@ public class JoysticksBindings {
 
 		hood.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
 
-		joystick.POV_RIGHT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(100)));
-		joystick.POV_LEFT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(5)));
+		joystick.POV_RIGHT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(57)));
+		joystick.POV_LEFT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(35)));
 	}
 
 	private static void applyTrainCalibrationBindings(Roller train, SmartJoystick joystick, double maxCalibrationPower) {

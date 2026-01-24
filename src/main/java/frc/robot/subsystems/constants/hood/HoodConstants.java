@@ -3,6 +3,7 @@ package frc.robot.subsystems.constants.hood;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -13,14 +14,15 @@ public class HoodConstants {
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
 
 	static {
-		REAL_SLOT.kP = 130;
+		REAL_SLOT.kP = 120;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.34;
-		REAL_SLOT.kG = 0;
+		REAL_SLOT.kS = 0.3798828125;
+		REAL_SLOT.kG = 0.0703125;
 		REAL_SLOT.kV = 0;
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Elevator_Static;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;

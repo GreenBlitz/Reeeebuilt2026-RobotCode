@@ -51,6 +51,7 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.utils.DriverStationUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
@@ -173,7 +174,7 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
-		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
+		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians() && DriverStationUtil.isDisabled()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
 		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
