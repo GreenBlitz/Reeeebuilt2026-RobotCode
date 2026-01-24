@@ -103,18 +103,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		data.setIMUYaw(data.getIMUYaw().orElseGet(() -> lastOdometryData.getIMUYaw().get().plus(Rotation2d.fromRadians(changeInPose.dtheta))));
 		poseEstimator.updateWithTime(data.getTimestampSeconds(), data.getIMUYaw().get(), data.getWheelPositions());
-
 		imuYawBuffer.addSample(data.getTimestampSeconds(), data.getIMUYaw().get());
-
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
 		lastOdometryData.setIMUYaw(data.getIMUYaw());
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
 		lastOdometryData.setIsSkidding(data.getIsSkidding());
-
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
-
 		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
 		isSkiddingTimedBuffer
 			.removeIf(sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT);
@@ -134,7 +130,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
 		boolean isSkidding,
-
 		Pose2d poseMeters
 	) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
@@ -159,7 +154,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			lastOdometryData.getImuAccelerationMagnitudeG().get(),
 			lastOdometryData.getWheelPositions(),
 			lastOdometryData.getIsSkidding(),
-
 			poseMeters
 		);
 	}
@@ -231,10 +225,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		TimedValue<Boolean> closestToVisionTimeStamp = new TimedValue<>(false, 0); // default place holder
 		for (TimedValue<Boolean> currentValue : isSkiddingTimedBuffer) {
 			if (currentValue.getTimestamp() <= timeStamp) {
-				closestToVisionTimeStamp = currentValue;
+				return currentValue.getValue();
 			}
 		}
-		return closestToVisionTimeStamp.getValue();
+		return false;
 	}
 
 	private void updateIsIMUOffsetCalibrated() {

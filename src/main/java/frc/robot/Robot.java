@@ -109,7 +109,6 @@ public class Robot {
 			swerve.getIMUAcceleration(),
 			swerve.getIsSkidding(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
-
 		);
 
 		robotCommander = new RobotCommander("/RobotCommander", this);
