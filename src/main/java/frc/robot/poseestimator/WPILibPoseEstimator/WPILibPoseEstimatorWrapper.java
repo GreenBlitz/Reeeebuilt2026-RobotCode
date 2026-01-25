@@ -19,10 +19,8 @@ import frc.utils.TimedValue;
 import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
-
-import java.util.Comparator;
+import java.util.ArrayDeque;
 import java.util.Optional;
-import java.util.PriorityQueue;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
@@ -33,7 +31,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
-	private final PriorityQueue<TimedValue<Boolean>> isSkiddingTimedBuffer;
+	private final ArrayDeque<TimedValue<Boolean>> isSkiddingTimedBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
@@ -73,7 +71,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
-		this.isSkiddingTimedBuffer = new PriorityQueue<>(Comparator.comparing(timedValue -> -timedValue.getTimestamp()));
+		this.isSkiddingTimedBuffer = new ArrayDeque<>();
 	}
 
 	@Override
@@ -111,10 +109,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setIsSkidding(data.getIsSkidding());
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
-		isSkiddingTimedBuffer.add(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
-		isSkiddingTimedBuffer.removeIf(
-			sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
-		);
+		isSkiddingTimedBuffer.addLast(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
+		while (
+			!isSkiddingTimedBuffer.isEmpty()
+				&& data.getTimestampSeconds() - isSkiddingTimedBuffer.peekFirst().getTimestamp()
+					> WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
+		) {
+			isSkiddingTimedBuffer.removeFirst();
+		}
 	}
 
 	@Override
@@ -188,13 +190,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
 		addVisionMeasurement(visionRobotPoseObservation);
-
 		getEstimatedPoseToIMUYawDifference(
 			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
 			visionRobotPoseObservation.timestampSeconds()
 		).ifPresent(yawDifference -> {
 			poseToIMUYawDifferenceBuffer.insert(yawDifference);
-
 			if (!isIMUOffsetCalibrated) {
 				updateIsIMUOffsetCalibrated();
 			}
@@ -214,7 +214,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Optional<Double> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer.getSample(visionObservation.timestampSeconds());
 		boolean isSamplePresent = imuAccelerationAtVisionObservationTimestamp.isPresent();
 		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
-
 		return isSamplePresent && isColliding
 			? visionObservation.stdDevs()
 				.asColumnVector()
@@ -222,15 +221,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	private boolean hasSkiddedAtTimeStamp(double timeStamp) {
-		for (TimedValue<Boolean> currentValue : isSkiddingTimedBuffer) {
-			if (currentValue.getTimestamp() <= timeStamp) {
-				return currentValue.getValue();
+	private boolean hasSkiddedAtTimeStamp(double timeStampSeconds) {
+		TimedValue<Boolean> best = null;
+		for (TimedValue<Boolean> v : isSkiddingTimedBuffer) {
+			if (v.getTimestamp() <= timeStampSeconds) {
+				best = v;
+			} else {
+				break;
 			}
 		}
-		return false;
+		return best != null && best.getValue();
 	}
-
+    ;
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
 		isIMUOffsetCalibrated = poseToIMUYawDifferenceStdDev < WPILibPoseEstimatorConstants.MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV
