@@ -17,14 +17,10 @@ public class Phoenix6RequestBuilder {
 		);
 	}
 
-	public static Phoenix6FeedForwardRequest build(
-		MotionMagicVelocityVoltage velocityVoltage,
-		double defaultArbitraryFeedForward,
-		boolean enableFOC
-	) {
+	public static Phoenix6FeedForwardRequest build(VelocityVoltage velocityVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
 		return new Phoenix6FeedForwardRequest(
 			Rotation2d.fromRotations(velocityVoltage.Velocity),
-			velocityVoltage.withEnableFOC(enableFOC).withAcceleration(1000),
+			velocityVoltage.withEnableFOC(enableFOC),
 			setPoint -> velocityVoltage.withVelocity(setPoint.getRotations()),
 			velocityVoltage::withFeedForward,
 			defaultArbitraryFeedForward
