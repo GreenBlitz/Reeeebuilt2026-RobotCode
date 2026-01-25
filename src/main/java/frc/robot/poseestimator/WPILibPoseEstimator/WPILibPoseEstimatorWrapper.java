@@ -20,6 +20,7 @@ import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
 import java.util.ArrayDeque;
+import java.util.Iterator;
 import java.util.Optional;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
@@ -110,13 +111,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
 		isSkiddingTimedBuffer.addLast(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
-		while (
-			!isSkiddingTimedBuffer.isEmpty()
-				&& data.getTimestampSeconds() - isSkiddingTimedBuffer.peekFirst().getTimestamp()
-					> WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
-		) {
-			isSkiddingTimedBuffer.removeFirst();
-		}
+		isSkiddingTimedBuffer.removeIf(
+			sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
+		);
 	}
 
 	@Override
@@ -222,15 +219,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private boolean hasSkiddedAtTimeStamp(double timeStampSeconds) {
-		TimedValue<Boolean> best = null;
-		for (TimedValue<Boolean> v : isSkiddingTimedBuffer) {
-			if (v.getTimestamp() <= timeStampSeconds) {
-				best = v;
-			} else {
-				break;
+		for (Iterator<TimedValue<Boolean>> it = isSkiddingTimedBuffer.descendingIterator(); it.hasNext();) {
+			TimedValue<Boolean> sample = it.next();
+			if (sample.getTimestamp() <= timeStampSeconds) {
+				return sample.getValue();
 			}
 		}
-		return best != null && best.getValue();
+		return false;
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
