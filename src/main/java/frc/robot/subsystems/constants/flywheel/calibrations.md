@@ -14,4 +14,4 @@
 - [x] kS
 - [x] kV
 - [x] kA
-- [x] Velocity tolerance rps
+- [ ] Velocity tolerance rps

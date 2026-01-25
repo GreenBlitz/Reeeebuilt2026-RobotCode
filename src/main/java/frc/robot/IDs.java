@@ -25,6 +25,8 @@ public class IDs {
 
 		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.ROBORIO);
 
+		public static final Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40, BusChain.ROBORIO);
+
 	}
 
 	public static class CANCoderIDs {
@@ -49,8 +51,6 @@ public class IDs {
 	}
 
 	public static class SparkMAXIDs {
-
-		public final static SparkMaxDeviceID TRAIN = new SparkMaxDeviceID(4, SparkLowLevel.MotorType.kBrushless);
 
 		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(7, SparkLowLevel.MotorType.kBrushless);
 

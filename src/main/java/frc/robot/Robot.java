@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -169,6 +171,10 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
+		if (DriverStation.isEnabled()) {
+			return;
+		}
+
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
@@ -274,9 +280,9 @@ public class Robot {
 	}
 
 	private Roller createTrain() {
-		return SparkMaxRollerBuilder.build(
+		return TalonFXRollerBuilder.build(
 			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
+			IDs.TalonFXIDs.TRAIN,
 			TrainConstant.IS_INVERTED,
 			TrainConstant.GEAR_RATIO,
 			TrainConstant.CURRENT_LIMIT,

@@ -73,8 +73,12 @@ public class KrakenX60FlyWheelBuilder {
 		TalonFXConfiguration configuration = new TalonFXConfiguration();
 		configuration.CurrentLimits.StatorCurrentLimit = Constants.CURRENT_LIMIT;
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
+		configuration.CurrentLimits.SupplyCurrentLimit = Constants.CURRENT_LIMIT;
+		configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+		configuration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		configuration.Feedback.SensorToMechanismRatio = Constants.SENSOR_TO_MECHANISM_RATIO_MASTER;
-		configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
 			configuration.Slot0.kP = Constants.kP;
 			configuration.Slot0.kI = Constants.kI;
@@ -90,15 +94,20 @@ public class KrakenX60FlyWheelBuilder {
 			configuration.Slot0.kA = Constants.kA_SIM;
 			configuration.Slot0.kS = Constants.kS_SIM;
 		}
+
 		return configuration;
 	}
 
 	public static TalonFXFollowerConfig buildFollowerConfig() {
 		TalonFXFollowerConfig followerConfig = new TalonFXFollowerConfig();
-		followerConfig.motorConfig.Feedback.SensorToMechanismRatio = Constants.SENSOR_TO_MECHANISM_RATIO_FOLLOWER;
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimit = Constants.CURRENT_LIMIT;
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		followerConfig.motorConfig.CurrentLimits.SupplyCurrentLimit = Constants.CURRENT_LIMIT;
+		followerConfig.motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		followerConfig.motorConfig.Feedback.SensorToMechanismRatio = Constants.SENSOR_TO_MECHANISM_RATIO_FOLLOWER;
+
 		followerConfig.followerIDs = new TalonFXFollowerConfig.TalonFXFollowerID[] {
 			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, MotorAlignmentValue.Opposed)};
 		return followerConfig;

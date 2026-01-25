@@ -13,7 +13,6 @@ import frc.robot.Robot;
 import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.statemachine.superstructure.TargetChecks;
 import frc.robot.subsystems.GBSubsystem;
-import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
@@ -82,7 +81,7 @@ public class RobotCommander extends GBSubsystem {
 	private boolean isReadyToShoot() {
 		return TargetChecks.isReadyToShoot(
 			robot,
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
 			HoodConstants.HOOD_POSITION_TOLERANCE,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
@@ -91,11 +90,8 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToShoot() {
-		return TargetChecks.calibrationIsReadyToShoot(
-			robot,
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			HoodConstants.HOOD_POSITION_TOLERANCE
-		);
+		return TargetChecks
+			.calibrationIsReadyToShoot(robot, StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS, HoodConstants.HOOD_POSITION_TOLERANCE);
 	}
 
 	public Command shootSequence() {
