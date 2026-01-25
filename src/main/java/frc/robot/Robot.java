@@ -202,7 +202,6 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
-		Logger.recordOutput("distance", ShootingCalculations.getDistanceFromHub(poseEstimator.getEstimatedPose().getTranslation()));
 
 		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 
@@ -211,6 +210,7 @@ public class Robot {
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
+		Logger.recordOutput("distance", ShootingCalculations.getDistanceFromHub(ShootingCalculations.getFieldRelativeTurretPosition(poseEstimator.getEstimatedPose())));
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
