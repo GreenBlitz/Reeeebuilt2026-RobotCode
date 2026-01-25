@@ -72,7 +72,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyHoodCalibrationBindings(robot.getHood(), usedJoystick, 0);
+		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -104,8 +104,7 @@ public class JoysticksBindings {
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().shootSequence());
 	}
 
-	private static void
-	applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
+	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));

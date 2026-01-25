@@ -99,9 +99,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command shootSequence() {
-		return new RepeatCommand(
-			new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).withTimeout(0.2), driveWith(RobotState.SHOOT))
-		);
+		return new RepeatCommand(new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).withTimeout(0.2), driveWith(RobotState.SHOOT)));
 	}
 
 	public Command calibrationShootSequence() {

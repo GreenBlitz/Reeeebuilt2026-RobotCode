@@ -21,7 +21,6 @@ import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
-import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -56,8 +55,6 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
-import frc.utils.time.TimeUtil;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -292,7 +289,8 @@ public class Robot {
 	private Roller createBelly() {
 		return TalonFXRollerBuilder.build(
 			BellyConstants.LOG_PATH,
-			new Phoenix6DeviceID(40),
+			IDs.TalonFXIDs.BELLY,
+			BellyConstants.IS_INVERTED,
 			BellyConstants.GEAR_RATIO,
 			BellyConstants.CURRENT_LIMIT,
 			BellyConstants.MOMENT_OF_INERTIA

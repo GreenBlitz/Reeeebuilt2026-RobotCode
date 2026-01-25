@@ -10,7 +10,7 @@ public class Constants {
 	public final static double kV = 0.063322;
 	public final static double kS = 0.36;
 	public final static double kA = 0.0071578;
-	
+
 	public final static double kP_SIM = 0.4;
 	public final static double kI_SIM = 0;
 	public final static double kD_SIM = 0;
