@@ -237,4 +237,5 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		return getEstimatedPoseAtTimestamp(timestampSeconds)
 			.flatMap(estimatedPose -> gyroYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
 	}
+
 }
