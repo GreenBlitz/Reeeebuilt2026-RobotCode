@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,7 +51,6 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
-import frc.utils.DriverStationUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
@@ -171,7 +171,11 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
-		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians() && DriverStationUtil.isDisabled()) {
+		if (DriverStation.isEnabled()) {
+			return;
+		}
+
+		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
 		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {

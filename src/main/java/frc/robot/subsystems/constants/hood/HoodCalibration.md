@@ -2,11 +2,11 @@ Hood calibrations
 ---------------------
 
 #### IDs
-- [] Motor id
-- [] Motor buschain
+- [x] Motor id
+- [x] Motor buschain
 
 #### Limits
-- [ ] Current limit
+- [x] Current limit
 - [x] Forward limit
 - [x] Backwards limit
 - [x] Max position
@@ -21,26 +21,21 @@ Hood calibrations
 - [ ] Arm length
 - [ ] Arm weight
 - [ ] SysIdRoutineConfig
-- [ ] Starting position
-- [ ] Hood position tolerance
+- [x] Starting position
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Sim PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### FeedForward
-- [ ] kS
-- [ ] kG
-
-#### MotionMagic
-- [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter
+- [x] kS
+- [x] kG
 
 #### Simulation Constants
 - [ ] Moment of inertia
