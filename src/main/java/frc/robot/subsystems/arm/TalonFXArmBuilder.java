@@ -228,6 +228,11 @@ public class TalonFXArmBuilder {
 
 		config.ClosedLoopGeneral.ContinuousWrap = isContinuesWrap;
 
+		if (feedbackConfigs.SensorToMechanismRatio == 79.2) {
+			config.Voltage.PeakForwardVoltage = 5;
+			config.Voltage.PeakReverseVoltage = -5;
+		}
+
 		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = reverseSoftwareLimit.getRotations();
 		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = forwardSoftwareLimit.getRotations();
 		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
