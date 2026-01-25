@@ -32,16 +32,13 @@ public class HubUtil {
 	}
 
 	private static Optional<DriverStation.Alliance> getAutoLosingAlliance() {
-		if (DriverStationUtil.isTeleop()) {
-			if (autoWinnerAlliance.isEmpty()) {
-				return Optional.empty();
-			}
-			return switch (autoWinnerAlliance.get()) {
-				case Red -> Optional.of(DriverStation.Alliance.Blue);
-				case Blue -> Optional.of(DriverStation.Alliance.Red);
-			};
+		if (autoWinnerAlliance.isEmpty() && DriverStationUtil.isTeleop()) {
+			return Optional.empty();
 		}
-		return Optional.empty();
+		return switch (autoWinnerAlliance.get()) {
+			case Red -> Optional.of(DriverStation.Alliance.Blue);
+			case Blue -> Optional.of(DriverStation.Alliance.Red);
+		};
 	}
 
 	public static void refreshAlliances() {
