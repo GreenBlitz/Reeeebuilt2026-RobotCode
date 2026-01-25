@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +22,49 @@ import frc.utils.AngleUnit;
 import frc.utils.battery.BatteryUtil;
 
 public class TalonFXRollerBuilder {
+
+	public static VelocityRoller buildVelocityRoller(
+		String logPath,
+		Phoenix6DeviceID deviceID,
+		boolean isInverted,
+		boolean isContinuesWrap,
+		TalonFXFollowerConfig talonFXFollowerConfig,
+		SysIdRoutine.Config sysIdRoutineConfig,
+		FeedbackConfigs feedbackConfigs,
+		Slot0Configs realSlotsConfig,
+		Slot0Configs simulationSlotsConfig,
+		int currentLimit,
+		double signalsFrequency,
+		double arbitraryFeedForward,
+		Rotation2d forwardSoftwareLimit,
+		Rotation2d reverseSoftwareLimit,
+		double gearRatio,
+		double momentOfInertia
+	) {
+		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
+			new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), momentOfInertia, gearRatio), DCMotor.getKrakenX60(1))
+		);
+		TalonFXMotor roller = new TalonFXMotor(logPath, deviceID, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
+
+		roller.applyConfiguration(buildConfiguration(gearRatio, currentLimit));
+
+		InputSignal<Double> voltageSignal = Phoenix6SignalBuilder
+			.build(roller.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, deviceID.busChain());
+		InputSignal<Double> currentSignal = Phoenix6SignalBuilder
+			.build(roller.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, deviceID.busChain());
+		InputSignal<Rotation2d> positionSignal = Phoenix6SignalBuilder.build(
+			roller.getDevice().getPosition(),
+			roller.getDevice().getVelocity(),
+			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+			AngleUnit.ROTATIONS,
+			deviceID.busChain()
+		);
+
+		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
+
+
+		return new VelocityRoller(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest);
+	}
 
 	public static Roller build(String logPath, Phoenix6DeviceID id, double gearRatio, int currentLimit, double momentOfInertia) {
 		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
