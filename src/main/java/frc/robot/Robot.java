@@ -117,9 +117,9 @@ public class Robot {
 		);
 
 		this.limelight = new Limelight(
-			"limelight",
+			"limelight-left",
 			"Vision",
-			new Pose3d(1.2087, 0.021429, 0.110145, new Rotation3d(Math.toRadians(-179.8), Math.toRadians(27.65), Math.toRadians(-1.09))),
+			new Pose3d(0.6, 0.021429, 0.238, new Rotation3d(Math.toRadians(0.09), Math.toRadians(27.65), Math.toRadians(0.24))),
 			LimelightPipeline.APRIL_TAG
 		);
 
