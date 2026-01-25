@@ -20,7 +20,6 @@ import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
 import java.util.ArrayDeque;
-import java.util.Iterator;
 import java.util.Optional;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
@@ -110,7 +109,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setIsSkidding(data.getIsSkidding());
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
-		isSkiddingTimedBuffer.addLast(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
+		isSkiddingTimedBuffer.addFirst(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
 		isSkiddingTimedBuffer.removeIf(
 			sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
 		);
@@ -219,8 +218,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private boolean hasSkiddedAtTimeStamp(double timeStampSeconds) {
-		for (Iterator<TimedValue<Boolean>> it = isSkiddingTimedBuffer.descendingIterator(); it.hasNext();) {
-			TimedValue<Boolean> sample = it.next();
+		for (TimedValue<Boolean> sample : isSkiddingTimedBuffer) {
 			if (sample.getTimestamp() <= timeStampSeconds) {
 				return sample.getValue();
 			}
@@ -239,5 +237,4 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		return getEstimatedPoseAtTimestamp(timestampSeconds)
 			.flatMap(estimatedPose -> gyroYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
 	}
-
 }
