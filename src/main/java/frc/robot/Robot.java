@@ -12,8 +12,9 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.ShooterCalculations;
+import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -145,7 +146,6 @@ public class Robot {
 		robotCommander = new RobotCommander("/RobotCommander", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
-		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
@@ -164,15 +164,20 @@ public class Robot {
 		}
 	}
 
-	public boolean isTurretMoveLegal() {
-		return ShooterCalculations.isTurretMoveLegal(
-			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
-			turret.getPosition()
-		);
+	private void updateAllSubsystems() {
+		swerve.update();
+		fourBar.update();
+		intakeRoller.update();
+		belly.update();
+		train.update();
+		turret.update();
+		hood.update();
+		flyWheel.update();
 	}
 
 	public void periodic() {
 		BusChain.refreshAll();
+		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
 
@@ -181,6 +186,7 @@ public class Robot {
 		limelight.updateMT1();
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
+		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
@@ -202,7 +208,7 @@ public class Robot {
 		);
 	}
 
-	private Arm createTurret() {
+	private VelocityPositionArm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
 			TurretConstants.MAX_POSITION,
 			TurretConstants.MIN_POSITION,
@@ -210,7 +216,7 @@ public class Robot {
 			TurretConstants.MOMENT_OF_INERTIA,
 			TurretConstants.TURRET_RADIUS
 		);
-		return TalonFXArmBuilder.buildMotionMagicArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			TurretConstants.LOG_PATH,
 			IDs.TalonFXIDs.TURRET,
 			TurretConstants.IS_INVERTED,
@@ -225,9 +231,7 @@ public class Robot {
 			TurretConstants.ARBITRARY_FEED_FORWARD,
 			TurretConstants.FORWARD_SOFTWARE_LIMIT,
 			TurretConstants.BACKWARDS_SOFTWARE_LIMIT,
-			turretSimulationConstants,
-			TurretConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
-			TurretConstants.DEFAULT_MAX_VELOCITY_PER_SECOND
+			turretSimulationConstants
 		);
 	}
 
