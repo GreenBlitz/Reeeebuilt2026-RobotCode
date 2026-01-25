@@ -239,14 +239,12 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	public boolean isTilted(RobotPoseObservation visionObservation) {
-		Optional<Rotation2d> imuRollAtVisionObservationTimestamp = Optional
-			.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
-		Optional<Rotation2d> imuPitchAtVisionObservationTimestamp = Optional
-			.of(Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).get().getZ()));
+		Rotation2d imuRollAtVisionObservationTimestamp = Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).map((orientation) -> (orientation.getX())).orElseGet(() -> 0.0));
+		Rotation2d imuPitchAtVisionObservationTimestamp = Rotation2d.fromRadians(imuOrientationBuffer.getSample(visionObservation.timestampSeconds()).map((orientation) -> (orientation.getY())).orElseGet(() -> 0.0));
 
-		return imuRollAtVisionObservationTimestamp.get().getRadians()
+		return imuRollAtVisionObservationTimestamp.getRadians()
 			>= SwerveConstants.TILTED_ROLL.plus(SwerveConstants.TILTED_ROLL_TOLERANCE).getRadians()
-			|| imuPitchAtVisionObservationTimestamp.get().getRadians()
+			|| imuPitchAtVisionObservationTimestamp.getRadians()
 				>= SwerveConstants.TILTED_PITCH.plus(SwerveConstants.TILTED_PITCH_TOLERANCE).getRadians();
 	}
 
