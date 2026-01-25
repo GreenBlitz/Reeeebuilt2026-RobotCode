@@ -119,7 +119,7 @@ public class Robot {
 		this.limelight = new Limelight(
 			"limelight-left",
 			"Vision",
-			new Pose3d(0.6, 0.021429, 0.238, new Rotation3d(Math.toRadians(0.09), Math.toRadians(27.65), Math.toRadians(0.24))),
+			new Pose3d(0.275, 0.02, 0.242, new Rotation3d(Math.toRadians(0.08), Math.toRadians(-27.75), Math.toRadians(0.37))),
 			LimelightPipeline.APRIL_TAG
 		);
 
@@ -178,6 +178,8 @@ public class Robot {
 
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		limelight.updateMT1();
+		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 
 		BatteryUtil.logStatus();
