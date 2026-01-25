@@ -231,7 +231,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			}
 		}
 		return best != null && best.getValue();
-	};
+	}
 
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
