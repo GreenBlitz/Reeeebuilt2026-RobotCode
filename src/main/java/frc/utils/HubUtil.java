@@ -14,8 +14,11 @@ public class HubUtil {
 	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
+		if (!DriverStationUtil.isTeleop()) {
+			return Optional.empty();
+		}
 		String gameData = DriverStation.getGameSpecificMessage();
-		if (gameData.isEmpty() && DriverStationUtil.isTeleop()) {
+		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 			return Optional.empty();
 		}
@@ -24,7 +27,7 @@ public class HubUtil {
 			case RED -> Optional.of(DriverStation.Alliance.Red);
 			case DEFAULT -> Optional.empty();
 		};
-		if (alliance.isEmpty() && DriverStationUtil.isTeleop()) {
+		if (alliance.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Unknown auto winner alliance").report();
 			return Optional.empty();
 		}
@@ -32,13 +35,16 @@ public class HubUtil {
 	}
 
 	private static Optional<DriverStation.Alliance> getAutoLosingAlliance() {
-		if (autoWinnerAlliance.isEmpty() && DriverStationUtil.isTeleop()) {
-			return Optional.empty();
+		if (DriverStationUtil.isTeleop()) {
+			if (autoWinnerAlliance.isEmpty()) {
+				return Optional.empty();
+			}
+			return switch (autoWinnerAlliance.get()) {
+				case Red -> Optional.of(DriverStation.Alliance.Blue);
+				case Blue -> Optional.of(DriverStation.Alliance.Red);
+			};
 		}
-		return switch (autoWinnerAlliance.get()) {
-			case Red -> Optional.of(DriverStation.Alliance.Blue);
-			case Blue -> Optional.of(DriverStation.Alliance.Red);
-		};
+		return Optional.empty();
 	}
 
 	public static void refreshAlliances() {
