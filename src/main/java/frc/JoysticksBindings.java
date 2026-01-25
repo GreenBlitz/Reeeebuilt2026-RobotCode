@@ -61,6 +61,7 @@ public class JoysticksBindings {
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
+        // bindings...
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
