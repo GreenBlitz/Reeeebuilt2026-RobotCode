@@ -14,16 +14,20 @@ public class HubUtil {
 	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
+		if (!DriverStationUtil.isTeleop()) {
+			return Optional.empty();
+		}
 		String gameData = DriverStation.getGameSpecificMessage();
-		if (gameData.isEmpty() && DriverStationUtil.isTeleop()) {
+		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
+			return Optional.empty();
 		}
 		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.fromChar(gameData.charAt(0))) {
 			case BLUE -> Optional.of(DriverStation.Alliance.Blue);
 			case RED -> Optional.of(DriverStation.Alliance.Red);
 			case DEFAULT -> Optional.empty();
 		};
-		if (alliance.isEmpty() && DriverStationUtil.isTeleop()) {
+		if (alliance.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Unknown auto winner alliance").report();
 			return Optional.empty();
 		}
