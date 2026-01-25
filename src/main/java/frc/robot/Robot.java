@@ -280,9 +280,9 @@ public class Robot {
 	}
 
 	private Roller createTrain() {
-		return SparkMaxRollerBuilder.build(
+		return TalonFXRollerBuilder.build(
 			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
+			IDs.TalonFXIDs.TRAIN,
 			TrainConstant.IS_INVERTED,
 			TrainConstant.GEAR_RATIO,
 			TrainConstant.CURRENT_LIMIT,
@@ -291,9 +291,9 @@ public class Robot {
 	}
 
 	private Roller createBelly() {
-		return TalonFXRollerBuilder.build(
+		return SparkMaxRollerBuilder.build(
 			BellyConstants.LOG_PATH,
-			IDs.TalonFXIDs.BELLY,
+			IDs.SparkMAXIDs.BELLY,
 			BellyConstants.IS_INVERTED,
 			BellyConstants.GEAR_RATIO,
 			BellyConstants.CURRENT_LIMIT,
