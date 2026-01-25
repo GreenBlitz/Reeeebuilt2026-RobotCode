@@ -15,8 +15,9 @@ public class HubUtil {
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
-		if (gameData.isEmpty() && DriverStationUtil.isTeleop()) {
+		if (gameData.isEmpty() || DriverStationUtil.isTeleop()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
+			return Optional.empty();
 		}
 		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.fromChar(gameData.charAt(0))) {
 			case BLUE -> Optional.of(DriverStation.Alliance.Blue);
