@@ -19,6 +19,7 @@ import frc.robot.hardware.empties.EmptyIMU;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.poseestimator.OdometryData;
 import frc.robot.subsystems.GBSubsystem;
+import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.Modules;
 import frc.robot.subsystems.swerve.states.DriveRelative;
 import frc.robot.subsystems.swerve.states.LoopMode;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
+import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
@@ -48,6 +50,9 @@ public class Swerve extends GBSubsystem {
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
 
+	private final Translation2d[] moduleTranslationalVelocityVectorsMeterPerSecond;
+	private boolean isSkidding;
+
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
 	private ChassisPowers driversPowerInputs;
@@ -63,14 +68,21 @@ public class Swerve extends GBSubsystem {
 		this.imu = imu;
 		this.imuSignals = imuSignals;
 
+		moduleTranslationalVelocityVectorsMeterPerSecond = new Translation2d[ModuleUtil.ModulePosition.values().length];
+		isSkidding = false;
+
 		this.kinematics = new SwerveDriveKinematics(modules.getModulePositionsFromCenterMeters());
-		this.headingSupplier = () -> getGyroAbsoluteYaw().getValue();
+		this.headingSupplier = () -> getIMUAbsoluteYaw().getValue();
 		this.headingStabilizer = new HeadingStabilizer(this.constants);
 		this.stateHandler = new SwerveStateHandler(this);
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
 		update();
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
+	}
+
+	public boolean getIsSkidding() {
+		return isSkidding;
 	}
 
 	public String getLogPath() {
@@ -162,6 +174,7 @@ public class Swerve extends GBSubsystem {
 	public void update() {
 		updateIMU();
 		modules.updateInputs();
+		updateAreModulesSkidding();
 
 		currentState.log(constants.stateLogPath());
 
@@ -176,6 +189,8 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
+
+		Logger.recordOutput(getLogPath() + "/isSkidding", isSkidding);
 	}
 
 
@@ -191,7 +206,8 @@ public class Swerve extends GBSubsystem {
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.yawSignal().asArray()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(getIMUAcceleration())
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(getIMUAcceleration()),
+				isSkidding
 			);
 		}
 
@@ -202,7 +218,7 @@ public class Swerve extends GBSubsystem {
 		return driveRadiusMeters;
 	}
 
-	public TimedValue<Rotation2d> getGyroAbsoluteYaw() {
+	public TimedValue<Rotation2d> getIMUAbsoluteYaw() {
 		TimedValue<Rotation2d> latestGyroYaw = imuSignals.yawSignal().getLatestTimedValue();
 		Rotation2d latestGyroAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestGyroYaw.getValue().getRadians()));
 		return new TimedValue<>(latestGyroAbsoluteYaw, latestGyroYaw.getTimestamp());
@@ -322,7 +338,6 @@ public class Swerve extends GBSubsystem {
 		modules.setTargetStates(moduleStates, isClosedLoop);
 	}
 
-
 	public boolean isAtHeading(Rotation2d targetHeading, Rotation2d tolerance, Rotation2d velocityDeadbandAnglesPerSecond) {
 		double headingDeltaDegrees = Math.abs(targetHeading.minus(headingSupplier.get()).getDegrees());
 		boolean isAtHeading = headingDeltaDegrees < tolerance.getDegrees();
@@ -335,6 +350,41 @@ public class Swerve extends GBSubsystem {
 
 	public boolean isCollisionDetected() {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
+	}
+
+	public Translation2d getModuleTranslationVector(int moduleIndex, double robotYawAngularVelocityRadiansPerSecond) {
+		SwerveModuleState moduleRotationalState = kinematics
+			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotYawAngularVelocityRadiansPerSecond), new Translation2d())[moduleIndex];
+		SwerveModuleState moduleState = modules.getCurrentStates()[moduleIndex];
+
+		return new Translation2d(
+			moduleState.speedMetersPerSecond - moduleRotationalState.speedMetersPerSecond,
+			moduleState.angle.minus(moduleRotationalState.angle)
+		);
+	}
+
+	public void updateModuleTranslationVectors() {
+		double robotYawAngularVelocityRadiansPerSecond = getRobotRelativeVelocity().omegaRadiansPerSecond;
+		for (int i = 0; i < ModuleUtil.ModulePosition.values().length; i++) {
+			moduleTranslationalVelocityVectorsMeterPerSecond[i] = getModuleTranslationVector(i, robotYawAngularVelocityRadiansPerSecond);
+		}
+	}
+
+	private void updateAreModulesSkidding() {
+		updateModuleTranslationVectors();
+		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
+			getRobotRelativeVelocity().vxMetersPerSecond,
+			getRobotRelativeVelocity().vyMetersPerSecond
+		);
+
+		isSkidding = false;
+		for (Translation2d moduleTranslationalVector : moduleTranslationalVelocityVectorsMeterPerSecond) {
+			isSkidding |= !ToleranceMath.isNear(
+				robotTranslationalVelocityMetersPerSecond,
+				moduleTranslationalVector,
+				SwerveConstants.MODULE_TO_ROBOT_SKID_VELOCITY_TOLERANCE_METERS_PER_SECOND
+			);
+		}
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {

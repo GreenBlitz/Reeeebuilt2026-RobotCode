@@ -15,6 +15,7 @@ public interface IOdometryEstimator {
 		Rotation2d imuYaw,
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
+		boolean isSkidding,
 		Pose2d poseMeters
 	);
 

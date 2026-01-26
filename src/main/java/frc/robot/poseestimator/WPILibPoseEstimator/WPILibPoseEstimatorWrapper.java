@@ -15,10 +15,11 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
+import frc.utils.TimedValue;
 import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
 import org.littletonrobotics.junction.Logger;
-
+import java.util.ArrayDeque;
 import java.util.Optional;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
@@ -30,6 +31,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Double> imuAccelerationBuffer;
+	private final ArrayDeque<TimedValue<Boolean>> isSkiddingTimedBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
@@ -40,6 +42,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		SwerveModulePosition[] initialModulePositions,
 		Rotation2d initialIMUYaw,
 		double initialIMUAccelerationMagnitudeG,
+		boolean initialSkiddingState,
 		double initialTimestampSeconds
 	) {
 		this.logPath = logPath;
@@ -60,15 +63,16 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			initialTimestampSeconds,
 			initialModulePositions,
 			Optional.of(initialIMUYaw),
-			Optional.of(initialIMUAccelerationMagnitudeG)
+			Optional.of(initialIMUAccelerationMagnitudeG),
+			initialSkiddingState
 		);
 		this.isIMUOffsetCalibrated = false;
 		this.poseToIMUYawDifferenceBuffer = new RingBuffer<>(WPILibPoseEstimatorConstants.POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE);
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
+		this.isSkiddingTimedBuffer = new ArrayDeque<>();
 	}
-
 
 	@Override
 	public Pose2d getEstimatedPose() {
@@ -97,16 +101,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		data.setIMUYaw(data.getIMUYaw().orElseGet(() -> lastOdometryData.getIMUYaw().get().plus(Rotation2d.fromRadians(changeInPose.dtheta))));
 		poseEstimator.updateWithTime(data.getTimestampSeconds(), data.getIMUYaw().get(), data.getWheelPositions());
-
 		imuYawBuffer.addSample(data.getTimestampSeconds(), data.getIMUYaw().get());
-
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
 		lastOdometryData.setIMUYaw(data.getIMUYaw());
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
-
+		lastOdometryData.setIsSkidding(data.getIsSkidding());
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
+		isSkiddingTimedBuffer.addFirst(new TimedValue<>(data.getIsSkidding(), data.getTimestampSeconds()));
+		isSkiddingTimedBuffer.removeIf(
+			sample -> data.getTimestampSeconds() - sample.getTimestamp() > WPILibPoseEstimatorConstants.SKID_BUFFER_TIME_LIMIT_SECONDS
+		);
 	}
 
 	@Override
@@ -122,11 +128,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Rotation2d imuYaw,
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
+		boolean isSkidding,
 		Pose2d poseMeters
 	) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
 		poseEstimator.resetPosition(imuYaw, wheelPositions, poseMeters);
-		this.lastOdometryData = new OdometryData(timestampSeconds, wheelPositions, Optional.of(imuYaw), Optional.of(imuAccelerationMagnitudeG));
+		this.lastOdometryData = new OdometryData(
+			timestampSeconds,
+			wheelPositions,
+			Optional.of(imuYaw),
+			Optional.of(imuAccelerationMagnitudeG),
+			isSkidding
+		);
 		poseToIMUYawDifferenceBuffer.clear();
 		imuYawBuffer.addSample(timestampSeconds, imuYaw);
 		imuAccelerationBuffer.addSample(timestampSeconds, imuAccelerationMagnitudeG);
@@ -139,6 +152,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			lastOdometryData.getIMUYaw().get(),
 			lastOdometryData.getImuAccelerationMagnitudeG().get(),
 			lastOdometryData.getWheelPositions(),
+			lastOdometryData.getIsSkidding(),
 			poseMeters
 		);
 	}
@@ -172,13 +186,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
 		addVisionMeasurement(visionRobotPoseObservation);
-
 		getEstimatedPoseToIMUYawDifference(
 			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
 			visionRobotPoseObservation.timestampSeconds()
 		).ifPresent(yawDifference -> {
 			poseToIMUYawDifferenceBuffer.insert(yawDifference);
-
 			if (!isIMUOffsetCalibrated) {
 				updateIsIMUOffsetCalibrated();
 			}
@@ -198,12 +210,20 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Optional<Double> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer.getSample(visionObservation.timestampSeconds());
 		boolean isSamplePresent = imuAccelerationAtVisionObservationTimestamp.isPresent();
 		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.get() >= SwerveConstants.MIN_COLLISION_G_FORCE;
-
 		return isSamplePresent && isColliding
 			? visionObservation.stdDevs()
 				.asColumnVector()
 				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
 			: visionObservation.stdDevs().asColumnVector();
+	}
+
+	private boolean hasSkiddedAtTimeStamp(double timeStampSeconds) {
+		for (TimedValue<Boolean> sample : isSkiddingTimedBuffer) {
+			if (sample.getTimestamp() <= timeStampSeconds) {
+				return sample.getValue();
+			}
+		}
+		return false;
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
