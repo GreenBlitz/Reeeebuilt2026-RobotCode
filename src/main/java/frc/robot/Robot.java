@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -12,7 +11,6 @@ import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
-import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -269,7 +267,16 @@ public class Robot {
 	}
 
 	private VelocityRoller createTrain() {
-		return TalonFXRollerBuilder.buildVelocityRoller(TrainConstant.LOG_PATH,IDs.TalonFXIDs.TRAIN, TrainConstant.REAL_SLOTS_CONFIG, TrainConstant.CURRENT_LIMIT,0,TrainConstant.GEAR_RATIO,TrainConstant.MOMENT_OF_INERTIA,TrainConstant.IS_INVERTED);
+		return TalonFXRollerBuilder.buildVelocityRoller(
+			TrainConstant.LOG_PATH,
+			IDs.TalonFXIDs.TRAIN,
+			TrainConstant.REAL_SLOTS_CONFIG,
+			TrainConstant.CURRENT_LIMIT,
+			0,
+			TrainConstant.GEAR_RATIO,
+			TrainConstant.MOMENT_OF_INERTIA,
+			TrainConstant.IS_INVERTED
+		);
 	}
 
 	private Roller createBelly() {

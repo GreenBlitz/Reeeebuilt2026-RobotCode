@@ -5,9 +5,11 @@ import frc.robot.hardware.interfaces.*;
 import org.littletonrobotics.junction.Logger;
 
 public class VelocityRoller extends Roller {
+
 	InputSignal<Rotation2d> velocitySignal;
 	private IRequest<Rotation2d> velocityRequest;
 	private VelocityRollerCommandBuilder commandsBuilder;
+
 	public VelocityRoller(
 		String logPath,
 		ControllableMotor roller,
@@ -25,7 +27,7 @@ public class VelocityRoller extends Roller {
 		setDefaultCommand(commandsBuilder.stop());
 	}
 
-	public Rotation2d getVelocity(){
+	public Rotation2d getVelocity() {
 		return velocityRequest.getSetPoint();
 	}
 
@@ -35,12 +37,12 @@ public class VelocityRoller extends Roller {
 	}
 
 	@Override
-	public VelocityRollerCommandBuilder getCommandsBuilder(){
+	public VelocityRollerCommandBuilder getCommandsBuilder() {
 		return commandsBuilder;
 	}
 
 	@Override
-	public void stop(){
+	public void stop() {
 		super.stop();
 		velocityRequest.withSetPoint(Rotation2d.kZero);
 	}

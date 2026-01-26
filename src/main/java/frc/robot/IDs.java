@@ -27,7 +27,8 @@ public class IDs {
 
 		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.ROBORIO);
 
-		public final static Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40,BusChain.ROBORIO);
+		public final static Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40, BusChain.ROBORIO);
+
 	}
 
 	public static class CANCoderIDs {
