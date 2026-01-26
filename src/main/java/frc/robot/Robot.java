@@ -228,8 +228,8 @@ public class Robot {
 			FourBarConstants.FORWARD_SOFTWARE_LIMITS,
 			FourBarConstants.BACKWARD_SOFTWARE_LIMITS,
 			fourBarSimConstant,
-			FourBarConstants.MAX_ACCELERATION_ROTATION2D_PER_SECONDS_SQUARE,
-			FourBarConstants.MAX_VELOCITY_ROTATION2D_PER_SECONDS
+			FourBarConstants.MAX_ACCELERATION_RPS_SQUARE,
+			FourBarConstants.MAX_VELOCITY_RPS
 		);
 	}
 

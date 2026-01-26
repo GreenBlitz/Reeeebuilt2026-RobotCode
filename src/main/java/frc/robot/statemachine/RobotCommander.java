@@ -89,7 +89,7 @@ public class RobotCommander extends GBSubsystem {
 	private boolean isReadyToShoot() {
 		return ShootingChecks.isReadyToShoot(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_SHOOTING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
@@ -100,7 +100,7 @@ public class RobotCommander extends GBSubsystem {
 	private boolean canContinueShooting() {
 		return ShootingChecks.canContinueShooting(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_SHOOTING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
@@ -111,7 +111,7 @@ public class RobotCommander extends GBSubsystem {
 	private boolean calibrationIsReadyToShoot() {
 		return ShootingChecks.calibrationIsReadyToShoot(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING
 		);
 	}
