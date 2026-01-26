@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.StateMachineConstants;
+import frc.robot.statemachine.ShootingChecks;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
 public class Superstructure {
 
 	private final Robot robot;
-	private final TargetChecks targetChecks;
+	private final ShootingChecks shootingChecks;
 	private boolean isSubsystemRunningIndependently;
 	private final String logPath;
 
@@ -42,7 +43,7 @@ public class Superstructure {
 			logPath
 		);
 
-		this.targetChecks = new TargetChecks(this);
+		this.shootingChecks = new ShootingChecks(this);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isSubsystemRunningIndependently = false;
@@ -79,8 +80,8 @@ public class Superstructure {
 		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
 	}
 
-	public TargetChecks getTargetChecks() {
-		return targetChecks;
+	public ShootingChecks getTargetChecks() {
+		return shootingChecks;
 	}
 
 	public Command setState(RobotState robotState) {
