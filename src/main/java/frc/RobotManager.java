@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
-import frc.utils.DriverStationUtil;
+import frc.utils.HubUtil;
+import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
@@ -31,6 +32,7 @@ public class RobotManager extends LoggedRobot {
 	private final Robot robot;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
+	private static double teleopStartTimeSeconds = -1;
 
 	public RobotManager() {
 		if (Robot.ROBOT_TYPE.isReplay()) {
@@ -85,9 +87,19 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	@Override
+	public void teleopInit() {
+		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+	}
+
+	public static double getTeleopStartTimeSeconds() {
+		return teleopStartTimeSeconds;
+	}
+
+	@Override
 	public void robotPeriodic() {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
+		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
 	}

@@ -6,8 +6,8 @@ import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.signal.AngleSignal;
 import frc.robot.hardware.signal.DoubleSignal;
 import frc.robot.subsystems.swerve.IMUSignals;
-import frc.utils.TimedValue;
 import frc.utils.AngleUnit;
+import frc.utils.TimedValue;
 import frc.utils.time.TimeUtil;
 
 public class SimulationIMUBuilder {

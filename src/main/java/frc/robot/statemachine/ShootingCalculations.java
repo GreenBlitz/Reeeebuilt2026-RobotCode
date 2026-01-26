@@ -81,7 +81,7 @@ public class ShootingCalculations {
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS, turretPredictedPose);
 	}
 
-	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
+	public static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Translation2d(
@@ -98,14 +98,18 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(67),
-			1.5,
-			Rotation2d.fromDegrees(60),
+			2.0,
+			Rotation2d.fromDegrees(32),
 			2.5,
-			Rotation2d.fromDegrees(43),
-			3.7,
-			Rotation2d.fromDegrees(33)
+			Rotation2d.fromDegrees(32),
+			3.0,
+			Rotation2d.fromDegrees(32),
+			3.5,
+			Rotation2d.fromDegrees(35),
+			4.0,
+			Rotation2d.fromDegrees(35.7),
+			4.5,
+			Rotation2d.fromDegrees(38)
 		)
 	);
 
@@ -113,14 +117,18 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(7000),
-			1.5,
-			Rotation2d.fromDegrees(7800),
+			2.0,
+			Rotation2d.fromDegrees(22000),
 			2.5,
-			Rotation2d.fromDegrees(10000),
-			3.7,
-			Rotation2d.fromDegrees(12000)
+			Rotation2d.fromDegrees(24000),
+			3.0,
+			Rotation2d.fromDegrees(26200),
+			3.5,
+			Rotation2d.fromDegrees(27000),
+			4.0,
+			Rotation2d.fromDegrees(28500),
+			4.5,
+			Rotation2d.fromDegrees(29600)
 		)
 	);
 
