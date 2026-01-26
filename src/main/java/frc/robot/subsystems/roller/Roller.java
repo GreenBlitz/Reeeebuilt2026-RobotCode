@@ -38,10 +38,10 @@ public class Roller extends GBSubsystem {
 		this.positionSignal = positionSignal;
 		this.velocitySignal = velocitySignal;
 		this.voltageRequest = voltageRequest;
+		this.velocityRequest = velocityRequest;
 		this.commandsBuilder = new RollerCommandsBuilder(this);
 		this.roller.resetPosition(Rotation2d.fromRotations(0));
 		this.targetPosition = Rotation2d.fromRotations(0);
-		this.velocityRequest = velocityRequest;
 		this.targetVelocity = Rotation2d.fromRotations(0);
 	}
 

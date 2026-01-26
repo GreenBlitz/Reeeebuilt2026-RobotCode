@@ -25,10 +25,10 @@ public class RollerCommandsBuilder extends GBCommandsBuilder {
 	public Command setVelocity(Rotation2d velocity) {
 		return roller.asSubsystemCommand(
 			new ParallelCommandGroup(
-				new RunCommand(() -> roller.setVelocity(velocity)),
-				new InstantCommand(() -> roller.updateTargetVelocity(velocity))
+					new InstantCommand(() -> roller.updateTargetVelocity(velocity)),
+					new RunCommand(() -> roller.setVelocity(velocity))
 			),
-			"set velocity to " + velocity.getRotations() + " rps"
+			"set velocity to " + velocity.getRotations() + " RPS"
 		);
 	}
 

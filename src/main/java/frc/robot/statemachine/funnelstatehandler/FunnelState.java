@@ -20,7 +20,7 @@ public enum FunnelState {
 	}
 
 	FunnelState() {
-		this.trainVelocity = new Rotation2d();
+		this.trainVelocity = Rotation2d.kZero;
 		this.bellyVoltage = 0;
 	}
 
