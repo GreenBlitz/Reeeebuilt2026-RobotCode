@@ -59,7 +59,7 @@ public class ShootingCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
-	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -74,7 +74,37 @@ public class ShootingCalculations {
 		)
 	);
 
-	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP_SHOOT_AT_HUB = new InterpolationMap<Double, Rotation2d>(
+		InverseInterpolator.forDouble(),
+		InterpolationMap.interpolatorForRotation2d(),
+		Map.of(
+			1.5,
+			Rotation2d.fromRotations(50),
+			3.0,
+			Rotation2d.fromRotations(65),
+			4.5,
+			Rotation2d.fromRotations(85),
+			6.0,
+			Rotation2d.fromRotations(110)
+		)
+	);
+
+	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP_PASS = new InterpolationMap<Double, Rotation2d>(
+		InverseInterpolator.forDouble(),
+		InterpolationMap.interpolatorForRotation2d(),
+		Map.of(
+			1.5,
+			Rotation2d.fromDegrees(67),
+			3.0,
+			Rotation2d.fromDegrees(60),
+			4.5,
+			Rotation2d.fromDegrees(43),
+			6.0,
+			Rotation2d.fromDegrees(33)
+		)
+	);
+
+	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP_PASS = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -90,11 +120,11 @@ public class ShootingCalculations {
 	);
 
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
-		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
+		return HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB.get(distanceFromTower);
 	}
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
-		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
+		return FLYWHEEL_INTERPOLATION_MAP_SHOOT_AT_HUB.get(distanceFromTower);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose) {

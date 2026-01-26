@@ -87,7 +87,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		return ShootingChecks.isReadyToShoot(
+		return ShootingChecks.isReadyToShootAtHub(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
@@ -98,7 +98,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean canContinueShooting() {
-		return ShootingChecks.canContinueShooting(
+		return ShootingChecks.canContinueShootingAtHub(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_CONTINUE_SHOOTING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
@@ -109,7 +109,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToShoot() {
-		return ShootingChecks.calibrationIsReadyToShoot(
+		return ShootingChecks.calibrationIsReadyToShootAtHub(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING
