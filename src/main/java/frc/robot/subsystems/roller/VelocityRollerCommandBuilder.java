@@ -13,10 +13,6 @@ public class VelocityRollerCommandBuilder extends RollerCommandsBuilder {
 		this.roller = roller;
 	}
 
-	public Command stop() {
-		return roller.asSubsystemCommand(new RunCommand(() -> roller.stop()), "stop");
-	}
-
 	public Command setVelocity(Rotation2d velocityRPS) {
 		return roller.asSubsystemCommand(new RunCommand(() -> roller.setVelocity(velocityRPS)), "set velocity");
 	}
