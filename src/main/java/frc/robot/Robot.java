@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -170,6 +171,10 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
+		if (DriverStation.isEnabled()) {
+			return;
+		}
+
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
@@ -278,6 +283,7 @@ public class Robot {
 		return TalonFXRollerBuilder.build(
 			TrainConstant.LOG_PATH,
 			IDs.TalonFXIDs.TRAIN,
+			TrainConstant.IS_INVERTED,
 			TrainConstant.GEAR_RATIO,
 			TrainConstant.CURRENT_LIMIT,
 			TrainConstant.MOMENT_OF_INERTIA

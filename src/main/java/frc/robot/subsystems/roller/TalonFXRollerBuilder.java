@@ -3,6 +3,7 @@ package frc.robot.subsystems.roller;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -23,13 +24,20 @@ import frc.utils.battery.BatteryUtil;
 
 public class TalonFXRollerBuilder {
 
-	public static Roller build(String logPath, Phoenix6DeviceID id, double gearRatio, int currentLimit, double momentOfInertia) {
+	public static Roller build(
+		String logPath,
+		Phoenix6DeviceID id,
+		boolean inverted,
+		double gearRatio,
+		int currentLimit,
+		double momentOfInertia
+	) {
 		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
 			new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), momentOfInertia, gearRatio), DCMotor.getKrakenX60(1))
 		);
 		TalonFXMotor roller = new TalonFXMotor(logPath, id, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
 
-		roller.applyConfiguration(buildConfiguration(gearRatio, currentLimit));
+		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
 
 		InputSignal<Double> voltageSignal = Phoenix6SignalBuilder
 			.build(roller.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, id.busChain());
@@ -51,7 +59,7 @@ public class TalonFXRollerBuilder {
 		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, VoltageRequest, velocityrequest);
 	}
 
-	public static TalonFXConfiguration buildConfiguration(double gearRatio, int currentLimit) {
+	public static TalonFXConfiguration buildConfiguration(boolean inverted, double gearRatio, int currentLimit) {
 		TalonFXConfiguration configs = new TalonFXConfiguration();
 		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
 		configs.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -65,6 +73,8 @@ public class TalonFXRollerBuilder {
 		configs.Slot0.kS = 0.13;
 		configs.Slot0.kV = 0.43;
 		configs.Slot0.kA = 0;
+		configs.Voltage.PeakReverseVoltage = -BatteryUtil.DEFAULT_VOLTAGE;
+		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		return (configs);
 	}
 

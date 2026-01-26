@@ -17,34 +17,25 @@ Hood calibrations
 - [x] Neutral mode
 - [x] Is Inverted
 
-### Sensor
-- [ ] Forward/Reverse
-- [ ] Sensor Position
-
 #### General Constants
 - [ ] Arm length
 - [ ] Arm weight
 - [ ] SysIdRoutineConfig
-- [ ] Starting position
-- [ ] Hood position tolerance
+- [x] Starting position
 
 #### PID
-- [ w] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Sim PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### FeedForward
-- [ ] kS
-- [ ] kG
-
-#### MotionMagic
-- [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter
+- [x] kS
+- [x] kG
 
 #### Simulation Constants
 - [ ] Moment of inertia
