@@ -1,0 +1,23 @@
+package frc.robot.subsystems.roller;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+
+public class VelocityRollerCommandBuilder extends RollerCommandsBuilder{
+    VelocityRoller roller;
+    public VelocityRollerCommandBuilder(VelocityRoller roller) {
+        super(roller);
+        this.roller = roller;
+    }
+
+    public Command stop(){
+        return roller.asSubsystemCommand(new RunCommand(() -> roller.stop()),"stop");
+    }
+
+    public Command setVelocity(Rotation2d velocityRPS){
+        return roller.asSubsystemCommand(new RunCommand(() -> roller.setVelocity(velocityRPS)),"set velocity");
+    }
+
+}

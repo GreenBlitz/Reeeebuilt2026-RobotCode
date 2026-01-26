@@ -10,6 +10,7 @@ import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
+import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -30,6 +31,8 @@ import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
+import frc.robot.subsystems.roller.VelocityRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -53,7 +56,7 @@ public class Robot {
 	private final Arm fourBar;
 	private final Arm hood;
 	private final IDigitalInput intakeRollerSensor;
-	private final Roller train;
+	private final VelocityRoller train;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -86,7 +89,7 @@ public class Robot {
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		Pair<Roller, IDigitalInput> trainAndDigitalInput = createTrainAndSignal();
-		this.train = trainAndDigitalInput.getFirst();
+		this.train = createTrain();
 		this.funnelDigitalInput = trainAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
@@ -277,6 +280,10 @@ public class Robot {
 		);
 	}
 
+	private VelocityRoller createTrain() {
+		return TalonFXRollerBuilder.buildVelocityRoller(TrainConstant.LOG_PATH,new Phoenix6DeviceID(40,BusChain.ROBORIO),0.43,0,40,0,TrainConstant.GEAR_RATIO,0.0001);
+	}
+
 	private Roller createBelly() {
 		return SparkMaxRollerBuilder.build(
 			BellyConstants.LOG_PATH,
@@ -308,7 +315,7 @@ public class Robot {
 		return fourBar;
 	}
 
-	public Roller getTrain() {
+	public VelocityRoller getTrain() {
 		return train;
 	}
 
