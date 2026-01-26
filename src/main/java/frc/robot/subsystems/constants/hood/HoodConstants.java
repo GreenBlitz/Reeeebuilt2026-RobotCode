@@ -14,15 +14,15 @@ public class HoodConstants {
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
 
 	static {
-		REAL_SLOT.kP = 120;
+		REAL_SLOT.kP = 175;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.3798828125;
-		REAL_SLOT.kG = 0.0703125;
+		REAL_SLOT.kS = 0.36;
+		REAL_SLOT.kG = 0;
 		REAL_SLOT.kV = 0;
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Elevator_Static;
-		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;
