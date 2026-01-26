@@ -40,11 +40,12 @@ public class HoodConstants {
 	public static final double CURRENT_LIMIT = 40;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double HOOD_LENGTH_METERS = 0.3;
+
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(59);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(31);
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(30);
 	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(60);
-	public static final Rotation2d HOOD_POSITION_TOLERANCE = Rotation2d.fromDegrees(1);
+
 	public static final SysIdRoutine.Config SYSIDROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 

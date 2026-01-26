@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 public class Superstructure {
 
 	private final Robot robot;
-	private final TargetChecks targetChecks;
 	private boolean isSubsystemRunningIndependently;
 	private final String logPath;
 
@@ -36,8 +35,6 @@ public class Superstructure {
 			shootingParamsSupplier,
 			logPath
 		);
-
-		this.targetChecks = new TargetChecks(this);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isSubsystemRunningIndependently = false;
@@ -66,10 +63,6 @@ public class Superstructure {
 
 	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
 		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
-	}
-
-	public TargetChecks getTargetChecks() {
-		return targetChecks;
 	}
 
 	public Command setState(RobotState robotState) {
