@@ -24,7 +24,7 @@ import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
 import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
-import frc.robot.subsystems.constants.flywheel.Constants;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.AngleUnit;
 import com.ctre.phoenix6.controls.VoltageOut;
 
@@ -45,8 +45,8 @@ public class KrakenX60FlyWheelBuilder {
 			new FlywheelSim(
 				LinearSystemId.createFlywheelSystem(
 					DCMotor.getKrakenX60Foc(followerConfig.followerIDs.length + 1),
-					Constants.MOMENT_OF_INERTIA,
-					Constants.SENSOR_TO_MECHANISM_RATIO_MASTER
+					FlywheelConstants.MOMENT_OF_INERTIA,
+					FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER
 				),
 				DCMotor.getKrakenX60Foc(followerConfig.followerIDs.length + 1)
 			)
@@ -71,32 +71,32 @@ public class KrakenX60FlyWheelBuilder {
 
 	public static TalonFXConfiguration buildConfig() {
 		TalonFXConfiguration configuration = new TalonFXConfiguration();
-		configuration.CurrentLimits.StatorCurrentLimit = Constants.CURRENT_LIMIT;
+		configuration.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
-		configuration.Feedback.SensorToMechanismRatio = Constants.SENSOR_TO_MECHANISM_RATIO_MASTER;
+		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
 		configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
-			configuration.Slot0.kP = Constants.kP;
-			configuration.Slot0.kI = Constants.kI;
-			configuration.Slot0.kD = Constants.kD;
-			configuration.Slot0.kV = Constants.kV;
-			configuration.Slot0.kA = Constants.kA;
-			configuration.Slot0.kS = Constants.kS;
+			configuration.Slot0.kP = FlywheelConstants.kP;
+			configuration.Slot0.kI = FlywheelConstants.kI;
+			configuration.Slot0.kD = FlywheelConstants.kD;
+			configuration.Slot0.kV = FlywheelConstants.kV;
+			configuration.Slot0.kA = FlywheelConstants.kA;
+			configuration.Slot0.kS = FlywheelConstants.kS;
 		} else {
-			configuration.Slot0.kP = Constants.kP_SIM;
-			configuration.Slot0.kI = Constants.kI_SIM;
-			configuration.Slot0.kD = Constants.kD_SIM;
-			configuration.Slot0.kV = Constants.kV_SIM;
-			configuration.Slot0.kA = Constants.kA_SIM;
-			configuration.Slot0.kS = Constants.kS_SIM;
+			configuration.Slot0.kP = FlywheelConstants.kP_SIM;
+			configuration.Slot0.kI = FlywheelConstants.kI_SIM;
+			configuration.Slot0.kD = FlywheelConstants.kD_SIM;
+			configuration.Slot0.kV = FlywheelConstants.kV_SIM;
+			configuration.Slot0.kA = FlywheelConstants.kA_SIM;
+			configuration.Slot0.kS = FlywheelConstants.kS_SIM;
 		}
 		return configuration;
 	}
 
 	public static TalonFXFollowerConfig buildFollowerConfig() {
 		TalonFXFollowerConfig followerConfig = new TalonFXFollowerConfig();
-		followerConfig.motorConfig.Feedback.SensorToMechanismRatio = Constants.SENSOR_TO_MECHANISM_RATIO_FOLLOWER;
-		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimit = Constants.CURRENT_LIMIT;
+		followerConfig.motorConfig.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_FOLLOWER;
+		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		followerConfig.followerIDs = new TalonFXFollowerConfig.TalonFXFollowerID[] {
