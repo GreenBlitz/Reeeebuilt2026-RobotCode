@@ -1,7 +1,7 @@
 package frc.robot.subsystems.constants.flywheel;
 
 
-public class Constants {
+public class FlywheelConstants {
 
 	public final static double kP = 12;
 	public final static double kI = 2;
