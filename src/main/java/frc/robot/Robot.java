@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,8 @@ import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
+import frc.robot.subsystems.roller.VelocityRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -65,8 +68,8 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
-	private final Roller train;
 	private final IDigitalInput funnelDigitalInput;
+	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
@@ -169,6 +172,10 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
+		if (DriverStation.isEnabled()) {
+			return;
+		}
+
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
@@ -274,14 +281,16 @@ public class Robot {
 		);
 	}
 
-	private Roller createTrain() {
-		return SparkMaxRollerBuilder.build(
+	private VelocityRoller createTrain() {
+		return TalonFXRollerBuilder.buildVelocityRoller(
 			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
-			TrainConstant.IS_INVERTED,
-			TrainConstant.GEAR_RATIO,
+			IDs.TalonFXIDs.TRAIN,
+			TrainConstant.REAL_SLOTS_CONFIG,
+			TrainConstant.SIMULATION_SLOTS_CONFIG,
 			TrainConstant.CURRENT_LIMIT,
-			TrainConstant.MOMENT_OF_INERTIA
+			TrainConstant.FEEDBACK_CONFIGS,
+			TrainConstant.MOMENT_OF_INERTIA,
+			TrainConstant.IS_INVERTED
 		);
 	}
 
@@ -304,16 +313,12 @@ public class Robot {
 		return flyWheel;
 	}
 
-	public Roller getTrain() {
+	public VelocityRoller getTrain() {
 		return train;
 	}
 
 	public Roller getBelly() {
 		return belly;
-	}
-
-	public IDigitalInput getFunnelDigitalInput() {
-		return funnelDigitalInput;
 	}
 
 	public Arm getHood() {

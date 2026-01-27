@@ -93,13 +93,6 @@ public class JoysticksBindings {
 	}
 
 	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(
-			robot.getRobotCommander()
-				.getSuperstructure()
-				.getFunnelStateHandler()
-				.setState(FunnelState.SHOOT)
-				.until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor())
-		);
 		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
 		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CALIBRATION));
@@ -142,8 +135,8 @@ public class JoysticksBindings {
 
 		hood.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
 
-		joystick.POV_RIGHT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(100)));
-		joystick.POV_LEFT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(5)));
+		joystick.POV_RIGHT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(57)));
+		joystick.POV_LEFT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(35)));
 	}
 
 	private static void applyTrainCalibrationBindings(Roller train, SmartJoystick joystick, double maxCalibrationPower) {

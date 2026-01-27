@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 public class Superstructure {
 
 	private final Robot robot;
-	private final TargetChecks targetChecks;
 	private boolean isSubsystemRunningIndependently;
 	private final String logPath;
 
@@ -28,7 +27,7 @@ public class Superstructure {
 		this.robot = robot;
 		this.logPath = logPath;
 
-		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getFunnelDigitalInput());
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -36,8 +35,6 @@ public class Superstructure {
 			shootingParamsSupplier,
 			logPath
 		);
-
-		this.targetChecks = new TargetChecks(this);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isSubsystemRunningIndependently = false;
@@ -68,10 +65,6 @@ public class Superstructure {
 		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
 	}
 
-	public TargetChecks getTargetChecks() {
-		return targetChecks;
-	}
-
 	public Command setState(RobotState robotState) {
 		return new ParallelCommandGroup(
 			new InstantCommand(() -> currentState = robotState),
@@ -87,10 +80,6 @@ public class Superstructure {
 				case CALIBRATION_SHOOT -> calibrationShoot();
 			}
 		);
-	}
-
-	public boolean isObjectIn() {
-		return funnelStateHandler.isBallAtSensor();
 	}
 
 	private Command stayInPlace() {
@@ -129,7 +118,6 @@ public class Superstructure {
 	}
 
 	public void periodic() {
-		funnelStateHandler.periodic();
 		Logger.recordOutput(logPath + "/IsSubsystemRunningIndependently", isSubsystemRunningIndependently());
 	}
 

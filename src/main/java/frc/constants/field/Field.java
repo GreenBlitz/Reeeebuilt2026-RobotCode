@@ -6,9 +6,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.utils.DriverStationUtil;
+import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.AngleTransform;
 import frc.utils.math.FieldMath;
 
@@ -36,7 +35,6 @@ public class Field {
 
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
-
 
 	public static Translation2d getHubMiddle() {
 		return getAllianceRelative(HUB_MIDDLE);
@@ -66,10 +64,6 @@ public class Field {
 			case DEPOT -> DEPOT_BUMP_MIDDLE;
 			case OUTPOST -> OUTPOST_BUMP_MIDDLE;
 		});
-	}
-
-	public static boolean isRobotAllianceAutoWinner() {
-		return DriverStationUtil.getAlliance() == DriverStationUtil.getAutoWinnerAlliance();
 	}
 
 	public static Pose2d getAllianceRelative(Pose2d pose2d) {
