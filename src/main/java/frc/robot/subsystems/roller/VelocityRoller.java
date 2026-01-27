@@ -1,7 +1,9 @@
 package frc.robot.subsystems.roller;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.hardware.interfaces.*;
+import frc.robot.hardware.interfaces.IRequest;
+import frc.robot.hardware.interfaces.InputSignal;
+import frc.robot.hardware.interfaces.ControllableMotor;
 import org.littletonrobotics.junction.Logger;
 
 public class VelocityRoller extends Roller {
