@@ -27,18 +27,18 @@ public class VelocityRoller extends Roller {
 		setDefaultCommand(commandsBuilder.stop());
 	}
 
+	@Override
+	public VelocityRollerCommandBuilder getCommandsBuilder() {
+		return commandsBuilder;
+	}
+
 	public Rotation2d getVelocity() {
-		return velocityRequest.getSetPoint();
+		return velocitySignal.getLatestValue();
 	}
 
 	public void setVelocity(Rotation2d targetVelocity) {
 		velocityRequest.withSetPoint(targetVelocity);
 		motor.applyRequest(velocityRequest);
-	}
-
-	@Override
-	public VelocityRollerCommandBuilder getCommandsBuilder() {
-		return commandsBuilder;
 	}
 
 	@Override
