@@ -11,7 +11,6 @@ import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
-import java.util.Set;
 
 public class IntakeStateHandler {
 
@@ -31,7 +30,7 @@ public class IntakeStateHandler {
 		this.beamBreaker = beamBreaker;
 		this.beamBreakerInputs = new DigitalInputInputsAutoLogged();
 		this.logPath = logPath + "/IntakeStateHandler";
-		this.currentState = IntakeState.STAY_IN_PLACE;
+		this.currentState = IntakeState.CLOSED;
 	}
 
 	public void periodic() {
@@ -41,8 +40,8 @@ public class IntakeStateHandler {
 
 	public Command calibration() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(() -> fourBarCalibrationPosition.get()),
-			rollers.getCommandsBuilder().setPower(() -> rollersCalibrationPower.get())
+			fourBar.getCommandsBuilder().setTargetPosition(fourBarCalibrationPosition::get),
+			rollers.getCommandsBuilder().setPower(rollersCalibrationPower::get)
 		);
 	}
 
@@ -50,37 +49,27 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(fourBar.getCommandsBuilder().stayInPlace(), rollers.getCommandsBuilder().stop());
 	}
 
-	public IntakeState oppositeIntakeState() {
-		if (currentState.equals(IntakeState.CLOSED)) {
-			return IntakeState.INTAKE;
-		}
-		return IntakeState.CLOSED;
-	}
-
 	public Command openOrCloseIntake() {
-		Command command = new ParallelCommandGroup(
-				new DeferredCommand(
-						() -> new ConditionalCommand(
-								setState(IntakeState.CLOSED),
-								setState(IntakeState.INTAKE),
-								() -> currentState == IntakeState.INTAKE
-						),
-						Set.of(fourBar, rollers)
-				),
-				new RunCommand(() -> Logger.recordOutput("bbbb", TimeUtil.getCurrentTimeSeconds()))
-		).withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
-		
+		return new InstantCommand(() -> {
+			if (currentState == IntakeState.CLOSED || currentState == IntakeState.INTAKE) {
+				Command command = currentState == IntakeState.CLOSED ? setState(IntakeState.INTAKE) : setState(IntakeState.CLOSED);
+				CommandScheduler.getInstance()
+					.schedule(
+						new ParallelCommandGroup(command, new RunCommand(() -> Logger.recordOutput("bbbb", TimeUtil.getCurrentTimeSeconds())))
+					);
+			}
+		}, fourBar, rollers);
 	}
 
 	public Command intake(IntakeState state) {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(state.getFourBarPosition()),
-			rollers.getCommandsBuilder().setPower(state.getIntakePower())
+			fourBar.getCommandsBuilder().setTargetPosition(state::getFourBarPosition),
+			rollers.getCommandsBuilder().setPower(state::getIntakePower)
 		);
 	}
 
 	public Command setState(IntakeState intakeState) {
-		return new ParallelCommandGroup(switch (intakeState) {
+		 return new ParallelCommandGroup(switch (intakeState) {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case CLOSED, INTAKE -> intake(intakeState);

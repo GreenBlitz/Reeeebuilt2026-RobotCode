@@ -1,7 +1,6 @@
 package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
@@ -59,7 +58,7 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.B.onTrue((robot.getIntakeStateHandler().openOrCloseIntake()));
-		usedJoystick.X.onTrue(robot.getIntakeStateHandler().setState(IntakeState.INTAKE));
+		usedJoystick.X.onTrue(robot.getFourBar().getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(30)));
 		usedJoystick.Y.onTrue(robot.getIntakeStateHandler().setState(IntakeState.CLOSED));
 	}
 
