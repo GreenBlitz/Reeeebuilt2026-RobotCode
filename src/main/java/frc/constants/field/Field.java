@@ -92,11 +92,4 @@ public class Field {
 			: FieldMath.transformAngle(rotation, AngleTransform.KEEP, AngleTransform.KEEP, AngleTransform.INVERT);
 	}
 
-	public static boolean isInAllianceZone(Translation2d position) {
-		if (DriverStationUtil.isBlueAlliance()) {
-			return position.getX() < getHubMiddle().getX();
-		}
-		return position.getX() > getHubMiddle().getX();
-	}
-
 }

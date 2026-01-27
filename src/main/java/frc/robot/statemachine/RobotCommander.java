@@ -88,7 +88,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		if (Field.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
 			return ShootingChecks.isReadyToShootAtHub(
 				robot,
 				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
@@ -110,7 +110,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean canContinueShooting() {
-		if (Field.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
 			return ShootingChecks.canContinueShootingAtHub(
 				robot,
 				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
@@ -132,7 +132,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToShoot() {
-		if (Field.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
 			return ShootingChecks.calibrationIsReadyToShootAtHub(
 				robot,
 				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,

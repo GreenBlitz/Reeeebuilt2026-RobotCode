@@ -9,6 +9,7 @@ import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
+import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -41,10 +42,10 @@ public class ShootingCalculations {
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
 	}
 
-	private static ShootingParams calculatePassingParams(Pose2d robotPose,Translation2d targetTranslation) {
+	private static ShootingParams calculatePassingParams(Pose2d robotPose,Translation2d passingTarget) {
 		Rotation2d turretTargetPosition = getRobotRelativeLookAtHubAngleForTurret(robotPose);
 
-		double distanceFromTargetMeters = targetTranslation.getDistance(robotPose.getTranslation());
+		double distanceFromTargetMeters = passingTarget.getDistance(robotPose.getTranslation());
 		Rotation2d hoodTargetPosition = hoodPassingInterpolation(distanceFromTargetMeters);
 		Rotation2d flywheelTargetRPS = flywheelPassingInterpolation(distanceFromTargetMeters);
 
@@ -54,7 +55,7 @@ public class ShootingCalculations {
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
 	}
 
-		private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
+	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Translation2d(
@@ -154,7 +155,7 @@ public class ShootingCalculations {
 
 
 	public static void updateShootingParams(Pose2d robotPose) {
-		if (Field.isInAllianceZone(robotPose.getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateShootingParams(robotPose);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, getOptimalPassingPosition(robotPose.getTranslation()));

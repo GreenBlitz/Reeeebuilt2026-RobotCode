@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,13 +17,20 @@ public class ShootingChecks {
 
 	private static final String shootingChacksLogPath = "Statemachine/ShootingChecks";
 
+	public static boolean isInAllianceZone(Translation2d position) {
+		if (DriverStationUtil.isBlueAlliance()) {
+			return position.getX() < Field.getHubMiddle().getX();
+		}
+		return position.getX() > Field.getHubMiddle().getX();
+	}
+
 	private static boolean isWithinDistance(
 		Translation2d robotPosition,
 		double maxShootingDistanceFromTargetMeters,
 		String logPath,
-		Translation2d targetTranslation
+		Translation2d passingTarget
 	) {
-		boolean isWithinDistance = robotPosition.getDistance(targetTranslation) <= maxShootingDistanceFromTargetMeters;
+		boolean isWithinDistance = robotPosition.getDistance(passingTarget) <= maxShootingDistanceFromTargetMeters;
 		Logger.recordOutput(logPath + "/isInDistance", isWithinDistance);
 		return isWithinDistance;
 	}
@@ -31,9 +39,9 @@ public class ShootingChecks {
 		Translation2d robotPosition,
 		Rotation2d maxAngleFromCenter,
 		String logPath,
-		Translation2d targetLandingSpot
+		Translation2d passingTarget
 	) {
-		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetLandingSpot, robotPosition).getAngle();
+		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(passingTarget, robotPosition).getAngle();
 		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndTarget.getDegrees()) <= maxAngleFromCenter.getDegrees();
 		Logger.recordOutput(logPath + "/isInRange", isInAngleRange);
 		return isInAngleRange;
@@ -73,7 +81,7 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters,
-		Translation2d targetLandingSpot,
+		Translation2d passingTarget,
 		String actionLogPath
 	) {
 		String logPath = shootingChacksLogPath + "/IsReadyTo" + actionLogPath;
@@ -81,9 +89,9 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, targetLandingSpot);
+		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, passingTarget);
 
-		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter, logPath, targetLandingSpot);
+		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter, logPath, passingTarget);
 
 		boolean isAtTurretAtTarget = isTurretAtTarget(
 			robot.getTurret().getPosition(),
@@ -116,7 +124,7 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters,
-		Translation2d targetTranslation,
+		Translation2d passingTarget,
 		String actionLogPath
 
 	) {
@@ -125,9 +133,9 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
+		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, passingTarget);
 
-		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter, logPath, targetTranslation);
+		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter, logPath, passingTarget);
 
 		boolean isAtTurretAtTarget = isTurretAtTarget(
 			robot.getTurret().getPosition(),
