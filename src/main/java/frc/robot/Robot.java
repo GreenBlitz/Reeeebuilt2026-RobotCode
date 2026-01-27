@@ -42,6 +42,7 @@ import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
 import frc.robot.subsystems.roller.TalonFXRollerBuilder;
+import frc.robot.subsystems.roller.VelocityRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -67,8 +68,8 @@ public class Robot {
 	private final Arm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
-	private final Roller train;
 	private final IDigitalInput funnelDigitalInput;
+	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
@@ -279,14 +280,16 @@ public class Robot {
 		);
 	}
 
-	private Roller createTrain() {
-		return TalonFXRollerBuilder.build(
+	private VelocityRoller createTrain() {
+		return TalonFXRollerBuilder.buildVelocityRoller(
 			TrainConstant.LOG_PATH,
 			IDs.TalonFXIDs.TRAIN,
-			TrainConstant.IS_INVERTED,
-			TrainConstant.GEAR_RATIO,
+			TrainConstant.REAL_SLOTS_CONFIG,
+			TrainConstant.SIMULATION_SLOTS_CONFIG,
 			TrainConstant.CURRENT_LIMIT,
-			TrainConstant.MOMENT_OF_INERTIA
+			TrainConstant.FEEDBACK_CONFIGS,
+			TrainConstant.MOMENT_OF_INERTIA,
+			TrainConstant.IS_INVERTED
 		);
 	}
 
@@ -309,16 +312,12 @@ public class Robot {
 		return flyWheel;
 	}
 
-	public Roller getTrain() {
+	public VelocityRoller getTrain() {
 		return train;
 	}
 
 	public Roller getBelly() {
 		return belly;
-	}
-
-	public IDigitalInput getFunnelDigitalInput() {
-		return funnelDigitalInput;
 	}
 
 	public Arm getHood() {

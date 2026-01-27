@@ -27,7 +27,7 @@ public class Superstructure {
 		this.robot = robot;
 		this.logPath = logPath;
 
-		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getFunnelDigitalInput());
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -82,10 +82,6 @@ public class Superstructure {
 		);
 	}
 
-	public boolean isObjectIn() {
-		return funnelStateHandler.isBallAtSensor();
-	}
-
 	private Command stayInPlace() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.STAY_IN_PLACE), funnelStateHandler.setState(FunnelState.STOP));
 	}
@@ -122,7 +118,6 @@ public class Superstructure {
 	}
 
 	public void periodic() {
-		funnelStateHandler.periodic();
 		Logger.recordOutput(logPath + "/IsSubsystemRunningIndependently", isSubsystemRunningIndependently());
 	}
 

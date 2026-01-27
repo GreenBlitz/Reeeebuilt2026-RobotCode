@@ -176,8 +176,9 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
-	}
 
+		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
+	}
 
 	public int getNumberOfOdometrySamples() {
 		return Math.min(imuSignals.yawSignal().asArray().length, modules.getNumberOfOdometrySamples());
@@ -335,6 +336,11 @@ public class Swerve extends GBSubsystem {
 
 	public boolean isCollisionDetected() {
 		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
+	}
+
+	public boolean isTilted() {
+		return Math.abs(imuSignals.rollSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
+			|| Math.abs(imuSignals.pitchSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians();
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
