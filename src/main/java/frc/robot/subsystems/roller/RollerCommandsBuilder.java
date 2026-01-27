@@ -17,7 +17,6 @@ public class RollerCommandsBuilder extends GBCommandsBuilder {
 	protected RollerCommandsBuilder(Roller roller) {
 		super();
 		this.roller = roller;
-		roller.setDefaultCommand(stop());
 	}
 
 	public Command setVoltage(double voltage) {

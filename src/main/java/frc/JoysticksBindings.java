@@ -91,13 +91,6 @@ public class JoysticksBindings {
 	}
 
 	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(
-			robot.getRobotCommander()
-				.getSuperstructure()
-				.getFunnelStateHandler()
-				.setState(FunnelState.SHOOT)
-				.until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor())
-		);
 		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
 		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CALIBRATION));
