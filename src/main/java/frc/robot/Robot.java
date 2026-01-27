@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -153,6 +154,10 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
+		if (DriverStation.isEnabled()) {
+			return;
+		}
+
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
@@ -259,8 +264,8 @@ public class Robot {
 			FourBarConstants.FORWARD_SOFTWARE_LIMITS,
 			FourBarConstants.BACKWARD_SOFTWARE_LIMITS,
 			fourBarSimConstant,
-			FourBarConstants.MAX_ACCELERATION_ROTATION2D_PER_SECONDS_SQUARE,
-			FourBarConstants.MAX_VELOCITY_ROTATION2D_PER_SECONDS
+			FourBarConstants.MAX_ACCELERATION_RPS_SQUARE,
+			FourBarConstants.MAX_VELOCITY_RPS
 		);
 	}
 
