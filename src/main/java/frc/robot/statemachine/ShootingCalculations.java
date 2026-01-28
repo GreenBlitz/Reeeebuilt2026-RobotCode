@@ -27,7 +27,7 @@ public class ShootingCalculations {
 	public static ShootingParams getShootingParams() {
 		return shootingParams;
 	}
-	
+
 	private static ShootingParams calculateShootingParams(Pose2d robotPose, Translation2d Target) {
 		Rotation2d turretTargetPosition = getRobotRelativeLookAtHubAngleForTurret(robotPose);
 
@@ -40,12 +40,12 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
 	}
-	
+
 	private static ShootingParams calculateShootingParams(Pose2d robotPose) {
-		if(ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			return calculateShootingParams(robotPose, Field.getHubMiddle());
 		}
-		return calculateShootingParams(robotPose,getOptimalPassingPosition(robotPose.getTranslation()));
+		return calculateShootingParams(robotPose, getOptimalPassingPosition(robotPose.getTranslation()));
 	}
 
 	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
@@ -149,7 +149,6 @@ public class ShootingCalculations {
 
 	public static void updateShootingParams(Pose2d robotPose) {
 		shootingParams = calculateShootingParams(robotPose);
-		}
 	}
 
 }
