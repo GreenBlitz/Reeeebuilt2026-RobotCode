@@ -108,8 +108,8 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			2.0,
-			Rotation2d.fromDegrees(32),
+			1.5,
+			Rotation2d.fromDegrees(30),
 			2.5,
 			Rotation2d.fromDegrees(32),
 			3.0,
@@ -127,8 +127,8 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			2.0,
-			Rotation2d.fromDegrees(22000),
+			1.5,
+			Rotation2d.fromDegrees(16400),
 			2.5,
 			Rotation2d.fromDegrees(24000),
 			3.0,

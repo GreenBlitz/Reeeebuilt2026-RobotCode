@@ -155,4 +155,32 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
+
+	public static boolean calibrationCanContinueShooting(
+			Robot robot,
+			Rotation2d flywheelVelocityToleranceRPS,
+			Rotation2d hoodPositionTolerance
+	) {
+		String logPath = shootingChacksLogPath + "/CanContinueShooting";
+		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
+		Rotation2d hoodPosition = robot.getHood().getPosition();
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+				ShooterConstants.flywheelCalibrationRotations.get(),
+				flywheelVelocityRPS,
+				flywheelVelocityToleranceRPS,
+				logPath
+		);
+
+		boolean isHoodAtPosition = isHoodAtPositon(
+				ShooterConstants.hoodCalibrationAngle.get(),
+				hoodPosition,
+				hoodPositionTolerance,
+				logPath
+		);
+
+		return isFlywheelReadyToShoot && isHoodAtPosition;
+	}
+
 }
