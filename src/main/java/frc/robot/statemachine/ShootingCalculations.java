@@ -69,7 +69,7 @@ public class ShootingCalculations {
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
 		double distanceFromTurretPredictedPoseToHub = getDistanceFromHub(turretPredictedPose);
-		Rotation2d turretTargetPosition = angleToTarget.minus(robotPose.getRotation());
+		Rotation2d turretTargetPosition = angleToTarget.minus(robotPose.getRotation()).plus(Rotation2d.fromDegrees(turretFieldRelativeVelocity.getX() * 0.05 * turretToHubDistanceMeters));
 		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromTurretPredictedPoseToHub);
 		Logger.recordOutput(LOG_PATH + "/turretOnPose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
@@ -78,6 +78,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
+		Logger.recordOutput(LOG_PATH + "/distanceFromHub", turretToHubDistanceMeters);
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS, turretPredictedPose);
 	}
 
@@ -143,7 +144,18 @@ public class ShootingCalculations {
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.603, 1.0, 3.3, 1.1, 4.0, 1.6)
+		Map.of(
+				2.0,
+				1.01,
+				2.759,
+				1.05,
+				3.485,
+				1.2,
+				3.91,
+				1.27,
+				4.48,
+				1.33
+		)
 	);
 
 	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
