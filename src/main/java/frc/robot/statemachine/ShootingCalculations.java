@@ -83,6 +83,15 @@ public class ShootingCalculations {
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS, turretPredictedPose);
 	}
 
+	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
+		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+
+		double turretPosePredictionX = turretPose.getX() + (turretVelocities.getX() * ballFlightTime);
+		double turretPosePredictionY = turretPose.getY() + (turretVelocities.getY() * ballFlightTime);
+
+		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
+	}
+
 	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
@@ -90,11 +99,6 @@ public class ShootingCalculations {
 			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
 			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
 		);
-	}
-
-	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
-		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
-		return FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().minus(robotPose.getRotation());
 	}
 
 	public static double getDistanceFromHub(Translation2d pose) {
@@ -143,15 +147,6 @@ public class ShootingCalculations {
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
-	}
-
-	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
-		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
-
-		double turretPosePredictionX = turretPose.getX() + (turretVelocities.getX() * ballFlightTime);
-		double turretPosePredictionY = turretPose.getY() + (turretVelocities.getY() * ballFlightTime);
-
-		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
