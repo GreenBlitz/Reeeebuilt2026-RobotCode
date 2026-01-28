@@ -36,6 +36,7 @@ public class ShooterStateHandler {
 			case STAY_IN_PLACE -> stayInPlace();
 			case IDLE -> idle();
 			case SHOOT -> shoot();
+			case PASS -> shoot();
 			case CALIBRATION -> calibration();
 		};
 		return new ParallelCommandGroup(

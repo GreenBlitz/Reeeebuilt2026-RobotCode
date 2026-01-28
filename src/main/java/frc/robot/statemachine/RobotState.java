@@ -11,6 +11,8 @@ public enum RobotState {
 	PRE_SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
 	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
 	SHOOT_WHILE_INTAKE,
+	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_PASSING_TARGET)),
+	PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_PASSING_TARGET)),
 	CALIBRATION_PRE_SHOOT,
 	CALIBRATION_SHOOT;
 

@@ -84,8 +84,8 @@ public class Superstructure {
 				case STAY_IN_PLACE -> stayInPlace();
 				case DRIVE -> idle();
 				case INTAKE -> intake();
-				case PRE_SHOOT -> preShoot();
-				case SHOOT -> shoot();
+				case PRE_SHOOT, PRE_PASS -> preShoot();
+				case SHOOT, PASS -> shoot();
 				case SHOOT_WHILE_INTAKE -> shootWhileIntake();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
