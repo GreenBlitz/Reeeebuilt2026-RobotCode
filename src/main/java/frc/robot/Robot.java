@@ -13,6 +13,7 @@ import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
@@ -59,11 +60,12 @@ public class Robot {
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
-
 	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
+
+	private final IntakeStateHandler intakeStateHandler;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -100,6 +102,8 @@ public class Robot {
 			imu,
 			IMUFactory.createSignals(imu)
 		);
+
+		this.intakeStateHandler = new IntakeStateHandler(fourBar, intakeRoller, intakeRollerSensor, "/Intake");
 
 		this.poseEstimator = new WPILibPoseEstimatorWrapper(
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
@@ -156,6 +160,8 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
+
+		intakeStateHandler.periodic();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -321,6 +327,10 @@ public class Robot {
 
 	public Arm getHood() {
 		return hood;
+	}
+
+	public IntakeStateHandler getIntakeStateHandler() {
+		return intakeStateHandler;
 	}
 
 	public IPoseEstimator getPoseEstimator() {

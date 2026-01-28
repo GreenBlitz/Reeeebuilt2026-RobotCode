@@ -53,10 +53,10 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
+		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
+		usedJoystick.L1.onTrue((robot.getIntakeStateHandler().openOrCloseIntake()));
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
-		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -89,7 +89,6 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.SHOOT));
 		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
-		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.INTAKE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.STAY_IN_PLACE));
 	}
 
@@ -97,9 +96,7 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
-		joystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT_WHILE_INTAKE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_UP.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 	}
 

@@ -7,10 +7,8 @@ public enum RobotState {
 
 	STAY_IN_PLACE,
 	DRIVE,
-	INTAKE,
 	PRE_SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
 	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
-	SHOOT_WHILE_INTAKE,
 	CALIBRATION_PRE_SHOOT,
 	CALIBRATION_SHOOT;
 
