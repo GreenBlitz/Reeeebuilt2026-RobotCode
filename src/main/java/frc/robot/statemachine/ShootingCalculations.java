@@ -73,8 +73,8 @@ public class ShootingCalculations {
 		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromTurretPredictedPoseToHub);
 
-		Logger.recordOutput(LOG_PATH + "/turretOnPose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
-		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", turretTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
+		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
