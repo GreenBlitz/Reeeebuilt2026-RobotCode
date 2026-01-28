@@ -159,7 +159,11 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
-		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose(),swerve.getAllianceRelativeVelocity(),swerve.getGyroAbsoluteYaw().getValue());
+		ShootingCalculations.updateShootingParams(
+			poseEstimator.getEstimatedPose(),
+			swerve.getAllianceRelativeVelocity(),
+			swerve.getGyroAbsoluteYaw().getValue()
+		);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
