@@ -69,7 +69,7 @@ public class IntakeStateHandler {
 	}
 
 	public Command setState(IntakeState intakeState) {
-		 return new ParallelCommandGroup(switch (intakeState) {
+		return new ParallelCommandGroup(switch (intakeState) {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case CLOSED, INTAKE -> intake(intakeState);
