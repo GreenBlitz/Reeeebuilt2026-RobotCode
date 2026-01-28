@@ -2,7 +2,6 @@ package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -55,13 +54,10 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.B.onTrue((robot.getIntakeStateHandler().openOrCloseIntake()));
-		usedJoystick.A.onTrue(new RunCommand(() -> robot.getFourBar().setTargetPosition(Rotation2d.fromDegrees(20)), robot.getFourBar()));
-		usedJoystick.X.onTrue(new RunCommand(() -> robot.getFourBar().setTargetPosition(Rotation2d.fromDegrees(50)), robot.getFourBar()));
-		usedJoystick.Y.onTrue(new RunCommand(() -> robot.getFourBar().setTargetPosition(Rotation2d.fromDegrees(80)), robot.getFourBar()));
-//		usedJoystick.Y.onTrue(robot.getIntakeStateHandler().setState(IntakeState.CLOSED));
+		usedJoystick.L1.onTrue((robot.getIntakeStateHandler().openOrCloseIntake()));
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
