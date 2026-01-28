@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public enum FunnelState {
 
 	STOP,
-	SHOOT(Rotation2d.fromRotations(3), 1),
+	SHOOT(Rotation2d.fromRotations(18), 1),
 	DRIVE,
 	CALIBRATION;
 

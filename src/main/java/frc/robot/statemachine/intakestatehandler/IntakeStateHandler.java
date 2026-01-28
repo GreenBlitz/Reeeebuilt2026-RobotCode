@@ -7,12 +7,10 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
-import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.Set;
-
 
 public class IntakeStateHandler {
 
@@ -61,15 +59,7 @@ public class IntakeStateHandler {
 				),
 				Set.of(fourBar, rollers)
 			);
-			CommandScheduler.getInstance()
-				.schedule(
-					new ParallelCommandGroup(
-						command,
-						new RunCommand(() -> Logger.recordOutput("bbbb", TimeUtil.getCurrentTimeSeconds())),
-						new RunCommand(() -> Logger.recordOutput("aaa", currentState)),
-						new RunCommand(() -> Logger.recordOutput("a", fourBar.getPosition().getDegrees()))
-					)
-				);
+			CommandScheduler.getInstance().schedule(command);
 		}).withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
 	}
 
