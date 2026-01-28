@@ -161,7 +161,7 @@ public class Robot {
 		poseEstimator.log();
 		ShootingCalculations.updateShootingParams(
 			poseEstimator.getEstimatedPose(),
-			swerve.getAllianceRelativeVelocity(),
+			swerve.getFieldRelativeVelocity(),
 			swerve.getGyroAbsoluteYaw().getValue()
 		);
 
