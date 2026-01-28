@@ -9,7 +9,6 @@ import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
-import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,24 +27,11 @@ public class ShootingCalculations {
 	public static ShootingParams getShootingParams() {
 		return shootingParams;
 	}
-
-	private static ShootingParams calculateShootingParams(Pose2d robotPose) {
+	
+	private static ShootingParams calculateShootingParams(Pose2d robotPose, Translation2d Target) {
 		Rotation2d turretTargetPosition = getRobotRelativeLookAtHubAngleForTurret(robotPose);
 
-		double distanceFromHubMeters = getDistanceFromHub(robotPose.getTranslation());
-		Rotation2d hoodTargetPosition = hoodHubShootingInterpolation(distanceFromHubMeters);
-		Rotation2d flywheelTargetRPS = flywheelHubShootingInterpolation(distanceFromHubMeters);
-
-		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
-		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
-		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
-		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
-	}
-
-	private static ShootingParams calculatePassingParams(Pose2d robotPose,Translation2d passingTarget) {
-		Rotation2d turretTargetPosition = getRobotRelativeLookAtHubAngleForTurret(robotPose);
-
-		double distanceFromTargetMeters = passingTarget.getDistance(robotPose.getTranslation());
+		double distanceFromTargetMeters = Target.getDistance(robotPose.getTranslation());
 		Rotation2d hoodTargetPosition = hoodPassingInterpolation(distanceFromTargetMeters);
 		Rotation2d flywheelTargetRPS = flywheelPassingInterpolation(distanceFromTargetMeters);
 
@@ -53,6 +39,13 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
+	}
+	
+	private static ShootingParams calculateShootingParams(Pose2d robotPose) {
+		if(ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+			return calculateShootingParams(robotPose, Field.getHubMiddle());
+		}
+		return calculateShootingParams(robotPose,getOptimalPassingPosition(robotPose.getTranslation()));
 	}
 
 	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
@@ -155,10 +148,7 @@ public class ShootingCalculations {
 
 
 	public static void updateShootingParams(Pose2d robotPose) {
-		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			shootingParams = calculateShootingParams(robotPose);
-		} else {
-			shootingParams = calculatePassingParams(robotPose, getOptimalPassingPosition(robotPose.getTranslation()));
+		shootingParams = calculateShootingParams(robotPose);
 		}
 	}
 
