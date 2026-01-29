@@ -102,11 +102,11 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public Rotation3d getOrientationFromIMU() {
-		return imuSignals.getOrientation();
+		return imuSignals.getLatestOrientation();
 	}
 
 	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
-		return imuSignals.getAccelerationEarthGravitationalAcceleration()
+		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration()
 			.times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
 
@@ -181,7 +181,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public int getNumberOfOdometrySamples() {
-		return Math.min(imuSignals.yawSignal().asArray().length, modules.getNumberOfOdometrySamples());
+		return Math.min(imuSignals.getAllOrientations().length, modules.getNumberOfOdometrySamples());
 	}
 
 	public OdometryData[] getAllOdometryData() {
@@ -192,7 +192,9 @@ public class Swerve extends GBSubsystem {
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationEarthGravitationalAcceleration()[i].getNorm())
+				imu instanceof EmptyIMU
+					? Optional.empty()
+					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].getNorm())
 			);
 		}
 
@@ -239,7 +241,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public double getIMUAcceleration() {
-		return imuSignals.getAccelerationEarthGravitationalAcceleration().getNorm();
+		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().getNorm();
 	}
 
 
@@ -339,7 +341,8 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isCollisionDetected() {
-		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
+		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm()
+			> SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
 	public boolean isTilted() {

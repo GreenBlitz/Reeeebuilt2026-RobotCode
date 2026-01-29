@@ -98,12 +98,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	@Override
 	public void updateOdometry(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
-		if (data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent())
+		if (data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent()) {
 			data.setIMUYaw(
 				data.getImuOrientation().isPresent()
 					? Rotation2d.fromRadians(data.getImuOrientation().get().getZ())
 					: Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))
 			);
+		}
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
@@ -112,16 +113,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setIMUYaw(Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
+		getCausedErrorForOdometryData(data);
 
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
 	}
 
-	public void getStatesChangedCounter(OdometryData data) {
+	public void getCausedErrorForOdometryData(OdometryData data) {
 		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG()
 			.map(
 				(acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE
-					? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_COUNTER_ADDING
+					? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_CAUSED_ERROR_ADDITION
 					: 0
 			)
 			.orElseGet(() -> 0.0);
@@ -129,7 +131,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.map(
 				(imuOrientation) -> imuOrientation.getX() >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
 					|| imuOrientation.getY() >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians()
-						? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_COUNTER_ADDING
+						? WPILibPoseEstimatorConstants.VISION_OBSERVATION_TILTED_CAUSED_ERROR_ADDITION
 						: 0
 			)
 			.orElseGet(() -> 0.0);
