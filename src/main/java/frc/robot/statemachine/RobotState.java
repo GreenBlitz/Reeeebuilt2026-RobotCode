@@ -12,7 +12,8 @@ public enum RobotState {
 	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
 	SHOOT_WHILE_INTAKE,
 	CALIBRATION_PRE_SHOOT,
-	CALIBRATION_SHOOT;
+	CALIBRATION_SHOOT,
+	RESET_SUBSYSTEMS;
 
 	private final SwerveState swerveState;
 	private boolean swerveStateActive;

@@ -48,6 +48,7 @@ public class HoodConstants {
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.5;
+	public static final double RESET_HOOD_VOLTAGE = 1;
 
 }
 

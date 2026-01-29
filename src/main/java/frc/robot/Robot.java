@@ -4,18 +4,17 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.SensorCollection;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.RobotManager;
-import frc.robot.hardware.digitalinput.DigitalInputInputs;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
-import frc.robot.hardware.digitalinput.supplied.SuppliedDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
@@ -48,6 +47,8 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -62,9 +63,12 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final IDigitalInput intakeRollerResetCheckSensor;
+	private final IDigitalInput fourBarResetCheckSensor;
 	private final IDigitalInput hoodResetCheckSensor;
 	private final IDigitalInput turretResetCheckSensor;
+	private final DigitalInputInputsAutoLogged turretResetCheckInput;
+	private final DigitalInputInputsAutoLogged hoodResetCheckInput;
+	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -85,6 +89,7 @@ public class Robot {
 		this.flyWheel = KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
 
 		this.fourBar = createFourBar();
+		this.fourBarResetCheckSensor = createFourBarSensorResetCheck();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
@@ -93,9 +98,8 @@ public class Robot {
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		Roller intakeRollerAndDigitalInput = createIntakeRollers();
-		this.intakeRollerResetCheckSensor = createIntakeSensorResetCheck();
-		this.intakeRoller = intakeRollerAndDigitalInput;
+		Roller intakeRoller = createIntakeRollers();
+		this.intakeRoller = intakeRoller;
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.train = createTrain();
@@ -120,7 +124,6 @@ public class Robot {
 			swerve.getGyroAbsoluteYaw().getTimestamp(),
 			swerve.getIMUAcceleration()
 		);
-
 		robotCommander = new RobotCommander("/RobotCommander", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
@@ -129,6 +132,10 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		turretResetCheckInput = new DigitalInputInputsAutoLogged();
+		hoodResetCheckInput = new DigitalInputInputsAutoLogged();
+		fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
 	}
 
 	public void resetSubsystems() {
@@ -145,6 +152,12 @@ public class Robot {
 		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
 			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		}
+	}
+
+	private void updateResetCheckSensors(){
+		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
+		turretResetCheckSensor.updateInputs(turretResetCheckInput);
+		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
 	}
 
 	private void updateAllSubsystems() {
@@ -170,6 +183,7 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
+		updateResetCheckSensors();
 		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
 
 		BatteryUtil.logStatus();
@@ -297,8 +311,8 @@ public class Robot {
 		);
 	}
 
-	private IDigitalInput createIntakeSensorResetCheck(){
-		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.INTAKE_RESET_SENSOR),new Debouncer(IntakeRollerConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),IntakeRollerConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("intakeResetCheck");
+	private IDigitalInput createFourBarSensorResetCheck(){
+		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.FOUR_BAR_RESET_SENSOR),new Debouncer(FourBarConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),FourBarConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("intakeResetCheck");
 	}
 
 	private IDigitalInput createTurretResetCheckSensor(){
@@ -313,16 +327,16 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public IDigitalInput getIntakeRollerSensor() {
-		return intakeRollerResetCheckSensor;
+	public boolean getFourBarInput() {
+		return fourBarResetCheckInput.debouncedValue;
 	}
 
 	public Arm getTurret() {
 		return turret;
 	}
 
-	public IDigitalInput getTurretResetCheckSensor() {
-		return turretResetCheckSensor;
+	public boolean getTurretResetCheckInput(){
+		return turretResetCheckInput.debouncedValue;
 	}
 
 	public FlyWheel getFlyWheel() {
@@ -345,8 +359,9 @@ public class Robot {
 		return hood;
 	}
 
-	public IDigitalInput getHoodResetCheckSensor(){
-		return hoodResetCheckSensor;
+	public boolean getHoodResetCheckInput(){
+		Logger.recordOutput("nfoafoasnfa",hoodResetCheckInput.debouncedValue);
+		return hoodResetCheckInput.debouncedValue;
 	}
 
 	public IPoseEstimator getPoseEstimator() {
@@ -365,4 +380,7 @@ public class Robot {
 		return new PathPlannerAutoWrapper();
 	}
 
+	public Command getResetSubsystemsCommand(){
+		return new ParallelCommandGroup(turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getTurretResetCheckInput),fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,this::getFourBarInput),hood.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getHoodResetCheckInput));
+	}
 }

@@ -62,7 +62,7 @@ public class IDs {
 
 	public static class DigitalInputsIDs {
 
-		public final static int INTAKE_RESET_SENSOR = 67;
+		public final static int FOUR_BAR_RESET_SENSOR = 67;
 
 		public final static int TURRET_RESET_SENSOR = 67;
 

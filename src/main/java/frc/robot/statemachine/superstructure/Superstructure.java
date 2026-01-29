@@ -32,16 +32,18 @@ public class Superstructure {
 		this.logPath = logPath;
 
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
-		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
+		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), () -> robot.getFourBarInput(),logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
 			robot.getFlyWheel(),
 			shootingParamsSupplier,
+			() -> robot.getHoodResetCheckInput(),
+			() -> robot.getTurretResetCheckInput(),
 			logPath
 		);
 
-		this.currentState = RobotState.STAY_IN_PLACE;
+		this.currentState = RobotState.RESET_SUBSYSTEMS;
 		this.isSubsystemRunningIndependently = false;
 	}
 
@@ -89,7 +91,8 @@ public class Superstructure {
 				case SHOOT_WHILE_INTAKE -> shootWhileIntake();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
-			}
+				case RESET_SUBSYSTEMS -> resetSubsystems();
+		}
 		);
 	}
 
@@ -161,6 +164,14 @@ public class Superstructure {
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
 			funnelStateHandler.setState(FunnelState.SHOOT),
 			intakeStateHandler.setState(IntakeState.CLOSED)
+		);
+	}
+
+	private Command resetSubsystems() {
+		return new ParallelDeadlineGroup(
+			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+			funnelStateHandler.setState(FunnelState.DRIVE),
+			intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
 		);
 	}
 

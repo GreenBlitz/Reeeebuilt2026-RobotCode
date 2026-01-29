@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class ShooterStateHandler {
@@ -15,15 +18,19 @@ public class ShooterStateHandler {
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<ShootingParams> shootingParamsSupplier;
+	private BooleanSupplier isTurretReset;
+	private BooleanSupplier isHoodReset;
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
+	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier,BooleanSupplier isHoodReset,BooleanSupplier isTurretReset, String logPath) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
+		this.isHoodReset = isHoodReset;
+		this.isTurretReset = isTurretReset;
 		this.shootingParamsSupplier = shootingParamsSupplier;
-		this.currentState = ShooterState.STAY_IN_PLACE;
+		this.currentState = ShooterState.RESET_SUBSYSTEMS;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
@@ -36,6 +43,7 @@ public class ShooterStateHandler {
 			case STAY_IN_PLACE -> stayInPlace();
 			case IDLE -> idle();
 			case SHOOT -> shoot();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION -> calibration();
 		};
 		return new ParallelCommandGroup(
@@ -71,6 +79,15 @@ public class ShooterStateHandler {
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
+		);
+	}
+
+	private Command resetSubsystems() {
+		return new ParallelCommandGroup(
+			turret.getCommandsBuilder().
+					setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,isTurretReset),
+			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE,isHoodReset),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 		);
 	}

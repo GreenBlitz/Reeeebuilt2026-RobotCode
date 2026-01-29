@@ -2,6 +2,7 @@ package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -53,7 +54,10 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		usedJoystick.X.onTrue(robot.getHood().getCommandsBuilder().setVoltageWithoutLimit(5.0,() -> robot.getHoodResetCheckInput()));
+		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getHood().getCommandsBuilder().setIsSubsystemRunningIndependently(true),robot.getHood()));
+		usedJoystick.A.onTrue(robot.getHood().getCommandsBuilder().setVoltage(5.0));
+		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.RESET_SUBSYSTEMS));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
