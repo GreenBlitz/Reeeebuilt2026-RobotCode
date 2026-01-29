@@ -37,6 +37,7 @@ public class Arm extends GBSubsystem {
 		this.kG = kG;
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, (voltage) -> setVoltage(voltage + getKgVoltage()));
 		commandBuilder = new ArmCommandBuilder(this);
+		setCommandsBuilder(commandBuilder);
 		setDefaultCommand(commandBuilder.stayInPlace());
 	}
 

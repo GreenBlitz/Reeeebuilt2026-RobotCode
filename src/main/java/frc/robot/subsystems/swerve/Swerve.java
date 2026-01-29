@@ -70,6 +70,7 @@ public class Swerve extends GBSubsystem {
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
 		update();
+		setCommandsBuilder(commandsBuilder);
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
 	}
 
