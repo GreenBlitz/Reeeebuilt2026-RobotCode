@@ -157,6 +157,8 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
+		robotCommander.getIntakeStateHandler().periodic();
+
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 		ShootingCalculations
