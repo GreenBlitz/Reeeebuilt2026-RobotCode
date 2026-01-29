@@ -33,6 +33,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
+	double odometryCausedEstimatedPoseError;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -67,6 +68,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuAccelerationBuffer = TimeInterpolatableBuffer
 			.createDoubleBuffer(WPILibPoseEstimatorConstants.IMU_ACCELERATION_BUFFER_SIZE_SECONDS);
+		this.odometryCausedEstimatedPoseError = 0;
 	}
 
 
@@ -107,6 +109,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
+	}
+
+	public double getStatesChangedCounter(OdometryData data){
+		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG().map((acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE ? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_COUNTER_ADDING : 0).orElseGet(() -> 0.0);
 	}
 
 	@Override
