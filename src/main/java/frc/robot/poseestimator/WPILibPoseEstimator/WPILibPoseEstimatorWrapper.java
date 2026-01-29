@@ -96,10 +96,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void updateOdometry(OdometryData data) {
-		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
-		data.setIMUYaw(data.getIMUYaw().orElseGet(() -> lastOdometryData.getIMUYaw().get().plus(Rotation2d.fromRadians(changeInPose.dtheta))));
-		poseEstimator.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
-
+		if(data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent())
+			data.setIMUYaw(
+					data.getImuOrientation().isPresent()
+							? Rotation2d.fromRadians(data.getImuOrientation().get().getZ())
+							: Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))
+			);
+		poseEstimator
+				.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
