@@ -16,7 +16,7 @@ import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
 
-	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN,0.3
+	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN,0.15
 	);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
 	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD,1);
@@ -109,6 +109,7 @@ public class JoysticksBindings {
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
 		joystick.POV_UP.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
+		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CALIBRATION_SHOOT));
 	}
 
 	private static void applyTurretCalibrationBindings(Arm turret, SmartJoystick joystick, double calibrationMaxPower) {
