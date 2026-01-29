@@ -50,8 +50,8 @@ public class IntakeStateHandler {
 	}
 
 	public Command toggleState() {
-		return new InstantCommand(() -> {
-			CommandScheduler.getInstance()
+		return new InstantCommand(
+			() -> CommandScheduler.getInstance()
 				.schedule(
 					new DeferredCommand(
 						() -> new ConditionalCommand(
@@ -61,8 +61,8 @@ public class IntakeStateHandler {
 						),
 						Set.of(fourBar, rollers)
 					)
-				);
-		});
+				)
+		);
 	}
 
 	public Command intake() {
