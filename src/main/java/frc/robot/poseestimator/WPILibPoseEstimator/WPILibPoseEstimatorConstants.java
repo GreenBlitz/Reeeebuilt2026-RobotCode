@@ -17,7 +17,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double COLLISION_CAUSED_ODOMETRY_ERROR_ADDITION = 0;
 
-	public static final double TILTED_CAUSED_ODOMETRY_ERROR_ADDITION = 0;
+	public static final double TILT_CAUSED_ODOMETRY_ERROR_ADDITION = 0;
 
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 

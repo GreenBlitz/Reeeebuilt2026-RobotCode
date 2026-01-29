@@ -123,13 +123,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void updateCausedErrorForOdometryData(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.sqrt(Math.pow(changeInPose.dx, 2) + Math.pow(changeInPose.dy, 2) + Math.pow(changeInPose.dtheta, 2)); // one
-																																				// radian
-																																				// is
-																																				// considered
-																																				// as
-																																				// a
-																																				// one
-																																				// meter
+																																				// //
 																																				// error
 		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG()
 			.map(
@@ -142,7 +136,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.map(
 				(imuOrientation) -> imuOrientation.getX() >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
 					|| imuOrientation.getY() >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians()
-						? WPILibPoseEstimatorConstants.TILTED_CAUSED_ODOMETRY_ERROR_ADDITION * changeInPoseNorm
+						? WPILibPoseEstimatorConstants.TILT_CAUSED_ODOMETRY_ERROR_ADDITION * changeInPoseNorm
 						: 0
 			)
 			.orElseGet(() -> 0.0);
