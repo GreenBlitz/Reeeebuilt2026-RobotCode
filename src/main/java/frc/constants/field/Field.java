@@ -37,7 +37,6 @@ public class Field {
 	public static final double BUMP_Y_AXIS_LENGTH_METERS = 1.854;
 	public static final double BUMP_X_AXIS_LENGTH_METERS = 1.128;
 
-
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
 
