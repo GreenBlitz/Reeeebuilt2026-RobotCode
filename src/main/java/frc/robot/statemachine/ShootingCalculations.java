@@ -140,7 +140,7 @@ public class ShootingCalculations {
 			2.0,
 			Rotation2d.fromDegrees(16600),
 			2.5,
-			Rotation2d.fromDegrees(18000),
+			Rotation2d.fromDegrees(18400),
 			3.0,
 			Rotation2d.fromDegrees(19500),
 			3.5,
