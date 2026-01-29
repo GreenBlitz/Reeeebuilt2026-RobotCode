@@ -30,7 +30,7 @@ public class IntakeStateHandler {
 		this.beamBreaker = beamBreaker;
 		this.beamBreakerInputs = new DigitalInputInputsAutoLogged();
 		this.logPath = logPath + "/IntakeStateHandler";
-		this.currentState = IntakeState.CLOSED;
+		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
 
 	public void periodic() {
@@ -49,31 +49,33 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(fourBar.getCommandsBuilder().stayInPlace(), rollers.getCommandsBuilder().stop());
 	}
 
-	public Command openOrCloseIntake() {
+	public Command toggleState() {
 		return new InstantCommand(() -> {
-			Command command = new DeferredCommand(
-				() -> new ConditionalCommand(
-					setState(IntakeState.INTAKE),
-					setState(IntakeState.CLOSED),
-					() -> currentState == IntakeState.CLOSED
-				),
-				Set.of(fourBar, rollers)
-			);
-			CommandScheduler.getInstance().schedule(command);
-		}).withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
+			CommandScheduler.getInstance()
+				.schedule(
+					new DeferredCommand(
+						() -> new ConditionalCommand(
+							setState(IntakeState.INTAKE),
+							setState(IntakeState.CLOSED),
+							() -> currentState == IntakeState.CLOSED
+						),
+						Set.of(fourBar, rollers)
+					)
+				);
+		});
 	}
 
 	public Command intake() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE::getFourBarPosition),
-			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE::getIntakePower)
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
 	}
 
 	public Command close() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED::getFourBarPosition),
-			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED::getIntakePower)
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
 	}
 

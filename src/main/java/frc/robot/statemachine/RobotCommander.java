@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Robot;
+import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.subsystems.GBSubsystem;
 
@@ -22,6 +23,7 @@ public class RobotCommander extends GBSubsystem {
 	private final Robot robot;
 	private final Swerve swerve;
 	private final Superstructure superstructure;
+	private final IntakeStateHandler intakeStateHandler;
 
 	private RobotState currentState;
 
@@ -30,6 +32,12 @@ public class RobotCommander extends GBSubsystem {
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
+		this.intakeStateHandler = new IntakeStateHandler(
+			robot.getFourBar(),
+			robot.getIntakeRoller(),
+			robot.getIntakeRollerSensor(),
+			"/IntakeStateHandler"
+		);
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
@@ -134,6 +142,10 @@ public class RobotCommander extends GBSubsystem {
 			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
+	}
+
+	public IntakeStateHandler getIntakeStateHandler() {
+		return intakeStateHandler;
 	}
 
 }
