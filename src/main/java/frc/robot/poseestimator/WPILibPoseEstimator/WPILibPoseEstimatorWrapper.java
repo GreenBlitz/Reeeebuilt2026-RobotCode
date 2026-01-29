@@ -34,7 +34,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
-	double odometryCausedEstimatedPoseError;
+	private double odometryCausedEstimatedPoseError;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -123,7 +123,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG()
 			.map(
 				(acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE
-					? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_CAUSED_ERROR_ADDITION
+					? WPILibPoseEstimatorConstants.COLLISION_CAUSED_ODOMETRY_ERROR_ADDITION
 					: 0
 			)
 			.orElseGet(() -> 0.0);
@@ -131,7 +131,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.map(
 				(imuOrientation) -> imuOrientation.getX() >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
 					|| imuOrientation.getY() >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians()
-						? WPILibPoseEstimatorConstants.VISION_OBSERVATION_TILTED_CAUSED_ERROR_ADDITION
+						? WPILibPoseEstimatorConstants.TILTED_CAUSED_ODOMETRY_ERROR_ADDITION
 						: 0
 			)
 			.orElseGet(() -> 0.0);
