@@ -4,6 +4,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -39,7 +40,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		String logPath,
 		SwerveDriveKinematics kinematics,
 		SwerveModulePosition[] initialModulePositions,
-		Rotation2d initialIMUYaw,
+		Rotation3d initialIMUOriantation,
 		double initialIMUAccelerationMagnitudeG,
 		double initialTimestampSeconds
 	) {
@@ -47,7 +48,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.kinematics = kinematics;
 		this.odometryEstimator = new Odometry<>(
 			kinematics,
-			initialIMUYaw,
+			Rotation2d.fromRadians(initialIMUOriantation.getZ()),
 			initialModulePositions,
 			WPILibPoseEstimatorConstants.STARTING_ODOMETRY_POSE
 		);
@@ -60,7 +61,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.lastOdometryData = new OdometryData(
 			initialTimestampSeconds,
 			initialModulePositions,
-			Optional.of(initialIMUYaw),
+			Optional.of(initialIMUOriantation),
 			Optional.of(initialIMUAccelerationMagnitudeG)
 		);
 		this.isIMUOffsetCalibrated = false;
@@ -96,14 +97,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void updateOdometry(OdometryData data) {
-		if(data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent())
+		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
+		if (data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent())
 			data.setIMUYaw(
-					data.getImuOrientation().isPresent()
-							? Rotation2d.fromRadians(data.getImuOrientation().get().getZ())
-							: Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))
+				data.getImuOrientation().isPresent()
+					? Rotation2d.fromRadians(data.getImuOrientation().get().getZ())
+					: Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))
 			);
 		poseEstimator
-				.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
+			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
@@ -115,8 +117,22 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
 	}
 
-	public double getStatesChangedCounter(OdometryData data){
-		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG().map((acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE ? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_COUNTER_ADDING : 0).orElseGet(() -> 0.0);
+	public void getStatesChangedCounter(OdometryData data) {
+		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG()
+			.map(
+				(acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE
+					? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_COUNTER_ADDING
+					: 0
+			)
+			.orElseGet(() -> 0.0);
+		odometryCausedEstimatedPoseError += data.getImuOrientation()
+			.map(
+				(imuOrientation) -> imuOrientation.getX() >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
+					|| imuOrientation.getY() >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians()
+						? WPILibPoseEstimatorConstants.VISION_OBSERVATION_COLLISION_COUNTER_ADDING
+						: 0
+			)
+			.orElseGet(() -> 0.0);
 	}
 
 	@Override
@@ -129,16 +145,21 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	@Override
 	public void resetPose(
 		double timestampSeconds,
-		Rotation2d imuYaw,
+		Rotation3d imuOrientation,
 		double imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
 		Pose2d poseMeters
 	) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
-		poseEstimator.resetPosition(imuYaw, wheelPositions, poseMeters);
-		this.lastOdometryData = new OdometryData(timestampSeconds, wheelPositions, Optional.of(imuYaw), Optional.of(imuAccelerationMagnitudeG));
+		poseEstimator.resetPosition(Rotation2d.fromRadians(imuOrientation.getZ()), wheelPositions, poseMeters);
+		this.lastOdometryData = new OdometryData(
+			timestampSeconds,
+			wheelPositions,
+			Optional.of(imuOrientation),
+			Optional.of(imuAccelerationMagnitudeG)
+		);
 		poseToIMUYawDifferenceBuffer.clear();
-		imuYawBuffer.addSample(timestampSeconds, imuYaw);
+		imuYawBuffer.addSample(timestampSeconds, Rotation2d.fromRadians(imuOrientation.getZ()));
 		imuAccelerationBuffer.addSample(timestampSeconds, imuAccelerationMagnitudeG);
 	}
 
@@ -146,7 +167,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void resetPose(Pose2d poseMeters) {
 		resetPose(
 			lastOdometryData.getTimestampSeconds(),
-			lastOdometryData.getIMUYaw().get(),
+			lastOdometryData.getImuOrientation().get(),
 			lastOdometryData.getImuAccelerationMagnitudeG().get(),
 			lastOdometryData.getWheelPositions(),
 			poseMeters
