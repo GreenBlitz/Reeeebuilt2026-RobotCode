@@ -120,19 +120,19 @@ public class ShootingCalculations {
 			2.5,
 			Rotation2d.fromDegrees(30),
 			3.0,
-			Rotation2d.fromDegrees(30),
-			3.5,
-			Rotation2d.fromDegrees(30),
+			Rotation2d.fromDegrees(35),
+			3.6,
+			Rotation2d.fromDegrees(37),
 			4.0,
-			Rotation2d.fromDegrees(30),
+			Rotation2d.fromDegrees(38),
 			4.5,
-			Rotation2d.fromDegrees(30),
+			Rotation2d.fromDegrees(43),
 			5.0,
-			Rotation2d.fromDegrees(30),
+			Rotation2d.fromDegrees(40),
 			5.5,
-			Rotation2d.fromDegrees(30),
+			Rotation2d.fromDegrees(45),
 			6.0,
-			Rotation2d.fromDegrees(40)
+			Rotation2d.fromDegrees(44)
 		)
 	);
 
@@ -143,24 +143,23 @@ public class ShootingCalculations {
 			1.5,
 			Rotation2d.fromDegrees(16400),
 			2.0,
-			Rotation2d.fromDegrees(16600),
+			Rotation2d.fromDegrees(16500),
 			2.5,
-			Rotation2d.fromDegrees(18400),
+			Rotation2d.fromDegrees(18000),
 			3.0,
-			Rotation2d.fromDegrees(20000),
-			3.5,
-			Rotation2d.fromDegrees(21300),
+			Rotation2d.fromDegrees(18500),
+			3.6,
+			Rotation2d.fromDegrees(19700),
 			4.0,
-			Rotation2d.fromDegrees(21900),
-
+			Rotation2d.fromDegrees(20800),
 			4.5,
-			Rotation2d.fromDegrees(24000),
+			Rotation2d.fromDegrees(21500),
 			5.0,
-			Rotation2d.fromDegrees(26650),
+			Rotation2d.fromDegrees(23000),
 			5.5,
-			Rotation2d.fromDegrees(27800),
+			Rotation2d.fromDegrees(23700),
 			6.0,
-			Rotation2d.fromDegrees(25500)
+			Rotation2d.fromDegrees(24800)
 		)
 	);
 
@@ -171,15 +170,15 @@ public class ShootingCalculations {
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.0, 0.92, 4.0, 1.35, 6.0, 1.62)
+		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
 	);
 
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
-		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
+		return Rotation2d.fromDegrees(HOOD_INTERPOLATION_MAP.get(distanceFromTower).getDegrees() + 0.4);
 	}
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
-		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
+		return Rotation2d.fromDegrees(FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower).getDegrees() + 250);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
