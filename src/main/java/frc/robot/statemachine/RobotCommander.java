@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Robot;
+import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.subsystems.GBSubsystem;
 
@@ -22,6 +23,7 @@ public class RobotCommander extends GBSubsystem {
 	private final Robot robot;
 	private final Swerve swerve;
 	private final Superstructure superstructure;
+	private final IntakeStateHandler intakeStateHandler;
 
 	private RobotState currentState;
 
@@ -30,6 +32,12 @@ public class RobotCommander extends GBSubsystem {
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
+		this.intakeStateHandler = new IntakeStateHandler(
+			robot.getFourBar(),
+			robot.getIntakeRoller(),
+			robot.getIntakeRollerSensor(),
+			"/IntakeStateHandler"
+		);
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
@@ -40,17 +48,7 @@ public class RobotCommander extends GBSubsystem {
 						.schedule(
 							new DeferredCommand(
 								() -> endState(currentState),
-								Set.of(
-									this,
-									swerve,
-									robot.getIntakeRoller(),
-									robot.getTurret(),
-									robot.getFourBar(),
-									robot.getHood(),
-									robot.getTrain(),
-									robot.getBelly(),
-									robot.getFlyWheel()
-								)
+								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
 							)
 						)
 				),
@@ -173,10 +171,6 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command shootWhileIntakeSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT_WHILE_INTAKE));
-	}
-
 	private Command asSubsystemCommand(Command command, RobotState state) {
 		return new ParallelCommandGroup(asSubsystemCommand(command, state.name()), new InstantCommand(() -> currentState = state));
 	}
@@ -184,10 +178,14 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE, PASS, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
+			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT, PASS -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};
+	}
+
+	public IntakeStateHandler getIntakeStateHandler() {
+		return intakeStateHandler;
 	}
 
 }

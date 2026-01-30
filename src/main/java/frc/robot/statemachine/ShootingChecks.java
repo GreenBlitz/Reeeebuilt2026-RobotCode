@@ -94,11 +94,10 @@ public class ShootingChecks {
 		String logPath;
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		boolean isInAllianceZone = isInAllianceZone(robotPose.getTranslation());
-		if (isInAllianceZone){
+		if (isInAllianceZone) {
 			target = Field.getHubMiddle();
 			logPath = shootingChacksLogPath + "/IsReadyToShootAtHub";
-		}
-		else {
+		} else {
 			target = ShootingCalculations.getOptimalPassingPosition(robotPose);
 			logPath = shootingChacksLogPath + "/IsReadyToPass";
 		}
@@ -136,7 +135,7 @@ public class ShootingChecks {
 			&& isWithinDistance
 			&& isAtTurretAtTarget
 			&& !isOnBumpOrUnderTrench(robotPose)
-			&&(isInAllianceZone || !isInPassingAreaOfDenial(robotPose));
+			&& (isInAllianceZone || !isInPassingAreaOfDenial(robotPose));
 	}
 
 	public static boolean canContinueShooting(
@@ -151,14 +150,13 @@ public class ShootingChecks {
 		String logPath;
 		Translation2d target;
 		boolean isInAllianceZone = isInAllianceZone(robotPose.getTranslation());
-		if(isInAllianceZone){
+		if (isInAllianceZone) {
 			logPath = shootingChacksLogPath + "/CanContinueShootingAtHub";
 			target = Field.getHubMiddle();
-		}
-		else {
+		} else {
 			logPath = shootingChacksLogPath + "/CanContinuePassing";
 			target = ShootingCalculations.getOptimalPassingPosition(robotPose);
-			Logger.recordOutput(logPath + "targetPassingPosition" , target);
+			Logger.recordOutput(logPath + "targetPassingPosition", target);
 		}
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
@@ -194,19 +192,14 @@ public class ShootingChecks {
 			&& isWithinDistance
 			&& isAtTurretAtTarget
 			&& isOnBumpOrUnderTrench(robotPose)
-			&&(isInAllianceZone || !isInPassingAreaOfDenial(robotPose));
+			&& (isInAllianceZone || !isInPassingAreaOfDenial(robotPose));
 	}
 
-	public static boolean calibrationIsReadyToShoot(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRPS,
-		Rotation2d hoodPositionTolerance
-	) {
+	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
 		String logPath;
-		if(isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())){
+		if (isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
 			logPath = shootingChacksLogPath + "/calibrationIsReadyToShootAtHub";
-		}
-		else {
+		} else {
 			logPath = shootingChacksLogPath + "/calibrationIsReadyToPass";
 		}
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
