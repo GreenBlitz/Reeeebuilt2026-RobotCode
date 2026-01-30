@@ -23,6 +23,10 @@ public record IMUSignals(
 		);
 	}
 
+	public Rotation2d getYawAngularVelocity() {
+		return this.yawAngularVelocitySignal().getLatestValue();
+	}
+
 	public Rotation3d getOrientation() {
 		return new Rotation3d(
 			this.rollSignal().getLatestValue().getRadians(),

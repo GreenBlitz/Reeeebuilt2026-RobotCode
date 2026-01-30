@@ -74,6 +74,11 @@ public class ShootingCalculations {
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/turretVelocitiesFieldRelative", turretFieldRelativeVelocity);
+		Logger.recordOutput(LOG_PATH + "/turretTangentialVelocity", turretTangentialVelocity.getNorm());
+		Logger.recordOutput(LOG_PATH + "/offset", TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d());
+		Logger.recordOutput(LOG_PATH + "/yawAng", gyroYawAngularVelocity);
+
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
@@ -142,7 +147,7 @@ public class ShootingCalculations {
 			2.5,
 			Rotation2d.fromDegrees(18400),
 			3.0,
-			Rotation2d.fromDegrees(19500),
+			Rotation2d.fromDegrees(20000),
 			3.5,
 			Rotation2d.fromDegrees(21300),
 			4.0,
@@ -158,6 +163,10 @@ public class ShootingCalculations {
 			Rotation2d.fromDegrees(25500)
 		)
 	);
+
+	static  {
+		FLYWHEEL_INTERPOLATION_MAP.put(Map.of());
+	}
 
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),

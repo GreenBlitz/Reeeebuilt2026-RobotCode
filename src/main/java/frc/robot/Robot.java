@@ -210,7 +210,7 @@ public class Robot {
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getGyroAbsoluteYaw().getValue());
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getYawAngularVelocityFromIMURPS());
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
