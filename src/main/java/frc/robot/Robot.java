@@ -41,6 +41,7 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.shootsimulation.TurretHoodShootSimulationManager;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -57,13 +58,15 @@ public class Robot {
 	private final Arm hood;
 	private final IDigitalInput intakeRollerSensor;
 	private final VelocityRoller train;
-	private final SimulationManager simulationManager;
 	private final Roller belly;
-
-	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
+
+	private final RobotCommander robotCommander;
+
+	private final SimulationManager simulationManager;
+	public final TurretHoodShootSimulationManager turretHoodShootSimulationManager;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -118,6 +121,16 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+		turretHoodShootSimulationManager = new TurretHoodShootSimulationManager(
+			() -> poseEstimator.getEstimatedPose(),
+			() -> swerve.getFieldRelativeVelocity(),
+			() -> turret.getPosition(),
+			() -> hood.getPosition(),
+			() -> flyWheel.getVelocity(),
+			TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT,
+			3 * 0.0254,
+			1.45
+		);
 	}
 
 	public void resetSubsystems() {

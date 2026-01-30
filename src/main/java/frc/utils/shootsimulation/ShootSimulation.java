@@ -1,4 +1,4 @@
-package frc.utils;
+package frc.utils.shootsimulation;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Timer;

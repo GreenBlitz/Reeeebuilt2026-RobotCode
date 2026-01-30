@@ -108,14 +108,18 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			1.5,
-			Rotation2d.fromDegrees(67),
+			2.0,
+			Rotation2d.fromDegrees(32),
+			2.5,
+			Rotation2d.fromDegrees(32),
 			3.0,
-			Rotation2d.fromDegrees(60),
+			Rotation2d.fromDegrees(32),
+			3.5,
+			Rotation2d.fromDegrees(35),
+			4.0,
+			Rotation2d.fromDegrees(35.7),
 			4.5,
-			Rotation2d.fromDegrees(43),
-			6.0,
-			Rotation2d.fromDegrees(33)
+			Rotation2d.fromDegrees(38)
 		)
 	);
 
@@ -123,14 +127,18 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			1.5,
-			Rotation2d.fromRotations(50),
+			2.0,
+			Rotation2d.fromDegrees(22000),
+			2.5,
+			Rotation2d.fromDegrees(24000),
 			3.0,
-			Rotation2d.fromRotations(65),
+			Rotation2d.fromDegrees(26200),
+			3.5,
+			Rotation2d.fromDegrees(27000),
+			4.0,
+			Rotation2d.fromDegrees(28500),
 			4.5,
-			Rotation2d.fromRotations(85),
-			6.0,
-			Rotation2d.fromRotations(110)
+			Rotation2d.fromDegrees(29600)
 		)
 	);
 

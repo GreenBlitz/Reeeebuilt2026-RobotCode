@@ -119,6 +119,7 @@ public class RobotCommander extends GBSubsystem {
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
 				driveWith(RobotState.SHOOT).until(() -> (!canContinueShooting()))
+					.alongWith(new InstantCommand(() -> robot.turretHoodShootSimulationManager.run(5, 0.5)))
 			)
 		);
 	}
