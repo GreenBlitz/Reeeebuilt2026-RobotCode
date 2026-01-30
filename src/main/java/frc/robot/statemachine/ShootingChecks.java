@@ -139,7 +139,7 @@ public class ShootingChecks {
 	}
 
 	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		String logPath = shootingChecksLogPath + "IsReadyToShootCalibrations";
+		String logPath = shootingChecksLogPath + "/IsReadyToShootCalibrations";
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
