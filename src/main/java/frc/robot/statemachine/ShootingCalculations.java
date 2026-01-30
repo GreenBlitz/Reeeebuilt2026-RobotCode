@@ -30,10 +30,12 @@ public class ShootingCalculations {
 		return shootingParams;
 	}
 
-	private static ShootingParams calculateShootingParams(
+	private static ShootingParams calculateBallReleasingParams(
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity,
+		InterpolationMap<Double, Rotation2d> hoodInterpolation,
+		InterpolationMap<Double, Rotation2d> flywheelInterpolation,
 		Translation2d target
 	) {
 		// Calculate distance from turret to target
@@ -69,8 +71,8 @@ public class ShootingCalculations {
 
 		double distanceFromTurretPredictedPoseToHub = getDistanceFromHub(turretPredictedPose);
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
-		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromTurretPredictedPoseToHub, robotPose.getTranslation());
-		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromTurretPredictedPoseToHub, robotPose.getTranslation());
+		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
+		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
@@ -87,10 +89,29 @@ public class ShootingCalculations {
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
-		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			return calculateShootingParams(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity, Field.getHubMiddle());
-		}
-		return calculateShootingParams(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity, getOptimalPassingPosition(robotPose));
+		return calculateBallReleasingParams(
+			robotPose,
+			fieldRelativeSpeeds,
+			gyroYawAngularVelocity,
+			HOOD_INTERPOLATION_MAP_SHOOT,
+			FLYWHEEL_INTERPOLATION_MAP_SHOOT,
+			Field.getHubMiddle()
+		);
+	}
+
+	private static ShootingParams calculatePassingParams(
+		Pose2d robotPose,
+		ChassisSpeeds fieldRelativeSpeeds,
+		Rotation2d gyroYawAngularVelocity
+	) {
+		return calculateBallReleasingParams(
+			robotPose,
+			fieldRelativeSpeeds,
+			gyroYawAngularVelocity,
+			HOOD_INTERPOLATION_MAP_PASS,
+			FLYWHEEL_INTERPOLATION_MAP_PASS,
+			getOptimalPassingPosition(robotPose)
+		);
 	}
 
 	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
@@ -115,13 +136,13 @@ public class ShootingCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
-	public static Translation2d getOptimalPassingPosition(Pose2d robotPosition) {
+	public static Translation2d getOptimalPassingPosition(Pose2d robotPose) {
 		// to do
-		Translation2d TurretPosition = getFieldRelativeTurretPosition(robotPosition);
+		Translation2d TurretPosition = getFieldRelativeTurretPosition(robotPose);
 		return new Translation2d(3, 4);
 	}
 
-	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP_SHOOT = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -136,7 +157,7 @@ public class ShootingCalculations {
 		)
 	);
 
-	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP_SHOOT_AT_HUB = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP_SHOOT = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -187,22 +208,12 @@ public class ShootingCalculations {
 		Map.of(0.1, 0.2, 0.5, 0.4)
 	);
 
-	public static Rotation2d hoodInterpolation(double distanceFromTarget, Translation2d robotPosition) {
-		if (ShootingChecks.isInAllianceZone(robotPosition)) {
-			return HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB.get(distanceFromTarget);
-		}
-		return HOOD_INTERPOLATION_MAP_PASS.get(distanceFromTarget);
-	}
-
-	public static Rotation2d flywheelInterpolation(double distanceFromTarget, Translation2d robotPosition) {
-		if (ShootingChecks.isInAllianceZone(robotPosition)) {
-			return FLYWHEEL_INTERPOLATION_MAP_SHOOT_AT_HUB.get(distanceFromTarget);
-		}
-		return FLYWHEEL_INTERPOLATION_MAP_PASS.get(distanceFromTarget);
-	}
-
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-		shootingParams = calculateShootingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+			shootingParams = calculateShootingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		} else {
+			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		}
 	}
 
 }
