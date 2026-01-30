@@ -112,7 +112,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		updateCausedErrorForOdometryData(data);
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
-		lastOdometryData.setIMUYaw(Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
+		lastOdometryData.setIMUOrientation(Optional.of(data.getImuOrientation().get()));
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
 
@@ -123,22 +123,28 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void updateCausedErrorForOdometryData(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.sqrt(Math.pow(changeInPose.dx, 2) + Math.pow(changeInPose.dy, 2) + Math.pow(changeInPose.dtheta, 2));
-		// one radian is considered as one meter of error
-		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG()
-			.map(
-				(acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE
-					? WPILibPoseEstimatorConstants.COLLISION_CAUSED_ODOMETRY_ERROR_ADDITION * changeInPoseNorm
-					: 0
-			)
-			.orElseGet(() -> 0.0);
-		odometryCausedEstimatedPoseError += data.getImuOrientation()
+		// one radian is considered equal to one meter of error
+		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG().isPresent()
+			? WPILibPoseEstimatorConstants.COLLISION_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
+			: 0;
+		odometryCausedEstimatedPoseError += data.getImuOrientation().isPresent()
+			? WPILibPoseEstimatorConstants.TILT_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
+			: 0;
+	}
+
+	public boolean isColliding(OdometryData data) {
+		return data.getImuAccelerationMagnitudeG()
+			.map((acceleration) -> acceleration >= SwerveConstants.MIN_COLLISION_G_FORCE)
+			.orElseGet(() -> false);
+	}
+
+	public boolean isTilted(OdometryData data) {
+		return data.getImuOrientation()
 			.map(
 				(imuOrientation) -> imuOrientation.getX() >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
 					|| imuOrientation.getY() >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians()
-						? WPILibPoseEstimatorConstants.TILT_CAUSED_ODOMETRY_ERROR_ADDITION * changeInPoseNorm
-						: 0
 			)
-			.orElseGet(() -> 0.0);
+			.orElseGet(() -> false);
 	}
 
 	@Override
@@ -200,7 +206,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
 		}
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
-		Logger.recordOutput(logPath + "odometryCausedEstimatedPoseError", odometryCausedEstimatedPoseError);
+		Logger.recordOutput(logPath + "/odometryCausedEstimatedPoseError", odometryCausedEstimatedPoseError);
 	}
 
 	public void resetIsIMUOffsetCalibrated() {

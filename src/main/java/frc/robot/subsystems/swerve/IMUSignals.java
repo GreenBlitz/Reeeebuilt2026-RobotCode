@@ -24,14 +24,14 @@ public record IMUSignals(
 	}
 
 	public Rotation3d[] getAllOrientations() {
-		Rotation2d[] rollArray = this.rollSignal.asArray();
-		Rotation2d[] pitchArray = this.pitchSignal.asArray();
-		Rotation2d[] yawArray = this.yawSignal.asArray();
-		Rotation3d[] orientationArray = new Rotation3d[Math.min(Math.min(rollArray.length, pitchArray.length), yawArray.length)];
-		for (int i = 0; i < orientationArray.length; i++) {
-			orientationArray[i] = new Rotation3d(rollArray[i].getRadians(), pitchArray[i].getRadians(), yawArray[i].getRadians());
+		Rotation2d[] allRollValues = this.rollSignal.asArray();
+		Rotation2d[] allPitchValues = this.pitchSignal.asArray();
+		Rotation2d[] allYawValues = this.yawSignal.asArray();
+		Rotation3d[] allOrientations = new Rotation3d[Math.min(Math.min(allRollValues.length, allPitchValues.length), allYawValues.length)];
+		for (int i = 0; i < allOrientations.length; i++) {
+			allOrientations[i] = new Rotation3d(allRollValues[i].getRadians(), allPitchValues[i].getRadians(), allYawValues[i].getRadians());
 		}
-		return orientationArray;
+		return allOrientations;
 	}
 
 	public Rotation3d getLatestOrientation() {
@@ -43,15 +43,15 @@ public record IMUSignals(
 	}
 
 	public Translation3d[] getAllAccelerationsEarthGravitationalAcceleration() {
-		Double[] xAcceleration = this.xAccelerationSignalEarthGravitationalAcceleration.asArray();
-		Double[] yAcceleration = this.yAccelerationSignalEarthGravitationalAcceleration.asArray();
-		Double[] zAcceleration = this.zAccelerationSignalEarthGravitationalAcceleration.asArray();
-		Translation3d[] accelerationArray = new Translation3d[Math
-			.min(Math.min(xAcceleration.length, yAcceleration.length), zAcceleration.length)];
-		for (int i = 0; i < accelerationArray.length; i++) {
-			accelerationArray[i] = new Translation3d(xAcceleration[i], yAcceleration[i], zAcceleration[i]);
+		Double[] allXAccelerations = this.xAccelerationSignalEarthGravitationalAcceleration.asArray();
+		Double[] allYAccelerations = this.yAccelerationSignalEarthGravitationalAcceleration.asArray();
+		Double[] allZAccelerations = this.zAccelerationSignalEarthGravitationalAcceleration.asArray();
+		Translation3d[] allAccelerations = new Translation3d[Math
+			.min(Math.min(allXAccelerations.length, allYAccelerations.length), allZAccelerations.length)];
+		for (int i = 0; i < allAccelerations.length; i++) {
+			allAccelerations[i] = new Translation3d(allXAccelerations[i], allYAccelerations[i], allZAccelerations[i]);
 		}
-		return accelerationArray;
+		return allAccelerations;
 	}
 
 	public Translation3d getLatestAccelerationEarthGravitationalAcceleration() {

@@ -101,7 +101,7 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getAngularVelocity();
 	}
 
-	public Rotation3d getOrientationFromIMU() {
+	public Rotation3d getIMUOrientation() {
 		return imuSignals.getLatestOrientation();
 	}
 

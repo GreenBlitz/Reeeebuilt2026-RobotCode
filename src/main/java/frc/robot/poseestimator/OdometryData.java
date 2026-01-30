@@ -56,7 +56,9 @@ public class OdometryData {
 	}
 
 	public void setIMUYaw(Rotation2d imuYaw) {
-		setIMUOrientation(Optional.of(new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians())));
+		setIMUOrientation(
+			imuOrientation.map(orientation -> new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians()))
+		);
 	}
 
 	public void setIMUAcceleration(Optional<Double> imuAccelerationMagnitudeG) {
