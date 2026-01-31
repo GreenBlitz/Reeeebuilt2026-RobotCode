@@ -3,7 +3,6 @@ package frc.robot.statemachine.superstructure;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
@@ -94,11 +93,7 @@ public class Superstructure {
 	}
 
 	private Command shoot() {
-		return new SequentialCommandGroup(
-			new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT)),
-			new ParallelCommandGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT))
-				.withTimeout(StateMachineConstants.SECONDS_TO_WAIT_AFTER_SHOOT)
-		);
+		return new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT));
 	}
 
 	private Command calibrationPreShoot() {
