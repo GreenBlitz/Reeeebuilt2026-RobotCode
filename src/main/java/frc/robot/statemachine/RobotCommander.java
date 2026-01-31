@@ -1,12 +1,8 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Robot;
@@ -15,7 +11,6 @@ import frc.robot.subsystems.GBSubsystem;
 
 import frc.robot.subsystems.swerve.Swerve;
 
-import java.util.Set;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -106,12 +101,11 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean calibrationCanContinueToShoot() {
+	private boolean calibrationCanContinueShooting() {
 		return ShootingChecks.calibrationCanContinueShooting(
-				robot,
-				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
-				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING
-
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING
 		);
 	}
 
@@ -128,13 +122,9 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
-				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueToShoot())
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueShooting())
 			)
 		);
-	}
-
-	public Command shootWhileIntakeSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT_WHILE_INTAKE));
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
@@ -144,7 +134,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
+			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}

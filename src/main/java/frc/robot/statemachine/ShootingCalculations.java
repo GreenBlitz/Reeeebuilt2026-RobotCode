@@ -163,7 +163,7 @@ public class ShootingCalculations {
 		)
 	);
 
-	static  {
+	static {
 		FLYWHEEL_INTERPOLATION_MAP.put(Map.of());
 	}
 

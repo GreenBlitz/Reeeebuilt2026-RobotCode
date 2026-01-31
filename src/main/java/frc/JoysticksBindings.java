@@ -18,7 +18,7 @@ public class JoysticksBindings {
 
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
-	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD,1);
+	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD, 1);
 	private static final SmartJoystick FOURTH_JOYSTICK = new SmartJoystick(JoystickPorts.FOURTH);
 	private static final SmartJoystick FIFTH_JOYSTICK = new SmartJoystick(JoystickPorts.FIFTH);
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
@@ -56,13 +56,9 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		usedJoystick.Y
-				.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
-		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
+		usedJoystick.Y.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
 		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
-
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -104,9 +100,7 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
-		joystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT_WHILE_INTAKE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_UP.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CALIBRATION_SHOOT));
 	}
