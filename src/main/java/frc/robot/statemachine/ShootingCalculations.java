@@ -112,23 +112,22 @@ public class ShootingCalculations {
 			Rotation2d.fromDegrees(30),
 			2.0,
 			Rotation2d.fromDegrees(30),
-
-			2.5,
-			Rotation2d.fromDegrees(30),
+			2.55,
+			Rotation2d.fromDegrees(32),
 			3.0,
+			Rotation2d.fromDegrees(32),
+			3.45,
 			Rotation2d.fromDegrees(35),
-			3.5,
-			Rotation2d.fromDegrees(37),
-			4.0,
+			4.04,
 			Rotation2d.fromDegrees(38),
-			4.5,
-			Rotation2d.fromDegrees(43),
+			4.48,
+			Rotation2d.fromDegrees(38),
 			5.0,
-			Rotation2d.fromDegrees(40),
+			Rotation2d.fromDegrees(42),
 			5.5,
-			Rotation2d.fromDegrees(45),
+			Rotation2d.fromDegrees(42),
 			6.0,
-			Rotation2d.fromDegrees(44)
+			Rotation2d.fromDegrees(42)
 		)
 	);
 
@@ -140,23 +139,22 @@ public class ShootingCalculations {
 			Rotation2d.fromDegrees(16400),
 			2.0,
 			Rotation2d.fromDegrees(17200),
-
-			2.5,
-			Rotation2d.fromDegrees(18000),
+			2.55,
+			Rotation2d.fromDegrees(19300),
 			3.0,
-			Rotation2d.fromDegrees(18500),
-			3.5,
-			Rotation2d.fromDegrees(19700),
-			4.0,
+			Rotation2d.fromDegrees(20400),
+			3.45,
 			Rotation2d.fromDegrees(20800),
-			4.5,
-			Rotation2d.fromDegrees(21500),
-			5.0,
+			4.04,
+			Rotation2d.fromDegrees(21800),
+			4.48,
 			Rotation2d.fromDegrees(23000),
+			5.0,
+			Rotation2d.fromDegrees(23350),
 			5.5,
-			Rotation2d.fromDegrees(23700),
+			Rotation2d.fromDegrees(24350),
 			6.0,
-			Rotation2d.fromDegrees(24800)
+			Rotation2d.fromDegrees(25350)
 		)
 	);
 

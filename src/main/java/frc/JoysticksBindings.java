@@ -57,7 +57,9 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().shootSequence());
+		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
+
 		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 	}
 
@@ -101,7 +103,6 @@ public class JoysticksBindings {
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CALIBRATION_SHOOT));
 	}
 
