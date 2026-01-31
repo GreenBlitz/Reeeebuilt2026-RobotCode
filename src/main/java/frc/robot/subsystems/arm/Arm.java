@@ -146,10 +146,12 @@ public class Arm extends GBSubsystem {
 
 	public void setSoftwareLimitSwitchEnableValue(boolean enableSoftwareLimits){
 		if (motor instanceof TalonFXMotor){
+			Logger.recordOutput("5","rafa123");
 			SoftwareLimitSwitchConfigs limitSwitchConfigs = new SoftwareLimitSwitchConfigs();
 			limitSwitchConfigs.ReverseSoftLimitEnable = false;
 			limitSwitchConfigs.ForwardSoftLimitEnable = false;
 			((TalonFXMotor) motor).getDevice().getConfigurator().apply(limitSwitchConfigs);
+//			Logger.recordOutput("rafa123",((TalonFXMotor) motor).getDevice());
 		}
 
 	}
