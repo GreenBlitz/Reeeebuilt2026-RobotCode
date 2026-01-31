@@ -74,10 +74,6 @@ public class ShootingCalculations {
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
-		Logger.recordOutput(LOG_PATH + "/turretVelocitiesFieldRelative", turretFieldRelativeVelocity);
-		Logger.recordOutput(LOG_PATH + "/turretTangentialVelocity", turretTangentialVelocity.getNorm());
-		Logger.recordOutput(LOG_PATH + "/offset", TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d());
-		Logger.recordOutput(LOG_PATH + "/yawAng", gyroYawAngularVelocity);
 
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
