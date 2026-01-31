@@ -169,11 +169,11 @@ public class ShootingCalculations {
 	);
 
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
-		return Rotation2d.fromDegrees(HOOD_INTERPOLATION_MAP.get(distanceFromTower).getDegrees() + 0.4);
+		return HOOD_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
 	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
-		return Rotation2d.fromDegrees(FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower).getDegrees() + 250);
+		return FLYWHEEL_INTERPOLATION_MAP.get(distanceFromTower);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
