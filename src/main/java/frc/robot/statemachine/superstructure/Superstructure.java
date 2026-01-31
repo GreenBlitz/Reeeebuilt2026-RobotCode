@@ -110,7 +110,6 @@ public class Superstructure {
 	}
 
 	public void periodic() {
-		funnelStateHandler.periodic();
 		Logger.recordOutput(logPath + "/IsSubsystemRunningIndependently", isSubsystemRunningIndependently());
 	}
 
