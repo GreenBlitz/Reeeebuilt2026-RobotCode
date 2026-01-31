@@ -79,10 +79,12 @@ public class SwerveStateHandler {
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading;
 
-		if (turretAngle.getRotations() > TurretConstants.MAX_POSITION.getRotations()) {
-			targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX)).plus(Rotation2d.fromDegrees(2));
+		if (turretAngle.getRotations() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getRotations()) {
+			targetHeading = Rotation2d
+				.fromDegrees(Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() - SwerveConstants.TOLERANCE_DEGREES_OF_OVERSHOOT);
 		} else {
-			targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX)).minus(Rotation2d.fromDegrees(2));
+			targetHeading = Rotation2d
+				.fromDegrees(Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() + SwerveConstants.TOLERANCE_DEGREES_OF_OVERSHOOT);
 		}
 
 		return AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);

@@ -52,4 +52,6 @@ public record SwerveConstants(
 	static final Rotation2d CALIBRATION_MODULE_ANGLE_TOLERANCE = Rotation2d.fromDegrees(3);
 	static final Rotation2d CALIBRATION_MODULE_ANGULAR_VELOCITY_PER_SECOND_DEADBAND = Rotation2d.fromDegrees(3);
 
+	public static final int TOLERANCE_DEGREES_OF_OVERSHOOT = 10;
+
 }

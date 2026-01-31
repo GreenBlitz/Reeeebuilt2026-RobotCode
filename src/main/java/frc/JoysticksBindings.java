@@ -54,7 +54,7 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
+		usedJoystick.Y.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
 	}
