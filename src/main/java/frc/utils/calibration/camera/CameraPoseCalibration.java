@@ -119,8 +119,6 @@ public class CameraPoseCalibration extends Command {
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseFieldRelative.getX(),
 				-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseFieldRelative.getY()),
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundMeters
-			).rotateBy(
-				new Rotation3d(0, 0, Rotation2d.fromRadians(robotRelativeTagYaw.getRadians()).rotateBy(MathConstants.HALF_CIRCLE).getRadians())
 			),
 			new Rotation3d(
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getX(),
@@ -128,7 +126,7 @@ public class CameraPoseCalibration extends Command {
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getZ()
 					- expectedRobotPoseFieldRelative.getRotation().getRadians()
 			)
-		);
+		).rotateBy(new Rotation3d(0, 0, robotRelativeTagYaw.rotateBy(MathConstants.HALF_CIRCLE).getRadians()));
 	}
 
 	private void sumMeasurementsValues() {
