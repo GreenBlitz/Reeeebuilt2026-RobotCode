@@ -97,7 +97,7 @@ public class Swerve extends GBSubsystem {
 		return stateHandler;
 	}
 
-	public Rotation3d getAngularVelocityFromIMURPS() {
+	public Rotation2d[] getIMUAngularVelocityRPS() {
 		return imuSignals.getAngularVelocity();
 	}
 
@@ -225,6 +225,10 @@ public class Swerve extends GBSubsystem {
 
 	public ChassisSpeeds getAllianceRelativeVelocity() {
 		return SwerveMath.robotToAllianceRelativeSpeeds(getRobotRelativeVelocity(), getAllianceRelativeHeading());
+	}
+
+	public ChassisSpeeds getFieldRelativeVelocity() {
+		return SwerveMath.robotToAllianceRelativeSpeeds(getRobotRelativeVelocity(), headingSupplier.get());
 	}
 
 	private ChassisSpeeds getDriveModeRelativeSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {

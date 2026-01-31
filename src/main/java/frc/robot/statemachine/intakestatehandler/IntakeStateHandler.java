@@ -1,9 +1,7 @@
 package frc.robot.statemachine.intakestatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.subsystems.arm.Arm;
@@ -12,6 +10,8 @@ import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
+import java.util.Set;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -35,30 +35,66 @@ public class IntakeStateHandler {
 		this.currentState = IntakeState.RESET_FOUR_BAR;
 	}
 
-	public Command setState(IntakeState intakeState) {
-		Command command;
-		if (intakeState == IntakeState.CALIBRATION) {
-			command = new ParallelCommandGroup(
-				fourBar.getCommandsBuilder().setTargetPosition(fourBarCalibrationPosition::get),
-				rollers.getCommandsBuilder().setPower(rollersCalibrationPower::get)
-			);
-		} else if (intakeState == IntakeState.STAY_IN_PLACE) {
-			command = new ParallelCommandGroup(fourBar.getCommandsBuilder().stayInPlace(), rollers.getCommandsBuilder().stop());
-		} else if (intakeState == IntakeState.CLOSED){
-			command = new ParallelCommandGroup(
-				fourBar.getCommandsBuilder().setTargetPosition(intakeState.getFourBarPosition()),
-				rollers.getCommandsBuilder().setPower(intakeState.getIntakePower())
-			);
-		}
-		else {
-			command = fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,isReset);
-		}
-
+	public Command calibration() {
 		return new ParallelCommandGroup(
-			command,
+			fourBar.getCommandsBuilder().setTargetPosition(fourBarCalibrationPosition::get),
+			rollers.getCommandsBuilder().setPower(rollersCalibrationPower::get)
+		);
+	}
+
+	public Command stayInPlace() {
+		return new ParallelCommandGroup(fourBar.getCommandsBuilder().stayInPlace(), rollers.getCommandsBuilder().stop());
+	}
+
+	public Command toggleState() {
+		return new InstantCommand(
+			() -> CommandScheduler.getInstance()
+				.schedule(
+					new DeferredCommand(
+						() -> new ConditionalCommand(
+							setState(IntakeState.INTAKE),
+							setState(IntakeState.CLOSED),
+							() -> currentState == IntakeState.CLOSED
+						),
+						Set.of(fourBar, rollers)
+					)
+				)
+		);
+	}
+
+	public Command intake() {
+		return new ParallelCommandGroup(
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+		);
+	}
+
+	public Command close() {
+		return new ParallelCommandGroup(
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+		);
+	}
+
+    public Command reset() {
+        return fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,isReset);
+    }
+
+	public Command setState(IntakeState intakeState) {
+		return new ParallelCommandGroup(switch (intakeState) {
+			case CALIBRATION -> calibration();
+			case STAY_IN_PLACE -> stayInPlace();
+			case INTAKE -> intake();
+			case CLOSED -> close();
+            case RESET_FOUR_BAR -> reset();
+		},
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", intakeState.name())),
 			new InstantCommand(() -> currentState = intakeState)
 		);
+	}
+
+	public IntakeState getCurrentState() {
+		return currentState;
 	}
 
 }

@@ -140,26 +140,26 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
-//		if (DriverStation.isEnabled()) {
-//			return;
-//		}
-//
-//		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
-//			hood.setPosition(HoodConstants.MINIMUM_POSITION);
-//		}
-//		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
-//			turret.setPosition(TurretConstants.MIN_POSITION);
-//		}
-//		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
-//			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-//		}
+		if (DriverStation.isEnabled()) {
+			return;
+		}
+
+		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
+			hood.setPosition(HoodConstants.MINIMUM_POSITION);
+		}
+		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
+			turret.setPosition(TurretConstants.MIN_POSITION);
+		}
+		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
+			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
+		}
 	}
 
-	private void updateResetCheckSensors(){
-		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
-		turretResetCheckSensor.updateInputs(turretResetCheckInput);
-		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
-	}
+    private void updateResetCheckSensors(){
+        fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
+        turretResetCheckSensor.updateInputs(turretResetCheckInput);
+        hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
+    }
 
 	private void updateAllSubsystems() {
 		swerve.update();
@@ -182,10 +182,13 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
+		robotCommander.getIntakeStateHandler().periodic();
+
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 		updateResetCheckSensors();
-		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
+		ShootingCalculations
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
@@ -280,7 +283,7 @@ public class Robot {
 			HoodConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			HoodConstants.ARBITRARY_FEEDFORWARD,
-				HoodConstants.FORWARD_SOFTWARE_LIMIT,
+			HoodConstants.FORWARD_SOFTWARE_LIMIT,
 			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
 			hoodSimulationConstants,
 			HoodConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
@@ -328,7 +331,7 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public boolean getFourBarInput() {
+	public boolean getIsFourBarReset() {
 		return fourBarResetCheckInput.debouncedValue;
 	}
 
@@ -336,7 +339,7 @@ public class Robot {
 		return turret;
 	}
 
-	public boolean getTurretResetCheckInput(){
+	public boolean getIsTurretReset(){
 		return turretResetCheckInput.debouncedValue;
 	}
 
@@ -360,8 +363,7 @@ public class Robot {
 		return hood;
 	}
 
-	public boolean getHoodResetCheckInput(){
-		Logger.recordOutput("nfoafoasnfa",hoodResetCheckInput.debouncedValue);
+	public boolean getIsHoodReset(){
 		return hoodResetCheckInput.debouncedValue;
 	}
 
