@@ -31,7 +31,7 @@ public class Field {
 	private static final Translation2d OUTPOST_MIDDLE = new Translation2d(0, 0.67);
 	private static final Translation2d TOWER_MIDDLE = new Translation2d(1.06, 3.75);
 	private static final Translation2d DEPOT_TRENCH_MIDDLE = new Translation2d(4.62, 7.43);
-	public static final Translation2d OUTPOST_TRENCH_MIDDLE = new Translation2d(4.62, 0.64);
+	private static final Translation2d OUTPOST_TRENCH_MIDDLE = new Translation2d(4.62, 0.64);
 	public static final double TRENCH_Y_AXIS_LENGTH_METERS = 1.668;
 	public static final double TRENCH_X_AXIS_LENGTH_METERS = 1.194;
 	public static final double BUMP_Y_AXIS_LENGTH_METERS = 1.854;

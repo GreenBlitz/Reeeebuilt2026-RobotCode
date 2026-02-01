@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
-import frc.constants.field.Field;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
@@ -70,7 +69,7 @@ public class SwerveStateHandler {
 
 	private ChassisSpeeds handleLookAtTargetAimAssist(ChassisSpeeds speeds) {
 		Pose2d robotPose = robotPoseSupplier.get().get();
-		Translation2d target = ShootingCalculations.getShootingParams().targetPosition();
+		Translation2d target = ShootingCalculations.getShootingParams().targetLandingPosition();
 		Rotation2d turretAngle = turretAngleSupplier.get().get();
 
 		double dY = target.getY() - robotPose.getY();
