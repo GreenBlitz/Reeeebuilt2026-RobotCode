@@ -13,14 +13,13 @@ public class OdometryData {
 	private Optional<Rotation3d> imuOrientation = Optional.empty();
 	private Optional<Double> imuAccelerationMagnitudeG = Optional.empty();
 
-	public OdometryData() {
-	}
+	public OdometryData() {}
 
 	public OdometryData(
-			double timestampSeconds,
-			SwerveModulePosition[] wheelPositions,
-			Optional<Rotation3d> imuOrientation,
-			Optional<Double> imuAccelerationMagnitudeG
+		double timestampSeconds,
+		SwerveModulePosition[] wheelPositions,
+		Optional<Rotation3d> imuOrientation,
+		Optional<Double> imuAccelerationMagnitudeG
 	) {
 		this.timestampSeconds = timestampSeconds;
 		this.wheelPositions = wheelPositions;
@@ -58,7 +57,10 @@ public class OdometryData {
 
 	public void setIMUYaw(Rotation2d imuYaw) {
 		setIMUOrientation(
-                Optional.of(imuOrientation.map(orientation -> new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians())).orElseGet(() -> new Rotation3d(0, 0, imuYaw.getRadians())))
+			Optional.of(
+				imuOrientation.map(orientation -> new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians()))
+					.orElseGet(() -> new Rotation3d(0, 0, imuYaw.getRadians()))
+			)
 		);
 	}
 
@@ -69,4 +71,5 @@ public class OdometryData {
 	public void setIMUAcceleration(double imuAccelerationMagnitudeG) {
 		setIMUAcceleration(Optional.of(imuAccelerationMagnitudeG));
 	}
+
 }
