@@ -8,7 +8,6 @@ import frc.utils.LoggedNetworkRotation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 public class IntakeStateHandler {
 

@@ -47,8 +47,14 @@ public class ArmCommandBuilder {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setVoltage(voltage.getAsDouble())), "Set voltage by supplier");
 	}
 
-	public Command setVoltageWithoutLimit(double voltage,BooleanSupplier isFinished) {
-		return arm.asSubsystemCommand(new FunctionalCommand(() -> arm.setSoftwareLimitSwitchEnableValue(true),() -> arm.setVoltage(voltage),((enableSensors) -> {arm.setSoftwareLimitSwitchEnableValue(false);arm.stayInPlace();}), isFinished), "Set voltage to: " + voltage + " without limits");
+	public Command setVoltageWithoutLimit(double voltage, BooleanSupplier isFinished) {
+		return arm.asSubsystemCommand(
+			new FunctionalCommand(() -> arm.setSoftwareLimitSwitchEnableValue(true), () -> arm.setVoltage(voltage), ((enableSensors) -> {
+				arm.setSoftwareLimitSwitchEnableValue(false);
+				arm.stayInPlace();
+			}), isFinished),
+			"Set voltage to: " + voltage + " without limits"
+		);
 	}
 
 }

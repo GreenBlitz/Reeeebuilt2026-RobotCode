@@ -47,8 +47,6 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -154,11 +152,11 @@ public class Robot {
 		}
 	}
 
-    private void updateResetCheckSensors(){
-        fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
-        turretResetCheckSensor.updateInputs(turretResetCheckInput);
-        hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
-    }
+	private void updateResetCheckSensors() {
+		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
+		turretResetCheckSensor.updateInputs(turretResetCheckInput);
+		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
+	}
 
 	private void updateAllSubsystems() {
 		swerve.update();
@@ -312,16 +310,34 @@ public class Robot {
 		);
 	}
 
-	private IDigitalInput createFourBarSensorResetCheck(){
-		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.FOUR_BAR_RESET_SENSOR),new Debouncer(FourBarConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),FourBarConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("intakeResetCheck");
+	private IDigitalInput createFourBarSensorResetCheck() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.FOUR_BAR_RESET_SENSOR),
+				new Debouncer(FourBarConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				FourBarConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("intakeResetCheck");
 	}
 
-	private IDigitalInput createTurretResetCheckSensor(){
-		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.TURRET_RESET_SENSOR),new Debouncer(TurretConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),TurretConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("turretResetCheck");
+	private IDigitalInput createTurretResetCheckSensor() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.TURRET_RESET_SENSOR),
+				new Debouncer(TurretConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				TurretConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("turretResetCheck");
 	}
 
-	private IDigitalInput createHoodResetCheckSensor(){
-		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("hoodResetCheck");
+	private IDigitalInput createHoodResetCheckSensor() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),
+				new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("hoodResetCheck");
 	}
 
 	public Roller getIntakeRoller() {
@@ -336,7 +352,7 @@ public class Robot {
 		return turret;
 	}
 
-	public boolean getIsTurretReset(){
+	public boolean getIsTurretReset() {
 		return turretResetCheckInput.debouncedValue;
 	}
 
@@ -360,7 +376,7 @@ public class Robot {
 		return hood;
 	}
 
-	public boolean getIsHoodReset(){
+	public boolean getIsHoodReset() {
 		return hoodResetCheckInput.debouncedValue;
 	}
 
@@ -380,8 +396,12 @@ public class Robot {
 		return new PathPlannerAutoWrapper();
 	}
 
-	public Command getResetSubsystemsCommand(){
-		return new ParallelCommandGroup(turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getIsTurretReset),fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,this::getIsFourBarReset),hood.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getIsHoodReset));
+	public Command getResetSubsystemsCommand() {
+		return new ParallelCommandGroup(
+			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, this::getIsTurretReset),
+			fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE, this::getIsFourBarReset),
+			hood.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, this::getIsHoodReset)
+		);
 	}
 
 }

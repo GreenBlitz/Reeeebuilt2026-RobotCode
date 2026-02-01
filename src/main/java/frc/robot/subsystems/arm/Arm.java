@@ -1,15 +1,11 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.joysticks.Axis;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.hardware.interfaces.*;
-import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.hardware.phoenix6.request.Phoenix6Request;
 import frc.robot.subsystems.GBSubsystem;
 import frc.utils.battery.BatteryUtil;
@@ -141,7 +137,7 @@ public class Arm extends GBSubsystem {
 		sysIdCalibrator.setAllButtonsForCalibration(joystick);
 	}
 
-	public void setSoftwareLimitSwitchEnableValue(boolean enableSoftwareLimits){
+	public void setSoftwareLimitSwitchEnableValue(boolean enableSoftwareLimits) {
 		if (voltageRequest instanceof Phoenix6Request<Double>) {
 			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
 				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = enableSoftwareLimits;

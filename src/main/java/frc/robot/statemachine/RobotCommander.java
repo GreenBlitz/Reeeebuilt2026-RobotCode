@@ -32,11 +32,7 @@ public class RobotCommander extends GBSubsystem {
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
 		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
-		this.intakeStateHandler = new IntakeStateHandler(
-			robot.getFourBar(),
-			robot.getIntakeRoller(),
-			"/IntakeStateHandler"
-		);
+		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), "/IntakeStateHandler");
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
