@@ -13,10 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.RobotManager;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
@@ -78,9 +75,6 @@ public class Robot {
 	private final Swerve swerve;
 	private final Limelight limelight;
 	private final IPoseEstimator poseEstimator;
-
-	private final IDigitalInput mechanismsResetCheck;
-	private final DigitalInputInputsAutoLogged mechanismsResetCheckInputs;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -157,18 +151,6 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
-
-		mechanismsResetCheck = new ChooserDigitalInput("MechanismsResetCheck");
-		mechanismsResetCheckInputs = new DigitalInputInputsAutoLogged();
-		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
-
-		// Mechanisms reset check, should be last
-		CommandScheduler.getInstance()
-			.schedule(
-				new RunCommand(() -> {}, swerve, flyWheel, turret, hood, train).until(() -> mechanismsResetCheckInputs.debouncedValue)
-					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
-					.ignoringDisable(true)
-			);
 	}
 
 	public void resetSubsystems() {
@@ -202,8 +184,6 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
-
-		mechanismsResetCheck.updateInputs(mechanismsResetCheckInputs);
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		limelight.updateMT1();
