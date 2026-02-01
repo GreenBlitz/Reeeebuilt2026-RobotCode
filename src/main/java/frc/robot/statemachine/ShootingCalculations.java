@@ -158,10 +158,6 @@ public class ShootingCalculations {
 		)
 	);
 
-	static {
-		FLYWHEEL_INTERPOLATION_MAP.put(Map.of());
-	}
-
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
