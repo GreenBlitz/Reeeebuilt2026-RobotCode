@@ -39,7 +39,7 @@ public class Superstructure {
 			logPath
 		);
 
-		this.currentState = RobotState.RESET_SUBSYSTEMS;
+		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isSubsystemRunningIndependently = false;
 	}
 
@@ -79,7 +79,6 @@ public class Superstructure {
 				case SHOOT -> shoot();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
-				case RESET_SUBSYSTEMS -> resetSubsystems();
 		}
 		);
 	}
@@ -110,13 +109,6 @@ public class Superstructure {
 
 	private Command calibrationShoot() {
 		return new ParallelDeadlineGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
-	}
-
-	private Command resetSubsystems() {
-		return new ParallelDeadlineGroup(
-			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
-			funnelStateHandler.setState(FunnelState.DRIVE)
-		);
 	}
 
 	public void periodic() {

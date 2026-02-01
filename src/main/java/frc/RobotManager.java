@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
+import frc.robot.statemachine.RobotState;
 import frc.utils.HubUtil;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -72,8 +73,6 @@ public class RobotManager extends LoggedRobot {
 	public void autonomousInit() {
 		robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
 		robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
-//		if (robot.getTurretResetCheckInput() && robot.getHoodResetCheckInput() && robot.getFourBarInput() && autonomousCommand == null)
-//			this.autonomousCommand = new PathPlannerAutoWrapper(new SequentialCommandGroup();
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}

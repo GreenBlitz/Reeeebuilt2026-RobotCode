@@ -32,7 +32,7 @@ public class IntakeStateHandler {
 		this.rollers = rollers;
 		this.isReset = isReset;
 		this.logPath = logPath + "/IntakeStateHandler";
-		this.currentState = IntakeState.RESET_FOUR_BAR;
+		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
 
 	public Command calibration() {
@@ -76,17 +76,12 @@ public class IntakeStateHandler {
 		);
 	}
 
-    public Command reset() {
-        return fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,isReset);
-    }
-
 	public Command setState(IntakeState intakeState) {
 		return new ParallelCommandGroup(switch (intakeState) {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case INTAKE -> intake();
 			case CLOSED -> close();
-            case RESET_FOUR_BAR -> reset();
 		},
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", intakeState.name())),
 			new InstantCommand(() -> currentState = intakeState)

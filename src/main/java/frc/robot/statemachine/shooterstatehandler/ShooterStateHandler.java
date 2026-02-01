@@ -30,7 +30,7 @@ public class ShooterStateHandler {
 		this.isHoodReset = isHoodReset;
 		this.isTurretReset = isTurretReset;
 		this.shootingParamsSupplier = shootingParamsSupplier;
-		this.currentState = ShooterState.RESET_SUBSYSTEMS;
+		this.currentState = ShooterState.IDLE;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
@@ -43,7 +43,6 @@ public class ShooterStateHandler {
 			case STAY_IN_PLACE -> stayInPlace();
 			case IDLE -> idle();
 			case SHOOT -> shoot();
-			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION -> calibration();
 		};
 		return new ParallelCommandGroup(
@@ -79,15 +78,6 @@ public class ShooterStateHandler {
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
-		);
-	}
-
-	private Command resetSubsystems() {
-		return new ParallelCommandGroup(
-			turret.getCommandsBuilder().
-					setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,isTurretReset),
-			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE,isHoodReset),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 		);
 	}
