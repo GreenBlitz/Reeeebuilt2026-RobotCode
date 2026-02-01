@@ -24,7 +24,6 @@ public abstract class GBSubsystem extends SubsystemBase {
 		return logPath;
 	}
 
-
 	public boolean isSubsystemRunningIndependently() {
 		return isSubsystemRunningIndependently;
 	}
