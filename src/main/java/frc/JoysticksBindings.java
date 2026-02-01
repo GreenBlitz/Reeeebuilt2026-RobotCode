@@ -55,9 +55,6 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.X.onTrue(robot.getResetSubsystemsCommand());
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getHood().getCommandsBuilder().setIsSubsystemRunningIndependently(true),robot.getHood()));
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getFourBar().getCommandsBuilder().setIsSubsystemRunningIndependently(true),robot.getHood()));
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getTurret().getCommandsBuilder().setIsSubsystemRunningIndependently(true),robot.getHood()));
 		usedJoystick.A.onTrue(robot.getHood().getCommandsBuilder().setVoltage(5.0));
 		usedJoystick.B.onTrue(robot.getHood().getCommandsBuilder().setVoltage(-5.0));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
