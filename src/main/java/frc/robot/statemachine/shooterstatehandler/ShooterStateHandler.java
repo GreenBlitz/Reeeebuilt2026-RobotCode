@@ -3,7 +3,9 @@ package frc.robot.statemachine.shooterstatehandler;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,14 +13,20 @@ import java.util.function.Supplier;
 
 public class ShooterStateHandler {
 
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<ShootingParams> shootingParamsSupplier;
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
+	public ShooterStateHandler(
+		VelocityPositionArm turret,
+		Arm hood,
+		FlyWheel flyWheel,
+		Supplier<ShootingParams> shootingParamsSupplier,
+		String logPath
+	) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
@@ -56,7 +64,12 @@ public class ShooterStateHandler {
 	private Command idle() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
-				new TurretSafeMoveToPosition(turret, () -> shootingParamsSupplier.get().targetTurretPosition(), logPath),
+				new TurretSafeMoveToPosition(
+					turret,
+					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> ShootingCalculations.getShootingParams().targetTurretVelocityRPS(),
+					logPath
+				),
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
@@ -67,7 +80,12 @@ public class ShooterStateHandler {
 	private Command shoot() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
-				new TurretSafeMoveToPosition(turret, () -> shootingParamsSupplier.get().targetTurretPosition(), logPath),
+				new TurretSafeMoveToPosition(
+					turret,
+					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
+					logPath
+				),
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
