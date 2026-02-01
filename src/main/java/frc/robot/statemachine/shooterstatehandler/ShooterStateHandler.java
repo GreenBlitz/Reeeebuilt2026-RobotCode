@@ -20,7 +20,13 @@ public class ShooterStateHandler {
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(VelocityPositionArm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
+	public ShooterStateHandler(
+		VelocityPositionArm turret,
+		Arm hood,
+		FlyWheel flyWheel,
+		Supplier<ShootingParams> shootingParamsSupplier,
+		String logPath
+	) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
@@ -58,7 +64,12 @@ public class ShooterStateHandler {
 	private Command idle() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
-				new TurretSafeMoveToPosition(turret, () -> shootingParamsSupplier.get().targetTurretPosition(),() -> ShootingCalculations.getShootingParams().targetTurretVelocityRPS(), logPath),
+				new TurretSafeMoveToPosition(
+					turret,
+					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> ShootingCalculations.getShootingParams().targetTurretVelocityRPS(),
+					logPath
+				),
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
@@ -69,7 +80,12 @@ public class ShooterStateHandler {
 	private Command shoot() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
-				new TurretSafeMoveToPosition(turret, () -> shootingParamsSupplier.get().targetTurretPosition(),() -> shootingParamsSupplier.get().targetTurretVelocityRPS(), logPath),
+				new TurretSafeMoveToPosition(
+					turret,
+					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
+					logPath
+				),
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),

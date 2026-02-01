@@ -2,7 +2,6 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
@@ -16,7 +15,12 @@ public class TurretSafeMoveToPosition extends Command {
 	private final Supplier<Rotation2d> targetPosition;
 	private final Supplier<Rotation2d> targetVelocity;
 
-	public TurretSafeMoveToPosition(VelocityPositionArm turret, Supplier<Rotation2d> targetPosition, Supplier<Rotation2d> targetVelocity, String logPath) {
+	public TurretSafeMoveToPosition(
+		VelocityPositionArm turret,
+		Supplier<Rotation2d> targetPosition,
+		Supplier<Rotation2d> targetVelocity,
+		String logPath
+	) {
 		this.turret = turret;
 		this.targetPosition = targetPosition;
 		this.targetVelocity = targetVelocity;
