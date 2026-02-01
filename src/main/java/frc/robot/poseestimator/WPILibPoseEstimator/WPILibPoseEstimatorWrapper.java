@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.subsystems.swerve.SwerveConstants;
+import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
@@ -99,7 +100,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void updateOdometry(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		if (data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent()) {
-				data.getImuOrientation().ifPresentOrElse((imuOrientation) -> data.setIMUYaw(Rotation2d.fromRadians(imuOrientation.getZ())), () -> data.setIMUYaw(Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))));
+			data.getImuOrientation()
+				.ifPresentOrElse(
+					(imuOrientation) -> data.setIMUYaw(Rotation2d.fromRadians(imuOrientation.getZ())),
+					() -> data.setIMUYaw(
+						Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ())
+							.plus(Rotation2d.fromRadians(changeInPose.dtheta))
+					)
+				);
 		}
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
@@ -119,9 +127,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void updateCausedErrorForOdometryData(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
-		odometryCausedEstimatedPoseError += isColliding(data)
-			? WPILibPoseEstimatorConstants.COLLISION_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
-			: 0;
+		odometryCausedEstimatedPoseError += SwerveMath
+			.isColliding(data.getImuAccelerationMagnitudeG().get(), SwerveConstants.MIN_COLLISION_G_FORCE)
+				? WPILibPoseEstimatorConstants.COLLISION_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
+				: 0;
 		odometryCausedEstimatedPoseError += isTilted(data)
 			? WPILibPoseEstimatorConstants.TILT_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
 			: 0;

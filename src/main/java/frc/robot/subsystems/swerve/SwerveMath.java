@@ -65,4 +65,13 @@ public class SwerveMath {
 		return Math.sqrt(Math.pow(chassisSpeeds.vxMetersPerSecond, 2) + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
 	}
 
+	public static boolean isColliding(Translation2d acceleration, double minCollisionGForce) {
+		return acceleration.getNorm() > minCollisionGForce;
+	}
+
+	public static boolean isTilted(Rotation2d roll, Rotation2d pitch, Rotation2d tiltedRollTolerance, Rotation2d tiltedPitchTolerance) {
+		return Math.abs(roll.getRadians()) >= tiltedRollTolerance.getRadians()
+			|| Math.abs(pitch.getRadians()) >= tiltedPitchTolerance.getRadians();
+	}
+
 }
