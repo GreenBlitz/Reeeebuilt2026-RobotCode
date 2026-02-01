@@ -236,7 +236,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getOdometryErrorCompensatedVisionStdDevs(visionObservation).asColumnVector());
+			getOdometryErrorCompensatedVisionStdDevs(visionObservation).asColumnVector()
+		);
 		this.lastVisionObservation = visionObservation;
 	}
 
