@@ -123,6 +123,7 @@ public class Superstructure {
 
 	public void periodic() {
 		funnelStateHandler.periodic();
+		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 

@@ -48,7 +48,7 @@ public class IntakeStateHandler {
 	}
 
 	public Command resetFourBar() {
-		return !hasBeenReset.getAsBoolean()
+		return hasBeenReset.getAsBoolean()
 			? fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(() -> isFourBarReset())
 			: new InstantCommand();
 	}

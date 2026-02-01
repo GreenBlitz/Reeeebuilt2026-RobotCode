@@ -80,6 +80,7 @@ public class RobotCommander extends GBSubsystem {
 	@Override
 	protected void subsystemPeriodic() {
 		superstructure.periodic();
+		intakeStateHandler.periodic();
 		if (!hasBeenReset) {
 			hasBeenReset = superstructure.getShooterStateHandler().isHoodReset()
 				&& superstructure.getShooterStateHandler().isTurretReset()

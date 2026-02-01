@@ -113,7 +113,7 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return !hasBeenReset.getAsBoolean()
+		return hasBeenReset.getAsBoolean()
 			? new ParallelCommandGroup(
 				turret.getCommandsBuilder()
 					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
@@ -142,7 +142,7 @@ public class ShooterStateHandler {
 		return hoodResetCheckInput.debouncedValue;
 	}
 
-	private void periodic() {
+	public void periodic() {
 		turretResetCheckSensor.updateInputs(turretResetCheckInput);
 		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
 	}

@@ -138,12 +138,12 @@ public class Arm extends GBSubsystem {
 	}
 
 	public void setVoltageWithoutLimit(double voltage) {
-		if (voltageRequest instanceof Phoenix6Request<Double>) {
-			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
-				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = true;
+		if (voltageRequest instanceof Phoenix6Request<Double> phoenix6VoltageRequest) {
+			if (phoenix6VoltageRequest.getControlRequest() instanceof VoltageOut voltageOutRequest) {
+				voltageOutRequest.IgnoreSoftwareLimits = true;
 				voltageRequest.withSetPoint(voltage);
 				motor.applyRequest(voltageRequest);
-				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = false;
+				voltageOutRequest.IgnoreSoftwareLimits = false;
 			}
 		}
 	}
