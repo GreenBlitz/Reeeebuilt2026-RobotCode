@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public class Superstructure {
 
 	private final Robot robot;
-	private boolean isSubsystemRunningIndependently;
+	private boolean isRunningIndependently;
 	private final String logPath;
 
 	private RobotState currentState;
@@ -37,7 +37,7 @@ public class Superstructure {
 		);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
-		this.isSubsystemRunningIndependently = false;
+		this.isRunningIndependently = false;
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {
@@ -52,17 +52,17 @@ public class Superstructure {
 		return currentState;
 	}
 
-	public boolean isSubsystemRunningIndependently() {
-		return isSubsystemRunningIndependently
-			|| robot.getFlyWheel().getCommandBuilder().isSubsystemRunningIndependently()
-			|| robot.getHood().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getTrain().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getBelly().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getTurret().getCommandsBuilder().isSubsystemRunningIndependently();
+	public boolean isRunningIndependently() {
+		return isRunningIndependently
+			|| robot.getFlyWheel().isRunningIndependently()
+			|| robot.getHood().isRunningIndependently()
+			|| robot.getTrain().isRunningIndependently()
+			|| robot.getBelly().isRunningIndependently()
+			|| robot.getTurret().isRunningIndependently();
 	}
 
-	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
-		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
+	public void setisRunningIndependently(boolean isRunningIndependently) {
+		this.isRunningIndependently = isRunningIndependently;
 	}
 
 	public Command setState(RobotState robotState) {
@@ -105,7 +105,7 @@ public class Superstructure {
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsSubsystemRunningIndependently", isSubsystemRunningIndependently());
+		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 
 }
