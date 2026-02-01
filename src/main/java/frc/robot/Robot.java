@@ -7,18 +7,16 @@ package frc.robot;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.VelocityPositionArm;
@@ -65,9 +63,6 @@ public class Robot {
 	private final IDigitalInput turretResetCheckSensor;
 	private final IDigitalInput fourBarResetCheckSensor;
 	private final IDigitalInput hoodResetCheckSensor;
-	private final DigitalInputInputsAutoLogged turretResetCheckInput;
-	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
-	private final DigitalInputInputsAutoLogged hoodResetCheckInput;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -132,11 +127,7 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		turretResetCheckInput = new DigitalInputInputsAutoLogged();
-		hoodResetCheckInput = new DigitalInputInputsAutoLogged();
-		fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
-
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(getResetSubsystemsCommand());
+		new Trigger(() ->DriverStation.isEnabled()).onTrue(robotCommander.getSuperstructure().setState(RobotState.RESET_SUBSYSTEMS));
 	}
 
 	public void resetSubsystems() {
@@ -153,12 +144,6 @@ public class Robot {
 		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
 			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		}
-	}
-
-	private void updateResetCheckSensors() {
-		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
-		turretResetCheckSensor.updateInputs(turretResetCheckInput);
-		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
 	}
 
 	private void updateAllSubsystems() {
@@ -179,7 +164,6 @@ public class Robot {
 	public void periodic() {
 		BusChain.refreshAll();
 		updateAllSubsystems();
-		updateResetCheckSensors();
 		resetSubsystems();
 		simulationManager.logPoses();
 
@@ -347,16 +331,8 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public boolean isFourBarReset() {
-		return fourBarResetCheckInput.debouncedValue;
-	}
-
 	public VelocityPositionArm getTurret() {
 		return turret;
-	}
-
-	public boolean isTurretReset() {
-		return turretResetCheckInput.debouncedValue;
 	}
 
 	public FlyWheel getFlyWheel() {
@@ -379,8 +355,16 @@ public class Robot {
 		return hood;
 	}
 
-	public boolean isHoodReset() {
-		return hoodResetCheckInput.debouncedValue;
+	public IDigitalInput getTurretResetCheckSensor() {
+		return turretResetCheckSensor;
+	}
+
+	public IDigitalInput getHoodResetCheckSensor() {
+		return fourBarResetCheckSensor;
+	}
+
+	public IDigitalInput getFourBarResetCheckSensor() {
+		return hoodResetCheckSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {
@@ -397,14 +381,6 @@ public class Robot {
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
 		return new PathPlannerAutoWrapper();
-	}
-
-	public Command getResetSubsystemsCommand() {
-		return new ParallelCommandGroup(
-			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(this::isTurretReset),
-			fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(this::isFourBarReset),
-			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(this::isHoodReset)
-		);
 	}
 
 }

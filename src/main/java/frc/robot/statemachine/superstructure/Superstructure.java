@@ -17,6 +17,7 @@ public class Superstructure {
 
 	private final Robot robot;
 	private boolean isRunningIndependently;
+	public boolean hasBeenReset;
 	private final String logPath;
 
 	private RobotState currentState;
@@ -34,11 +35,14 @@ public class Superstructure {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			shootingParamsSupplier,
+			() -> hasBeenReset,
+			robot.
 			logPath
 		);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isRunningIndependently = false;
+		this.hasBeenReset = false;
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {
@@ -62,7 +66,7 @@ public class Superstructure {
 			|| robot.getTurret().isRunningIndependently();
 	}
 
-	public void setisRunningIndependently(boolean isRunningIndependently) {
+	public void setIsRunningIndependently(boolean isRunningIndependently) {
 		this.isRunningIndependently = isRunningIndependently;
 	}
 
@@ -75,6 +79,7 @@ public class Superstructure {
 				case DRIVE -> idle();
 				case PRE_SHOOT -> preShoot();
 				case SHOOT -> shoot();
+				case RESET_SUBSYSTEMS ->
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
 			}
@@ -111,6 +116,9 @@ public class Superstructure {
 
 	public void periodic() {
 		funnelStateHandler.periodic();
+		if (!hasBeenReset){
+			hasBeenReset = robot.isTurretReset() && robot.isFourBarReset() && robot.isHoodReset();
+		}
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 
