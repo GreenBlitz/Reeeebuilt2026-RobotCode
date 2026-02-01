@@ -18,7 +18,7 @@ public class JoysticksBindings {
 
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
-	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD, 1);
+	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD);
 	private static final SmartJoystick FOURTH_JOYSTICK = new SmartJoystick(JoystickPorts.FOURTH);
 	private static final SmartJoystick FIFTH_JOYSTICK = new SmartJoystick(JoystickPorts.FIFTH);
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
@@ -59,7 +59,6 @@ public class JoysticksBindings {
 		usedJoystick.Y.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
-
 		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 	}
 
@@ -72,7 +71,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
+		applyInterpolationCalibrationBindings(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -85,10 +84,15 @@ public class JoysticksBindings {
 		// bindings...
 	}
 
-
 	private static void sixthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SIXTH_JOYSTICK;
 		// bindings...
+	}
+
+	private static void applyInterpolationCalibrationBindings(SmartJoystick joystick, Robot robot) {
+		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		joystick.Y.onTrue(robot.getRobotCommander().shootSequence());
+		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 	}
 
 	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
