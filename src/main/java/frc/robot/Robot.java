@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -134,6 +135,8 @@ public class Robot {
 		turretResetCheckInput = new DigitalInputInputsAutoLogged();
 		hoodResetCheckInput = new DigitalInputInputsAutoLogged();
 		fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
+
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(getResetSubsystemsCommand());
 	}
 
 	public void resetSubsystems() {
@@ -176,12 +179,12 @@ public class Robot {
 	public void periodic() {
 		BusChain.refreshAll();
 		updateAllSubsystems();
+		updateResetCheckSensors();
 		resetSubsystems();
 		simulationManager.logPoses();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
-		updateResetCheckSensors();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
