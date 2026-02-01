@@ -31,4 +31,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_ACCELERATION_BUFFER_SIZE_SECONDS = 2;
 
+    public static double CONSTANT_TO_CALC_ERROR_REDUCTION =0.02; // PLACE HOLDER
+
+    public static  double CONSTANT_TO_CALC_STD = 0.01; // PLACE HOLDER
 }
