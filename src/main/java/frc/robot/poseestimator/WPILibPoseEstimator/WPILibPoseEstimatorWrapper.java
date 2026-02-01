@@ -99,11 +99,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void updateOdometry(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		if (data.getImuOrientation().isPresent() || lastOdometryData.getImuOrientation().isPresent()) {
-			data.setIMUYaw(
-				data.getImuOrientation().isPresent()
-					? Rotation2d.fromRadians(data.getImuOrientation().get().getZ())
-					: Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))
-			);
+				data.getImuOrientation().ifPresentOrElse((imuOrientation) -> data.setIMUYaw(Rotation2d.fromRadians(imuOrientation.getZ())), () -> data.setIMUYaw(Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getZ()).plus(Rotation2d.fromRadians(changeInPose.dtheta))));
 		}
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
@@ -112,7 +108,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		updateCausedErrorForOdometryData(data);
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
-		lastOdometryData.setIMUOrientation(Optional.of(data.getImuOrientation().get()));
+		lastOdometryData.setIMUOrientation(data.getImuOrientation());
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
 
@@ -122,12 +118,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	public void updateCausedErrorForOdometryData(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
-		double changeInPoseNorm = Math.sqrt(Math.pow(changeInPose.dx, 2) + Math.pow(changeInPose.dy, 2) + Math.pow(changeInPose.dtheta, 2));
-		// one radian is considered equal to one meter of error
-		odometryCausedEstimatedPoseError += data.getImuAccelerationMagnitudeG().isPresent()
+		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
+		odometryCausedEstimatedPoseError += isColliding(data)
 			? WPILibPoseEstimatorConstants.COLLISION_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
 			: 0;
-		odometryCausedEstimatedPoseError += data.getImuOrientation().isPresent()
+		odometryCausedEstimatedPoseError += isTilted(data)
 			? WPILibPoseEstimatorConstants.TILT_CAUSED_ODOMETRY_ERROR_COUNTER_ADDITION * changeInPoseNorm
 			: 0;
 	}

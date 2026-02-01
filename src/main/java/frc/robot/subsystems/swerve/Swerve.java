@@ -194,7 +194,7 @@ public class Swerve extends GBSubsystem {
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
 				imu instanceof EmptyIMU
 					? Optional.empty()
-					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].getNorm())
+					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].toTranslation2d().getNorm())
 			);
 		}
 
@@ -241,7 +241,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public double getIMUAcceleration() {
-		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().getNorm();
+		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm();
 	}
 
 
