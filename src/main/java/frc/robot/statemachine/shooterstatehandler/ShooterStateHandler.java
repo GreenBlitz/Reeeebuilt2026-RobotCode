@@ -113,7 +113,7 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return hasBeenReset.getAsBoolean()
+		return !hasBeenReset.getAsBoolean()
 			? new ParallelCommandGroup(
 				turret.getCommandsBuilder()
 					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
