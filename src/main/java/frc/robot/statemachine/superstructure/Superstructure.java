@@ -72,10 +72,8 @@ public class Superstructure {
 			switch (robotState) {
 				case STAY_IN_PLACE -> stayInPlace();
 				case DRIVE -> idle();
-				case INTAKE -> intake();
 				case PRE_SHOOT -> preShoot();
 				case SHOOT -> shoot();
-				case SHOOT_WHILE_INTAKE -> shootWhileIntake();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
 			}
@@ -90,23 +88,12 @@ public class Superstructure {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
-	private Command intake() {
-		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.INTAKE));
-	}
-
 	private Command preShoot() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
 	private Command shoot() {
 		return new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT));
-	}
-
-	private Command shootWhileIntake() {
-		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.SHOOT),
-			funnelStateHandler.setState(FunnelState.SHOOT_WHILE_INTAKE)
-		);
 	}
 
 	private Command calibrationPreShoot() {

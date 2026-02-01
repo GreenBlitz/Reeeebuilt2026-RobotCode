@@ -31,13 +31,6 @@ public class SimulationManager {
 		Logger.recordOutput(logPath + "/Hood", getHoodPosition3d(robot.getHood().getPosition()));
 	}
 
-	public Pose3d getIntakePosition3d(Rotation2d intakePosition) {
-		return new Pose3d(
-			new Translation3d(0.0, 0.0, 0.0),
-			new Rotation3d(intakePosition.minus(Rotation2d.fromDegrees(40)).getRadians(), 0.0, MathConstants.QUARTER_CIRCLE.getRadians())
-		);
-	}
-
 	public Pose3d getTurretPosition3d(Rotation2d turretPosition) {
 		return new Pose3d(
 			TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT,

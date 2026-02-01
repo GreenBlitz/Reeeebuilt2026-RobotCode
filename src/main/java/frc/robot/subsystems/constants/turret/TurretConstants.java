@@ -21,8 +21,8 @@ public class TurretConstants {
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
 	static {
-		REAL_SLOTS_CONFIG.kP = 150;
-		REAL_SLOTS_CONFIG.kI = 0;
+		REAL_SLOTS_CONFIG.kP = 200;
+		REAL_SLOTS_CONFIG.kI = 2;
 		REAL_SLOTS_CONFIG.kD = 0;
 		REAL_SLOTS_CONFIG.kG = 0;
 		REAL_SLOTS_CONFIG.kS = 0.32;
@@ -47,7 +47,7 @@ public class TurretConstants {
 	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.13, 0, 0);
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(105);
 	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-179);
-	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-181);
+	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-184.5);
 	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(179);
 	public static final Rotation2d MIDDLE_OF_SHOOTING_RANGE = Rotation2d
 		.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);

@@ -106,6 +106,14 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	private boolean calibrationCanContinueShooting() {
+		return ShootingChecks.calibrationCanContinueShooting(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING
+		);
+	}
+
 	public Command shootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
@@ -119,13 +127,9 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
-				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !canContinueShooting())
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueShooting())
 			)
 		);
-	}
-
-	public Command shootWhileIntakeSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT_WHILE_INTAKE));
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
@@ -135,7 +139,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
+			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}
