@@ -20,9 +20,6 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 
-import static frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION;
-import static frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_STD;
-
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private final String logPath;
@@ -236,19 +233,21 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getOdometryErrorCompensatedVisionStdDevs(visionObservation).asColumnVector()
+			getOdometryErrorCompensatedVisionStdDevs(visionObservation.stdDevs()).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private StandardDeviations2D getOdometryErrorCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
+	private StandardDeviations2D getOdometryErrorCompensatedVisionStdDevs(StandardDeviations2D visionStd) {
 		StandardDeviations2D compensatedStd = new StandardDeviations2D(
-			visionObservation.stdDevs().xStandardDeviations() / (odometryCausedEstimatedPoseError * CONSTANT_TO_CALC_ERROR_REDUCTION),
-			visionObservation.stdDevs().yStandardDeviations() / (odometryCausedEstimatedPoseError * CONSTANT_TO_CALC_ERROR_REDUCTION),
-			visionObservation.stdDevs().angleStandardDeviations() / (odometryCausedEstimatedPoseError * CONSTANT_TO_CALC_ERROR_REDUCTION)
+			visionStd.xStandardDeviations() / (odometryCausedEstimatedPoseError * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION),
+			visionStd.yStandardDeviations() / (odometryCausedEstimatedPoseError * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION),
+			visionStd.angleStandardDeviations()
+				/ (odometryCausedEstimatedPoseError * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
 		);
 		double avgStdXnY = (compensatedStd.xStandardDeviations() + compensatedStd.yStandardDeviations()) / 2.0;
-		this.odometryCausedEstimatedPoseError -= 1.0 / (avgStdXnY * CONSTANT_TO_CALC_STD); // diff const place holder
+		this.odometryCausedEstimatedPoseError -= 1.0 / (avgStdXnY * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_STD); // diff const place
+																														// holder
 		return compensatedStd;
 	}
 
