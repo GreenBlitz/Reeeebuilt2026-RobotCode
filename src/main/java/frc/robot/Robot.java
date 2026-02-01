@@ -65,7 +65,7 @@ import frc.utils.math.StandardDeviations2D;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
 	private final IDigitalInput funnelDigitalInput;
@@ -305,7 +305,7 @@ public class Robot {
 		);
 	}
 
-	public Arm getTurret() {
+	public VelocityPositionArm getTurret() {
 		return turret;
 	}
 
