@@ -18,14 +18,11 @@ public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;
 	private final Swerve swerve;
-
 	private final IntakeStateHandler intakeStateHandler;
-
-	private RobotState currentState;
-
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
+	private RobotState currentState;
 	private final String logPath;
 
 	public RobotCommander(String logPath, Robot robot) {
