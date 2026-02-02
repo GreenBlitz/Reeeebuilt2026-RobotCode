@@ -109,13 +109,25 @@ public class ShootingCalculations {
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
 			1.5,
-			Rotation2d.fromDegrees(67),
+			Rotation2d.fromDegrees(30),
+			2.0,
+			Rotation2d.fromDegrees(30),
+			2.5,
+			Rotation2d.fromDegrees(30),
 			3.0,
-			Rotation2d.fromDegrees(60),
+			Rotation2d.fromDegrees(35),
+			3.6,
+			Rotation2d.fromDegrees(37),
+			4.0,
+			Rotation2d.fromDegrees(38),
 			4.5,
 			Rotation2d.fromDegrees(43),
+			5.0,
+			Rotation2d.fromDegrees(40),
+			5.5,
+			Rotation2d.fromDegrees(45),
 			6.0,
-			Rotation2d.fromDegrees(33)
+			Rotation2d.fromDegrees(44)
 		)
 	);
 
@@ -124,20 +136,32 @@ public class ShootingCalculations {
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
 			1.5,
-			Rotation2d.fromRotations(50),
+			Rotation2d.fromDegrees(16400),
+			2.0,
+			Rotation2d.fromDegrees(16500),
+			2.5,
+			Rotation2d.fromDegrees(18000),
 			3.0,
-			Rotation2d.fromRotations(65),
+			Rotation2d.fromDegrees(18500),
+			3.6,
+			Rotation2d.fromDegrees(19700),
+			4.0,
+			Rotation2d.fromDegrees(20800),
 			4.5,
-			Rotation2d.fromRotations(85),
+			Rotation2d.fromDegrees(21500),
+			5.0,
+			Rotation2d.fromDegrees(23000),
+			5.5,
+			Rotation2d.fromDegrees(23700),
 			6.0,
-			Rotation2d.fromRotations(110)
+			Rotation2d.fromDegrees(24800)
 		)
 	);
 
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(0.1, 0.2, 0.5, 0.4)
+		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
 	);
 
 	public static Rotation2d hoodInterpolation(double distanceFromTower) {
