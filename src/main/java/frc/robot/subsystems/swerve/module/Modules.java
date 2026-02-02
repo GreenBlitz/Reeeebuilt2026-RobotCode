@@ -27,7 +27,7 @@ public class Modules {
 		for (Module currentModule : modules) {
 			currentModule.updateInputs();
 		}
-		Logger.recordOutput(logPath + "/CurrentStates", getCurrentStates());
+		Logger.recordOutput(logPath + "/CurrentStates", getLatestStates());
 		Logger.recordOutput(logPath + "/TargetStates", getTargetStates());
 	}
 
@@ -96,9 +96,9 @@ public class Modules {
 	}
 
 	public int getNumberOfOdometrySamples() {
-		int numberOfOdometrySamples = modules[0].getNumberOfSamples();
+		int numberOfOdometrySamples = modules[0].getNumberOfOdometrySamples();
 		for (int i = 1; i < modules.length; i++) {
-			numberOfOdometrySamples = Math.min(numberOfOdometrySamples, modules[i].getNumberOfSamples());
+			numberOfOdometrySamples = Math.min(numberOfOdometrySamples, modules[i].getNumberOfOdometrySamples());
 		}
 		return numberOfOdometrySamples;
 	}
@@ -107,8 +107,8 @@ public class Modules {
 		return Arrays.stream(modules).map(Module::getTargetState).toArray(SwerveModuleState[]::new);
 	}
 
-	public SwerveModuleState[] getCurrentStates() {
-		return Arrays.stream(modules).map(Module::getCurrentState).toArray(SwerveModuleState[]::new);
+	public SwerveModuleState[] getLatestStates() {
+		return Arrays.stream(modules).map(Module::getLatestState).toArray(SwerveModuleState[]::new);
 	}
 
 	public Rotation2d[] getDrivesPositions() {
@@ -121,6 +121,14 @@ public class Modules {
 			swerveModulePositions[i] = modules[i].getOdometryPosition(odometrySampleIndex);
 		}
 		return swerveModulePositions;
+	}
+
+	public SwerveModuleState[] getStates(int odometrySampleIndex) {
+		SwerveModuleState[] swerveModuleStates = new SwerveModuleState[modules.length];
+		for (int i = 0; i < modules.length; i++) {
+			swerveModuleStates[i] = modules[i].getState(odometrySampleIndex);
+		}
+		return swerveModuleStates;
 	}
 
 

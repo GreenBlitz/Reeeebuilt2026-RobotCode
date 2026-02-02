@@ -197,7 +197,7 @@ public class Swerve extends GBSubsystem {
 			odometryData[i] = new OdometryData(
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
-				modules.getCurrentStates(),
+				modules.getLatestStates(),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d())
 			);
@@ -227,7 +227,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public ChassisSpeeds getRobotRelativeVelocity() {
-		return kinematics.toChassisSpeeds(modules.getCurrentStates());
+		return kinematics.toChassisSpeeds(modules.getLatestStates());
 	}
 
 	public ChassisSpeeds getAllianceRelativeVelocity() {

@@ -96,13 +96,15 @@ public class Module {
 
 
 	private void fixDriveInputsCoupling() {
-		driveInputs.uncoupledVelocityAnglesPerSecond = new Rotation2d[Math.min(driveSignals.velocity().asArray().length, steerSignals.velocity().asArray().length)];
+		driveInputs.uncoupledVelocityAnglesPerSecond = new Rotation2d[Math
+			.min(driveSignals.velocity().asArray().length, steerSignals.velocity().asArray().length)];
 		for (int i = 0; i < driveInputs.uncoupledVelocityAnglesPerSecond.length; i++) {
 			driveInputs.uncoupledVelocityAnglesPerSecond[i] = ModuleUtil
-					.uncoupleDriveAngle(driveSignals.velocity().asArray()[i], steerSignals.velocity().asArray()[i], constants.couplingRatio());
+				.uncoupleDriveAngle(driveSignals.velocity().asArray()[i], steerSignals.velocity().asArray()[i], constants.couplingRatio());
 		}
 
-		driveInputs.uncoupledPositions = new Rotation2d[Math.min(driveSignals.position().asArray().length, steerSignals.position().asArray().length)];
+		driveInputs.uncoupledPositions = new Rotation2d[Math
+			.min(driveSignals.position().asArray().length, steerSignals.position().asArray().length)];
 		for (int i = 0; i < driveInputs.uncoupledPositions.length; i++) {
 			Rotation2d steerDelta = Rotation2d
 				.fromRotations(steerSignals.position().asArray()[i].getRotations() - startingSteerPosition.getRotations());
@@ -121,7 +123,9 @@ public class Module {
 
 		fixDriveInputsCoupling();
 
-		driveInputs.velocityMetersPerSecond = Arrays.stream(driveInputs.uncoupledVelocityAnglesPerSecond).mapToDouble(this::toDriveMeters).toArray();
+		driveInputs.velocityMetersPerSecond = Arrays.stream(driveInputs.uncoupledVelocityAnglesPerSecond)
+			.mapToDouble(this::toDriveMeters)
+			.toArray();
 		driveInputs.positionsMeters = Arrays.stream(driveInputs.uncoupledPositions).mapToDouble(this::toDriveMeters).toArray();
 
 		moduleInputs.isClosedLoop = isClosedLoop;
@@ -246,22 +250,35 @@ public class Module {
 	 * The odometry thread can update itself faster than the main code loop (which is 50 hertz). Instead of using the latest odometry update, the
 	 * accumulated odometry positions since the last loop to get a more accurate position.
 	 *
-	 * @param updateIndex the index of the odometry update
+	 * @param odometryUpdateIndex the index of the odometry update
 	 * @return the position of the module at the given odometry update index
 	 */
-	public SwerveModulePosition getOdometryPosition(int updateIndex) {
+	public SwerveModulePosition getOdometryPosition(int odometryUpdateIndex) {
 		return new SwerveModulePosition(
-			driveInputs.positionsMeters[updateIndex],
-			steerSignals.position().asArray()[updateIndex]
+			driveInputs.positionsMeters[odometryUpdateIndex],
+			steerSignals.position().asArray()[odometryUpdateIndex]
 		);
 	}
 
-	public SwerveModuleState getCurrentState(int updateIndex) {
-		return new SwerveModuleState(getDriveVelocityMetersPerSecond(), getSteerPosition());
+	public SwerveModuleState getState(int odometryUpdateIndex) {
+		return new SwerveModuleState(
+			driveInputs.velocityMetersPerSecond[odometryUpdateIndex],
+			steerSignals.position().asArray()[odometryUpdateIndex]
+		);
 	}
 
-	public int getNumberOfSamples() {
-		return Math.min(driveInputs.positionsMeters.length, steerSignals.position().asArray().length);
+	public int getNumberOfOdometrySamples() {
+		return Math.min(
+			Math.min(driveInputs.positionsMeters.length, driveInputs.velocityMetersPerSecond.length),
+			steerSignals.position().asArray().length
+		);
+	}
+
+	public SwerveModuleState getLatestState() {
+		return new SwerveModuleState(
+			driveInputs.velocityMetersPerSecond[driveInputs.velocityMetersPerSecond.length - 1],
+			steerSignals.position().getLatestValue()
+		);
 	}
 
 	public SwerveModuleState getTargetState() {
@@ -280,8 +297,12 @@ public class Module {
 		return steerSignals.position().getLatestValue();
 	}
 
-	public boolean isAtTargetVelocity(double speedToleranceMetersPerSecond, int updateIndex) {
-		return ToleranceMath.isNear(getTargetState().speedMetersPerSecond, driveInputs.velocityMetersPerSecond[updateIndex], speedToleranceMetersPerSecond);
+	public boolean isAtTargetVelocity(double speedToleranceMetersPerSecond) {
+		return ToleranceMath.isNear(
+			getTargetState().speedMetersPerSecond,
+			driveInputs.velocityMetersPerSecond[driveInputs.velocityMetersPerSecond.length - 1],
+			speedToleranceMetersPerSecond
+		);
 	}
 
 	public boolean isSteerAtTargetPosition(Rotation2d steerPositionTolerance, Rotation2d steerVelocityPerSecondDeadband) {
@@ -289,8 +310,7 @@ public class Module {
 		if (!isStopping) {
 			return false;
 		}
-		boolean isAtSteerPosition = ToleranceMath.isNearWrapped(getTargetState().angle, getSteerPosition(), steerPositionTolerance);
-		return isAtSteerPosition;
+		return ToleranceMath.isNearWrapped(getTargetState().angle, getSteerPosition(), steerPositionTolerance);
 	}
 
 	public boolean isAtTargetState(
