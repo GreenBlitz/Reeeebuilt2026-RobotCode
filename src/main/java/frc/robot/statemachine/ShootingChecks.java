@@ -24,12 +24,12 @@ public class ShootingChecks {
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
-	public static boolean isInPassingNoNoZone(Pose2d robotPose, String logPath) {
+	public static boolean isInPositionForPassing(Pose2d robotPose, String logPath) {
 		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
-		boolean isInPassingNoNoZone = (turretPosition.getY() < ShooterConstants.MAX_Y_FOR_PASSING_NO_NO_ZONE
-			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_PASSING_NO_NO_ZONE);
-		Logger.recordOutput(logPath + "/isInPassingNoNoZone", isInPassingNoNoZone);
-		return isInPassingNoNoZone;
+		boolean isInPositionForPassing = !(turretPosition.getY() < ShooterConstants.MAX_Y_FOR_UNPASSABLE_AREA
+			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_UNPASSABLE_AREA);
+		Logger.recordOutput(logPath + "/isInPassingNoNoZone", isInPositionForPassing);
+		return isInPositionForPassing;
 	}
 
 	public static boolean isOnBumpOrUnderTrench(Pose2d robotPose, String logPath) {
@@ -88,8 +88,8 @@ public class ShootingChecks {
 		return isInAngleRange(robotPosition, maxAngleFromCenter, logPath, targetTranslation, true);
 	}
 
-	private static boolean isTurretAtTarget(Rotation2d turretPosition, Rotation2d target, Rotation2d tolerance, String logPath) {
-		boolean isAtHeading = MathUtil.isNear(target.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
+	private static boolean isTurretAtTargetPosition(Rotation2d turretPosition, Rotation2d targetTurretPosition, Rotation2d tolerance, String logPath) {
+		boolean isAtHeading = MathUtil.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
 		Logger.recordOutput(logPath + "/isAtHeading", isAtHeading);
 		return isAtHeading;
 	}
@@ -109,8 +109,8 @@ public class ShootingChecks {
 		return isFlywheelAtVelocity;
 	}
 
-	private static boolean isHoodAtPositon(Rotation2d wantedPosition, Rotation2d hoodPosition, Rotation2d tolerance, String logPath) {
-		boolean isHoodAtPosition = MathUtil.isNear(wantedPosition.getDegrees(), hoodPosition.getDegrees(), tolerance.getDegrees());
+	private static boolean isHoodAtPositon(Rotation2d targetHoodPosition, Rotation2d hoodPosition, Rotation2d tolerance, String logPath) {
+		boolean isHoodAtPosition = MathUtil.isNear(targetHoodPosition.getDegrees(), hoodPosition.getDegrees(), tolerance.getDegrees());
 		Logger.recordOutput(logPath + "/isHoodAtPositon", isHoodAtPosition);
 		return isHoodAtPosition;
 	}
@@ -137,7 +137,7 @@ public class ShootingChecks {
 		if (isPass) {
 			isInRange = isInAngleRangeToPass(robotPose.getTranslation(), maxAngleFromTargetCenter, logPath, targetTranslation);
 		}
-		boolean isAtTurretAtTarget = isTurretAtTarget(
+		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
 			headingTolerance,
@@ -187,7 +187,7 @@ public class ShootingChecks {
 
 		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromTargetCenter, logPath, target, isPass);
 
-		boolean isAtTurretAtTarget = isTurretAtTarget(
+		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
 			headingTolerance,
@@ -278,7 +278,7 @@ public class ShootingChecks {
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass",
 			true
-		) && !isInPassingNoNoZone(robot.getPoseEstimator().getEstimatedPose(), shootingChacksLogPath + "/IsReadyToPass");
+		) && isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChacksLogPath + "/IsReadyToPass");
 	}
 
 	public static boolean canContinueShooting(
@@ -322,7 +322,7 @@ public class ShootingChecks {
 			true
 		)
 			&& !isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())
-			&& !isInPassingNoNoZone(robot.getPoseEstimator().getEstimatedPose(), shootingChacksLogPath + "canContinuePassing");
+			&& isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChacksLogPath + "canContinuePassing");
 	}
 
 	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {

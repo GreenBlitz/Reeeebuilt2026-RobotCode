@@ -8,8 +8,8 @@ public class ShooterConstants {
 
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
 
-	public static final double MAX_Y_FOR_PASSING_NO_NO_ZONE = Field.getHubMiddle().getY() + 0.5;
-	public static final double MIN_Y_FOR_PASSING_NO_NO_ZONE = Field.getHubMiddle().getY() - 0.5;
+	public static final double MAX_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() + 0.5;
+	public static final double MIN_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() - 0.5;
 
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d(
 		"Tunable/TurretAngle",
