@@ -184,19 +184,6 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getIMUAccelerationMetersPerSecondSquared());
-
-		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
-
-		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
-
-		Logger.recordOutput(
-			getLogPath() + "/isSkidding",
-			SwerveMath.getIsSkidding(
-				kinematics,
-				modules.getCurrentStates(),
-				SwerveConstants.ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND
-			)
-		);
 	}
 
 	public int getNumberOfOdometrySamples() {
@@ -210,8 +197,9 @@ public class Swerve extends GBSubsystem {
 			odometryData[i] = new OdometryData(
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.yawSignal().asArray()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d().getNorm())
+				modules.getCurrentStates(),
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d())
 			);
 		}
 

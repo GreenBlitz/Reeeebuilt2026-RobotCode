@@ -106,11 +106,8 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
-			swerve.getOrientationFromIMU(),
-			swerve.getIMUAcceleration().toTranslation2d(),
-			swerve.getIMUAbsoluteYaw().getTimestamp()
-			swerve.getIMUAbsoluteYaw().getValue(),
-			swerve.getIMUAccelerationXYNormG(),
+			swerve.getIMUOrientation(),
+			swerve.getIMUAccelerationG().toTranslation2d(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
