@@ -15,12 +15,11 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
 
+	public static final double MINIMUM_COLLISION_G_FORCE = 2;
 
-	public static final double MIN_COLLISION_G_FORCE = 2;
+	public static final Rotation2d TILT_ROBOT_ROLL_TOLERANCE = Rotation2d.fromDegrees(4);
 
-	public static final Rotation2d TILTED_ROBOT_ROLL_TOLERANCE = Rotation2d.fromDegrees(4);
-
-	public static final Rotation2d TILTED_ROBOT_PITCH_TOLERANCE = Rotation2d.fromDegrees(4);
+	public static final Rotation2d TILT_ROBOT_PITCH_TOLERANCE = Rotation2d.fromDegrees(4);
 
 	public static final double ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND = 0.5;
 

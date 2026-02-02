@@ -104,19 +104,23 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 							.plus(Rotation2d.fromRadians(changeInPose.dtheta))
 					)
 				);
+
+			poseEstimator.updateWithTime(
+				data.getTimestampSeconds(),
+				Rotation2d.fromRadians(data.getImuOrientation().get().getZ()),
+				data.getWheelPositions()
+			);
+			imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
 		}
-		poseEstimator
-			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
-
-		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
-
-		lastOdometryData.setWheelPositions(data.getWheelPositions());
-		lastOdometryData.setIMUOrientation(data.getImuOrientation());
-		lastOdometryData.setTimestamp(data.getTimestampSeconds());
-		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
 
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
+
+		lastOdometryData.setWheelPositions(data.getWheelPositions());
+		lastOdometryData.setWheelStates(data.getWheelStates());
+		lastOdometryData.setIMUOrientation(data.getImuOrientation());
+		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
+		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 	}
 
 	@Override
@@ -183,8 +187,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
 
 		Logger.recordOutput(
-			logPath + "/isCollisionDetected",
-			PoseUtil.getIsColliding(lastOdometryData.getImuAccelerationMagnitudeG().get(), WPILibPoseEstimatorConstants.MIN_COLLISION_G_FORCE)
+			logPath + "/isColliding",
+			PoseUtil
+				.getIsColliding(lastOdometryData.getImuAccelerationMagnitudeG().get(), WPILibPoseEstimatorConstants.MINIMUM_COLLISION_G_FORCE)
 		);
 
 		Logger.recordOutput(
@@ -192,8 +197,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			PoseUtil.getIsTilted(
 				Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getX()),
 				Rotation2d.fromRadians(lastOdometryData.getImuOrientation().get().getY()),
-				WPILibPoseEstimatorConstants.TILTED_ROBOT_ROLL_TOLERANCE,
-				WPILibPoseEstimatorConstants.TILTED_ROBOT_PITCH_TOLERANCE
+				WPILibPoseEstimatorConstants.TILT_ROBOT_ROLL_TOLERANCE,
+				WPILibPoseEstimatorConstants.TILT_ROBOT_PITCH_TOLERANCE
 			)
 		);
 
@@ -240,7 +245,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Optional<Translation2d> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer
 			.getSample(visionObservation.timestampSeconds());
 		boolean isSamplePresent = imuAccelerationAtVisionObservationTimestamp.isPresent();
-		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.get().getNorm() >= WPILibPoseEstimatorConstants.MIN_COLLISION_G_FORCE;
+		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.get().getNorm()
+			>= WPILibPoseEstimatorConstants.MINIMUM_COLLISION_G_FORCE;
 
 		return isSamplePresent && isColliding
 			? visionObservation.stdDevs()

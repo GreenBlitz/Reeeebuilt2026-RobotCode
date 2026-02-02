@@ -6,7 +6,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.poseestimator.Pose2dComponentsValue;
 import frc.robot.poseestimator.Pose3dComponentsValue;
-import frc.robot.subsystems.swerve.SwerveMath;
 import frc.utils.AngleUnit;
 import frc.utils.alerts.Alert;
 import frc.utils.math.ToleranceMath;
@@ -104,7 +103,7 @@ public class PoseUtil {
 
 		SwerveModuleState[] moduleRotationalStates = kinematics
 			.toSwerveModuleStates(new ChassisSpeeds(0, 0, swerveVelocity.omegaRadiansPerSecond));
-		SwerveModuleState[] moduleTranslationalStates = SwerveMath.getModuleTranslationalStates(moduleStates, moduleRotationalStates);
+		SwerveModuleState[] moduleTranslationalStates = getModuleTranslationalStates(moduleStates, moduleRotationalStates);
 
 		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
 			if (
@@ -118,6 +117,23 @@ public class PoseUtil {
 			}
 		}
 		return false;
+	}
+
+	public static SwerveModuleState[] getModuleTranslationalStates(
+		SwerveModuleState[] moduleStates,
+		SwerveModuleState[] moduleRotationalStates
+	) {
+		SwerveModuleState[] moduleTranslationalStates = new SwerveModuleState[Math.min(moduleStates.length, moduleRotationalStates.length)];
+		for (int i = 0; i < moduleTranslationalStates.length; i++) {
+			moduleTranslationalStates[i] = getModuleTranslationalState(moduleStates[i], moduleRotationalStates[i]);
+		}
+		return moduleTranslationalStates;
+	}
+
+	private static SwerveModuleState getModuleTranslationalState(SwerveModuleState moduleState, SwerveModuleState moduleRotationalState) {
+		Translation2d moduleTranslationalVelocity = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
+			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+		return new SwerveModuleState(moduleTranslationalVelocity.getNorm(), moduleTranslationalVelocity.getAngle());
 	}
 
 }
