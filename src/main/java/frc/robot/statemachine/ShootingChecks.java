@@ -14,7 +14,7 @@ import static edu.wpi.first.math.MathUtil.isNear;
 
 public class ShootingChecks {
 
-	private static final String shootingChecksLogPath = "Statemachine/ShootingChecks";
+	private static final String shootingChecksLogPath = "StateMachine/ShootingChecks";
 
 	private static boolean isWithinDistance(Translation2d robotPosition, double maxShootingDistanceFromTargetMeters, String logPath) {
 		boolean isWithinDistance = robotPosition.getDistance(Field.getHubMiddle()) <= maxShootingDistanceFromTargetMeters;

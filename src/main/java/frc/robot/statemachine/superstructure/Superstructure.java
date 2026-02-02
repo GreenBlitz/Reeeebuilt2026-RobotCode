@@ -71,7 +71,7 @@ public class Superstructure {
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", robotState)),
 			switch (robotState) {
 				case STAY_IN_PLACE -> stayInPlace();
-				case DRIVE -> idle();
+				case NEUTRAL -> idle();
 				case PRE_SHOOT -> preShoot();
 				case SHOOT -> shoot();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
@@ -85,7 +85,7 @@ public class Superstructure {
 	}
 
 	private Command idle() {
-		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.DRIVE));
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.NEUTRAL), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
 	private Command preShoot() {

@@ -70,4 +70,8 @@ public class FunnelStateHandler {
 		);
 	}
 
+	public void periodic() {
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
+	}
+
 }

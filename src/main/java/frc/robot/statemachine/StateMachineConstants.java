@@ -15,5 +15,6 @@ public class StateMachineConstants {
 	public static final double SECONDS_TO_WAIT_AFTER_SHOOT = 0.05;
 	public static final double TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS = 0.05;
 	public static final Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS = Rotation2d.fromRotations(1);
+	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
 
 }

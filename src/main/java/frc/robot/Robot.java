@@ -109,9 +109,9 @@ public class Robot {
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
-			swerve.getGyroAbsoluteYaw().getValue(),
+			swerve.getIMUAbsoluteYaw().getValue(),
 			swerve.getIMUAcceleration(),
-			swerve.getGyroAbsoluteYaw().getTimestamp()
+			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
 		this.limelight = new Limelight(
@@ -143,7 +143,7 @@ public class Robot {
 			)
 		);
 
-		robotCommander = new RobotCommander("/RobotCommander", this);
+		robotCommander = new RobotCommander("RobotCommander", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());

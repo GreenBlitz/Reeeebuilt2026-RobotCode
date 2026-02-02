@@ -28,25 +28,24 @@ public class SimulationManager {
 	}
 
 	public void logHoodPosition3d() {
-		Logger.recordOutput(logPath + "/Hood", getHoodPosition3d(robot.getHood().getPosition()));
+		Logger.recordOutput(logPath + "/Hood", getHoodPosition3d());
 	}
 
 	public Pose3d getTurretPosition3d(Rotation2d turretPosition) {
 		return new Pose3d(
 			TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT,
-			new Rotation3d(0.0, 0.0, turretPosition.getRadians() + MathConstants.QUARTER_CIRCLE.getRadians())
+			new Rotation3d(0.0, 0.0, robot.getTurret().getPosition().getRadians() + MathConstants.QUARTER_CIRCLE.getRadians())
 		);
 	}
 
-	public Pose3d getHoodPosition3d(Rotation2d hoodPosition) {
+	public Pose3d getHoodPosition3d() {
 		return new Pose3d(
 			new Translation3d(0.25, 0.0, 0.4),
 			new Rotation3d(
-				Rotation2d.fromDegrees(50.0).minus(hoodPosition).getRadians(),
+				robot.getHood().getPosition().getRadians(),
 				0.0,
 				robot.getTurret().getPosition().getRadians() + MathConstants.QUARTER_CIRCLE.getRadians()
 			)
 		);
 	}
-
 }
