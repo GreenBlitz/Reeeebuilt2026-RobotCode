@@ -174,7 +174,7 @@ public class RobotCommander extends GBSubsystem {
 	public Command calibrationScoreSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
-				driveWith(RobotState.CALIBRATION_PRE_SCORE).until(this::isReadyToScore),
+				driveWith(RobotState.CALIBRATION_PRE_SCORE).until(this::calibrationIsReadyToScore),
 				driveWith(RobotState.CALIBRATION_SCORE).until(() -> !calibrationCanContinueScoring())
 			)
 		);
