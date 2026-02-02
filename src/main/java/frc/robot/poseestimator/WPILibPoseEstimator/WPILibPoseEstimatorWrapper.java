@@ -2,7 +2,11 @@ package frc.robot.poseestimator.WPILibPoseEstimator;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -104,29 +108,35 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 							.plus(Rotation2d.fromRadians(changeInPose.dtheta))
 					)
 				);
+
+			poseEstimator.updateWithTime(
+				data.getTimestampSeconds(),
+				Rotation2d.fromRadians(data.getImuOrientation().get().getZ()),
+				data.getWheelPositions()
+			);
+			imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
 		}
-		poseEstimator
-			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()), data.getWheelPositions());
-		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
-
-		updateCausedErrorForOdometryData(data);
-
-		lastOdometryData.setWheelPositions(data.getWheelPositions());
-		lastOdometryData.setIMUOrientation(data.getImuOrientation());
-		lastOdometryData.setTimestamp(data.getTimestampSeconds());
-		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
 
 		data.getImuAccelerationMagnitudeG()
 			.ifPresent((acceleration) -> imuAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
+
+		updateEstimatedPoseErrorMeasure(data);
+
+		lastOdometryData.setWheelPositions(data.getWheelPositions());
+		lastOdometryData.setIMUOrientation(data.getImuOrientation());
+		lastOdometryData.setIMUAcceleration(data.getImuAccelerationMagnitudeG());
+		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 	}
 
-	public void updateCausedErrorForOdometryData(OdometryData data) {
+	public void updateEstimatedPoseErrorMeasure(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
+
 		odometryCausedPoseEstimationErrorMeasure += data.getImuAccelerationMagnitudeG().isPresent()
 			&& SwerveMath.isColliding(data.getImuAccelerationMagnitudeG().get(), SwerveConstants.MINIMUM_COLLISION_G_FORCE)
 				? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR * changeInPoseNorm
 				: 0;
+
 		odometryCausedPoseEstimationErrorMeasure += data.getImuOrientation().isPresent()
 			&& SwerveMath.isTilted(
 				Rotation2d.fromRadians(data.getImuOrientation().get().getX()),
@@ -195,7 +205,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
 		}
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
-		Logger.recordOutput(logPath + "/odometryCausedEstimatedPoseError", odometryCausedPoseEstimationErrorMeasure);
+		Logger.recordOutput(logPath + "/odometryCausedEstimatedPoseErrorMeasure", odometryCausedPoseEstimationErrorMeasure);
 	}
 
 	public void resetIsIMUOffsetCalibrated() {
@@ -231,7 +241,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Optional<Translation2d> imuAccelerationAtVisionObservationTimestamp = imuAccelerationBuffer
 			.getSample(visionObservation.timestampSeconds());
 		boolean isSamplePresent = imuAccelerationAtVisionObservationTimestamp.isPresent();
-		boolean isColliding = imuAccelerationAtVisionObservationTimestamp.get().getNorm() >= SwerveConstants.MINIMUM_COLLISION_G_FORCE;
+		boolean isColliding = SwerveMath
+			.isColliding(imuAccelerationAtVisionObservationTimestamp.get(), SwerveConstants.MINIMUM_COLLISION_G_FORCE);
 
 		return isSamplePresent && isColliding
 			? visionObservation.stdDevs()
