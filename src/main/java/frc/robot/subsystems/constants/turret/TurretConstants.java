@@ -44,11 +44,11 @@ public class TurretConstants {
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double TURRET_RADIUS = 0.0;
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
-	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.25, 0, 0);
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(45);
-	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-150);
-	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-183);
-	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(177);
+	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.17, -0.25, 0.45);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(120);
+	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-120);
+	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-180);
+	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(180);
 	public static final Rotation2d MIDDLE_OF_SHOOTING_RANGE = Rotation2d
 		.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
 	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
