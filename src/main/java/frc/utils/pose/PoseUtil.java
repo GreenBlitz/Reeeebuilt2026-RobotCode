@@ -1,14 +1,15 @@
 package frc.utils.pose;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.poseestimator.Pose2dComponentsValue;
 import frc.robot.poseestimator.Pose3dComponentsValue;
-import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.subsystems.swerve.SwerveMath;
 import frc.utils.AngleUnit;
 import frc.utils.alerts.Alert;
+import frc.utils.math.ToleranceMath;
 
 public class PoseUtil {
 
@@ -79,6 +80,36 @@ public class PoseUtil {
 					Rotation2d.fromRadians(rotation3d.getY()).getRotations(),
 					Rotation2d.fromRadians(rotation3d.getZ()).getRotations()};
 		};
+	}
+
+
+	public static boolean getIsSkidding(
+			SwerveDriveKinematics kinematics,
+			SwerveModuleState[] moduleStates,
+			double skidRobotToModuleVelocityToleranceMetersPerSecond
+	) {
+		ChassisSpeeds swerveVelocity = kinematics.toChassisSpeeds(moduleStates);
+		Translation2d swerveTranslationalVelocityMetersPerSecond = new Translation2d(
+				swerveVelocity.vxMetersPerSecond,
+				swerveVelocity.vyMetersPerSecond
+		);
+
+		SwerveModuleState[] moduleRotationalStates = kinematics
+				.toSwerveModuleStates(new ChassisSpeeds(0, 0, swerveVelocity.omegaRadiansPerSecond));
+		SwerveModuleState[] moduleTranslationalStates = SwerveMath.getModuleTranslationalStates(moduleStates, moduleRotationalStates);
+
+		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
+			if (
+					!ToleranceMath.isNear(
+							swerveTranslationalVelocityMetersPerSecond,
+							new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
+							skidRobotToModuleVelocityToleranceMetersPerSecond
+					)
+			) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

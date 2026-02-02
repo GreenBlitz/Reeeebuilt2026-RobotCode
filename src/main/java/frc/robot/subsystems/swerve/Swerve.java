@@ -28,6 +28,7 @@ import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
+import frc.utils.pose.PoseUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
@@ -181,7 +182,7 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(
 			getLogPath() + "/isSkidding",
-			SwerveMath.getIsSkidding(
+			PoseUtil.getIsSkidding(
 				kinematics,
 				modules.getCurrentStates(),
 				SwerveConstants.ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND

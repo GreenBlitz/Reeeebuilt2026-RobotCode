@@ -67,35 +67,6 @@ public class SwerveMath {
 		return Math.sqrt(Math.pow(chassisSpeeds.vxMetersPerSecond, 2) + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
 	}
 
-	public static boolean getIsSkidding(
-		SwerveDriveKinematics kinematics,
-		SwerveModuleState[] moduleStates,
-		double skidRobotToModuleVelocityToleranceMetersPerSecond
-	) {
-		ChassisSpeeds swerveVelocity = kinematics.toChassisSpeeds(moduleStates);
-		Translation2d swerveTranslationalVelocityMetersPerSecond = new Translation2d(
-			swerveVelocity.vxMetersPerSecond,
-			swerveVelocity.vyMetersPerSecond
-		);
-
-		SwerveModuleState[] moduleRotationalStates = kinematics
-			.toSwerveModuleStates(new ChassisSpeeds(0, 0, swerveVelocity.omegaRadiansPerSecond));
-		SwerveModuleState[] moduleTranslationalStates = getModuleTranslationalStates(moduleStates, moduleRotationalStates);
-
-		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
-			if (
-				!ToleranceMath.isNear(
-					swerveTranslationalVelocityMetersPerSecond,
-					new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
-					skidRobotToModuleVelocityToleranceMetersPerSecond
-				)
-			) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static SwerveModuleState[] getModuleTranslationalStates(
 		SwerveModuleState[] moduleStates,
 		SwerveModuleState[] moduleRotationalStates
