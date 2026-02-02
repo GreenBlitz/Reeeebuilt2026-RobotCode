@@ -96,10 +96,13 @@ public class Module {
 
 
 	private void fixDriveInputsCoupling() {
-		driveInputs.uncoupledVelocityAnglesPerSecond = ModuleUtil
-			.uncoupleDriveAngle(driveSignals.velocity().getLatestValue(), steerSignals.velocity().getLatestValue(), constants.couplingRatio());
+		driveInputs.uncoupledVelocityAnglesPerSecond = new Rotation2d[Math.min(driveSignals.velocity().asArray().length, steerSignals.velocity().asArray().length)];
+		for (int i = 0; i < driveInputs.uncoupledVelocityAnglesPerSecond.length; i++) {
+			driveInputs.uncoupledVelocityAnglesPerSecond[i] = ModuleUtil
+					.uncoupleDriveAngle(driveSignals.velocity().asArray()[i], steerSignals.velocity().asArray()[i], constants.couplingRatio());
+		}
 
-		driveInputs.uncoupledPositions = new Rotation2d[driveSignals.position().asArray().length];
+		driveInputs.uncoupledPositions = new Rotation2d[Math.min(driveSignals.position().asArray().length, steerSignals.position().asArray().length)];
 		for (int i = 0; i < driveInputs.uncoupledPositions.length; i++) {
 			Rotation2d steerDelta = Rotation2d
 				.fromRotations(steerSignals.position().asArray()[i].getRotations() - startingSteerPosition.getRotations());
@@ -118,7 +121,7 @@ public class Module {
 
 		fixDriveInputsCoupling();
 
-		driveInputs.velocityMetersPerSecond = toDriveMeters(driveInputs.uncoupledVelocityAnglesPerSecond);
+		driveInputs.velocityMetersPerSecond = Arrays.stream(driveInputs.uncoupledVelocityAnglesPerSecond).mapToDouble(this::toDriveMeters).toArray();
 		driveInputs.positionsMeters = Arrays.stream(driveInputs.uncoupledPositions).mapToDouble(this::toDriveMeters).toArray();
 
 		moduleInputs.isClosedLoop = isClosedLoop;
@@ -243,17 +246,21 @@ public class Module {
 	 * The odometry thread can update itself faster than the main code loop (which is 50 hertz). Instead of using the latest odometry update, the
 	 * accumulated odometry positions since the last loop to get a more accurate position.
 	 *
-	 * @param odometryUpdateIndex the index of the odometry update
+	 * @param updateIndex the index of the odometry update
 	 * @return the position of the module at the given odometry update index
 	 */
-	public SwerveModulePosition getOdometryPosition(int odometryUpdateIndex) {
+	public SwerveModulePosition getOdometryPosition(int updateIndex) {
 		return new SwerveModulePosition(
-			driveInputs.positionsMeters[odometryUpdateIndex],
-			steerSignals.position().asArray()[odometryUpdateIndex]
+			driveInputs.positionsMeters[updateIndex],
+			steerSignals.position().asArray()[updateIndex]
 		);
 	}
 
-	public int getNumberOfOdometrySamples() {
+	public SwerveModuleState getCurrentState(int updateIndex) {
+		return new SwerveModuleState(getDriveVelocityMetersPerSecond(), getSteerPosition());
+	}
+
+	public int getNumberOfSamples() {
 		return Math.min(driveInputs.positionsMeters.length, steerSignals.position().asArray().length);
 	}
 
@@ -261,25 +268,20 @@ public class Module {
 		return targetState;
 	}
 
-	public SwerveModuleState getCurrentState() {
-		return new SwerveModuleState(getDriveVelocityMetersPerSecond(), getSteerPosition());
-	}
-
 	public Rotation2d getDrivePosition() {
 		return driveInputs.uncoupledPositions[driveInputs.uncoupledPositions.length - 1];
 	}
 
 	public double getDriveVelocityMetersPerSecond() {
-		return driveInputs.velocityMetersPerSecond;
+		return driveInputs.velocityMetersPerSecond[driveInputs.velocityMetersPerSecond.length - 1];
 	}
 
 	public Rotation2d getSteerPosition() {
 		return steerSignals.position().getLatestValue();
 	}
 
-
-	public boolean isAtTargetVelocity(double speedToleranceMetersPerSecond) {
-		return ToleranceMath.isNear(getTargetState().speedMetersPerSecond, getDriveVelocityMetersPerSecond(), speedToleranceMetersPerSecond);
+	public boolean isAtTargetVelocity(double speedToleranceMetersPerSecond, int updateIndex) {
+		return ToleranceMath.isNear(getTargetState().speedMetersPerSecond, driveInputs.velocityMetersPerSecond[updateIndex], speedToleranceMetersPerSecond);
 	}
 
 	public boolean isSteerAtTargetPosition(Rotation2d steerPositionTolerance, Rotation2d steerVelocityPerSecondDeadband) {

@@ -96,9 +96,9 @@ public class Modules {
 	}
 
 	public int getNumberOfOdometrySamples() {
-		int numberOfOdometrySamples = modules[0].getNumberOfOdometrySamples();
+		int numberOfOdometrySamples = modules[0].getNumberOfSamples();
 		for (int i = 1; i < modules.length; i++) {
-			numberOfOdometrySamples = Math.min(numberOfOdometrySamples, modules[i].getNumberOfOdometrySamples());
+			numberOfOdometrySamples = Math.min(numberOfOdometrySamples, modules[i].getNumberOfSamples());
 		}
 		return numberOfOdometrySamples;
 	}
