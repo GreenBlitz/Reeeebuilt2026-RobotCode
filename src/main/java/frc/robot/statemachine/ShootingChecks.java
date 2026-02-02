@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.constants.field.AllianceSide;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
@@ -153,11 +152,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot
-			&& isHoodAtPosition
-			&& isInRange
-			&& isWithinDistance
-			&& isAtTurretAtTarget;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
 	private static boolean canContinueShooting(
@@ -203,11 +198,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot
-			&& isHoodAtPosition
-			&& isInRange
-			&& isWithinDistance
-			&& isAtTurretAtTarget;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
 	private static boolean calibrationIsReadyToScore(
