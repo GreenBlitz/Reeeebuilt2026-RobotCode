@@ -86,13 +86,13 @@ public class PoseUtil {
 		};
 	}
 
-	public static boolean getIsColliding(Translation2d acceleration, double minCollisionGForce) {
-		return acceleration.getNorm() >= minCollisionGForce;
+	public static boolean getIsColliding(Translation2d imuAccelerationG, double minimumCollisionIMUAccelerationG) {
+		return imuAccelerationG.getNorm() >= minimumCollisionIMUAccelerationG;
 	}
 
-	public static boolean getIsTilted(Rotation2d roll, Rotation2d pitch, Rotation2d tiltedRollTolerance, Rotation2d tiltedPitchTolerance) {
-		return Math.abs(roll.getRadians()) >= tiltedRollTolerance.getRadians()
-			|| Math.abs(pitch.getRadians()) >= tiltedPitchTolerance.getRadians();
+	public static boolean getIsTilted(Rotation2d imuRoll, Rotation2d imuPitch, Rotation2d minimumTiltIMURoll, Rotation2d minimumTiltIMUPitch) {
+		return Math.abs(imuRoll.getRadians()) >= minimumTiltIMURoll.getRadians()
+			|| Math.abs(imuPitch.getRadians()) >= minimumTiltIMUPitch.getRadians();
 	}
 
 	public static boolean getIsSkidding(

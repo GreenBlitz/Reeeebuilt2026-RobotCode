@@ -44,11 +44,11 @@ public class OdometryData {
 		return wheelStates;
 	}
 
-	public Optional<Rotation3d> getImuOrientation() {
+	public Optional<Rotation3d> getIMUOrientation() {
 		return imuOrientation;
 	}
 
-	public Optional<Translation2d> getImuXYAccelerationG() {
+	public Optional<Translation2d> getIMUXYAccelerationG() {
 		return imuXYAccelerationG;
 	}
 
