@@ -36,6 +36,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
+	private double odometryCausedPoseEstimationErrorMeasure;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -72,6 +73,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuXYAccelerationBuffer = TimeInterpolatableBuffer
 			.createBuffer(WPILibPoseEstimatorConstants.IMU_XY_ACCELERATION_BUFFER_SIZE_SECONDS);
+		this.odometryCausedPoseEstimationErrorMeasure = 0;
 	}
 
 
@@ -118,6 +120,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
 		}
 
+		updateEstimatedPoseErrorMeasure(data);
+
 		data.getIMUXYAccelerationG().ifPresent((acceleration) -> imuXYAccelerationBuffer.addSample(data.getTimestampSeconds(), acceleration));
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
@@ -125,6 +129,31 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setIMUOrientation(data.getIMUOrientation());
 		lastOdometryData.setIMUXYAcceleration(data.getIMUXYAccelerationG());
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
+	}
+
+	public void updateEstimatedPoseErrorMeasure(OdometryData data) {
+		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
+		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
+
+		odometryCausedPoseEstimationErrorMeasure += data.getIMUXYAccelerationG().isPresent()
+			&& PoseUtil.getIsColliding(data.getIMUXYAccelerationG().get(), WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
+				? WPILibPoseEstimatorConstants.COLLISION_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR * changeInPoseNorm
+				: 0;
+
+		odometryCausedPoseEstimationErrorMeasure += data.getIMUOrientation().isPresent()
+			&& PoseUtil.getIsTilted(
+				Rotation2d.fromRadians(data.getIMUOrientation().get().getX()),
+				Rotation2d.fromRadians(data.getIMUOrientation().get().getY()),
+				WPILibPoseEstimatorConstants.MINIMUM_TILT_IMU_ROLL,
+				WPILibPoseEstimatorConstants.MINIMUM_TILT_IMU_PITCH
+			) ? WPILibPoseEstimatorConstants.TILT_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR * changeInPoseNorm : 0;
+
+		odometryCausedPoseEstimationErrorMeasure += data.getIMUOrientation().isPresent()
+			&& PoseUtil.getIsSkidding(
+				kinematics,
+				lastOdometryData.getWheelStates(),
+				WPILibPoseEstimatorConstants.ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND
+			) ? WPILibPoseEstimatorConstants.SKID_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR * changeInPoseNorm : 0;
 	}
 
 	@Override

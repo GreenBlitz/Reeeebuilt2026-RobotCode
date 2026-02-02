@@ -23,6 +23,12 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND = 0.5;
 
+	public static final double COLLISION_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
+
+	public static final double TILT_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
+
+	public static final double SKID_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
+
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 
 	public static final Pose2d STARTING_ODOMETRY_POSE = new Pose2d();
