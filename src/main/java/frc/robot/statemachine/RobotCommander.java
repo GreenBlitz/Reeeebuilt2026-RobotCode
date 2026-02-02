@@ -98,7 +98,7 @@ public class RobotCommander extends GBSubsystem {
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", robotState)),
 			switch (robotState) {
 				case STAY_IN_PLACE -> stayInPlace();
-				case DRIVE -> neutral();
+				case NEUTRAL -> neutral();
 				case PRE_SHOOT -> preShoot();
 				case SHOOT -> shoot();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
@@ -221,7 +221,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
+			case NEUTRAL, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.NEUTRAL);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}
