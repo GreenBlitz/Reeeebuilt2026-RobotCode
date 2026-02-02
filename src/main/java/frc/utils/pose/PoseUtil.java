@@ -88,31 +88,31 @@ public class PoseUtil {
 
 	public static boolean getIsTilted(Rotation2d roll, Rotation2d pitch, Rotation2d tiltedRollTolerance, Rotation2d tiltedPitchTolerance) {
 		return Math.abs(roll.getRadians()) >= tiltedRollTolerance.getRadians()
-				|| Math.abs(pitch.getRadians()) >= tiltedPitchTolerance.getRadians();
+			|| Math.abs(pitch.getRadians()) >= tiltedPitchTolerance.getRadians();
 	}
 
 	public static boolean getIsSkidding(
-			SwerveDriveKinematics kinematics,
-			SwerveModuleState[] moduleStates,
-			double skidRobotToModuleVelocityToleranceMetersPerSecond
+		SwerveDriveKinematics kinematics,
+		SwerveModuleState[] moduleStates,
+		double skidRobotToModuleVelocityToleranceMetersPerSecond
 	) {
 		ChassisSpeeds swerveVelocity = kinematics.toChassisSpeeds(moduleStates);
 		Translation2d swerveTranslationalVelocityMetersPerSecond = new Translation2d(
-				swerveVelocity.vxMetersPerSecond,
-				swerveVelocity.vyMetersPerSecond
+			swerveVelocity.vxMetersPerSecond,
+			swerveVelocity.vyMetersPerSecond
 		);
 
 		SwerveModuleState[] moduleRotationalStates = kinematics
-				.toSwerveModuleStates(new ChassisSpeeds(0, 0, swerveVelocity.omegaRadiansPerSecond));
+			.toSwerveModuleStates(new ChassisSpeeds(0, 0, swerveVelocity.omegaRadiansPerSecond));
 		SwerveModuleState[] moduleTranslationalStates = SwerveMath.getModuleTranslationalStates(moduleStates, moduleRotationalStates);
 
 		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
 			if (
-					!ToleranceMath.isNear(
-							swerveTranslationalVelocityMetersPerSecond,
-							new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
-							skidRobotToModuleVelocityToleranceMetersPerSecond
-					)
+				!ToleranceMath.isNear(
+					swerveTranslationalVelocityMetersPerSecond,
+					new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
+					skidRobotToModuleVelocityToleranceMetersPerSecond
+				)
 			) {
 				return true;
 			}

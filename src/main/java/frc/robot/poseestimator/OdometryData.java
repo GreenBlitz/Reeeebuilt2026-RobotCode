@@ -2,6 +2,7 @@ package frc.robot.poseestimator;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -13,7 +14,7 @@ public class OdometryData {
 	private SwerveModulePosition[] wheelPositions = new SwerveModulePosition[4];
 	private SwerveModuleState[] wheelStates = new SwerveModuleState[4];
 	private Optional<Rotation3d> imuOrientation = Optional.empty();
-	private Optional<Double> imuAccelerationMagnitudeG = Optional.empty();
+	private Optional<Translation2d> imuAccelerationMagnitudeG = Optional.empty();
 
 	public OdometryData() {}
 
@@ -22,7 +23,7 @@ public class OdometryData {
 		SwerveModulePosition[] wheelPositions,
 		SwerveModuleState[] wheelStates,
 		Optional<Rotation3d> imuOrientation,
-		Optional<Double> imuAccelerationMagnitudeG
+		Optional<Translation2d> imuAccelerationMagnitudeG
 	) {
 		this.timestampSeconds = timestampSeconds;
 		this.wheelPositions = wheelPositions;
@@ -47,7 +48,7 @@ public class OdometryData {
 		return imuOrientation;
 	}
 
-	public Optional<Double> getImuAccelerationMagnitudeG() {
+	public Optional<Translation2d> getImuAccelerationMagnitudeG() {
 		return imuAccelerationMagnitudeG;
 	}
 
@@ -71,11 +72,20 @@ public class OdometryData {
 		setIMUOrientation(Optional.of(imuOrientation));
 	}
 
-	public void setIMUAcceleration(Optional<Double> imuAccelerationMagnitudeG) {
+	public void setIMUYaw(Rotation2d imuYaw) {
+		setIMUOrientation(
+			Optional.of(
+				imuOrientation.map(orientation -> new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians()))
+					.orElseGet(() -> new Rotation3d(0, 0, imuYaw.getRadians()))
+			)
+		);
+	}
+
+	public void setIMUAcceleration(Optional<Translation2d> imuAccelerationMagnitudeG) {
 		this.imuAccelerationMagnitudeG = imuAccelerationMagnitudeG;
 	}
 
-	public void setIMUAcceleration(double imuAccelerationMagnitudeG) {
+	public void setIMUAcceleration(Translation2d imuAccelerationMagnitudeG) {
 		setIMUAcceleration(Optional.of(imuAccelerationMagnitudeG));
 	}
 
