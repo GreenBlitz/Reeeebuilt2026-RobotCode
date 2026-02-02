@@ -82,6 +82,14 @@ public class PoseUtil {
 		};
 	}
 
+	public static boolean getIsColliding(Translation2d acceleration, double minCollisionGForce) {
+		return acceleration.getNorm() > minCollisionGForce;
+	}
+
+	public static boolean getIsTilted(Rotation2d roll, Rotation2d pitch, Rotation2d tiltedRollTolerance, Rotation2d tiltedPitchTolerance) {
+		return Math.abs(roll.getRadians()) >= tiltedRollTolerance.getRadians()
+				|| Math.abs(pitch.getRadians()) >= tiltedPitchTolerance.getRadians();
+	}
 
 	public static boolean getIsSkidding(
 			SwerveDriveKinematics kinematics,

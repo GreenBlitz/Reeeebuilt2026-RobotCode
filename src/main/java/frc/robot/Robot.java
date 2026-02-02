@@ -105,7 +105,8 @@ public class Robot {
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
-			swerve.getIMUAbsoluteYaw().getValue(),
+			swerve.getModules().getCurrentStates(),
+			swerve.getOrientationFromIMU(),
 			swerve.getIMUAbsoluteYaw().getTimestamp(),
 			swerve.getIMUAcceleration()
 		);

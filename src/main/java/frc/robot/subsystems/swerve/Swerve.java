@@ -18,6 +18,7 @@ import frc.robot.RobotConstants;
 import frc.robot.hardware.empties.EmptyIMU;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.poseestimator.OdometryData;
+import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.module.Modules;
 import frc.robot.subsystems.swerve.states.DriveRelative;
@@ -175,19 +176,6 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
 		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
-
-		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
-
-		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
-
-		Logger.recordOutput(
-			getLogPath() + "/isSkidding",
-			PoseUtil.getIsSkidding(
-				kinematics,
-				modules.getCurrentStates(),
-				SwerveConstants.ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND
-			)
-		);
 	}
 
 	public int getNumberOfOdometrySamples() {
@@ -201,6 +189,7 @@ public class Swerve extends GBSubsystem {
 			odometryData[i] = new OdometryData(
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
+				modules.getCurrentStates(),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.yawSignal().asArray()[i]),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(getIMUAcceleration())
 			);
@@ -349,12 +338,12 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isCollisionDetected() {
-		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
+		return imuSignals.getAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm() > WPILibPoseEstimatorConstants.MIN_COLLISION_G_FORCE;
 	}
 
 	public boolean isTilted() {
-		return Math.abs(imuSignals.rollSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
-			|| Math.abs(imuSignals.pitchSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians();
+		return Math.abs(imuSignals.rollSignal().getLatestValue().getRadians()) >= WPILibPoseEstimatorConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
+			|| Math.abs(imuSignals.pitchSignal().getLatestValue().getRadians()) >= WPILibPoseEstimatorConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians();
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
