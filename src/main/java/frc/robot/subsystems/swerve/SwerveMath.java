@@ -79,7 +79,7 @@ public class SwerveMath {
 		);
 
 		SwerveModuleState[] moduleRotationalStates = kinematics
-			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotRelativeVelocity.omegaRadiansPerSecond), new Translation2d());
+			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotRelativeVelocity.omegaRadiansPerSecond));
 		SwerveModuleState[] moduleTranslationalStates = getModuleTranslationalStates(moduleStates, moduleRotationalStates);
 
 		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
