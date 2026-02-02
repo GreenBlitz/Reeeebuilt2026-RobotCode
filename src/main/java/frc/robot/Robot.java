@@ -109,6 +109,9 @@ public class Robot {
 			swerve.getOrientationFromIMU(),
 			swerve.getIMUAcceleration().toTranslation2d(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
+			swerve.getIMUAbsoluteYaw().getValue(),
+			swerve.getIMUAccelerationXYNormG(),
+			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
 		robotCommander = new RobotCommander("/RobotCommander", this);

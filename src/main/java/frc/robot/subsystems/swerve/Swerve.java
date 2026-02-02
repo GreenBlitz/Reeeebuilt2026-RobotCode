@@ -98,18 +98,28 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public Rotation2d[] getIMUAngularVelocityRPS() {
-		return imuSignals.getAngularVelocity();
+		return imuSignals.getLatestAngularVelocity();
 	}
 
-	public Rotation3d getOrientationFromIMU() {
-		return imuSignals.getOrientation();
+	public Rotation3d getIMUOrientation() {
+		return imuSignals.getLatestOrientation();
 	}
 
-	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
-		return imuSignals.getAccelerationEarthGravitationalAcceleration()
-			.times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
+	public Translation3d getIMUAccelerationG() {
+		return imuSignals.getLatestAccelerationG();
 	}
 
+	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
+		return getIMUAccelerationG().times(RobotConstants.G_METERS_PER_SECOND_SQUARED_ISRAEL);
+	}
+
+	public double getIMUAccelerationXYNormG() {
+		return getIMUAccelerationG().toTranslation2d().getNorm();
+	}
+
+	public double getIMUAccelerationXYNormMetersPerSecondSquared() {
+		return getIMUAccelerationMetersPerSecondSquared().toTranslation2d().getNorm();
+	}
 
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
 		PathPlannerUtil.configPathPlanner(
@@ -153,9 +163,9 @@ public class Swerve extends GBSubsystem {
 			imuSignals.rollAngularVelocitySignal(),
 			imuSignals.pitchAngularVelocitySignal(),
 			imuSignals.yawAngularVelocitySignal(),
-			imuSignals.xAccelerationSignalEarthGravitationalAcceleration(),
-			imuSignals.yAccelerationSignalEarthGravitationalAcceleration(),
-			imuSignals.zAccelerationSignalEarthGravitationalAcceleration()
+			imuSignals.xAccelerationGSignal(),
+			imuSignals.yAccelerationGSignal(),
+			imuSignals.zAccelerationGSignal()
 		);
 	}
 
@@ -173,7 +183,20 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
-		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
+		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getIMUAccelerationMetersPerSecondSquared());
+
+		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
+
+		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
+
+		Logger.recordOutput(
+			getLogPath() + "/isSkidding",
+			SwerveMath.getIsSkidding(
+				kinematics,
+				modules.getCurrentStates(),
+				SwerveConstants.ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND
+			)
+		);
 	}
 
 	public int getNumberOfOdometrySamples() {
@@ -187,9 +210,8 @@ public class Swerve extends GBSubsystem {
 			odometryData[i] = new OdometryData(
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
-				modules.getCurrentStates(),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getOrientation()),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(getIMUAcceleration().toTranslation2d())
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.yawSignal().asArray()[i]),
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d().getNorm())
 			);
 		}
 
@@ -233,10 +255,6 @@ public class Swerve extends GBSubsystem {
 			return speeds;
 		}
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
-	}
-
-	public Translation3d getIMUAcceleration() {
-		return imuSignals.getAccelerationEarthGravitationalAcceleration();
 	}
 
 	protected void moveToPoseByPID(Pose2d currentPose, Pose2d targetPose) {
