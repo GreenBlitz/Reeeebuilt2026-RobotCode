@@ -163,9 +163,9 @@ public class Swerve extends GBSubsystem {
 			imuSignals.rollAngularVelocitySignal(),
 			imuSignals.pitchAngularVelocitySignal(),
 			imuSignals.yawAngularVelocitySignal(),
-			imuSignals.xAccelerationSignalEarthGravitationalAcceleration(),
-			imuSignals.yAccelerationSignalEarthGravitationalAcceleration(),
-			imuSignals.zAccelerationSignalEarthGravitationalAcceleration()
+			imuSignals.xAccelerationGSignal(),
+			imuSignals.yAccelerationGSignal(),
+			imuSignals.zAccelerationGSignal()
 		);
 	}
 
