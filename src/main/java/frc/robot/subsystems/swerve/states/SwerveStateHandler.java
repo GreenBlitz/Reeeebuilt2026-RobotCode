@@ -80,7 +80,7 @@ public class SwerveStateHandler {
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading;
 
-		if (turretAngle.getRotations() < TurretConstants.MIDDLE_OF_SCORING_RANGE.getRotations()) {
+		if (turretAngle.getRotations() < TurretConstants.RANGE_MIDDLE.getRotations()) {
 			targetHeading = Rotation2d.fromDegrees(
 				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() - StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
 			);
