@@ -178,6 +178,16 @@ public class Swerve extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
 
 		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
+
+		Logger.recordOutput(
+			getLogPath() + "/isSkidding",
+			SwerveMath.getIsSkidding(
+				kinematics,
+				getRobotRelativeVelocity(),
+				modules.getCurrentStates(),
+				SwerveConstants.ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND
+			)
+		);
 	}
 
 	public int getNumberOfOdometrySamples() {
