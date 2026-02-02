@@ -125,7 +125,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 		odometryCausedPoseEstimationErrorMeasure += data.getImuAccelerationMagnitudeG().isPresent()
 			&& SwerveMath.isColliding(data.getImuAccelerationMagnitudeG().get(), SwerveConstants.MINIMUM_COLLISION_G_FORCE)
-				? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_ADDITION * changeInPoseNorm
+				? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR * changeInPoseNorm
 				: 0;
 		odometryCausedPoseEstimationErrorMeasure += data.getImuOrientation().isPresent()
 			&& SwerveMath.isTilted(
@@ -133,7 +133,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				Rotation2d.fromRadians(data.getImuOrientation().get().getY()),
 				SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE,
 				SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE
-			) ? WPILibPoseEstimatorConstants.TILT_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_ADDITION * changeInPoseNorm : 0;
+			) ? WPILibPoseEstimatorConstants.TILT_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR * changeInPoseNorm : 0;
 	}
 
 	@Override
