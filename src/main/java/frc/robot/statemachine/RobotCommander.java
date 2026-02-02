@@ -30,6 +30,7 @@ public class RobotCommander extends GBSubsystem {
 		this.swerve = robot.getSwerve();
 
 		this.logPath = logPath;
+
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
@@ -190,7 +191,7 @@ public class RobotCommander extends GBSubsystem {
 						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.PRE_SHOOT))
 					),
 					new ParallelCommandGroup(
-						funnelStateHandler.setState(FunnelState.SHOOT).until(this::isReadyToShoot),
+						funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueShooting()),
 						new InstantCommand(() -> currentState = RobotState.SHOOT),
 						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.SHOOT))
 					)
