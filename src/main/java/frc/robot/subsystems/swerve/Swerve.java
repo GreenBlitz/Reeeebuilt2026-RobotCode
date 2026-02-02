@@ -105,7 +105,7 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getLatestOrientation();
 	}
 
-	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
+	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
 		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration()
 			.times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
@@ -173,11 +173,14 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
-		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
+		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getIMUAccelerationMetersPerSecondSquared());
 
 		Logger.recordOutput(
 			getLogPath() + "/isColliding",
-			SwerveMath.isColliding(imuSignals.getLatestAccelerationEarthGravitationalAcceleration(), SwerveConstants.MIN_COLLISION_G_FORCE)
+			SwerveMath.isColliding(
+				imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d(),
+				SwerveConstants.MINIMUM_COLLISION_G_FORCE
+			)
 		);
 
 		Logger.recordOutput(
@@ -205,7 +208,7 @@ public class Swerve extends GBSubsystem {
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
 				imu instanceof EmptyIMU
 					? Optional.empty()
-					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].toTranslation2d().getNorm())
+					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].toTranslation2d())
 			);
 		}
 
@@ -251,8 +254,8 @@ public class Swerve extends GBSubsystem {
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
 	}
 
-	public double getIMUAcceleration() {
-		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm();
+	public Translation3d getIMUAcceleration() {
+		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration();
 	}
 
 

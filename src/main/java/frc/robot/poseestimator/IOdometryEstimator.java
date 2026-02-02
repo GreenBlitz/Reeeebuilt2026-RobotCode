@@ -3,6 +3,7 @@ package frc.robot.poseestimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public interface IOdometryEstimator {
@@ -14,7 +15,7 @@ public interface IOdometryEstimator {
 	void resetPose(
 		double timestampSeconds,
 		Rotation3d imuOrientation,
-		double imuAccelerationMagnitudeG,
+		Translation2d imuAccelerationMagnitudeG,
 		SwerveModulePosition[] wheelPositions,
 		Pose2d poseMeters
 	);
