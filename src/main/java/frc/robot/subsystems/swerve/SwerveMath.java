@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.utils.math.ToleranceMath;
 import frc.utils.time.TimeUtil;
@@ -63,6 +65,52 @@ public class SwerveMath {
 
 	public static double getDriveMagnitude(ChassisSpeeds chassisSpeeds) {
 		return Math.sqrt(Math.pow(chassisSpeeds.vxMetersPerSecond, 2) + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
+	}
+
+	public static boolean getIsSkidding(
+			SwerveDriveKinematics kinematics,
+			ChassisSpeeds robotRelativeVelocity,
+			SwerveModuleState[] moduleStates,
+			double skidRobotToModuleVelocityToleranceMetersPerSecond
+	) {
+		SwerveModuleState[] moduleRotationalStates = kinematics
+				.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotRelativeVelocity.omegaRadiansPerSecond), new Translation2d());
+		SwerveModuleState[] moduleTranslationalStates = getModuleTranslationalStates(moduleStates, moduleRotationalStates);
+
+		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
+				robotRelativeVelocity.vxMetersPerSecond,
+				robotRelativeVelocity.vyMetersPerSecond
+		);
+
+		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
+			if (
+					!ToleranceMath.isNear(
+							robotTranslationalVelocityMetersPerSecond,
+							new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
+							skidRobotToModuleVelocityToleranceMetersPerSecond
+					)
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static SwerveModuleState[] getModuleTranslationalStates(
+			SwerveModuleState[] moduleStates,
+			SwerveModuleState[] moduleRotationalStates
+	) {
+		SwerveModuleState[] moduleTranslationalStates = new SwerveModuleState[Math.min(moduleStates.length, moduleRotationalStates.length)];
+		for (int i = 0; i < moduleStates.length; i++) {
+			moduleTranslationalStates[i] = getModuleTranslationalState(moduleStates[i], moduleRotationalStates[i]);
+		}
+		return moduleTranslationalStates;
+	}
+
+	private static SwerveModuleState getModuleTranslationalState(SwerveModuleState moduleState, SwerveModuleState moduleRotationalState) {
+		Translation2d moduleTranslationalVelocity = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
+				.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
+		return new SwerveModuleState(moduleTranslationalVelocity.getNorm(), moduleTranslationalVelocity.getAngle());
 	}
 
 }
