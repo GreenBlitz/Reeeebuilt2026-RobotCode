@@ -118,8 +118,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getImuOrientation().get().getZ()));
 		}
 
-		data.getImuXYAccelerationG()
-			.ifPresent((acceleration) -> imuXYAccelerationBuffer.addSample(lastOdometryData.getTimestampSeconds(), acceleration));
+		data.getImuXYAccelerationG().ifPresent((acceleration) -> imuXYAccelerationBuffer.addSample(data.getTimestampSeconds(), acceleration));
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
 		lastOdometryData.setWheelStates(data.getWheelStates());
@@ -195,7 +194,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.ifPresent(
 				(xyAcceleration) -> Logger.recordOutput(
 					logPath + "/isColliding",
-					PoseUtil.getIsColliding(xyAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_G_FORCE)
+					PoseUtil.getIsColliding(xyAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_FORCE_G)
 				)
 			);
 
@@ -206,8 +205,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 					PoseUtil.getIsTilted(
 						Rotation2d.fromRadians(imuOrientation.getX()),
 						Rotation2d.fromRadians(imuOrientation.getY()),
-						WPILibPoseEstimatorConstants.TILT_ROBOT_ROLL_TOLERANCE,
-						WPILibPoseEstimatorConstants.TILT_ROBOT_PITCH_TOLERANCE
+						WPILibPoseEstimatorConstants.TILT_IMU_ROLL_TOLERANCE,
+						WPILibPoseEstimatorConstants.TILT_IMU_PITCH_TOLERANCE
 					)
 				)
 			);
@@ -255,10 +254,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Optional<Translation2d> imuXYAccelerationAtVisionObservationTimestamp = imuXYAccelerationBuffer
 			.getSample(visionObservation.timestampSeconds());
 		boolean isSamplePresent = imuXYAccelerationAtVisionObservationTimestamp.isPresent();
-		boolean isColliding = imuXYAccelerationAtVisionObservationTimestamp.get().getNorm()
-			>= WPILibPoseEstimatorConstants.MINIMUM_COLLISION_G_FORCE;
+		boolean isColliding = isSamplePresent
+			? imuXYAccelerationAtVisionObservationTimestamp.get().getNorm() >= WPILibPoseEstimatorConstants.MINIMUM_COLLISION_FORCE_G
+			: false;
 
-		return isSamplePresent && isColliding
+		return isColliding
 			? visionObservation.stdDevs()
 				.asColumnVector()
 				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())

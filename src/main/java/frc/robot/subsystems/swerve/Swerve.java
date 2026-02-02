@@ -113,14 +113,6 @@ public class Swerve extends GBSubsystem {
 		return getIMUAccelerationG().times(RobotConstants.G_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
 
-	public double getIMUAccelerationXYNormG() {
-		return getIMUAccelerationG().toTranslation2d().getNorm();
-	}
-
-	public double getIMUAccelerationXYNormMetersPerSecondSquared() {
-		return getIMUAccelerationMetersPerSecondSquared().toTranslation2d().getNorm();
-	}
-
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
 		PathPlannerUtil.configPathPlanner(
 			currentPoseSupplier,
