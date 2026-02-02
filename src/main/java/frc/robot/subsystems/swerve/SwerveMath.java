@@ -72,20 +72,20 @@ public class SwerveMath {
 		SwerveModuleState[] moduleStates,
 		double skidRobotToModuleVelocityToleranceMetersPerSecond
 	) {
-		ChassisSpeeds robotRelativeVelocity = kinematics.toChassisSpeeds(moduleStates);
-		Translation2d robotTranslationalVelocityMetersPerSecond = new Translation2d(
-			robotRelativeVelocity.vxMetersPerSecond,
-			robotRelativeVelocity.vyMetersPerSecond
+		ChassisSpeeds swerveVelocity = kinematics.toChassisSpeeds(moduleStates);
+		Translation2d swerveTranslationalVelocityMetersPerSecond = new Translation2d(
+			swerveVelocity.vxMetersPerSecond,
+			swerveVelocity.vyMetersPerSecond
 		);
 
 		SwerveModuleState[] moduleRotationalStates = kinematics
-			.toSwerveModuleStates(new ChassisSpeeds(0, 0, robotRelativeVelocity.omegaRadiansPerSecond));
+			.toSwerveModuleStates(new ChassisSpeeds(0, 0, swerveVelocity.omegaRadiansPerSecond));
 		SwerveModuleState[] moduleTranslationalStates = getModuleTranslationalStates(moduleStates, moduleRotationalStates);
 
 		for (SwerveModuleState moduleTranslationalState : moduleTranslationalStates) {
 			if (
 				!ToleranceMath.isNear(
-					robotTranslationalVelocityMetersPerSecond,
+					swerveTranslationalVelocityMetersPerSecond,
 					new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
 					skidRobotToModuleVelocityToleranceMetersPerSecond
 				)
@@ -101,7 +101,7 @@ public class SwerveMath {
 		SwerveModuleState[] moduleRotationalStates
 	) {
 		SwerveModuleState[] moduleTranslationalStates = new SwerveModuleState[Math.min(moduleStates.length, moduleRotationalStates.length)];
-		for (int i = 0; i < moduleStates.length; i++) {
+		for (int i = 0; i < moduleTranslationalStates.length; i++) {
 			moduleTranslationalStates[i] = getModuleTranslationalState(moduleStates[i], moduleRotationalStates[i]);
 		}
 		return moduleTranslationalStates;
