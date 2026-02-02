@@ -16,7 +16,7 @@ public interface IOdometryEstimator {
 	void resetPose(
 		double timestampSeconds,
 		Rotation3d imuOrientation,
-		Translation2d imuAccelerationMagnitudeG,
+		Translation2d imuXYAccelerationG,
 		SwerveModulePosition[] wheelPositions,
 		SwerveModuleState[] wheelStates,
 		Pose2d poseMeters
