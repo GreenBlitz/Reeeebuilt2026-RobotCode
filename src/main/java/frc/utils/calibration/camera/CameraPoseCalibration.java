@@ -21,7 +21,7 @@ public class CameraPoseCalibration extends Command {
 	private final Pose3d tagPoseFieldRelative;
 	private final Pose2d expectedRobotPoseFieldRelative;
 	private final double tagCenterHeightFromGroundMeters;
-	private final Rotation2d robotRelativeTagYaw;
+	private final Rotation2d robotYawRelativeToTagFacingYaw;
 
 	private final CameraPoseCalibrationInputsAutoLogged cameraPoseCalibrationInputs;
 
@@ -44,7 +44,7 @@ public class CameraPoseCalibration extends Command {
 	 * @param robotXAxisDistanceFromTag       - distance of the middle of the robot from the tag, "real life measurement"
 	 * @param tagCenterHeightFromGroundMeters - distance of the middle of the tag from the floor, "real life measurement"
 	 * @param tagPoseFieldRelative            - position of the tag in the apriltag map on the camera
-	 * @param robotRelativeTagYaw             - the tag's yaw relative to the robot's front, "real life measurement"
+	 * @param robotYawRelativeToTagFacingYaw  - the robot's yaw relative to its yaw when facing the tag, "real life measurement"
 	 *
 	 */
 	public CameraPoseCalibration(
@@ -54,7 +54,7 @@ public class CameraPoseCalibration extends Command {
 		double robotXAxisDistanceFromTag,
 		double tagCenterHeightFromGroundMeters,
 		Pose3d tagPoseFieldRelative,
-		Rotation2d robotRelativeTagYaw
+		Rotation2d robotYawRelativeToTagFacingYaw
 	) {
 		this.logPath = logPathPrefix + "/cameraPositionCalibration";
 		this.cameraName = cameraName;
@@ -67,7 +67,7 @@ public class CameraPoseCalibration extends Command {
 			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
 		);
 		this.tagCenterHeightFromGroundMeters = tagCenterHeightFromGroundMeters;
-		this.robotRelativeTagYaw = robotRelativeTagYaw;
+		this.robotYawRelativeToTagFacingYaw = robotYawRelativeToTagFacingYaw;
 
 		this.cameraPoseCalibrationInputs = new CameraPoseCalibrationInputsAutoLogged();
 
@@ -127,7 +127,7 @@ public class CameraPoseCalibration extends Command {
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getZ()
 					- expectedRobotPoseFieldRelative.getRotation().getRadians()
 			)
-		).rotateBy(new Rotation3d(0, 0, robotRelativeTagYaw.rotateBy(MathConstants.HALF_CIRCLE).getRadians()));
+		).rotateBy(new Rotation3d(0, 0, robotYawRelativeToTagFacingYaw.unaryMinus().getRadians()));
 	}
 
 	private void sumMeasurementsValues() {
