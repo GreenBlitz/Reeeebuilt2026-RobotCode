@@ -179,7 +179,7 @@ public class Swerve extends GBSubsystem {
 			getLogPath() + "/isColliding",
 			SwerveMath.isColliding(
 				imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d(),
-				SwerveConstants.MINIMUM_COLLISION_G_FORCE
+				SwerveConstants.MINIMUM_COLLISION_G
 			)
 		);
 

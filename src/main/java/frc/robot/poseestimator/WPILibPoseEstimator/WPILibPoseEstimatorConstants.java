@@ -15,9 +15,9 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
 
-	public static final double COLLISION_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
+	public static final double COLLISION_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
 
-	public static final double TILT_ODOMETRY_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
+	public static final double TILT_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
 
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 
