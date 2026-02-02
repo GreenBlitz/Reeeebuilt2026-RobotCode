@@ -84,14 +84,14 @@ public class RobotCommander extends GBSubsystem {
 		return driveWith(state, superstructure.setState(state));
 	}
 
-	private boolean isReadyToShoot() {
-		return ShootingChecks.isReadyToShoot(
+	private boolean isReadyToScore() {
+		return ShootingChecks.isReadyToScore(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
-			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_SHOOTING,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
 
@@ -102,18 +102,18 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
 
-	private boolean canContinueShooting() {
-		return ShootingChecks.canContinueShooting(
+	private boolean canContinueScoring() {
+		return ShootingChecks.canContinueScoring(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
-			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_SCORING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
 
@@ -124,15 +124,15 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
 
-	private boolean calibrationIsReadyToShoot() {
-		return ShootingChecks.calibrationIsReadyToShoot(
+	private boolean calibrationIsReadyToScore() {
+		return ShootingChecks.calibrationIsReadyToScore(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING
 		);
 	}
 
@@ -144,20 +144,20 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean calibrationCanContinueShooting() {
-		return ShootingChecks.calibrationCanContinueShooting(
+	private boolean calibrationCanContinueScoring() {
+		return ShootingChecks.calibrationCanContinueScoring(
 			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING
 
 		);
 	}
 
-	public Command shootSequence() {
+	public Command ScoreSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
-				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> (!canContinueShooting()))
+				driveWith(RobotState.PRE_SCORE).until(this::isReadyToScore),
+				driveWith(RobotState.SCORE).until(() -> (!canContinueScoring()))
 			)
 		);
 	}
@@ -171,11 +171,11 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command calibrationShootSequence() {
+	public Command calibrationScoreSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
-				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
-				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueShooting())
+				driveWith(RobotState.CALIBRATION_PRE_SCORE).until(this::isReadyToScore),
+				driveWith(RobotState.CALIBRATION_SCORE).until(() -> !calibrationCanContinueScoring())
 			)
 		);
 	}
@@ -187,8 +187,8 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT, PASS -> driveWith(RobotState.DRIVE);
-			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
+			case DRIVE, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS -> driveWith(RobotState.DRIVE);
+			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};
 	}

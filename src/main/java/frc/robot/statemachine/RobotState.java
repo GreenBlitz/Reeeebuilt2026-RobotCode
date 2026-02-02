@@ -7,12 +7,12 @@ public enum RobotState {
 
 	STAY_IN_PLACE,
 	DRIVE,
-	PRE_SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
-	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	PRE_SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
 	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
 	PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
-	CALIBRATION_PRE_SHOOT,
-	CALIBRATION_SHOOT;
+	CALIBRATION_PRE_SCORE,
+	CALIBRATION_SCORE;
 
 	private final SwerveState swerveState;
 	private boolean swerveStateActive;

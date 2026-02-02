@@ -36,9 +36,9 @@ public class ShootingChecks {
 		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
 		Translation2d blueAllianceRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
 		boolean isOnBumpOrUnderTrench = (blueAllianceRelativeTurretPosition.getX()
-			< Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX() + (Field.TRENCH_X_AXIS_LENGTH_METERS / 2)
+			< Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX() + (Field.BUMP_X_AXIS_LENGTH_METERS / 2)
 			&& blueAllianceRelativeTurretPosition.getX()
-				> Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX() - (Field.TRENCH_X_AXIS_LENGTH_METERS / 2));
+				> Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX() - (Field.BUMP_X_AXIS_LENGTH_METERS / 2));
 		Logger.recordOutput(logPath + "/isOnBumpOrUnderTranch", isOnBumpOrUnderTrench);
 		return isOnBumpOrUnderTrench;
 	}
@@ -71,21 +71,21 @@ public class ShootingChecks {
 	}
 
 	private static boolean isInAngleRangeToShoot(
-		Translation2d robotPosition,
+		Translation2d turretPosition,
 		Rotation2d maxAngleFromCenter,
 		String logPath,
 		Translation2d targetTranslation
 	) {
-		return isInAngleRange(robotPosition, maxAngleFromCenter, logPath, targetTranslation, false);
+		return isInAngleRange(turretPosition, maxAngleFromCenter, logPath, targetTranslation, false);
 	}
 
 	private static boolean isInAngleRangeToPass(
-		Translation2d robotPosition,
+		Translation2d TurretPosition,
 		Rotation2d maxAngleFromCenter,
 		String logPath,
 		Translation2d targetTranslation
 	) {
-		return isInAngleRange(robotPosition, maxAngleFromCenter, logPath, targetTranslation, true);
+		return isInAngleRange(TurretPosition, maxAngleFromCenter, logPath, targetTranslation, true);
 	}
 
 	private static boolean isTurretAtTargetPosition(
@@ -120,7 +120,7 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
-	private static boolean isReadyToReleaseBalls(
+	private static boolean isReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -132,15 +132,16 @@ public class ShootingChecks {
 		boolean isPass
 	) {
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
+		boolean isWithinDistance = isWithinDistance(turretPosition, maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
 
-		boolean isInRange = isInAngleRangeToShoot(robotPose.getTranslation(), maxAngleFromTargetCenter, logPath, targetTranslation);
+		boolean isInRange = isInAngleRangeToShoot(turretPosition, maxAngleFromTargetCenter, logPath, targetTranslation);
 		if (isPass) {
-			isInRange = isInAngleRangeToPass(robotPose.getTranslation(), maxAngleFromTargetCenter, logPath, targetTranslation);
+			isInRange = isInAngleRangeToPass(turretPosition, maxAngleFromTargetCenter, logPath, targetTranslation);
 		}
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
@@ -171,7 +172,7 @@ public class ShootingChecks {
 			&& !isOnBumpOrUnderTrench(robotPose, logPath);
 	}
 
-	private static boolean canContinueReleasingBalls(
+	private static boolean canContinueShooting(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -183,14 +184,15 @@ public class ShootingChecks {
 		boolean isPass
 	) {
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
 
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, target);
+		boolean isWithinDistance = isWithinDistance(turretPosition, maxShootingDistanceFromTargetMeters, logPath, target);
 
-		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromTargetCenter, logPath, target, isPass);
+		boolean isInRange = isInAngleRange(turretPosition, maxAngleFromTargetCenter, logPath, target, isPass);
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
@@ -221,7 +223,7 @@ public class ShootingChecks {
 			&& !isOnBumpOrUnderTrench(robotPose, logPath);
 	}
 
-	private static boolean calibrationIsReadyToReleaseBalls(
+	private static boolean calibrationIsReadyToScore(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -244,7 +246,7 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
-	private static boolean calibrationCanContinueReleasingBalls(
+	private static boolean calibrationCanContinueShooting(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -267,7 +269,7 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
-	public static boolean isReadyToShoot(
+	public static boolean isReadyToScore(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -275,7 +277,7 @@ public class ShootingChecks {
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return isReadyToReleaseBalls(
+		return isReadyToShoot(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -296,7 +298,7 @@ public class ShootingChecks {
 		Rotation2d maxAngleFromTargetCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return isReadyToReleaseBalls(
+		return isReadyToShoot(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -309,7 +311,7 @@ public class ShootingChecks {
 		) && isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChecksLogPath + "/IsReadyToPass");
 	}
 
-	public static boolean canContinueShooting(
+	public static boolean canContinueScoring(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -317,7 +319,7 @@ public class ShootingChecks {
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return canContinueReleasingBalls(
+		return canContinueShooting(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -338,7 +340,7 @@ public class ShootingChecks {
 		Rotation2d maxAngleFromTargetCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return canContinueReleasingBalls(
+		return canContinueShooting(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -353,24 +355,20 @@ public class ShootingChecks {
 			&& isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChecksLogPath + "canContinuePassing");
 	}
 
-	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationIsReadyToReleaseBalls(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Shoot");
+	public static boolean calibrationIsReadyToScore(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
+		return calibrationIsReadyToScore(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Shoot");
 	}
 
 	public static boolean calibrationIsReadyToPass(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationIsReadyToReleaseBalls(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Pass");
+		return calibrationIsReadyToScore(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Pass");
 	}
 
-	public static boolean calibrationCanContinueShooting(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRPS,
-		Rotation2d hoodPositionTolerance
-	) {
-		return calibrationCanContinueReleasingBalls(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Shoot");
+	public static boolean calibrationCanContinueScoring(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
+		return calibrationCanContinueShooting(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Shoot");
 	}
 
 	public static boolean calibrationCanContinuePassing(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationIsReadyToReleaseBalls(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Pass");
+		return calibrationIsReadyToScore(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Pass");
 	}
 
 

@@ -31,7 +31,7 @@ public class ShootingCalculations {
 		return shootingParams;
 	}
 
-	private static ShootingParams calculateBallReleasingParams(
+	private static ShootingParams calculateShootingParams(
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity,
@@ -97,12 +97,12 @@ public class ShootingCalculations {
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
-		return calculateBallReleasingParams(
+		return calculateShootingParams(
 			robotPose,
 			fieldRelativeSpeeds,
 			gyroYawAngularVelocity,
-			HOOD_SHOOTING_INTERPOLATION_MAP,
-			FLYWHEEL_SHOOTING_INTERPOLATION_MAP,
+			HOOD_SCORING_INTERPOLATION_MAP,
+			FLYWHEEL_SCORING_INTERPOLATION_MAP,
 			Field.getHubMiddle()
 		);
 	}
@@ -112,7 +112,7 @@ public class ShootingCalculations {
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
-		return calculateBallReleasingParams(
+		return calculateShootingParams(
 			robotPose,
 			fieldRelativeSpeeds,
 			gyroYawAngularVelocity,
@@ -149,7 +149,7 @@ public class ShootingCalculations {
 		return new Translation2d(3, 4);
 	}
 
-	private static final InterpolationMap<Double, Rotation2d> HOOD_SHOOTING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> HOOD_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -176,7 +176,7 @@ public class ShootingCalculations {
 		)
 	);
 
-	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_SHOOTING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
@@ -243,16 +243,16 @@ public class ShootingCalculations {
 		return HOOD_PASSING_INTERPOLATION_MAP.get(distance);
 	}
 
-	public static Rotation2d hoodShootingInterpolationMap(double distance) {
-		return HOOD_SHOOTING_INTERPOLATION_MAP.get(distance);
+	public static Rotation2d hoodScoringInterpolationMap(double distance) {
+		return HOOD_SCORING_INTERPOLATION_MAP.get(distance);
 	}
 
 	public static Rotation2d flywheelPassingInterpolationMap(double distance) {
 		return FLYWHEEL_PASSING_INTERPOLATION_MAP.get(distance);
 	}
 
-	public static Rotation2d flywheelShootingInterpolationMap(double distance) {
-		return FLYWHEEL_SHOOTING_INTERPOLATION_MAP.get(distance);
+	public static Rotation2d flywheelScoringInterpolationMap(double distance) {
+		return FLYWHEEL_SCORING_INTERPOLATION_MAP.get(distance);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {

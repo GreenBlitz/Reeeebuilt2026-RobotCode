@@ -73,10 +73,10 @@ public class Superstructure {
 			switch (robotState) {
 				case STAY_IN_PLACE -> stayInPlace();
 				case DRIVE -> idle();
-				case PRE_SHOOT, PRE_PASS -> preShoot();
-				case SHOOT, PASS -> shoot();
-				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
-				case CALIBRATION_SHOOT -> calibrationShoot();
+				case PRE_SCORE, PRE_PASS -> preScore();
+				case SCORE, PASS -> Score();
+				case CALIBRATION_PRE_SCORE -> calibrationPreScore();
+				case CALIBRATION_SCORE -> calibrationScore();
 			}
 		);
 	}
@@ -89,11 +89,11 @@ public class Superstructure {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
-	private Command preShoot() {
+	private Command preScore() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
-	private Command shoot() {
+	private Command Score() {
 		return new SequentialCommandGroup(
 			new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT)),
 			new ParallelCommandGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT))
@@ -101,11 +101,11 @@ public class Superstructure {
 		);
 	}
 
-	private Command calibrationPreShoot() {
+	private Command calibrationPreScore() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
-	private Command calibrationShoot() {
+	private Command calibrationScore() {
 		return new ParallelDeadlineGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
