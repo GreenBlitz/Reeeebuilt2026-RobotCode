@@ -1,6 +1,7 @@
 package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
@@ -13,7 +14,6 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class ShooterStateHandler {
@@ -22,12 +22,13 @@ public class ShooterStateHandler {
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<ShootingParams> shootingParamsSupplier;
-	private final BooleanSupplier hasBeenReset;
 	private final IDigitalInput turretResetCheckSensor;
 	private final IDigitalInput hoodResetCheckSensor;
 	private final DigitalInputInputsAutoLogged turretResetCheckInput;
 	private final DigitalInputInputsAutoLogged hoodResetCheckInput;
 	private final String logPath;
+	private boolean hasHoodBeenReset;
+	private boolean hasTurretBeenReset;
 	private ShooterState currentState;
 
 	public ShooterStateHandler(
@@ -35,7 +36,6 @@ public class ShooterStateHandler {
 		Arm hood,
 		FlyWheel flyWheel,
 		Supplier<ShootingParams> shootingParamsSupplier,
-		BooleanSupplier hasBeenReset,
 		IDigitalInput turretResetCheckSensor,
 		IDigitalInput hoodResetCheckSensor,
 		String logPath
@@ -44,12 +44,13 @@ public class ShooterStateHandler {
 		this.hood = hood;
 		this.flyWheel = flyWheel;
 		this.shootingParamsSupplier = shootingParamsSupplier;
-		this.hasBeenReset = hasBeenReset;
 		this.turretResetCheckSensor = turretResetCheckSensor;
 		this.hoodResetCheckSensor = hoodResetCheckSensor;
 		this.turretResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hoodResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.currentState = ShooterState.STAY_IN_PLACE;
+		this.hasHoodBeenReset = isHoodReset();
+		this.hasTurretBeenReset = isTurretReset();
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
@@ -113,17 +114,18 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return !hasBeenReset.getAsBoolean()
-			? new ParallelCommandGroup(
-				turret.getCommandsBuilder()
-					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
-					.until(() -> isTurretReset()),
-				hood.getCommandsBuilder()
-					.setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE)
-					.until(() -> isHoodReset()),
-				flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
+		return new ParallelCommandGroup(
+			new ConditionalCommand(
+				hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE),
+				new InstantCommand(() -> {}),
+				() -> hasHoodBeenReset
+			).until(() -> hasHoodBeenReset),
+			new ConditionalCommand(
+				turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE),
+				new InstantCommand(() -> {}),
+				() -> hasTurretBeenReset
 			)
-			: new InstantCommand();
+		).until(() -> hasTurretBeenReset);
 	}
 
 	private Command calibration() {
@@ -145,6 +147,12 @@ public class ShooterStateHandler {
 	public void periodic() {
 		turretResetCheckSensor.updateInputs(turretResetCheckInput);
 		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
+		if (!hasTurretBeenReset)
+			hasTurretBeenReset = isTurretReset();
+		if (!hasHoodBeenReset)
+			hasHoodBeenReset = isHoodReset();
+		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
+		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
 	}
 
 }

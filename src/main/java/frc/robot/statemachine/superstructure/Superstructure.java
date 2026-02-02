@@ -11,7 +11,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class Superstructure {
@@ -25,7 +24,7 @@ public class Superstructure {
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<ShootingParams> shootingParamsSupplier, BooleanSupplier hasBeenReset) {
+	public Superstructure(String logPath, Robot robot, Supplier<ShootingParams> shootingParamsSupplier) {
 		this.robot = robot;
 		this.logPath = logPath;
 
@@ -35,7 +34,6 @@ public class Superstructure {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			shootingParamsSupplier,
-			hasBeenReset,
 			robot.getTurretResetCheckSensor(),
 			robot.getHoodResetCheckSensor(),
 			logPath

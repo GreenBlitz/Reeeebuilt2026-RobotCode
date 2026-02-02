@@ -11,13 +11,12 @@ import frc.utils.LoggedNetworkRotation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 public class IntakeStateHandler {
 
 	private final Arm fourBar;
 	private final Roller rollers;
-	private BooleanSupplier hasBeenReset;
+	private boolean hasBeenReset;
 	private final IDigitalInput fourBarResetCheckSensor;
 	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
 	private final String logPath;
@@ -26,12 +25,12 @@ public class IntakeStateHandler {
 
 	private IntakeState currentState;
 
-	public IntakeStateHandler(Arm fourBar, Roller rollers, IDigitalInput fourBarResetCheckSensor, BooleanSupplier hasBeenReset, String logPath) {
+	public IntakeStateHandler(Arm fourBar, Roller rollers, IDigitalInput fourBarResetCheckSensor, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
-		this.hasBeenReset = hasBeenReset;
 		this.fourBarResetCheckSensor = fourBarResetCheckSensor;
 		this.fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
+		this.hasBeenReset = false;
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
@@ -48,9 +47,9 @@ public class IntakeStateHandler {
 	}
 
 	public Command resetFourBar() {
-		return !hasBeenReset.getAsBoolean()
+		return (!hasBeenReset
 			? fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(() -> isFourBarReset())
-			: new InstantCommand();
+			: new InstantCommand()).until(() -> hasBeenReset);
 	}
 
 	public Command toggleState() {
@@ -98,6 +97,10 @@ public class IntakeStateHandler {
 
 	public void periodic() {
 		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
+		if (!hasBeenReset)
+			hasBeenReset = isFourBarReset();
+		Logger.recordOutput(logPath + "/hasBeenReset", hasBeenReset);
+		Logger.recordOutput(logPath + "/resetSensorValue", isFourBarReset());
 	}
 
 	public boolean isFourBarReset() {

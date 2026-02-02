@@ -133,9 +133,8 @@ public class Robot {
 		new Trigger(() -> DriverStation.isEnabled()).onTrue(
 			new ParallelCommandGroup(
 				robotCommander.driveWith((RobotState.RESET_SUBSYSTEMS)),
-				robotCommander.getIntakeStateHandler()
-					.setState(IntakeState.RESET_FOUR_BAR)
-			).until(() ->robotCommander.hasBeenReset()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
 		);
 	}
 
@@ -369,11 +368,11 @@ public class Robot {
 	}
 
 	public IDigitalInput getHoodResetCheckSensor() {
-		return fourBarResetCheckSensor;
+		return hoodResetCheckSensor;
 	}
 
 	public IDigitalInput getFourBarResetCheckSensor() {
-		return hoodResetCheckSensor;
+		return fourBarResetCheckSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {

@@ -15,7 +15,6 @@ import frc.robot.statemachine.superstructure.Superstructure;
 import frc.robot.subsystems.GBSubsystem;
 
 import frc.robot.subsystems.swerve.Swerve;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
 
@@ -25,7 +24,6 @@ public class RobotCommander extends GBSubsystem {
 	private final Swerve swerve;
 	private final Superstructure superstructure;
 	private final IntakeStateHandler intakeStateHandler;
-	private boolean hasBeenReset;
 
 	private RobotState currentState;
 
@@ -33,21 +31,14 @@ public class RobotCommander extends GBSubsystem {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
-		this.superstructure = new Superstructure(
-			"StateMachine/Superstructure",
-			robot,
-			() -> ShootingCalculations.getShootingParams(),
-			() -> hasBeenReset
-		);
+		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
 		this.intakeStateHandler = new IntakeStateHandler(
 			robot.getFourBar(),
 			robot.getIntakeRoller(),
 			robot.getFourBarResetCheckSensor(),
-			() -> hasBeenReset,
 			"/IntakeStateHandler"
 		);
 		this.currentState = RobotState.STAY_IN_PLACE;
-		this.hasBeenReset = false;
 		setDefaultCommand(
 			new ConditionalCommand(
 				asSubsystemCommand(Commands.none(), "Disabled"),
@@ -81,12 +72,6 @@ public class RobotCommander extends GBSubsystem {
 	protected void subsystemPeriodic() {
 		superstructure.periodic();
 		intakeStateHandler.periodic();
-		if (!hasBeenReset) {
-			hasBeenReset = superstructure.getShooterStateHandler().isHoodReset()
-				&& superstructure.getShooterStateHandler().isTurretReset()
-				&& intakeStateHandler.isFourBarReset();
-		}
-		Logger.recordOutput(getLogPath() + "/hasBeenReset", hasBeenReset);
 	}
 
 	public Command driveWith(RobotState state, Command command) {
@@ -172,7 +157,4 @@ public class RobotCommander extends GBSubsystem {
 		return intakeStateHandler;
 	}
 
-	public boolean hasBeenReset(){
-		return hasBeenReset;
-	}
 }
