@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.constants.MathConstants;
@@ -42,14 +41,11 @@ public class SimulationManager {
 	}
 
 	public Pose3d getIntakePosition3d() {
-		return new Pose3d(
-			new Translation3d(-0.3, 0, 0.1),
-			new Rotation3d(0.0, Rotation2d.fromDegrees(110).minus(robot.getFourBar().getPosition()).getRadians(), 0.0)
-		);
+		return new Pose3d(new Translation3d(-0.3, 0, 0.1), new Rotation3d(0.0, robot.getFourBar().getPosition().getRadians(), 0.0));
 	}
 
 	public Pose3d getHopperPosition3d() {
-		return new Pose3d(new Translation3d(findHopperExtensionLength(0.5), 0.0, 0.0), new Rotation3d(0.0, 0.0, 0.0));
+		return new Pose3d(new Translation3d(findHopperExtensionLength(0.4), 0.0, 0.0), new Rotation3d(0.0, 0.0, 0.0));
 	}
 
 	public Pose3d getTurretPosition3d() {

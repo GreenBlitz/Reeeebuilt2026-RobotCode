@@ -43,7 +43,7 @@ public class FourBarConstants {
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
 	}
 
-	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(80);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(91);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(10);
 	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(100);
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
