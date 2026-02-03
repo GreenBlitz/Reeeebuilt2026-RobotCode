@@ -260,7 +260,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				(imuAccelerationG) -> PoseUtil
 					.getIsColliding(imuAccelerationG, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
 			)
-			.orElseGet(() -> false);
+			.orElse(false);
 
 		return isColliding
 			? visionObservation.stdDevs()
