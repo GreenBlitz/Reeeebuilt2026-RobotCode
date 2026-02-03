@@ -111,18 +111,9 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return new ParallelRaceGroup(
-			new ParallelCommandGroup(
-				hood.getCommandsBuilder()
-					.setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE)
-					.until(() -> hasHoodBeenReset())
-					.andThen(hood.getCommandsBuilder().stayInPlace()),
-				turret.getCommandsBuilder()
-					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
-					.until(() -> hasTurretBeenReset())
-					.andThen(turret.getCommandsBuilder().stayInPlace())
-			),
-			new RunCommand(() -> {}).until(this::hasBeenFullyReset).andThen(new WaitCommand(0.000001))
+		return new ParallelCommandGroup(
+			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE, () -> hasHoodBeenReset()),
+			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, () -> hasTurretBeenReset())
 		);
 	}
 

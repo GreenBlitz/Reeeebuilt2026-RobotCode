@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.utils.utilcommands.ExecuteEndCommand;
 import frc.utils.utilcommands.InitExecuteCommand;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -46,9 +47,13 @@ public class ArmCommandBuilder {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setVoltage(voltage.getAsDouble())), "Set voltage by supplier");
 	}
 
-	public Command setVoltageWithoutLimit(double voltage) {
+	public Command setVoltageWithoutLimit(double voltage, BooleanSupplier isFinished) {
 		return arm
-			.asSubsystemCommand(new ExecuteEndCommand(() -> arm.setVoltageWithoutLimit(voltage),() -> arm.stayInPlace()), "Set voltage to: " + voltage + " without limits");
+			.asSubsystemCommand(
+				new ExecuteEndCommand(() -> arm.setVoltageWithoutLimit(voltage), () -> arm.stayInPlace()),
+				"Set voltage to: " + voltage + " without limits"
+			)
+			.until(isFinished);
 	}
 
 }

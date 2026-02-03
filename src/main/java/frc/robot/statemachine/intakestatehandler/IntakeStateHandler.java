@@ -48,10 +48,7 @@ public class IntakeStateHandler {
 	}
 
 	public Command resetFourBar() {
-		return fourBar.getCommandsBuilder()
-			.setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE)
-			.until(() -> hasFourBarBeenReset())
-			.andThen(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "FinishedReset")));
+		return fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE, () -> hasFourBarBeenReset());
 	}
 
 	public Command toggleState() {
