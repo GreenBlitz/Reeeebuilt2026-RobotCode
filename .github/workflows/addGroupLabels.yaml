@@ -1,0 +1,79 @@
+name: Add Group Labels
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+
+jobs:
+  add-domain-labels:
+    runs-on: ubuntu-latest
+    env:
+      ROBOT_LABEL: "Robot"
+      POSE_LABEL: "Pose"
+
+    steps:
+      - name: Get changed files
+        id: changed-files
+        run: |
+          files=$(jq -r '.pull_request.files_url' $GITHUB_EVENT_PATH)
+
+          changedFiles=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "$files" | jq -r '.[].filename')
+
+          echo "changed-files<<EOF" >> $GITHUB_OUTPUT
+          echo "$changedFiles" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Decide labels to add
+        id: decide-labels
+        run: |
+          changedFiles="${{ steps.changed-files.outputs.changed-files }}"
+
+          addRobot=false
+          addPose=false
+
+          while IFS= read -r file; do
+            if [[ "$file" == src/main/deploy/* ]] || [[ "$file" == src/main/java/frc/joysticks/* ]] || [[ "$file" == src/main/java/frc/robot/autonomous/* ]] || [[ "$file" == src/main/java/frc/robot/hardware/* ]] || [[ "$file" == src/main/java/frc/robot/statemachine/* ]] || [[ "$file" == src/main/java/frc/robot/subsystems/* ]] || [[ "$file" == src/main/java/frc/utils/auto/* ]] || [[ "$file" == src/main/java/frc/utils/brakestate/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/swervecalibration/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/sysid/* ]]; then
+              addRobot=true
+            fi
+
+            if [[ "$file" == src/main/java/frc/robot/poseestimator/* ]] || [[ "$file" == src/main/java/frc/robot/vision/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/camera/* ]] || [[ "$file" == src/main/java/frc/utils/limelight/* ]] || [[ "$file" == src/main/java/frc/utils/pose/* ]]; then
+              addPose=true
+            fi
+          done <<< "$changedFiles"
+
+          echo "add-robot=$addRobot" >> $GITHUB_OUTPUT
+          echo "add-pose=$addPose" >> $GITHUB_OUTPUT
+
+          existingLabels=$(jq -r '.pull_request.labels[].name' $GITHUB_EVENT_PATH | tr '\n' ' ')
+          echo "existing-labels=$existingLabels" >> $GITHUB_ENV
+
+          echo "Robot label needed: $addRobot"
+          echo "Pose label needed: $addPose"
+          echo "Existing labels: $existingLabels"
+
+      - name: Add required labels
+        run: |
+          existingLabels="${{ env.existing-labels }}"
+
+          add_label () {
+            label=$1
+            if [[ "$existingLabels" != *"$label"* ]]; then
+              echo "Adding label $label"
+              curl -X POST \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.number }}/labels \
+                -d "{\"labels\":[\"$label\"]}"
+            fi
+          }
+
+          if [[ "${{ steps.decide-labels.outputs.add-robot }}" == "true" ]]; then
+            add_label "$ROBOT_LABEL"
+          fi
+
+          if [[ "${{ steps.decide-labels.outputs.add-pose }}" == "true" ]]; then
+            add_label "$POSE_LABEL"
+          fi
