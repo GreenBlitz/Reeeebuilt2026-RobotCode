@@ -1,15 +1,15 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
@@ -17,7 +17,6 @@ import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
-
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.Logger;
 
@@ -101,18 +100,14 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command setState(RobotState robotState) {
-		return new ParallelCommandGroup(
-			new InstantCommand(() -> currentState = robotState),
-			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", robotState)),
-			switch (robotState) {
-				case STAY_IN_PLACE -> stayInPlace();
-				case NEUTRAL -> neutral();
-				case PRE_SHOOT -> preShoot();
-				case SHOOT -> shoot();
-				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
-				case CALIBRATION_SHOOT -> calibrationShoot();
-			}
-		);
+		return asSubsystemCommand(switch (robotState) {
+			case STAY_IN_PLACE -> stayInPlace();
+			case NEUTRAL -> neutral();
+			case PRE_SHOOT -> preShoot();
+			case SHOOT -> shoot();
+			case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
+			case CALIBRATION_SHOOT -> calibrationShoot();
+		}, robotState);
 	}
 
 	public Command driveWith(RobotState state, Command command) {
@@ -198,14 +193,10 @@ public class RobotCommander extends GBSubsystem {
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
-						funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToShoot),
-						new InstantCommand(() -> currentState = RobotState.PRE_SHOOT),
-						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.PRE_SHOOT))
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToShoot), RobotState.PRE_SHOOT)
 					),
 					new ParallelCommandGroup(
-						funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueShooting()),
-						new InstantCommand(() -> currentState = RobotState.SHOOT),
-						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.SHOOT))
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueShooting()), RobotState.SHOOT)
 					)
 				)
 			)
@@ -219,14 +210,16 @@ public class RobotCommander extends GBSubsystem {
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
-						funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::calibrationIsReadyToShoot),
-						new InstantCommand(() -> currentState = RobotState.PRE_SHOOT),
-						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.CALIBRATION_PRE_SHOOT))
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::calibrationIsReadyToShoot),
+							RobotState.PRE_SHOOT
+						)
 					),
 					new ParallelCommandGroup(
-						funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !calibrationCanContinueShooting()),
-						new InstantCommand(() -> currentState = RobotState.SHOOT),
-						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.CALIBRATION_SHOOT))
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !calibrationCanContinueShooting()),
+							RobotState.SHOOT
+						)
 					)
 				)
 			)
@@ -234,7 +227,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
-		return new ParallelCommandGroup(asSubsystemCommand(command, state.name()), new InstantCommand(() -> currentState = state));
+		return new ParallelCommandGroup(
+			asSubsystemCommand(command, state.name()),
+			new InstantCommand(() -> currentState = state),
+			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", state))
+		);
 	}
 
 	private Command endState(RobotState state) {

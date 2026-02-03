@@ -52,7 +52,7 @@ public class ShootingChecks {
 
 	private static boolean isHoodAtPositon(Rotation2d wantedPosition, Rotation2d hoodPosition, Rotation2d tolerance, String logPath) {
 		boolean isHoodAtPosition = MathUtil.isNear(wantedPosition.getDegrees(), hoodPosition.getDegrees(), tolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isHoodAtPositon", isHoodAtPosition);
+		Logger.recordOutput(logPath + "/isHoodAtPosition", isHoodAtPosition);
 		return isHoodAtPosition;
 	}
 
@@ -64,7 +64,7 @@ public class ShootingChecks {
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		String logPath = shootingChecksLogPath + "/IsReadyRoShoot";
+		String logPath = shootingChecksLogPath + "/IsReadyToShoot";
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
@@ -86,6 +86,9 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS,
 			logPath
 		);
+		Logger.recordOutput(logPath + "/flywheelVelocityToleranceRPS", flywheelVelocityToleranceRPS);
+		Logger.recordOutput(logPath + "/wantedFlywheelVelocityRPS", ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS());
+		Logger.recordOutput(logPath + "/flywheelVelocityRPS", flywheelVelocityRPS);
 
 		boolean isHoodAtPosition = isHoodAtPositon(
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
