@@ -202,6 +202,22 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public Command shootSequenceWithoutAimAssist() {
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.SHOOT),
+			new RepeatCommand(
+				new SequentialCommandGroup(
+					new ParallelCommandGroup(
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToShoot), RobotState.PRE_SHOOT)
+					),
+					new ParallelCommandGroup(
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueShooting()), RobotState.SHOOT)
+					)
+				)
+			)
+		);
+	}
+
 	public Command calibrationShootSequence() {
 		return new ParallelCommandGroup(
 			swerve.getCommandsBuilder().driveByDriversInputs(RobotState.SHOOT.getSwerveState()),
