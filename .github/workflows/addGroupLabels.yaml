@@ -31,7 +31,7 @@ jobs:
         run: |
           filesUrl=$(jq -r '.pull_request.files_url' "$GITHUB_EVENT_PATH")
 
-          addRobot=false
+          addRobot=true
           addPose=false
 
           while IFS= read -r file; do
