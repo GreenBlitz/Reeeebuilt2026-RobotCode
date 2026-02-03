@@ -82,7 +82,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.odometryCausedEstimatedPoseErrorMeasure = 0;
 	}
 
-
 	@Override
 	public Pose2d getEstimatedPose() {
 		return poseEstimator.getEstimatedPosition();
@@ -288,7 +287,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 		return compensatedStdDevs;
 	}
-
 
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
