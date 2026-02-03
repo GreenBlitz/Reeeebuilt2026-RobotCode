@@ -136,15 +136,14 @@ public class Robot {
 
 		swerve.configPathPlanner(poseEstimator::getEstimatedPose,poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
 		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
-
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(
-			(new ParallelCommandGroup(
-				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
-		);
+//		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+//			(new ParallelCommandGroup(
+//				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+//				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+//			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
+//		);
 	}
 
 	public void resetSubsystems() {

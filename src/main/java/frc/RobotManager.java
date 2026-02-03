@@ -69,10 +69,13 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		robot.getSwerve().setIsRunningIndependently(true);
-
+		robot.getRobotCommander().setIsRunningIndependently(true);
+		robot.getRobotCommander().setIsRunningIndependently(true);
+		robot.getRobotCommander().setIsRunningIndependently(true);
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}
+		Logger.recordOutput("rafa",autonomousCommand.getStartingPose());
 		CommandScheduler.getInstance().schedule(autonomousCommand);
 	}
 
