@@ -13,6 +13,7 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 public class ShootingCalculations {
@@ -233,10 +234,15 @@ public class ShootingCalculations {
 		)
 	);
 
+	static {
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(27500));
+		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(50));
+	}
+
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
+		Map.of(2.0, 0.89, 4.0, 0.94, 5.85, 1.0)
 	);
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
