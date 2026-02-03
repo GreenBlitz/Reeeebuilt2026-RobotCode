@@ -7,6 +7,7 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -118,7 +119,7 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_PASSING_INTERPOLATION_MAP,
 			FLYWHEEL_PASSING_INTERPOLATION_MAP,
-			getOptimalPassingPosition(robotPose)
+			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose))
 		);
 	}
 
@@ -144,9 +145,19 @@ public class ShootingCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
-	public static Translation2d getOptimalPassingPosition(Pose2d robotPose) {
-		// to do
-		return new Translation2d(3, 4);
+	public static Translation2d getOptimalPassingPosition(Translation2d turretPosition) {
+		Translation2d optimalPassingPosition;
+		if (!ShootingChecks.isInYRangeForSidePassing(turretPosition)) {
+			optimalPassingPosition = new Translation2d(ShooterConstants.getTargetXForPassing(), turretPosition.getY());
+		} else {
+			if (turretPosition.getY() > Field.WIDTH_METERS / 2) {
+				optimalPassingPosition = ShooterConstants.getUpperYSidePassingTarget();
+			} else {
+				optimalPassingPosition = ShooterConstants.getUpperYSidePassingTarget();
+			}
+		}
+		Logger.recordOutput(LOG_PATH + "/OptimalPassingPosition", optimalPassingPosition);
+		return optimalPassingPosition;
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
