@@ -135,16 +135,16 @@ public class Robot {
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
-		swerve.configPathPlanner(poseEstimator::getEstimatedPose,poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
+		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
 		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-//		new Trigger(() -> DriverStation.isEnabled()).onTrue(
-//			(new ParallelCommandGroup(
-//				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-//				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-//			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
-//		);
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+			(new ParallelCommandGroup(
+				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
+		);
 	}
 
 	public void resetSubsystems() {
@@ -187,7 +187,7 @@ public class Robot {
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
-		Logger.recordOutput("ra",autonomousChooser.isDefaultOptionChosen());
+		Logger.recordOutput("ra", autonomousChooser.isDefaultOptionChosen());
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
