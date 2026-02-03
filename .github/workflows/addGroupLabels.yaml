@@ -37,10 +37,12 @@ jobs:
           while IFS= read -r file; do
             if [[ "$file" == src/main/deploy/* ]] || [[ "$file" == src/main/java/frc/joysticks/* ]] || [[ "$file" == src/main/java/frc/robot/autonomous/* ]] || [[ "$file" == src/main/java/frc/robot/hardware/* ]] || [[ "$file" == src/main/java/frc/robot/statemachine/* ]] || [[ "$file" == src/main/java/frc/robot/subsystems/* ]] || [[ "$file" == src/main/java/frc/utils/auto/* ]] || [[ "$file" == src/main/java/frc/utils/brakestate/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/swervecalibration/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/sysid/* ]]; then
               addRobot=true
+              echo "robot boolean"
             fi
 
             if [[ "$file" == src/main/java/frc/robot/poseestimator/* ]] || [[ "$file" == src/main/java/frc/robot/vision/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/camera/* ]] || [[ "$file" == src/main/java/frc/utils/limelight/* ]] || [[ "$file" == src/main/java/frc/utils/pose/* ]]; then
               addPose=true
+              echo "pose boolean"
             fi
           done <<< "$changedFiles"
 
