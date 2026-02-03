@@ -106,8 +106,8 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getIMUOrientation(),
-			swerve.getGyroAbsoluteYaw().getTimestamp(),
-			swerve.getIMUAcceleration()
+			swerve.getIMUAcceleration().toTranslation2d(),
+			swerve.getGyroAbsoluteYaw().getTimestamp()
 		);
 
 		robotCommander = new RobotCommander("/RobotCommander", this);

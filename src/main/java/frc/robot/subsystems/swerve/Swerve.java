@@ -105,7 +105,7 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getLatestOrientation();
 	}
 
-	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
+	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
 		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration()
 			.times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
@@ -173,11 +173,25 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
-		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
+		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getIMUAccelerationMetersPerSecondSquared());
 
-		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
+		Logger.recordOutput(
+			getLogPath() + "/isColliding",
+			SwerveMath.isColliding(
+				imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d(),
+				SwerveConstants.MINIMUM_COLLISION_G
+			)
+		);
 
-		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
+		Logger.recordOutput(
+			getLogPath() + "/isTilted",
+			SwerveMath.isTilted(
+				imuSignals.rollSignal().getLatestValue(),
+				imuSignals.pitchSignal().getLatestValue(),
+				SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE,
+				SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE
+			)
+		);
 	}
 
 	public int getNumberOfOdometrySamples() {
@@ -194,7 +208,7 @@ public class Swerve extends GBSubsystem {
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
 				imu instanceof EmptyIMU
 					? Optional.empty()
-					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].toTranslation2d().getNorm())
+					: Optional.of(imuSignals.getAllAccelerationsEarthGravitationalAcceleration()[i].toTranslation2d())
 			);
 		}
 
@@ -240,8 +254,8 @@ public class Swerve extends GBSubsystem {
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
 	}
 
-	public double getIMUAcceleration() {
-		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm();
+	public Translation3d getIMUAcceleration() {
+		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration();
 	}
 
 
@@ -338,16 +352,6 @@ public class Swerve extends GBSubsystem {
 		boolean isStopping = Math.abs(rotationVelocityRadiansPerSecond) < velocityDeadbandAnglesPerSecond.getRadians();
 
 		return isAtHeading && isStopping;
-	}
-
-	public boolean isCollisionDetected() {
-		return imuSignals.getLatestAccelerationEarthGravitationalAcceleration().toTranslation2d().getNorm()
-			> SwerveConstants.MIN_COLLISION_G_FORCE;
-	}
-
-	public boolean isTilted() {
-		return Math.abs(imuSignals.rollSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
-			|| Math.abs(imuSignals.pitchSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians();
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {

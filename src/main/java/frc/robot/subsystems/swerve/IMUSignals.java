@@ -17,16 +17,16 @@ public record IMUSignals(
 
 	public Rotation3d getAngularVelocity() {
 		return new Rotation3d(
-			this.rollAngularVelocitySignal().getLatestValue().getRadians(),
-			this.pitchAngularVelocitySignal().getLatestValue().getRadians(),
-			this.yawAngularVelocitySignal().getLatestValue().getRadians()
+			rollAngularVelocitySignal().getLatestValue().getRadians(),
+			pitchAngularVelocitySignal().getLatestValue().getRadians(),
+			yawAngularVelocitySignal().getLatestValue().getRadians()
 		);
 	}
 
 	public Rotation3d[] getAllOrientations() {
-		Rotation2d[] allRollValues = this.rollSignal.asArray();
-		Rotation2d[] allPitchValues = this.pitchSignal.asArray();
-		Rotation2d[] allYawValues = this.yawSignal.asArray();
+		Rotation2d[] allRollValues = rollSignal.asArray();
+		Rotation2d[] allPitchValues = pitchSignal.asArray();
+		Rotation2d[] allYawValues = yawSignal.asArray();
 		Rotation3d[] allOrientations = new Rotation3d[Math.min(Math.min(allRollValues.length, allPitchValues.length), allYawValues.length)];
 		for (int i = 0; i < allOrientations.length; i++) {
 			allOrientations[i] = new Rotation3d(allRollValues[i].getRadians(), allPitchValues[i].getRadians(), allYawValues[i].getRadians());
@@ -36,16 +36,16 @@ public record IMUSignals(
 
 	public Rotation3d getLatestOrientation() {
 		return new Rotation3d(
-			this.rollSignal.getLatestValue().getRadians(),
-			this.pitchSignal.getLatestValue().getRadians(),
-			this.yawSignal.getLatestValue().getRadians()
+			rollSignal.getLatestValue().getRadians(),
+			pitchSignal.getLatestValue().getRadians(),
+			yawSignal.getLatestValue().getRadians()
 		);
 	}
 
 	public Translation3d[] getAllAccelerationsEarthGravitationalAcceleration() {
-		Double[] allXAccelerations = this.xAccelerationSignalEarthGravitationalAcceleration.asArray();
-		Double[] allYAccelerations = this.yAccelerationSignalEarthGravitationalAcceleration.asArray();
-		Double[] allZAccelerations = this.zAccelerationSignalEarthGravitationalAcceleration.asArray();
+		Double[] allXAccelerations = xAccelerationSignalEarthGravitationalAcceleration.asArray();
+		Double[] allYAccelerations = yAccelerationSignalEarthGravitationalAcceleration.asArray();
+		Double[] allZAccelerations = zAccelerationSignalEarthGravitationalAcceleration.asArray();
 		Translation3d[] allAccelerations = new Translation3d[Math
 			.min(Math.min(allXAccelerations.length, allYAccelerations.length), allZAccelerations.length)];
 		for (int i = 0; i < allAccelerations.length; i++) {
@@ -56,9 +56,9 @@ public record IMUSignals(
 
 	public Translation3d getLatestAccelerationEarthGravitationalAcceleration() {
 		return new Translation3d(
-			this.xAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
-			this.yAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
-			this.zAccelerationSignalEarthGravitationalAcceleration().getLatestValue()
+			xAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
+			yAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
+			zAccelerationSignalEarthGravitationalAcceleration().getLatestValue()
 		);
 	}
 
