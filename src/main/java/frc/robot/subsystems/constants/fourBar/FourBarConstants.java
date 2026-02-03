@@ -51,7 +51,7 @@ public class FourBarConstants {
 	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 	public final static double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
-	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
+	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
 
 }
