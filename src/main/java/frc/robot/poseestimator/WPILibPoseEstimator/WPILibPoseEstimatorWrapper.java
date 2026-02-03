@@ -237,13 +237,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private StandardDeviations2D getOdometryErrorCompensatedVisionStdDevs(StandardDeviations2D visionStd) {
 		StandardDeviations2D compensatedStdDevs = new StandardDeviations2D(
-			(visionStd.xStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION) / odometryCausedEstimatedPoseError,
-			(visionStd.yStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION) / odometryCausedEstimatedPoseError,
+			(visionStd.xStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
+				/ odometryCausedPoseEstimationErrorMeasure,
+			(visionStd.yStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
+				/ odometryCausedPoseEstimationErrorMeasure,
 			(visionStd.angleStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
-				/ odometryCausedEstimatedPoseError
+				/ odometryCausedPoseEstimationErrorMeasure
 		);
 		double avgStdXnY = (compensatedStdDevs.xStandardDeviations() + compensatedStdDevs.yStandardDeviations()) / 2.0;
-		this.odometryCausedEstimatedPoseError -= WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_STD / avgStdXnY;
+		this.odometryCausedPoseEstimationErrorMeasure -= WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_STD / avgStdXnY;
 
 		return compensatedStdDevs;
 	}
