@@ -156,7 +156,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 		isSkidding = PoseUtil.getIsSkidding(
 			kinematics,
-			lastOdometryData.getWheelStates(),
+			data.getWheelStates(),
 			WPILibPoseEstimatorConstants.MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND
 		);
 	}
@@ -166,18 +166,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
 		odometryCausedEstimatedPoseErrorMeasure += isColliding
-			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR
-			// * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
 			: 0;
 
 		odometryCausedEstimatedPoseErrorMeasure += isTilted
-			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR
-			// * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
 			: 0;
 
 		odometryCausedEstimatedPoseErrorMeasure += isSkidding
-			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR
-			// * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
 			: 0;
 	}
 
