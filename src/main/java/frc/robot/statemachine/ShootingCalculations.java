@@ -153,7 +153,7 @@ public class ShootingCalculations {
 			if (turretPosition.getY() > Field.WIDTH_METERS / 2) {
 				optimalPassingPosition = ShooterConstants.getUpperYSidePassingTarget();
 			} else {
-				optimalPassingPosition = ShooterConstants.getUpperYSidePassingTarget();
+				optimalPassingPosition = ShooterConstants.getLowerYSidePassingTarget();
 			}
 		}
 		Logger.recordOutput(LOG_PATH + "/OptimalPassingPosition", optimalPassingPosition);
