@@ -7,9 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutosBuilder;
@@ -19,9 +17,9 @@ import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
@@ -138,13 +136,19 @@ public class Robot {
 		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
 		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
 		simulationManager = new SimulationManager("SimulationManager", this);
-
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(
-			(new ParallelCommandGroup(
-				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
-		);
+		if (ROBOT_TYPE.isReal()) {
+			new Trigger(() -> DriverStation.isEnabled()).onTrue(
+				new ConditionalCommand(
+					(new ParallelCommandGroup(
+						robotCommander.driveWith(RobotState.RESET_SUBSYSTEMS),
+						robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+					).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)),
+					new InstantCommand(() -> {}),
+					() -> !(robotCommander.getIntakeStateHandler().hasFourBarBeenReset()
+						&& robotCommander.getShooterStateHandler().hasBeenFullyReset())
+				)
+			);
+		}
 	}
 
 	public void resetSubsystems() {
