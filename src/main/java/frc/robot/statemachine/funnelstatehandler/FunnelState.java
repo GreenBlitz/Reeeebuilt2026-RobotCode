@@ -6,7 +6,7 @@ public enum FunnelState {
 
 	STOP,
 	SHOOT(Rotation2d.fromRotations(18), 1),
-	DRIVE,
+	NEUTRAL,
 	CALIBRATION;
 
 	private final Rotation2d trainVelocity;

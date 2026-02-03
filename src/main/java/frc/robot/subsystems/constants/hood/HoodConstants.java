@@ -46,6 +46,9 @@ public class HoodConstants {
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
 	public static final SysIdRoutine.Config SYSIDROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
+	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
+	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
+	public static final double RESET_HOOD_VOLTAGE = 1;
 
 }
 

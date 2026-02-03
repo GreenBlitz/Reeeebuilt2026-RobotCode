@@ -21,7 +21,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final Rotation2d MINIMUM_TILT_IMU_PITCH = Rotation2d.fromDegrees(4);
 
-	public static final double ONE_MODULE_SKID_ROBOT_TO_MODULE_VELOCITY_TOLERANCE_METERS_PER_SECOND = 0.5;
+	public static final double MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND = 0.5;
 
 	public static final double COLLISION_CAUSED_POSE_ESTIMATION_ERROR_MEASURE_FACTOR = 0;
 
@@ -39,6 +39,6 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
-	public static double IMU_XY_ACCELERATION_BUFFER_SIZE_SECONDS = 2;
+	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
 
 }

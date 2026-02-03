@@ -52,9 +52,9 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+		usedJoystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
+		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -83,19 +83,12 @@ public class JoysticksBindings {
 		// bindings...
 	}
 
-	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.SHOOT));
-		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.PRE_SHOOT));
-		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
-		joystick.POV_DOWN.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.STAY_IN_PLACE));
-	}
-
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
-		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
+		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE));
+		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SCORE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
+		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
 	private static void applyTurretCalibrationBindings(Arm turret, SmartJoystick joystick, double calibrationMaxPower) {
