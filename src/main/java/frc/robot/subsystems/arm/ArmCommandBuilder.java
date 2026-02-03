@@ -3,8 +3,10 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.utils.utilcommands.ExecuteEndCommand;
 import frc.utils.utilcommands.InitExecuteCommand;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -37,12 +39,21 @@ public class ArmCommandBuilder {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setTargetPosition(target.get())), "Set target with Supplier");
 	}
 
-	public Command setVoltage(Double voltage) {
+	public Command setVoltage(double voltage) {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setVoltage(voltage)), "Set voltage to: " + voltage);
 	}
 
 	public Command setVoltage(DoubleSupplier voltage) {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setVoltage(voltage.getAsDouble())), "Set voltage by supplier");
+	}
+
+	public Command setVoltageWithoutLimit(double voltage, BooleanSupplier isFinished) {
+		return arm
+			.asSubsystemCommand(
+				new ExecuteEndCommand(() -> arm.setVoltageWithoutLimit(voltage), () -> arm.stayInPlace()),
+				"Set voltage to: " + voltage + " without limits"
+			)
+			.until(isFinished);
 	}
 
 }

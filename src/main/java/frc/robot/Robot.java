@@ -4,16 +4,24 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
+import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
@@ -58,7 +66,9 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final IDigitalInput intakeRollerSensor;
+	private final IDigitalInput turretResetCheckSensor;
+	private final IDigitalInput fourBarResetCheckSensor;
+	private final IDigitalInput hoodResetCheckSensor;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -74,22 +84,23 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = createTurret();
+		this.turretResetCheckSensor = createTurretResetCheckSensor();
 		turret.setPosition(TurretConstants.MIN_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
 		this.flyWheel = KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
 
 		this.fourBar = createFourBar();
+		this.fourBarResetCheckSensor = createFourBarSensorResetCheck();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
 		this.hood = createHood();
+		this.hoodResetCheckSensor = createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		Pair<Roller, IDigitalInput> intakeRollerAndDigitalInput = createIntakeRollers();
-		this.intakeRoller = intakeRollerAndDigitalInput.getFirst();
-		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
+		this.intakeRoller = createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.train = createTrain();
@@ -110,8 +121,9 @@ public class Robot {
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
-			swerve.getIMUAbsoluteYaw().getValue(),
-			swerve.getIMUAccelerationXYNormG(),
+			swerve.getModules().getCurrentStates(),
+			swerve.getIMUOrientation(),
+			swerve.getIMUAccelerationG().toTranslation2d(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
@@ -126,6 +138,13 @@ public class Robot {
 		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+			(new ParallelCommandGroup(
+				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
+		);
 	}
 
 	public void resetSubsystems() {
@@ -174,18 +193,14 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	private Pair<Roller, IDigitalInput> createIntakeRollers() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
+	private Roller createIntakeRollers() {
+		return SparkMaxRollerBuilder.build(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/IntakeRollers",
 			IDs.SparkMAXIDs.INTAKE_ROLLERS,
 			IntakeRollerConstants.IS_INVERTED,
 			IntakeRollerConstants.GEAR_RATIO,
 			IntakeRollerConstants.CURRENT_LIMIT,
-			IntakeRollerConstants.MOMENT_OF_INERTIA,
-			IntakeRollerConstants.DIGITAL_INPUT_NAME,
-			IntakeRollerConstants.DEBOUNCE_TIME,
-			IntakeRollerConstants.IS_FORWARD_LIMIT_SWITCH,
-			IntakeRollerConstants.IS_SENSOR_INVERTED
+			IntakeRollerConstants.MOMENT_OF_INERTIA
 		);
 	}
 
@@ -298,8 +313,34 @@ public class Robot {
 		);
 	}
 
-	public IDigitalInput getIntakeRollerSensor() {
-		return intakeRollerSensor;
+	private IDigitalInput createFourBarSensorResetCheck() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.FOUR_BAR_RESET_SENSOR),
+				new Debouncer(FourBarConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				FourBarConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("intakeResetCheck");
+	}
+
+	private IDigitalInput createTurretResetCheckSensor() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.TURRET_RESET_SENSOR),
+				new Debouncer(TurretConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				TurretConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("turretResetCheck");
+	}
+
+	private IDigitalInput createHoodResetCheckSensor() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),
+				new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("hoodResetCheck");
 	}
 
 	public Roller getIntakeRoller() {
@@ -328,6 +369,18 @@ public class Robot {
 
 	public Arm getHood() {
 		return hood;
+	}
+
+	public IDigitalInput getTurretResetCheckSensor() {
+		return turretResetCheckSensor;
+	}
+
+	public IDigitalInput getHoodResetCheckSensor() {
+		return hoodResetCheckSensor;
+	}
+
+	public IDigitalInput getFourBarResetCheckSensor() {
+		return fourBarResetCheckSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {

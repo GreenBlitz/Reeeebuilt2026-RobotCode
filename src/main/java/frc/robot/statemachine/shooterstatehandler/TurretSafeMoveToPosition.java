@@ -33,7 +33,7 @@ public class TurretSafeMoveToPosition extends Command {
 		if (TurretCalculations.isTurretMoveLegal(targetPosition, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
 		} else {
-			targetPosition = turret.getPosition().getDegrees() < TurretConstants.MIDDLE_OF_SHOOTING_RANGE.getDegrees()
+			targetPosition = turret.getPosition().getDegrees() < TurretConstants.RANGE_MIDDLE.getDegrees()
 				? TurretConstants.BACKWARDS_SOFTWARE_LIMIT
 				: TurretConstants.FORWARD_SOFTWARE_LIMIT;
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", false);
