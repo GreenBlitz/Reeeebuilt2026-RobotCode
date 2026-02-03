@@ -240,7 +240,6 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command passSequence() {
 		return new ParallelCommandGroup(
-			swerve.getCommandsBuilder().driveByDriversInputs(RobotState.PASS.getSwerveState()),
 			shooterStateHandler.setState(ShooterState.SHOOT),
 			new RepeatCommand(
 				new SequentialCommandGroup(
@@ -257,7 +256,6 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command calibrationScoreSequence() {
 		return new ParallelCommandGroup(
-			swerve.getCommandsBuilder().driveByDriversInputs(RobotState.CALIBRATION_SCORE.getSwerveState()),
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
 			new RepeatCommand(
 				new SequentialCommandGroup(
