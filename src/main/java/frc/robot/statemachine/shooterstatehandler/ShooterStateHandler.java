@@ -151,6 +151,8 @@ public class ShooterStateHandler {
 			hasHoodBeenReset = isHoodReset();
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
+		Logger.recordOutput(logPath + "/hoodResetSensor", isHoodReset());
+		Logger.recordOutput(logPath + "/ResetSensor", isTurretReset());
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
@@ -163,7 +165,6 @@ public class ShooterStateHandler {
 	}
 
 	public boolean hasBeenFullyReset() {
-		Logger.recordOutput("ASADASF", hasTurretBeenReset && hasHoodBeenReset);
 		return hasTurretBeenReset && hasHoodBeenReset;
 	}
 
