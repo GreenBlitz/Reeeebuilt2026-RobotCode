@@ -29,13 +29,13 @@ jobs:
       - name: Decide labels to add
         id: decide-labels
         run: |
-          changedFiles="${{ steps.changed-files.outputs.changed-files }}"
+          filesUrl=$(jq -r '.pull_request.files_url' "$GITHUB_EVENT_PATH")
 
           addRobot=false
           addPose=false
 
           while IFS= read -r file; do
-            echo "$file"
+            echo "Checking file: $file"
             if [[ "$file" == src/main/deploy/* ]] || [[ "$file" == src/main/java/frc/joysticks/* ]] || [[ "$file" == src/main/java/frc/robot/autonomous/* ]] || [[ "$file" == src/main/java/frc/robot/hardware/* ]] || [[ "$file" == src/main/java/frc/robot/statemachine/* ]] || [[ "$file" == src/main/java/frc/robot/subsystems/* ]] || [[ "$file" == src/main/java/frc/utils/auto/* ]] || [[ "$file" == src/main/java/frc/utils/brakestate/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/swervecalibration/* ]] || [[ "$file" == src/main/java/frc/utils/calibration/sysid/* ]]; then
               addRobot=true
               echo "robot boolean"
@@ -45,7 +45,12 @@ jobs:
               addPose=true
               echo "pose boolean"
             fi
-          done <<< "$changedFiles"
+          done < <(
+            curl -s \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "$filesUrl" | jq -r '.[].filename'
+          )
 
           echo "add-robot=$addRobot" >> $GITHUB_OUTPUT
           echo "add-pose=$addPose" >> $GITHUB_OUTPUT
