@@ -40,3 +40,8 @@ Hood calibrations
 #### Simulation Constants
 - [ ] Moment of inertia
 - [ ] Is starting position max or min
+
+#### Reset Sensor
+- [ ] Reset check sensor channel
+- [ ] Is reset check sensor inverted
+- [ ] Reset check sensor debounce time

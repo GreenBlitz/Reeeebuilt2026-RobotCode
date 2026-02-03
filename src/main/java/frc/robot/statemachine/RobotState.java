@@ -9,6 +9,7 @@ public enum RobotState {
 	NEUTRAL,
 	PRE_SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
 	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
+	RESET_SUBSYSTEMS,
 	CALIBRATION_PRE_SHOOT,
 	CALIBRATION_SHOOT;
 

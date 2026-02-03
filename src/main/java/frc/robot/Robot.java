@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -65,7 +66,8 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
-	private final IDigitalInput funnelDigitalInput;
+	private final IDigitalInput turretResetCheckSensor;
+	private final IDigitalInput hoodResetCheckSensor;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -80,19 +82,19 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = createTurret();
+		this.turretResetCheckSensor = createTurretResetCheckSensor();
 		turret.setPosition(TurretConstants.MIN_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
 		this.flyWheel = KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
 
 		this.hood = createHood();
+		this.hoodResetCheckSensor = createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
 		this.train = createTrain();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
-
-		this.funnelDigitalInput = createFunnelDI();
 
 		this.belly = createBelly();
 		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
@@ -152,6 +154,11 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+//		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+//			(new ParallelCommandGroup(
+//				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
+//		);
 	}
 
 	public void resetSubsystems() {
@@ -285,6 +292,26 @@ public class Robot {
 		);
 	}
 
+	private IDigitalInput createTurretResetCheckSensor() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.TURRET_RESET_SENSOR),
+				new Debouncer(TurretConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				TurretConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("turretResetCheck");
+	}
+
+	private IDigitalInput createHoodResetCheckSensor() {
+		return ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),
+				new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("hoodResetCheck");
+	}
+
 	public VelocityPositionArm getTurret() {
 		return turret;
 	}
@@ -303,6 +330,14 @@ public class Robot {
 
 	public Arm getHood() {
 		return hood;
+	}
+
+	public IDigitalInput getTurretResetCheckSensor() {
+		return turretResetCheckSensor;
+	}
+
+	public IDigitalInput getHoodResetCheckSensor() {
+		return hoodResetCheckSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {

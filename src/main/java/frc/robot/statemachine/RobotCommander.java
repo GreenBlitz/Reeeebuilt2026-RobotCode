@@ -1,14 +1,6 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
@@ -43,6 +35,8 @@ public class RobotCommander extends GBSubsystem {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			ShootingCalculations::getShootingParams,
+			robot.getTurretResetCheckSensor(),
+			robot.getHoodResetCheckSensor(),
 			logPath
 		);
 
@@ -99,6 +93,7 @@ public class RobotCommander extends GBSubsystem {
 			case NEUTRAL -> neutral();
 			case PRE_SHOOT -> preShoot();
 			case SHOOT -> shoot();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 			case CALIBRATION_SHOOT -> calibrationShoot();
 		}, robotState);
@@ -128,6 +123,13 @@ public class RobotCommander extends GBSubsystem {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.SHOOT));
+	}
+
+	private Command resetSubsystems() {
+		return new ParallelDeadlineGroup(
+			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+			funnelStateHandler.setState(FunnelState.NEUTRAL)
+		);
 	}
 
 	private Command calibrationPreShoot() {
@@ -230,7 +232,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case NEUTRAL, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.NEUTRAL);
+			case NEUTRAL, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT, RESET_SUBSYSTEMS -> driveWith(RobotState.NEUTRAL);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}
