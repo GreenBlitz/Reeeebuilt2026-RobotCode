@@ -49,8 +49,7 @@ public class TurretConstants {
 	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-120);
 	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-180);
 	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(180);
-	public static final Rotation2d MIDDLE_OF_SHOOTING_RANGE = Rotation2d
-		.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
+	public static final Rotation2d RANGE_MIDDLE = Rotation2d.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
 	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
 	public static final Rotation2d SCREW_MAX_RANGE_EDGE = TurretCalculations
 		.getRangeEdge(TurretConstants.MAX_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE.times(-1));
