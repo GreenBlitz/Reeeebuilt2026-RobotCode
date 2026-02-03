@@ -100,24 +100,21 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	@Override
 	public void updateOdometry(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
-		if (data.getIMUOrientation().isPresent() || lastOdometryData.getIMUOrientation().isPresent()) {
-			data.getIMUOrientation()
-				.ifPresentOrElse(
-					(imuOrientation) -> data.setIMUYaw(Rotation2d.fromRadians(imuOrientation.getZ())),
-					() -> data.setIMUYaw(
-						Rotation2d.fromRadians(lastOdometryData.getIMUOrientation().get().getZ())
-							.plus(Rotation2d.fromRadians(changeInPose.dtheta))
-					)
-				);
-
-			poseEstimator.updateWithTime(
-				data.getTimestampSeconds(),
-				Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()),
-				data.getWheelPositions()
+		if (data.getIMUOrientation().isEmpty()) {
+			data.setIMUOrientation(
+				new Rotation3d(
+					lastOdometryData.getIMUOrientation().get().getX(),
+					lastOdometryData.getIMUOrientation().get().getY(),
+					Rotation2d.fromRadians(lastOdometryData.getIMUOrientation().get().getZ())
+						.plus(Rotation2d.fromRadians(changeInPose.dtheta))
+						.getRadians()
+				)
 			);
-			imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
 		}
 
+		poseEstimator
+			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
+		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
 		data.getIMUXYAccelerationG().ifPresent((acceleration) -> imuXYAccelerationGBuffer.addSample(data.getTimestampSeconds(), acceleration));
 
 		lastOdometryData.setWheelPositions(data.getWheelPositions());

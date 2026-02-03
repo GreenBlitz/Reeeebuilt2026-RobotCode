@@ -1,6 +1,5 @@
 package frc.robot.poseestimator;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -70,15 +69,6 @@ public class OdometryData {
 
 	public void setIMUOrientation(Rotation3d imuOrientation) {
 		setIMUOrientation(Optional.of(imuOrientation));
-	}
-
-	public void setIMUYaw(Rotation2d imuYaw) {
-		setIMUOrientation(
-			Optional.of(
-				imuOrientation.map(orientation -> new Rotation3d(imuOrientation.get().getX(), imuOrientation.get().getY(), imuYaw.getRadians()))
-					.orElseGet(() -> new Rotation3d(0, 0, imuYaw.getRadians()))
-			)
-		);
 	}
 
 	public void setIMUXYAcceleration(Optional<Translation2d> imuXYAccelerationG) {
