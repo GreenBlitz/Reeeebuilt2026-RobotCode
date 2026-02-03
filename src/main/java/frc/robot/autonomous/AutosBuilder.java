@@ -30,7 +30,7 @@ public class AutosBuilder {
 									)),
 									new ParallelDeadlineGroup(
 								PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right 1-2")),
-						  robot.getRobotCommander().shootSequenceWithoutAimAssist()
+						  robot.getRobotCommander().shootSequence()
 									)
 							),
 							Pose2d.kZero,
