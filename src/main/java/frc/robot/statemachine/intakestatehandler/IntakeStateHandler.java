@@ -100,12 +100,12 @@ public class IntakeStateHandler {
 	public void periodic() {
 		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
 		if (!hasFourBarBeenReset())
-			hasBeenReset = isFourBarReset();
+			hasBeenReset = isFourBarAtSensor();
 		Logger.recordOutput(logPath + "/hasBeenReset", hasFourBarBeenReset());
 		Logger.processInputs(logPath + "/resetSensorValue", fourBarResetCheckInput);
 	}
 
-	public boolean isFourBarReset() {
+	public boolean isFourBarAtSensor() {
 		return fourBarResetCheckInput.debouncedValue;
 	}
 

@@ -46,8 +46,8 @@ public class ShooterStateHandler {
 		this.turretResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hoodResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.currentState = ShooterState.STAY_IN_PLACE;
-		this.hasHoodBeenReset = isHoodReset();
-		this.hasTurretBeenReset = isTurretReset();
+		this.hasHoodBeenReset = isHoodAtSensor();
+		this.hasTurretBeenReset = isTurretAtSensor();
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
@@ -134,11 +134,11 @@ public class ShooterStateHandler {
 		);
 	}
 
-	public boolean isTurretReset() {
+	public boolean isTurretAtSensor() {
 		return turretResetCheckInput.debouncedValue;
 	}
 
-	public boolean isHoodReset() {
+	public boolean isHoodAtSensor() {
 		return hoodResetCheckInput.debouncedValue;
 	}
 
@@ -146,9 +146,9 @@ public class ShooterStateHandler {
 		turretResetCheckSensor.updateInputs(turretResetCheckInput);
 		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
 		if (!hasTurretBeenReset)
-			hasTurretBeenReset = isTurretReset();
+			hasTurretBeenReset = isTurretAtSensor();
 		if (!hasHoodBeenReset)
-			hasHoodBeenReset = isHoodReset();
+			hasHoodBeenReset = isHoodAtSensor();
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
 		Logger.processInputs(logPath + "/turretResetSensor", turretResetCheckInput);
