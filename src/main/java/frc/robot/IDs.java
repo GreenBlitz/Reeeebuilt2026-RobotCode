@@ -50,6 +50,9 @@ public class IDs {
 	}
 
 	public static class CANdleIDs {
+
+		public static final int LEDS = 23;
+
 	}
 
 	public static class SparkMAXIDs {
