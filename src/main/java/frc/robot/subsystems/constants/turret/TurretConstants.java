@@ -57,5 +57,8 @@ public class TurretConstants {
 	public static final Rotation2d SCREW_MIN_RANGE_EDGE = TurretCalculations
 		.getRangeEdge(TurretConstants.MIN_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE);
 	public static final boolean IS_CONTINUOUS_WRAP = false;
+	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
+	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
+	public static final double RESET_TURRET_VOLTAGE = 1;
 
 }
