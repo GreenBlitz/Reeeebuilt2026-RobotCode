@@ -52,6 +52,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -186,7 +187,7 @@ public class Robot {
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
-
+		Logger.recordOutput("ra",autonomousChooser.isDefaultOptionChosen());
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
@@ -399,7 +400,7 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return autonomousChooser.getChosenValue()	;
+		return autonomousChooser.getChosenValue();
 	}
 
 }

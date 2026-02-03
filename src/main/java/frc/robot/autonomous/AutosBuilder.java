@@ -24,16 +24,16 @@ public class AutosBuilder {
 		public static List<Supplier<PathPlannerAutoWrapper>> getRightFirstQuarterAuto(Robot robot) {
 			return List.of(
 					() -> new PathPlannerAutoWrapper(
-//							new SequentialCommandGroup(
-//									new ParallelDeadlineGroup(
+							new SequentialCommandGroup(
+									new ParallelDeadlineGroup(
 						 			PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right start 1-1")),
-//											new RunCommand(() -> {}).until(() -> robot.getPoseEstimator().getEstimatedPose().getX()>6).andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE)
-//									)),
-//									new ParallelDeadlineGroup(
-//								PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right 1-2")),
-//						  robot.getRobotCommander().scoreSequence()
-//									)
-//							),
+											new RunCommand(() -> {}).until(() -> robot.getPoseEstimator().getEstimatedPose().getX()>6).andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE)
+									)),
+									new ParallelDeadlineGroup(
+								PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right 1-2")),
+						  robot.getRobotCommander().scoreSequence()
+									)
+							),
 							new Pose2d(10,10,new Rotation2d()),
 							"Start Of Autonomous"
 					)
