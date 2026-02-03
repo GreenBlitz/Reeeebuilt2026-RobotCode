@@ -144,7 +144,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command calibrationShoot() {
-		return new ParallelDeadlineGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
 	private boolean isReadyToShoot() {
