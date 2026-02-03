@@ -158,8 +158,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void resetPose(Pose2d poseMeters) {
 		resetPose(
 			lastOdometryData.getTimestampSeconds(),
-			lastOdometryData.getIMUOrientation().orElseGet(() -> Rotation3d.kZero),
-			lastOdometryData.getIMUXYAccelerationG().orElseGet(() -> Translation2d.kZero),
+			lastOdometryData.getIMUOrientation().orElse(Rotation3d.kZero),
+			lastOdometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero),
 			lastOdometryData.getWheelPositions(),
 			lastOdometryData.getWheelStates(),
 			poseMeters
