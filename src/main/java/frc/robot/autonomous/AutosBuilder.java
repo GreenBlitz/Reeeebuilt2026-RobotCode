@@ -13,6 +13,6 @@ public class AutosBuilder {
 			() -> new PathPlannerAutoWrapper("Rotate 2m"),
 			() -> new PathPlannerAutoWrapper("Straight 2m")
 		);
-	}
+	} // check
 
 }
