@@ -121,7 +121,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				)
 			);
 		}
-
+		updateOdometryCausedErrorsStatus(data);
 		updateEstimatedPoseErrorMeasure(data);
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
@@ -135,15 +135,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 	}
 
-	private void updateOdometryErrors() {
-		isColliding = lastOdometryData.getIMUXYAccelerationG()
+	private void updateOdometryCausedErrorsStatus(OdometryData data) {
+		isColliding = data.getIMUXYAccelerationG()
 			.map(
 				imuXYAcceleration -> PoseUtil
 					.getIsColliding(imuXYAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
 			)
 			.orElse(false);
 
-		isTilted = lastOdometryData.getIMUOrientation()
+		isTilted = data.getIMUOrientation()
 			.map(
 				imuOrientation -> PoseUtil.getIsTilted(
 					Rotation2d.fromRadians(imuOrientation.getX()),
@@ -166,15 +166,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
 		odometryCausedEstimatedPoseErrorMeasure += isColliding
-			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR
+			// * changeInPoseNorm
 			: 0;
 
 		odometryCausedEstimatedPoseErrorMeasure += isTilted
-			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR
+			// * changeInPoseNorm
 			: 0;
 
 		odometryCausedEstimatedPoseErrorMeasure += isSkidding
-			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR
+			// * changeInPoseNorm
 			: 0;
 	}
 
