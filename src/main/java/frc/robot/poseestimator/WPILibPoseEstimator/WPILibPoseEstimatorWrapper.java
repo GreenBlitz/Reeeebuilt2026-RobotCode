@@ -1,6 +1,5 @@
 package frc.robot.poseestimator.WPILibPoseEstimator;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,12 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
 import frc.utils.buffers.RingBuffer.RingBuffer;
+import frc.utils.math.StandardDeviations2D;
 import frc.utils.math.StatisticsMath;
 import frc.utils.pose.PoseUtil;
 import org.littletonrobotics.junction.Logger;
@@ -271,25 +269,26 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getCollisionCompensatedVisionStdDevs(visionObservation)
+			getOdometryErrorCompensatedVisionStdDevs(visionObservation.stdDevs()).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private Matrix<N3, N1> getCollisionCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
-		boolean isColliding = imuXYAccelerationGBuffer.getSample(visionObservation.timestampSeconds())
-			.map(
-				(imuAccelerationG) -> PoseUtil
-					.getIsColliding(imuAccelerationG, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
-			)
-			.orElse(false);
+	private StandardDeviations2D getOdometryErrorCompensatedVisionStdDevs(StandardDeviations2D visionStd) {
+		StandardDeviations2D compensatedStdDevs = new StandardDeviations2D(
+			(visionStd.xStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
+				/ odometryCausedEstimatedPoseErrorMeasure,
+			(visionStd.yStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
+				/ odometryCausedEstimatedPoseErrorMeasure,
+			(visionStd.angleStandardDeviations() * WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_ERROR_REDUCTION)
+				/ odometryCausedEstimatedPoseErrorMeasure
+		);
+		double avgStdXnY = (compensatedStdDevs.xStandardDeviations() + compensatedStdDevs.yStandardDeviations()) / 2.0;
+		this.odometryCausedEstimatedPoseErrorMeasure -= WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_STD / avgStdXnY;
 
-		return isColliding
-			? visionObservation.stdDevs()
-				.asColumnVector()
-				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
-			: visionObservation.stdDevs().asColumnVector();
+		return compensatedStdDevs;
 	}
+
 
 	private void updateIsIMUOffsetCalibrated() {
 		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
