@@ -53,10 +53,8 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
-		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
-		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
+		usedJoystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
+		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -87,16 +85,16 @@ public class JoysticksBindings {
 
 	private static void applyInterpolationCalibrationBindings(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		joystick.Y.onTrue(robot.getRobotCommander().shootSequence());
-		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
+		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
+		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
-		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
+		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE));
+		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SCORE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CALIBRATION_SHOOT));
+		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
 	private static void applyTurretCalibrationBindings(Arm turret, SmartJoystick joystick, double calibrationMaxPower) {
