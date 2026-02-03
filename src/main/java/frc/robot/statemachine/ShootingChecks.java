@@ -86,9 +86,6 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS,
 			logPath
 		);
-		Logger.recordOutput(logPath + "/flywheelVelocityToleranceRPS", flywheelVelocityToleranceRPS);
-		Logger.recordOutput(logPath + "/wantedFlywheelVelocityRPS", ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS());
-		Logger.recordOutput(logPath + "/flywheelVelocityRPS", flywheelVelocityRPS);
 
 		boolean isHoodAtPosition = isHoodAtPositon(
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
