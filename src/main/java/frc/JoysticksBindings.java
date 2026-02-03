@@ -6,8 +6,6 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.funnelstatehandler.FunnelState;
-import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
@@ -54,7 +52,7 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
@@ -64,7 +62,6 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
-		applySuperstructureCalibrationBindings(usedJoystick, robot);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
@@ -89,20 +86,13 @@ public class JoysticksBindings {
 	}
 
 	private static void applyInterpolationCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().shootSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationShootSequence());
 	}
 
-	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT));
-		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
-		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CALIBRATION));
-		joystick.POV_DOWN.onTrue(robot.getRobotCommander().shootSequence());
-	}
-
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));

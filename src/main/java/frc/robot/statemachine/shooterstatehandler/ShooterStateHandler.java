@@ -42,7 +42,7 @@ public class ShooterStateHandler {
 	public Command setState(ShooterState shooterState) {
 		Command command = switch (shooterState) {
 			case STAY_IN_PLACE -> stayInPlace();
-			case IDLE -> idle();
+			case NEUTRAL -> neutral();
 			case SHOOT -> shoot();
 			case CALIBRATION -> calibration();
 		};
@@ -61,7 +61,7 @@ public class ShooterStateHandler {
 		);
 	}
 
-	private Command idle() {
+	private Command neutral() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
@@ -99,6 +99,10 @@ public class ShooterStateHandler {
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
 		);
+	}
+
+	public void periodic() {
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
 }

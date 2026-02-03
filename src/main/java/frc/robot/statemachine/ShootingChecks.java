@@ -14,7 +14,7 @@ import static edu.wpi.first.math.MathUtil.isNear;
 
 public class ShootingChecks {
 
-	private static final String shootingChecksLogPath = "Statemachine/ShootingChecks";
+	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	private static boolean isWithinDistance(Translation2d robotPosition, double maxShootingDistanceFromTargetMeters, String logPath) {
 		boolean isWithinDistance = robotPosition.getDistance(Field.getHubMiddle()) <= maxShootingDistanceFromTargetMeters;
@@ -52,7 +52,7 @@ public class ShootingChecks {
 
 	private static boolean isHoodAtPositon(Rotation2d wantedPosition, Rotation2d hoodPosition, Rotation2d tolerance, String logPath) {
 		boolean isHoodAtPosition = MathUtil.isNear(wantedPosition.getDegrees(), hoodPosition.getDegrees(), tolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isHoodAtPositon", isHoodAtPosition);
+		Logger.recordOutput(logPath + "/isHoodAtPosition", isHoodAtPosition);
 		return isHoodAtPosition;
 	}
 
@@ -64,7 +64,7 @@ public class ShootingChecks {
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		String logPath = shootingChecksLogPath + "/IsReadyRoShoot";
+		String logPath = shootingChecksLogPath + "/IsReadyToShoot";
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
