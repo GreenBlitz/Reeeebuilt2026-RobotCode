@@ -31,7 +31,7 @@ jobs:
         run: |
           filesUrl=$(jq -r '.pull_request.files_url' "$GITHUB_EVENT_PATH")
 
-          addRobot=true
+          addRobot=false
           addPose=false
 
           while IFS= read -r file; do
@@ -49,7 +49,7 @@ jobs:
             curl -s \
               -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github.v3+json" \
-              "$filesUrl" | jq -r '.[].filename'
+              "$filesUrl?per_page=100" | jq -r '.[].filename'
           )
 
           echo "add-robot=$addRobot" >> $GITHUB_OUTPUT
