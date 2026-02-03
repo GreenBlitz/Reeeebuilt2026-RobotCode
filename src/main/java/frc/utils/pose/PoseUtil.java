@@ -98,7 +98,7 @@ public class PoseUtil {
 	public static boolean getIsSkidding(
 		SwerveDriveKinematics kinematics,
 		SwerveModuleState[] moduleStates,
-		double skidRobotToModuleVelocityToleranceMetersPerSecond
+		double minimumSkidRobotToModuleVelocityDifferenceMetersPerSecond
 	) {
 		ChassisSpeeds swerveVelocity = kinematics.toChassisSpeeds(moduleStates);
 		Translation2d swerveTranslationalVelocityMetersPerSecond = new Translation2d(
@@ -115,7 +115,7 @@ public class PoseUtil {
 				!ToleranceMath.isNear(
 					swerveTranslationalVelocityMetersPerSecond,
 					new Translation2d(moduleTranslationalState.speedMetersPerSecond, moduleTranslationalState.angle),
-					skidRobotToModuleVelocityToleranceMetersPerSecond
+					minimumSkidRobotToModuleVelocityDifferenceMetersPerSecond
 				)
 			) {
 				return true;
