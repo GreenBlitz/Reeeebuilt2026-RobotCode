@@ -27,7 +27,7 @@ public class ShootingChecks {
 		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
 		boolean isInPositionForPassing = !(turretPosition.getY() < ShooterConstants.MAX_Y_FOR_UNPASSABLE_AREA
 			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_UNPASSABLE_AREA);
-		Logger.recordOutput(logPath + "/isInPassingNoNoZone", isInPositionForPassing);
+		Logger.recordOutput(logPath + "/IsInPositionForPassing", isInPositionForPassing);
 		return isInPositionForPassing;
 	}
 

@@ -164,7 +164,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
+			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}
 
@@ -186,7 +186,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
+			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}
 
@@ -251,20 +251,20 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command calibrationScoreSequence() {
 		return new ParallelCommandGroup(
-			swerve.getCommandsBuilder().driveByDriversInputs(RobotState.SCORE.getSwerveState()),
+			swerve.getCommandsBuilder().driveByDriversInputs(RobotState.CALIBRATION_SCORE.getSwerveState()),
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
 						asSubsystemCommand(
 							funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::calibrationIsReadyToScore),
-							RobotState.PRE_SCORE
+							RobotState.CALIBRATION_PRE_SCORE
 						)
 					),
 					new ParallelCommandGroup(
 						asSubsystemCommand(
 							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !calibrationCanContinueScoring()),
-							RobotState.SCORE
+							RobotState.CALIBRATION_SCORE
 						)
 					)
 				)
