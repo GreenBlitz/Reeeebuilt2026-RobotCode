@@ -4,3 +4,4 @@
 - [ ] Max angle from goal center
 - [ ] Max distance to shoot
 - [ ] Seconds to wait after shoot
+- [ ] degrees of overshoot for aim at hub assist

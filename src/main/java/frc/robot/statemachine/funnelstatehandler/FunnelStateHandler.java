@@ -33,7 +33,7 @@ public class FunnelStateHandler {
 
 	public Command setState(FunnelState state) {
 		Command command = switch (state) {
-			case DRIVE -> drive();
+			case NEUTRAL -> neutral();
 			case SHOOT -> shoot();
 			case STOP -> stop();
 			case CALIBRATION -> calibration();
@@ -45,7 +45,7 @@ public class FunnelStateHandler {
 		);
 	}
 
-	private Command drive() {
+	private Command neutral() {
 		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
 	}
 
