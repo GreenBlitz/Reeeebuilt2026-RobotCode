@@ -11,8 +11,6 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.function.Supplier;
 
 public class ShooterStateHandler {
@@ -69,7 +67,9 @@ public class ShooterStateHandler {
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", shooterState.name())),
 			new InstantCommand(() -> currentState = shooterState),
 			command
-		).andThen(new InstantCommand(() -> Logger.recordOutput("s1",true)).beforeStarting(new InstantCommand(() -> Logger.recordOutput("s1",false))));
+		).andThen(
+			new InstantCommand(() -> Logger.recordOutput("s1", true)).beforeStarting(new InstantCommand(() -> Logger.recordOutput("s1", false)))
+		);
 	}
 
 	private Command stayInPlace() {
@@ -114,10 +114,18 @@ public class ShooterStateHandler {
 
 	private Command resetSubsystems() {
 		return new ParallelRaceGroup(
-		new ParallelCommandGroup(
-			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(() -> hasHoodBeenReset()).andThen(hood.getCommandsBuilder().stayInPlace()),
-			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(() -> hasTurretBeenReset()).andThen(turret.getCommandsBuilder().stayInPlace())
-		), new RunCommand(() -> {}).until(this::hasBeenFullyReset).andThen(new WaitCommand(0.000001)));
+			new ParallelCommandGroup(
+				hood.getCommandsBuilder()
+					.setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE)
+					.until(() -> hasHoodBeenReset())
+					.andThen(hood.getCommandsBuilder().stayInPlace()),
+				turret.getCommandsBuilder()
+					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
+					.until(() -> hasTurretBeenReset())
+					.andThen(turret.getCommandsBuilder().stayInPlace())
+			),
+			new RunCommand(() -> {}).until(this::hasBeenFullyReset).andThen(new WaitCommand(0.000001))
+		);
 	}
 
 	private Command calibration() {
@@ -146,16 +154,17 @@ public class ShooterStateHandler {
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
 	}
-	
-	public boolean hasTurretBeenReset(){
+
+	public boolean hasTurretBeenReset() {
 		return hasTurretBeenReset;
 	}
-	
-	public boolean hasHoodBeenReset(){
+
+	public boolean hasHoodBeenReset() {
 		return hasHoodBeenReset;
 	}
-	public boolean hasBeenFullyReset(){
-		Logger.recordOutput("ASADASF",hasTurretBeenReset && hasHoodBeenReset);
+
+	public boolean hasBeenFullyReset() {
+		Logger.recordOutput("ASADASF", hasTurretBeenReset && hasHoodBeenReset);
 		return hasTurretBeenReset && hasHoodBeenReset;
 	}
 

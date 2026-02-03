@@ -1,7 +1,7 @@
 package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.joysticks.Axis;
@@ -9,13 +9,10 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.ShootingChecks;
-import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
-import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
@@ -58,7 +55,15 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(new ParallelDeadlineGroup(new WaitCommand(4), robot.getRobotCommander().driveWith(RobotState.SHOOT)));
+		usedJoystick.A.onTrue(
+			new ParallelDeadlineGroup(
+				new WaitCommand(4),
+				robot.getRobotCommander()
+					.driveWith(RobotState.SHOOT)
+					.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+					.andThen(robot.getRobotCommander().driveWith(RobotState.DRIVE))
+			)
+		);
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith((RobotState.RESET_SUBSYSTEMS)));
 		usedJoystick.Y.onTrue(new ParallelDeadlineGroup(new WaitCommand(4), robot.getRobotCommander().shootSequence()));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));

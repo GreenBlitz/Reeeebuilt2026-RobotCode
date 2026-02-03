@@ -47,8 +47,10 @@ public class IntakeStateHandler {
 	}
 
 	public Command resetFourBar() {
-		IntakeState state = getCurrentState();
-		return new SequentialCommandGroup(new ConditionalCommand(fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(() -> hasBeenReset),new InstantCommand(),() -> !hasBeenReset),setState(state));
+		return fourBar.getCommandsBuilder()
+			.setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE)
+			.until(() -> hasBeenReset)
+			.andThen(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", IntakeState.STAY_IN_PLACE.name())));
 	}
 
 	public Command toggleState() {
@@ -105,7 +107,7 @@ public class IntakeStateHandler {
 	public boolean isFourBarReset() {
 		return fourBarResetCheckInput.debouncedValue;
 	}
-	
+
 	public boolean hasFourBarBeenReset() {
 		return hasBeenReset;
 	}

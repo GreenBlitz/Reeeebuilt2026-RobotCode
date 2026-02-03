@@ -91,12 +91,13 @@ public class Superstructure {
 	private Command idle() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
-	
+
 	private Command resetSubsystems() {
 		return new ParallelDeadlineGroup(
 			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
 			funnelStateHandler.setState(FunnelState.DRIVE)
-		).andThen(new InstantCommand(() -> Logger.recordOutput("s2",true)))	.beforeStarting(new InstantCommand(() -> Logger.recordOutput("s2",false)));
+		).andThen(new InstantCommand(() -> Logger.recordOutput("s2", true)))
+			.beforeStarting(new InstantCommand(() -> Logger.recordOutput("s2", false)));
 	}
 
 	private Command preShoot() {
