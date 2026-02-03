@@ -34,6 +34,7 @@ public class IntakeStateHandler {
 	}
 
 	public void periodic() {
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
 		beamBreaker.updateInputs(beamBreakerInputs);
 		Logger.processInputs(logPath, beamBreakerInputs);
 	}

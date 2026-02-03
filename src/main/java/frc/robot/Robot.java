@@ -111,7 +111,7 @@ public class Robot {
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
-		robotCommander = new RobotCommander("/RobotCommander", this);
+		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
@@ -156,9 +156,6 @@ public class Robot {
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		resetSubsystems();
-		simulationManager.logPoses();
-
-		robotCommander.getIntakeStateHandler().periodic();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -336,6 +333,10 @@ public class Robot {
 
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
+	}
+
+	public SimulationManager getSimulationManager() {
+		return simulationManager;
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
