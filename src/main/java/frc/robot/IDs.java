@@ -66,7 +66,7 @@ public class IDs {
 
 		public final static int TURRET_RESET_SENSOR = 12;
 
-		public final static int HOOD_RESET_SENSOR = 13;
+		public final static int HOOD_RESET_SENSOR = 7;
 
 	}
 

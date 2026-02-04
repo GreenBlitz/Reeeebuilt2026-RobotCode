@@ -148,7 +148,7 @@ public class ShooterStateHandler {
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians() && !hasHoodBeenReset) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
-		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
+		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians() && !hasTurretBeenReset) {
 			turret.setPosition(TurretConstants.MIN_POSITION);
 		}
 
