@@ -39,8 +39,6 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
-	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
-
 	public static double CONSTANT_TO_CALC_ERROR_REDUCTION = 0.3; // PLACE HOLDER due to changes in my math it must be between 0 n 1
 
 	public static double CONSTANT_TO_CALC_STD = 0.01; // PLACE HOLDER
