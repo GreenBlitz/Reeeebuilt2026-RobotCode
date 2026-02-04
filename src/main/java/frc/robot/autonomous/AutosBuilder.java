@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 
@@ -25,10 +26,14 @@ public class AutosBuilder {
 		return List.of(
 			() -> new PathPlannerAutoWrapper(
 				new SequentialCommandGroup(
-					new ParallelDeadlineGroup(
-						PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right start 1-1")),
-						new RunCommand(() -> {}).until(() -> robot.getPoseEstimator().getEstimatedPose().getX() > 6)
-							.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
+						new ParallelDeadlineGroup(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right start 1-1")),
+						new ParallelCommandGroup(
+							robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+							robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+						).andThen(
+							new RunCommand(() -> {}).until(() -> robot.getPoseEstimator().getEstimatedPose().getX() > 6)
+								.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
+						)
 					),
 					new ParallelDeadlineGroup(
 						PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right 1-2")),
