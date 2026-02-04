@@ -328,7 +328,7 @@ public class Robot {
 	private IDigitalInput createHoodResetCheckSensor() {
 		return ROBOT_TYPE.isReal()
 			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),
+				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENSOR),
 				new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
 				HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED
 			)
