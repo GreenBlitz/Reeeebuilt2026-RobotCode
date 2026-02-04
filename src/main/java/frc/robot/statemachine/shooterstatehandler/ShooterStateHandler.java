@@ -1,6 +1,7 @@
 package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Robot;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.ShootingCalculations;
@@ -46,8 +47,8 @@ public class ShooterStateHandler {
 		this.turretResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hoodResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.currentState = ShooterState.STAY_IN_PLACE;
-		this.hasHoodBeenReset = isHoodAtSensor();
-		this.hasTurretBeenReset = isTurretAtSensor();
+		this.hasHoodBeenReset = Robot.ROBOT_TYPE.isSimulation();
+		this.hasTurretBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
@@ -134,16 +135,27 @@ public class ShooterStateHandler {
 	}
 
 	public void periodic() {
-		turretResetCheckSensor.updateInputs(turretResetCheckInput);
 		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
-		if (!hasTurretBeenReset)
-			hasTurretBeenReset = isTurretAtSensor();
-		if (!hasHoodBeenReset)
+		turretResetCheckSensor.updateInputs(turretResetCheckInput);
+
+		if (!hasHoodBeenReset) {
 			hasHoodBeenReset = isHoodAtSensor();
+		}
+		if (!hasTurretBeenReset) {
+			hasTurretBeenReset = isTurretAtSensor();
+		}
+
+		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians() && !hasHoodBeenReset) {
+			hood.setPosition(HoodConstants.MINIMUM_POSITION);
+		}
+		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians() && !hasTurretBeenReset) {
+			turret.setPosition(TurretConstants.MIN_POSITION);
+		}
+
+		Logger.processInputs(logPath + "/hoodResetSensor", hoodResetCheckInput);
+		Logger.processInputs(logPath + "/turretResetSensor", turretResetCheckInput);
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
-		Logger.processInputs(logPath + "/turretResetSensor", turretResetCheckInput);
-		Logger.processInputs(logPath + "/hoodResetSensor", hoodResetCheckInput);
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
