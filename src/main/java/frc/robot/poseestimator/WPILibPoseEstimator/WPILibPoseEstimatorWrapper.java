@@ -84,7 +84,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.odometryCausedEstimatedPoseErrorMeasure = 0;
 	}
 
-
 	@Override
 	public Pose2d getEstimatedPose() {
 		return poseEstimator.getEstimatedPosition();
