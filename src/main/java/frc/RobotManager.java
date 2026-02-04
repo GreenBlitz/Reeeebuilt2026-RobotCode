@@ -74,7 +74,6 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}
-
 		CommandScheduler.getInstance().schedule(autonomousCommand);
 	}
 

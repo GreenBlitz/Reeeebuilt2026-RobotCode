@@ -136,19 +136,17 @@ public class Robot {
 		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
 		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
 		simulationManager = new SimulationManager("SimulationManager", this);
-		if (ROBOT_TYPE.isReal()) {
-			new Trigger(() -> DriverStation.isEnabled()).onTrue(
-				new ConditionalCommand(
-					(new ParallelCommandGroup(
-						robotCommander.driveWith(RobotState.RESET_SUBSYSTEMS),
-						robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-					).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)),
-					new InstantCommand(() -> {}),
-					() -> !(robotCommander.getIntakeStateHandler().hasFourBarBeenReset()
-						&& robotCommander.getShooterStateHandler().hasBeenFullyReset())
-				)
-			);
-		}
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+			new ConditionalCommand(
+				(new ParallelCommandGroup(
+					robotCommander.driveWith(RobotState.RESET_SUBSYSTEMS),
+					robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+				).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)),
+				new InstantCommand(() -> {}),
+				() -> !(robotCommander.getIntakeStateHandler().hasFourBarBeenReset()
+					&& robotCommander.getShooterStateHandler().hasBeenFullyReset())
+			)
+		);
 	}
 
 	public void resetSubsystems() {
