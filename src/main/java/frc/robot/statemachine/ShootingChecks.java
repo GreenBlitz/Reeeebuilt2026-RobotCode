@@ -247,19 +247,13 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
-	public static boolean isReadyToScore(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRPS,
-		Rotation2d hoodPositionTolerance,
-		Rotation2d headingTolerance,
-		Rotation2d maxAngleFromHubCenter,
-		double maxShootingDistanceFromTargetMeters
-	) {
+	public static boolean isReadyToScore(Robot robot, Rotation2d maxAngleFromHubCenter, double maxShootingDistanceFromTargetMeters) {
+		double distanceFromHub = Field.getHubMiddle().getDistance(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
 		return isReadyToShoot(
 			robot,
-			flywheelVelocityToleranceRPS,
-			hoodPositionTolerance,
-			headingTolerance,
+			ShootingInterpolations.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			ShootingInterpolations.HOOD_POSITION_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			ShootingInterpolations.TURRET_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
 			maxAngleFromHubCenter,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
@@ -289,19 +283,13 @@ public class ShootingChecks {
 		) && isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChecksLogPath + "/IsReadyToPass");
 	}
 
-	public static boolean canContinueScoring(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRPS,
-		Rotation2d hoodPositionTolerance,
-		Rotation2d headingTolerance,
-		Rotation2d maxAngleFromHubCenter,
-		double maxShootingDistanceFromTargetMeters
-	) {
+	public static boolean canContinueScoring(Robot robot, Rotation2d maxAngleFromHubCenter, double maxShootingDistanceFromTargetMeters) {
+		double distanceFromHub = Field.getHubMiddle().getDistance(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
 		return canContinueShooting(
 			robot,
-			flywheelVelocityToleranceRPS,
-			hoodPositionTolerance,
-			headingTolerance,
+			ShootingInterpolations.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			ShootingInterpolations.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			ShootingInterpolations.TURRET_TOLERANCE_TO_CONTINUE_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
 			maxAngleFromHubCenter,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
@@ -333,16 +321,28 @@ public class ShootingChecks {
 			&& isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChecksLogPath + "canContinuePassing");
 	}
 
-	public static boolean calibrationIsReadyToScore(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationIsReadyToScore(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Shoot");
+	public static boolean calibrationIsReadyToScore(Robot robot) {
+		double distanceFromHub = Field.getHubMiddle().getDistance(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
+		return calibrationIsReadyToScore(
+			robot,
+			ShootingInterpolations.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			ShootingInterpolations.HOOD_POSITION_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			"Shoot"
+		);
 	}
 
 	public static boolean calibrationIsReadyToPass(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
 		return calibrationIsReadyToScore(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Pass");
 	}
 
-	public static boolean calibrationCanContinueScoring(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationCanContinueShooting(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "CalibrationScore");
+	public static boolean calibrationCanContinueScoring(Robot robot) {
+		double distanceFromHub = Field.getHubMiddle().getDistance(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
+		return calibrationCanContinueShooting(
+			robot,
+			ShootingInterpolations.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			ShootingInterpolations.HOOD_POSITION_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
+			"CalibrationScore"
+		);
 	}
 
 	public static boolean calibrationCanContinuePassing(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
