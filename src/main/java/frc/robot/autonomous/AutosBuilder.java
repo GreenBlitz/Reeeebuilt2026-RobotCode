@@ -26,7 +26,8 @@ public class AutosBuilder {
 		return List.of(
 			() -> new PathPlannerAutoWrapper(
 				new SequentialCommandGroup(
-						new ParallelDeadlineGroup(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right start 1-1")),
+					new ParallelDeadlineGroup(
+						PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Right start 1-1")),
 						new ParallelCommandGroup(
 							robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
 							robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)

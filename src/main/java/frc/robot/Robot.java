@@ -137,10 +137,10 @@ public class Robot {
 		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
 		simulationManager = new SimulationManager("SimulationManager", this);
 		new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(
-				(new ParallelCommandGroup(
-						robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-						robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-				).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
+			(new ParallelCommandGroup(
+				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		);
 	}
 
