@@ -167,10 +167,6 @@ public class Robot {
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
-		double distanceFromHub = Field.getHubMiddle().getDistance(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
-		Logger.recordOutput("aaaaaaaaaaaaaTurret", ShootingInterpolations.TURRET_TOLERANCE_TO_CONTINUE_SCORING_INTERPOLATION_MAP.get(distanceFromHub));
-		Logger.recordOutput("aaaaaaaaaaaaaHood", ShootingInterpolations.HOOD_POSITION_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub));
-		Logger.recordOutput("aaaaaaaaaaaaaFlywheel", ShootingInterpolations.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub));
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
