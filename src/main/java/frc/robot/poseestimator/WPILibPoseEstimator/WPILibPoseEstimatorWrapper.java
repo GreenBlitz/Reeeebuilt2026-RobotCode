@@ -283,7 +283,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				> 1
 		) {
 			this.odometryCausedEstimatedPoseErrorMeasure -= WPILibPoseEstimatorConstants.CONSTANT_TO_CALC_STD / averageStdDevsXYOfCompensatedStdDevs;
-		}
+		} else {
+            odometryCausedEstimatedPoseErrorMeasure =1;
+        }
 
 		return compensatedStdDevs;
 	}
