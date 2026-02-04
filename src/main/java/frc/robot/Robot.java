@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
+import frc.constants.field.Field;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
@@ -19,6 +21,8 @@ import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.ShootingChecks;
+import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -49,6 +53,7 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -158,6 +163,8 @@ public class Robot {
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		robotCommander.update();
+		Logger.recordOutput("is within distance", ShootingChecks.isWithinDistance(poseEstimator.getEstimatedPose().getTranslation(), StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS, "is within range", Field.getHubMiddle()));
+		Logger.recordOutput("is in angle range", ShootingChecks.isInAngleRange(poseEstimator.getEstimatedPose().getTranslation(), Rotation2d.fromDegrees(180), "is in angle range", Field.getHubMiddle(), false));
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();

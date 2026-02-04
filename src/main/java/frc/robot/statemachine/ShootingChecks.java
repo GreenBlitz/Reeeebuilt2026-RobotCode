@@ -31,7 +31,7 @@ public class ShootingChecks {
 		return isInPositionForPassing;
 	}
 
-	private static boolean isWithinDistance(
+	public static boolean isWithinDistance(
 		Translation2d robotPosition,
 		double maxShootingDistanceFromTargetMeters,
 		String logPath,
@@ -42,7 +42,7 @@ public class ShootingChecks {
 		return isWithinDistance;
 	}
 
-	private static boolean isInAngleRange(
+	public static boolean isInAngleRange(
 		Translation2d robotPosition,
 		Rotation2d maxAngleFromCenter,
 		String logPath,
