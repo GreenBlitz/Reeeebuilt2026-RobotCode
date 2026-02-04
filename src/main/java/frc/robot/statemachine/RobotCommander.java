@@ -89,8 +89,7 @@ public class RobotCommander extends GBSubsystem {
 			|| robot.getTurret().isRunningIndependently();
 	}
 
-	@Override
-	protected void subsystemPeriodic() {
+	public void update() {
 		intakeStateHandler.periodic();
 		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
