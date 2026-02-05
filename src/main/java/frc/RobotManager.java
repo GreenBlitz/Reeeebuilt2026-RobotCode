@@ -60,8 +60,7 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.coast();
 		}
-		LimelightHelpers.triggerRewindCapture("", GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
-		LimelightHelpers.setRewindEnabled(robot.getLimelight().getName(), false);
+		robot.getLimelight().endRewindAndCaptureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		robot.getSwerve().setIsRunningIndependently(true);
-		LimelightHelpers.setRewindEnabled(robot.getLimelight().getName(), true);
+		robot.getLimelight().startRewind();
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
