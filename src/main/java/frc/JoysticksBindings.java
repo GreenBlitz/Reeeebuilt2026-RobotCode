@@ -53,7 +53,7 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
+		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 	}
 
@@ -88,7 +88,8 @@ public class JoysticksBindings {
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SCORE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
+		joystick.POV_LEFT
+			.onTrue(robot.getRobotCommander().driveWith(RobotState.CALIBRATION_PRE_SCORE, robot.getRobotCommander().calibrationScoreSequence()));
 	}
 
 	private static void applyTurretCalibrationBindings(Arm turret, SmartJoystick joystick, double calibrationMaxPower) {
