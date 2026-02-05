@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
+import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
@@ -108,10 +109,27 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
+
+	private static boolean isTrainAtVelocity(
+		Rotation2d wantedTrainVelocityRPS,
+		Rotation2d trainVelocityRPS,
+		Rotation2d trainVelocityToleranceRPS,
+		String logPath
+	) {
+		boolean isTrainAtVelocity = isNear(
+			wantedTrainVelocityRPS.getDegrees(),
+			trainVelocityRPS.getDegrees(),
+			trainVelocityToleranceRPS.getDegrees()
+		);
+		Logger.recordOutput(logPath + "/isTrainAtVelocity", isTrainAtVelocity);
+		return isTrainAtVelocity;
+	}
+
 	private static boolean isReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
+		Rotation2d trainVelocityToleranceRPS,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromTargetCenter,
 		double maxShootingDistanceFromTargetMeters,
@@ -119,11 +137,11 @@ public class ShootingChecks {
 		String actionLogPath,
 		boolean isPass
 	) {
-		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
+		Rotation2d trainVelocityRPS = robot.getTrain().getVelocity();
 
 		boolean isWithinDistance = isWithinDistance(turretPosition, maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
 
@@ -152,7 +170,15 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+
+		boolean isTrainAtVelocity = isTrainAtVelocity(
+			FunnelState.SHOOT.getTrainVelocity(),
+			trainVelocityRPS,
+			trainVelocityToleranceRPS,
+			logPath
+		);
+
+		return isFlywheelReadyToShoot && isHoodAtPosition && isTrainAtVelocity && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
 	private static boolean canContinueShooting(
@@ -166,7 +192,6 @@ public class ShootingChecks {
 		String actionLogPath,
 		boolean isPass
 	) {
-		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
 
@@ -251,6 +276,7 @@ public class ShootingChecks {
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
+		Rotation2d trainVelocityToleranceRPS,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters
@@ -259,6 +285,7 @@ public class ShootingChecks {
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
+			trainVelocityToleranceRPS,
 			headingTolerance,
 			maxAngleFromHubCenter,
 			maxShootingDistanceFromTargetMeters,
@@ -272,6 +299,7 @@ public class ShootingChecks {
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
+		Rotation2d trainVelocityToleranceRPS,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromTargetCenter,
 		double maxShootingDistanceFromTargetMeters
@@ -280,6 +308,7 @@ public class ShootingChecks {
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
+			trainVelocityToleranceRPS,
 			headingTolerance,
 			maxAngleFromTargetCenter,
 			maxShootingDistanceFromTargetMeters,

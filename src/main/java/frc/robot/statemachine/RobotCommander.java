@@ -157,6 +157,7 @@ public class RobotCommander extends GBSubsystem {
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
+			StateMachineConstants.TRAIN_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
@@ -168,6 +169,7 @@ public class RobotCommander extends GBSubsystem {
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
+			StateMachineConstants.TRAIN_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
