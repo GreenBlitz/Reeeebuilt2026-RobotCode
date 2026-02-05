@@ -2,7 +2,10 @@ package frc.robot.subsystems.constants.train;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import frc.robot.IDs;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
+import frc.robot.subsystems.roller.VelocityRoller;
 
 public class TrainConstant {
 
@@ -36,6 +39,19 @@ public class TrainConstant {
 
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 25.0 / 6.0;
+	}
+
+	public static VelocityRoller createTrain() {
+		return TalonFXRollerBuilder.buildVelocityRoller(
+			LOG_PATH,
+			IDs.TalonFXIDs.TRAIN,
+			REAL_SLOTS_CONFIG,
+			SIMULATION_SLOTS_CONFIG,
+			CURRENT_LIMIT,
+			FEEDBACK_CONFIGS,
+			MOMENT_OF_INERTIA,
+			IS_INVERTED
+		);
 	}
 
 }
