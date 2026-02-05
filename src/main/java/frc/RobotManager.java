@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
+import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -60,6 +61,8 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.coast();
 		}
+		LimelightHelpers.triggerRewindCapture("", GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
+		LimelightHelpers.setRewindEnabled("", false);
 	}
 
 	@Override
