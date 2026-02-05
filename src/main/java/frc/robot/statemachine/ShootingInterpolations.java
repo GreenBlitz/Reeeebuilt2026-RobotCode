@@ -153,7 +153,6 @@ public class ShootingInterpolations {
 			Map.of(1.5, Rotation2d.fromDegrees(3), 6.0, Rotation2d.fromDegrees(1))
 		);
 
-
 		TURRET_TOLERANCE_TO_CONTINUE_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 			InverseInterpolator.forDouble(),
 			InterpolationMap.interpolatorForRotation2d(),
