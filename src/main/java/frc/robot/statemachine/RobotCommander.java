@@ -43,21 +43,21 @@ public class RobotCommander extends GBSubsystem {
 		this.currentState = RobotState.STAY_IN_PLACE;
 		Logger.recordOutput(logPath + "/CurrentState", RobotState.STAY_IN_PLACE);
 
-		setDefaultCommand(
-			new ConditionalCommand(
-				asSubsystemCommand(Commands.none(), "Disabled"),
-				new InstantCommand(
-					() -> CommandScheduler.getInstance()
-						.schedule(
-							new DeferredCommand(
-								() -> endState(currentState),
-								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getFlyWheel())
-							)
-						)
-				),
-				this::isRunningIndependently
-			)
-		);
+//		setDefaultCommand(
+//			new ConditionalCommand(
+//				asSubsystemCommand(Commands.none(), "Disabled"),
+//				new InstantCommand(
+//					() -> CommandScheduler.getInstance()
+//						.schedule(
+//							new DeferredCommand(
+//								() -> endState(currentState),
+//								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getFlyWheel())
+//							)
+//						)
+//				),
+//				this::isRunningIndependently
+//			)
+//		);
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {
