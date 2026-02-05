@@ -94,6 +94,9 @@ public class Module {
 		return Conversions.angleToDistance(angle, constants.wheelDiameterMeters());
 	}
 
+	public ModuleSpecificConstants getConstants() {
+		return constants;
+	}
 
 	private void fixDriveInputsCoupling() {
 		driveInputs.uncoupledVelocityAnglesPerSecond = ModuleUtil
