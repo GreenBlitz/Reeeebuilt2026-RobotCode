@@ -58,7 +58,6 @@ import frc.utils.brakestate.BrakeStateManager;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private static final double secondsOfMatch = 160;
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
