@@ -10,7 +10,7 @@ Shooter Calibrations
 
 #### Passing Position Constants
 - [ ] Max/Min Y value for unpassable area
-- [ ] pre setPoints for side passing
-- [ ] target X value for passing
+- [ ] Preset Points for side passing
+- [ ] Target X value for passing
 - [ ] Max X for unpassable area
  

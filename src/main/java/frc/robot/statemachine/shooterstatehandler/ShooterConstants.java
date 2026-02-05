@@ -2,9 +2,7 @@ package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.constants.field.Field;
 import frc.utils.LoggedNetworkRotation2d;
-import frc.utils.math.FieldMath;
 
 public class ShooterConstants {
 
