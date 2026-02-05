@@ -68,8 +68,8 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 
-		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost")));
-		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot")));
+		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.followPath(robot.getSwerve(), PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost")));
+		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(robot.getSwerve(), PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot")));
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {

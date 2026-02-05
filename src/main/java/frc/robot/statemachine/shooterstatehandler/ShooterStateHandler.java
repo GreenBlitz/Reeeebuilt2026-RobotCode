@@ -1,7 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.Robot;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.ShootingCalculations;
@@ -47,8 +46,8 @@ public class ShooterStateHandler {
 		this.turretResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hoodResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.currentState = ShooterState.STAY_IN_PLACE;
-		this.hasHoodBeenReset = Robot.ROBOT_TYPE.isSimulation();
-		this.hasTurretBeenReset = Robot.ROBOT_TYPE.isSimulation();
+		this.hasHoodBeenReset = false;
+		this.hasTurretBeenReset = false;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
