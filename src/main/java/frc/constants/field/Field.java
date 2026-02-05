@@ -23,8 +23,8 @@ public class Field {
 	public static final double WIDTH_METERS = 8.06958;
 
 	private static final Translation2d HUB_MIDDLE = new Translation2d(4.62, 4.03);
-	public static final double HUB_X_LENGTH = 1.19;
-	public static final double HUB_Y_LENGTH = 1.19;
+	public static final double HUB_X_AXIS_LENGTH_METERS = 1.19;
+	public static final double HUB_Y_AXIS_LENGTH_METERS = 1.19;
 
 	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
 	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;

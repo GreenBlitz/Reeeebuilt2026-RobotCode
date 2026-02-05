@@ -24,15 +24,15 @@ public class ShootingChecks {
 	}
 
 	public static boolean isInYRangeForSidePassing(Translation2d turretPosition) {
-		boolean isInYRangeForSidePassing = turretPosition.getY() < ShooterConstants.MAX_Y_FOR_UNPASSABLE_AREA
-			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_UNPASSABLE_AREA;
+		boolean isInYRangeForSidePassing = turretPosition.getY() < ShooterConstants.MAX_Y_VALUE_FOR_UNPASSABLE_AREA
+			&& turretPosition.getY() > ShooterConstants.MIN_Y_VALUE_FOR_UNPASSABLE_AREA;
 		return isInYRangeForSidePassing;
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretPosition, String logPath) {
 		Translation2d blueRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
 		boolean isInPositionForPassing = !(isInYRangeForSidePassing(turretPosition)
-			&& blueRelativeTurretPosition.getX() > ShooterConstants.MAX_X_FOR_UNPASSABLE_ARIA_BLUE_RELATIVE);
+			&& blueRelativeTurretPosition.getX() > FieldMath.mirrorX(ShooterConstants.getMaxXValueForUnpassableArea()));
 		Logger.recordOutput(logPath + "/IsInPositionForPassing", isInPositionForPassing);
 		return isInPositionForPassing;
 	}

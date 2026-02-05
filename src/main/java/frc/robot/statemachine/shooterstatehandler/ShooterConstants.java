@@ -10,34 +10,41 @@ public class ShooterConstants {
 
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
 
-	public static final double MAX_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() + Field.HUB_Y_LENGTH / 2;
-	public static final double MIN_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() - Field.HUB_Y_LENGTH / 2;
+	public static final double MAX_Y_VALUE_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() + Field.HUB_Y_AXIS_LENGTH_METERS / 2;
+	public static final double MIN_Y_VALUE_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() - Field.HUB_Y_AXIS_LENGTH_METERS / 2;
 
-	public static final double MAX_X_FOR_UNPASSABLE_ARIA_BLUE_RELATIVE = 8;
-	private static final double TARGET_X_FOR_PASSING_BLUE_RELATIVE = 3;
+	private static final double MAX_X_VALUE_FOR_UNPASSABLE_AREA = 8;
+	private static final double TARGET_X_VALUE_FOR_PASSING = 3;
 
 	private static final Translation2d LOWER_Y_SIDE_PASSING_TARGET = new Translation2d(1, 1);
 	private static final Translation2d UPPER_Y_SIDE_PASSING_TARGET = FieldMath.mirror(LOWER_Y_SIDE_PASSING_TARGET, false, true);
 
-	public static final double getTargetXForPassing() {
+	public static double getTargetXForPassing() {
 		if (!Field.isFieldConventionAlliance()) {
-			return FieldMath.mirrorX(TARGET_X_FOR_PASSING_BLUE_RELATIVE);
+			return FieldMath.mirrorX(TARGET_X_VALUE_FOR_PASSING);
 		}
-		return TARGET_X_FOR_PASSING_BLUE_RELATIVE;
+		return TARGET_X_VALUE_FOR_PASSING;
 	}
 
-	public static final Translation2d getLowerYSidePassingTarget() {
+	public static Translation2d getLowerYSidePassingTarget() {
 		if (!Field.isFieldConventionAlliance()) {
 			return FieldMath.mirror(LOWER_Y_SIDE_PASSING_TARGET, true, false);
 		}
 		return LOWER_Y_SIDE_PASSING_TARGET;
 	}
 
-	public static final Translation2d getUpperYSidePassingTarget() {
+	public static Translation2d getUpperYSidePassingTarget() {
 		if (!Field.isFieldConventionAlliance()) {
 			return FieldMath.mirror(UPPER_Y_SIDE_PASSING_TARGET, true, false);
 		}
 		return UPPER_Y_SIDE_PASSING_TARGET;
+	}
+
+	public static double getMaxXValueForUnpassableArea() {
+		if (Field.isFieldConventionAlliance()) {
+			return MAX_X_VALUE_FOR_UNPASSABLE_AREA;
+		}
+		return FieldMath.mirrorX(MAX_X_VALUE_FOR_UNPASSABLE_AREA);
 	}
 
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d(

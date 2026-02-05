@@ -146,11 +146,11 @@ public class ShootingCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
-	public static Translation2d getOptimalPassingPosition(Translation2d turretPosition) {
-		if (!ShootingChecks.isInYRangeForSidePassing(turretPosition)) {
-			return new Translation2d(ShooterConstants.getTargetXForPassing(), turretPosition.getY());
+	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
+		if (!ShootingChecks.isInYRangeForSidePassing(turretTranslation)) {
+			return new Translation2d(ShooterConstants.getTargetXForPassing(), turretTranslation.getY());
 		}
-		if (turretPosition.getY() > Field.WIDTH_METERS / 2) {
+		if (turretTranslation.getY() > Field.WIDTH_METERS / 2) {
 			return ShooterConstants.getUpperYSidePassingTarget();
 		}
 		return ShooterConstants.getLowerYSidePassingTarget();
