@@ -3,12 +3,12 @@ package frc.robot.subsystems.constants.flywheel;
 
 public class FlywheelConstants {
 
-	public final static double kP = 0.4;
+	public final static double kP = 0.2;
 	public final static double kI = 0;
 	public final static double kD = 0;
-	public final static double kV = 0.063322;
-	public final static double kS = 0.3;
-	public final static double kA = 0.0071578;
+	public final static double kV = 0.0771;
+	public final static double kS = 0.22;
+	public final static double kA = 0;
 
 	public final static double kP_SIM = 0.4;
 	public final static double kI_SIM = 0;
