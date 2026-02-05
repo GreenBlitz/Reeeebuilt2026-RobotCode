@@ -128,6 +128,67 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 	}
 
+	@Override
+	public void updateVision(RobotPoseObservation... visionRobotPoseObservations) {
+		for (RobotPoseObservation visionRobotPoseObservation : visionRobotPoseObservations) {
+			updateVision(visionRobotPoseObservation);
+		}
+	}
+
+	@Override
+	public void resetPose(OdometryData odometryData, Pose2d poseMeters) {
+		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
+
+		poseEstimator.resetPosition(
+			Rotation2d.fromRadians(odometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ()),
+			odometryData.getWheelPositions(),
+			poseMeters
+		);
+		this.lastOdometryData = odometryData;
+		poseToIMUYawDifferenceBuffer.clear();
+		imuYawBuffer.addSample(
+			odometryData.getTimestampSeconds(),
+			Rotation2d.fromRadians(odometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ())
+		);
+	}
+
+	@Override
+	public void resetPose(Pose2d poseMeters) {
+		resetPose(lastOdometryData, poseMeters);
+	}
+
+	@Override
+	public void setHeading(Rotation2d newHeading) {
+		poseEstimator.resetRotation(newHeading);
+		poseToIMUYawDifferenceBuffer.clear();
+	}
+
+	@Override
+	public boolean isIMUOffsetCalibrated() {
+		return isIMUOffsetCalibrated;
+	}
+
+	@Override
+	public void log() {
+		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
+		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
+		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
+		if (lastVisionObservation != null) {
+			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
+		}
+		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
+
+		Logger.recordOutput("/isColliding", isColliding);
+		Logger.recordOutput("/isTilted", isTilted);
+		Logger.recordOutput("/isSkidding", isSkidding);
+		Logger.recordOutput("/odometryDependantEstimatedPoseAccuracyMeasure", odometryDependantEstimatedPoseAccuracyMeasure);
+	}
+
+	public void resetIsIMUOffsetCalibrated() {
+		poseToIMUYawDifferenceBuffer.clear();
+		isIMUOffsetCalibrated = false;
+	}
+
 	private void updateOdometryProblemsStatus(OdometryData data) {
 		isColliding = data.getIMUXYAccelerationG()
 			.map(
@@ -171,79 +232,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: 0;
 
 		odometryDependantEstimatedPoseAccuracyMeasure = Math.max(odometryDependantEstimatedPoseAccuracyMeasure, 0);
-	}
-
-	@Override
-	public void updateVision(RobotPoseObservation... visionRobotPoseObservations) {
-		for (RobotPoseObservation visionRobotPoseObservation : visionRobotPoseObservations) {
-			updateVision(visionRobotPoseObservation);
-		}
-	}
-
-	@Override
-	public void resetPose(
-		double timestampSeconds,
-		Rotation3d imuOrientation,
-		Translation2d imuXYAccelerationG,
-		SwerveModulePosition[] wheelPositions,
-		SwerveModuleState[] wheelStates,
-		Pose2d poseMeters
-	) {
-		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
-		poseEstimator.resetPosition(Rotation2d.fromRadians(imuOrientation.getZ()), wheelPositions, poseMeters);
-		this.lastOdometryData = new OdometryData(
-			timestampSeconds,
-			wheelPositions,
-			wheelStates,
-			Optional.of(imuOrientation),
-			Optional.of(imuXYAccelerationG)
-		);
-		poseToIMUYawDifferenceBuffer.clear();
-		imuYawBuffer.addSample(timestampSeconds, Rotation2d.fromRadians(imuOrientation.getZ()));
-	}
-
-	@Override
-	public void resetPose(Pose2d poseMeters) {
-		resetPose(
-			lastOdometryData.getTimestampSeconds(),
-			lastOdometryData.getIMUOrientation().orElse(Rotation3d.kZero),
-			lastOdometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero),
-			lastOdometryData.getWheelPositions(),
-			lastOdometryData.getWheelStates(),
-			poseMeters
-		);
-	}
-
-	@Override
-	public void setHeading(Rotation2d newHeading) {
-		poseEstimator.resetRotation(newHeading);
-		poseToIMUYawDifferenceBuffer.clear();
-	}
-
-	@Override
-	public boolean isIMUOffsetCalibrated() {
-		return isIMUOffsetCalibrated;
-	}
-
-	@Override
-	public void log() {
-		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
-		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
-		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
-		if (lastVisionObservation != null) {
-			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
-		}
-		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
-
-		Logger.recordOutput("/isColliding", isColliding);
-		Logger.recordOutput("/isTilted", isTilted);
-		Logger.recordOutput("/isSkidding", isSkidding);
-		Logger.recordOutput("/odometryDependantPoseEstimationAccuracyMeasure", odometryDependantEstimatedPoseAccuracyMeasure);
-	}
-
-	public void resetIsIMUOffsetCalibrated() {
-		poseToIMUYawDifferenceBuffer.clear();
-		isIMUOffsetCalibrated = false;
 	}
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
