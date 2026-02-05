@@ -122,7 +122,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		}
 
 		updateOdometryCausedErrorsStatus(data);
-		updateEstimatedPoseErrorMeasure(data);
+		updateEstimatedPoseAccuracyMeasure(data);
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
@@ -161,7 +161,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		);
 	}
 
-	private void updateEstimatedPoseErrorMeasure(OdometryData data) {
+	private void updateEstimatedPoseAccuracyMeasure(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
