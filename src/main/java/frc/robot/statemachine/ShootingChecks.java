@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.utils.HubUtil;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -82,9 +83,9 @@ public class ShootingChecks {
 		Rotation2d tolerance,
 		String logPath
 	) {
-		boolean isAtHeading = MathUtil.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isAtHeading", isAtHeading);
-		return isAtHeading;
+		boolean isAtPosition = MathUtil.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
+		Logger.recordOutput(logPath + "/isAtHeading", isAtPosition);
+		return isAtPosition;
 	}
 
 	private static boolean isFlywheelAtVelocity(
@@ -119,7 +120,6 @@ public class ShootingChecks {
 		String actionLogPath,
 		boolean isPass
 	) {
-		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
@@ -151,8 +151,17 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			logPath
 		);
+		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+		boolean isOurHubActive = HubUtil.isOurHubActive();
+
+		return isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isInRange
+			&& isWithinDistance
+			&& isAtTurretAtTarget
+			&& isInAllianceZone
+			&& isOurHubActive /* && isPoseReliable */;
 	}
 
 	private static boolean canContinueShooting(
@@ -166,7 +175,6 @@ public class ShootingChecks {
 		String actionLogPath,
 		boolean isPass
 	) {
-		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
 
@@ -198,7 +206,17 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
+
+		boolean isOurHubActive = HubUtil.isOurHubActive();
+
+		return isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isInRange
+			&& isWithinDistance
+			&& isAtTurretAtTarget
+			&& isInAllianceZone
+			&& isOurHubActive /* && isPoseReliable */;
 	}
 
 	private static boolean calibrationIsReadyToScore(
