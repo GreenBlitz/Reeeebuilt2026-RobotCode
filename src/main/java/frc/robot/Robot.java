@@ -46,9 +46,11 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.robot.vision.cameras.limelight.Limelight;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.limelight.LimelightHelpers;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -58,6 +60,7 @@ import frc.utils.brakestate.BrakeStateManager;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
+	private static final double secondsOfMatch = 160;
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
@@ -137,6 +140,7 @@ public class Robot {
 				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		);
+		LimelightHelpers.triggerRewindCapture("", (secondsOfMatch));
 	}
 
 	private void updateAllSubsystems() {
