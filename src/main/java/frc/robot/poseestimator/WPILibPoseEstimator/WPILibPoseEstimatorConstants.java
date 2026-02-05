@@ -41,5 +41,4 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double ODOMETRY_CAUSED_ESTIMATED_POSE_ERROR_MEASURE_ADDITION_POWER_BASE = 0;
 
-
 }
