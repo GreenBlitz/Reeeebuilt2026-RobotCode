@@ -73,6 +73,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		robot.getSwerve().setIsRunningIndependently(true);
+		LimelightHelpers.setRewindEnabled(robot.getLimelight().getName(), true);
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
@@ -92,7 +93,6 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
-		LimelightHelpers.setRewindEnabled(robot.getLimelight().getName(), true);
 	}
 
 	public static double getTeleopStartTimeSeconds() {
