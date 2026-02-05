@@ -263,22 +263,22 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getOdometryErrorCompensatedVisionStdDevs(visionObservation.stdDevs()).asColumnVector()
+			compensateByOdometryCausedAccurecyMeasure(visionObservation.stdDevs()).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private StandardDeviations2D getOdometryErrorCompensatedVisionStdDevs(StandardDeviations2D visionStdDevs) {
+	private StandardDeviations2D compensateByOdometryCausedAccurecyMeasure(StandardDeviations2D visionStdDevs) {
 		StandardDeviations2D compensatedStdDevs = new StandardDeviations2D(
 			visionStdDevs.xStandardDeviations() * odometryCausedEstimatedPoseAccuracyMeasure,
 			visionStdDevs.yStandardDeviations() * odometryCausedEstimatedPoseAccuracyMeasure,
 			visionStdDevs.angleStandardDeviations()
 		);
-		removeValueFromOdometryCausedEstimatedPoseErrorMeasure(compensatedStdDevs);
+		updateOdometryCausedEstimatedPoseAccurecyMeasure(compensatedStdDevs);
 		return compensatedStdDevs;
 	}
 
-	private void removeValueFromOdometryCausedEstimatedPoseErrorMeasure(StandardDeviations2D compensatedVisionStdDevs) {
+	private void updateOdometryCausedEstimatedPoseAccurecyMeasure(StandardDeviations2D compensatedVisionStdDevs) {
 		double averageCompensatedTranslationalStdDevs = (compensatedVisionStdDevs.xStandardDeviations()
 			+ compensatedVisionStdDevs.yStandardDeviations()) / 2.0;
 		odometryCausedEstimatedPoseAccuracyMeasure += Math.pow(
