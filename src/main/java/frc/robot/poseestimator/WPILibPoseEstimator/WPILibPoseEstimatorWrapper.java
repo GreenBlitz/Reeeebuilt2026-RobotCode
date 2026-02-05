@@ -121,7 +121,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			);
 		}
 
-		updateOdometryCausedErrorsStatus(data);
+		updateOdometryProblemsStatus(data);
 		updateOdometryDependantPoseEstimationAccuracyMeasure(data);
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
@@ -135,7 +135,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		lastOdometryData.setTimestamp(data.getTimestampSeconds());
 	}
 
-	private void updateOdometryCausedErrorsStatus(OdometryData data) {
+	private void updateOdometryProblemsStatus(OdometryData data) {
 		isColliding = data.getIMUXYAccelerationG()
 			.map(
 				imuXYAcceleration -> PoseUtil
@@ -166,15 +166,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
 		odometryDependantPoseEstimationAccuracyMeasure -= isColliding
-			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_DEPENDANT_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
 
 		odometryDependantPoseEstimationAccuracyMeasure -= isTilted
-			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.TILT_ODOMETRY_DEPENDANT_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
 
 		odometryDependantPoseEstimationAccuracyMeasure -= isSkidding
-			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
+			? WPILibPoseEstimatorConstants.SKID_ODOMETRY_DEPENDANT_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
 	}
 
