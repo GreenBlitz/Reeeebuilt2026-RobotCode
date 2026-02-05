@@ -41,7 +41,7 @@ public class AutosBuilder {
 						robot.getRobotCommander().scoreSequence()
 					)
 				),
-				new Pose2d(10, 10, new Rotation2d()),
+				new Pose2d(),
 				"Start Of Autonomous"
 			)
 		);

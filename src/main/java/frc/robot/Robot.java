@@ -168,7 +168,7 @@ public class Robot {
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
-		Logger.recordOutput("ra", autonomousChooser.isDefaultOptionChosen());
+
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
