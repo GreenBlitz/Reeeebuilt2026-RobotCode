@@ -55,7 +55,7 @@ public class ShootingChecks {
 		Translation2d targetTranslation,
 		boolean isPass
 	) {
-		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(robotPosition, targetTranslation).getAngle();
+		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, robotPosition).getAngle();
 		if (isPass) {
 			AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, robotPosition).getAngle();
 		}

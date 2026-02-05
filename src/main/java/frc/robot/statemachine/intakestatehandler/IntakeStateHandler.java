@@ -17,7 +17,7 @@ public class IntakeStateHandler {
 
 	private final Arm fourBar;
 	private final Roller rollers;
-	private boolean hasBeenReset;
+	private boolean hasFourBarBeenReset;
 	private final IDigitalInput fourBarResetCheckSensor;
 	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
 	private final String logPath;
@@ -31,7 +31,7 @@ public class IntakeStateHandler {
 		this.rollers = rollers;
 		this.fourBarResetCheckSensor = fourBarResetCheckSensor;
 		this.fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
-		this.hasBeenReset = Robot.ROBOT_TYPE.isSimulation();
+		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
@@ -97,10 +97,17 @@ public class IntakeStateHandler {
 
 	public void periodic() {
 		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
-		if (!hasFourBarBeenReset())
-			hasBeenReset = isFourBarAtSensor();
-		Logger.recordOutput(logPath + "/hasBeenReset", hasFourBarBeenReset());
-		Logger.processInputs(logPath + "/resetSensorValue", fourBarResetCheckInput);
+
+		if (!hasFourBarBeenReset()) {
+			hasFourBarBeenReset = isFourBarAtSensor();
+		}
+
+		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians() && !hasFourBarBeenReset()) {
+			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
+		}
+
+		Logger.processInputs(logPath + "/fourBarResetSensor", fourBarResetCheckInput);
+		Logger.recordOutput(logPath + "/HasFourBarBeenReset", hasFourBarBeenReset());
 	}
 
 	public boolean isFourBarAtSensor() {
@@ -108,7 +115,7 @@ public class IntakeStateHandler {
 	}
 
 	public boolean hasFourBarBeenReset() {
-		return hasBeenReset;
+		return hasFourBarBeenReset;
 	}
 
 	public IntakeState getCurrentState() {
