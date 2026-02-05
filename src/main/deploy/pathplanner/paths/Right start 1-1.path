@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.6675762421014175,
+        "x": 4.667576242101418,
         "y": 2.5056553898343186
       },
       "isLocked": false,
@@ -32,19 +32,23 @@
     },
     {
       "anchor": {
-        "x": 8.269999999994296,
-        "y": 3.634472934476414
+        "x": 8.27,
+        "y": 3.684
       },
       "prevControl": {
-        "x": 8.760968660968661,
-        "y": 0.6240598290598305
+        "x": 8.760968660974365,
+        "y": 0.6735868945834165
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right 1 ball finish collect"
     }
   ],
   "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 135.0
+    },
     {
       "waypointRelativePos": 0.98,
       "rotationDegrees": 135.0
@@ -52,14 +56,7 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Intake opening right 1-1",
-      "waypointRelativePos": 1.1451721809587998,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.2,
     "maxAcceleration": 2.0,
@@ -76,7 +73,7 @@
   "folder": "Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 177.63954538860165
   },
   "useDefaultConstraints": true
 }
