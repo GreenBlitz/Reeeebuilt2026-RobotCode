@@ -181,7 +181,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Logger.recordOutput("/isColliding", isColliding);
 		Logger.recordOutput("/isTilted", isTilted);
 		Logger.recordOutput("/isSkidding", isSkidding);
-		Logger.recordOutput("/odometryDependantEstimatedPoseAccuracyMeasure", odometryAccuracy);
+		Logger.recordOutput("/odometryAccuracy", odometryAccuracy);
 	}
 
 	public void resetIsIMUOffsetCalibrated() {
