@@ -2,6 +2,7 @@ package frc.robot.statemachine.intakestatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Robot;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.subsystems.arm.Arm;
@@ -30,7 +31,7 @@ public class IntakeStateHandler {
 		this.rollers = rollers;
 		this.fourBarResetCheckSensor = fourBarResetCheckSensor;
 		this.fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
-		this.hasBeenReset = isFourBarAtSensor();
+		this.hasBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
