@@ -91,7 +91,7 @@ public class AutosBuilder {
 	}
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(Robot robot) {
-		return List.of(getRightFirstQuarterAuto(robot),getLeftFirstQuarterAuto(robot));
+		return List.of(getRightFirstQuarterAuto(robot), getLeftFirstQuarterAuto(robot));
 	}
 
 
