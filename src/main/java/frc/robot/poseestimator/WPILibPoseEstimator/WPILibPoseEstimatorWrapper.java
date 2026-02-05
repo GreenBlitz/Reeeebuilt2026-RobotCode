@@ -263,26 +263,26 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			compensateByOdometryCausedAccurecyMeasure(visionObservation.stdDevs()).asColumnVector()
+			compensateByOdometryDependantPoseEstimationAccuracyMeasure(visionObservation.stdDevs()).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private StandardDeviations2D compensateByOdometryCausedAccurecyMeasure(StandardDeviations2D visionStdDevs) {
+	private StandardDeviations2D compensateByOdometryDependantPoseEstimationAccuracyMeasure(StandardDeviations2D visionStdDevs) {
 		StandardDeviations2D compensatedStdDevs = new StandardDeviations2D(
-			visionStdDevs.xStandardDeviations() * odometryCausedEstimatedPoseAccuracyMeasure,
-			visionStdDevs.yStandardDeviations() * odometryCausedEstimatedPoseAccuracyMeasure,
+			visionStdDevs.xStandardDeviations() * odometryDependantPoseEstimationAccuracyMeasure,
+			visionStdDevs.yStandardDeviations() * odometryDependantPoseEstimationAccuracyMeasure,
 			visionStdDevs.angleStandardDeviations()
 		);
-		updateOdometryCausedEstimatedPoseAccurecyMeasure(compensatedStdDevs);
+		updateOdometryDependantPoseEstimationAccuracyMeasure(compensatedStdDevs);
 		return compensatedStdDevs;
 	}
 
-	private void updateOdometryCausedEstimatedPoseAccurecyMeasure(StandardDeviations2D compensatedVisionStdDevs) {
+	private void updateOdometryDependantPoseEstimationAccuracyMeasure(StandardDeviations2D compensatedVisionStdDevs) {
 		double averageCompensatedTranslationalStdDevs = (compensatedVisionStdDevs.xStandardDeviations()
 			+ compensatedVisionStdDevs.yStandardDeviations()) / 2.0;
-		odometryCausedEstimatedPoseAccuracyMeasure += Math.pow(
-			WPILibPoseEstimatorConstants.VALUE_ONE_COMPENSATED_VISION_STD_DEV_ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION,
+		odometryDependantPoseEstimationAccuracyMeasure += Math.pow(
+			WPILibPoseEstimatorConstants.VALUE_ONE_COMPENSATED_VISION_STD_DEV_POSE_ESTIMATION_ACCURACY_MEASURE_ADDITION,
 			averageCompensatedTranslationalStdDevs
 		);
 	}
