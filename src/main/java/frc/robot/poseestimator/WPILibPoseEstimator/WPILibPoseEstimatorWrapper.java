@@ -37,7 +37,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private boolean isColliding;
 	private boolean isTilted;
 	private boolean isSkidding;
-	private double odometryCausedEstimatedPoseAccuracyMeasure;
+	private double odometryDependantPoseEstimationAccuracyMeasure;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -76,7 +76,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.isColliding = false;
 		this.isTilted = false;
 		this.isSkidding = false;
-		this.odometryCausedEstimatedPoseAccuracyMeasure = 1;
+		this.odometryDependantPoseEstimationAccuracyMeasure = 1;
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		}
 
 		updateOdometryCausedErrorsStatus(data);
-		updateEstimatedPoseErrorMeasure(data);
+		updateOdometryDependantPoseEstimationAccuracyMeasure(data);
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
@@ -154,20 +154,20 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		);
 	}
 
-	private void updateEstimatedPoseErrorMeasure(OdometryData data) {
+	private void updateOdometryDependantPoseEstimationAccuracyMeasure(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
-		odometryCausedEstimatedPoseAccuracyMeasure -= isColliding
-			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ERROR_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
+		odometryDependantPoseEstimationAccuracyMeasure -= isColliding
+			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
 
-		odometryCausedEstimatedPoseAccuracyMeasure -= isTilted
-			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ERROR_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
+		odometryDependantPoseEstimationAccuracyMeasure -= isTilted
+			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
 
-		odometryCausedEstimatedPoseAccuracyMeasure -= isSkidding
-			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ERROR_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
+		odometryDependantPoseEstimationAccuracyMeasure -= isSkidding
+			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
 	}
 
@@ -236,7 +236,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Logger.recordOutput("/isColliding", isColliding);
 		Logger.recordOutput("/isTilted", isTilted);
 		Logger.recordOutput("/isSkidding", isSkidding);
-		Logger.recordOutput("/estimatedPoseErrorMeasure", odometryCausedEstimatedPoseAccuracyMeasure);
+		Logger.recordOutput("/odometryDependantPoseEstimationAccuracyMeasure", odometryDependantPoseEstimationAccuracyMeasure);
 	}
 
 	public void resetIsIMUOffsetCalibrated() {
