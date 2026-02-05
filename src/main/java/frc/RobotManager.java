@@ -17,6 +17,7 @@ import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.limelight.LimelightHelpers;
 import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -29,6 +30,7 @@ import org.littletonrobotics.junction.Logger;
  */
 public class RobotManager extends LoggedRobot {
 
+	private static final int secondsOfMatch = 160;
 	private final Robot robot;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
@@ -57,6 +59,8 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.coast();
 		}
+		LimelightHelpers.triggerRewindCapture(robot.getLimelight().getName(), secondsOfMatch);
+		LimelightHelpers.setRewindEnabled(robot.getLimelight().getName(), false);
 	}
 
 	@Override
@@ -88,6 +92,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+		LimelightHelpers.setRewindEnabled(robot.getLimelight().getName(), true);
 	}
 
 	public static double getTeleopStartTimeSeconds() {

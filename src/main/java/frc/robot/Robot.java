@@ -160,7 +160,6 @@ public class Robot {
 //			(new ParallelCommandGroup(
 //				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 //		);
-		LimelightHelpers.setRewindEnabled(limelight.getName(), true);
 	}
 
 	public void resetSubsystems() {
@@ -348,6 +347,10 @@ public class Robot {
 
 	public Swerve getSwerve() {
 		return swerve;
+	}
+
+	public Limelight getLimelight() {
+		return limelight;
 	}
 
 	public RobotCommander getRobotCommander() {
