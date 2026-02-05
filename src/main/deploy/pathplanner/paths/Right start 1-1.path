@@ -52,7 +52,14 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake opening right 1-1",
+      "waypointRelativePos": 1.1451721809587998,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.2,
     "maxAcceleration": 2.0,
@@ -66,7 +73,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "test",
+  "folder": "Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 135.0

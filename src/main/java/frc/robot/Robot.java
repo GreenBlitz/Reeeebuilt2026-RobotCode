@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
@@ -51,6 +53,8 @@ import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -134,8 +138,9 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
-		this.autonomousChooser = new AutonomousChooser("Autonomous", AutosBuilder.getRightFirstQuarterAuto(this));
+		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", (AutosBuilder.getAutoList(this)));
 		simulationManager = new SimulationManager("SimulationManager", this);
+
 		new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(
 			(new ParallelCommandGroup(
 				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
