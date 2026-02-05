@@ -133,7 +133,7 @@ public class ShootingCalculations {
 	}
 
 	private static Rotation2d getTurretToleranceForScoring(Translation2d predictedTurretPose) {
-		return Rotation2d.fromRadians(2 * Math.atan(Field.HUB_UPPER_RADIUS_METERS / getDistanceFromHub(predictedTurretPose)));
+		return Rotation2d.fromRadians(Math.atan(Field.HUB_UPPER_RADIUS_METERS / getDistanceFromHub(predictedTurretPose)));
 	}
 
 	public static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
