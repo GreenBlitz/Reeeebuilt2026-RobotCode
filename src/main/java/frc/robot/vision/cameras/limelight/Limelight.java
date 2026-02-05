@@ -8,7 +8,6 @@ import frc.robot.vision.interfaces.ObjectDetector;
 import frc.robot.vision.interfaces.OrientationRequiringRobotPoseSupplier;
 import frc.robot.vision.interfaces.IndependentRobotPoseSupplier;
 import frc.utils.Conversions;
-import frc.utils.GamePeriodUtils;
 import frc.utils.limelight.LimelightHelpers;
 import frc.utils.limelight.LimelightHelpersAdditions;
 import frc.utils.Filter;
@@ -165,13 +164,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.processInputs(logPath, inputs.connectedInput());
 	}
 
-	public void startRewind(){
+	public void startRewind() {
 		LimelightHelpers.setRewindEnabled(name, true);
 	}
 
-	public void endRewindAndCaptureGivenTime(int secondaToCapture){
-		LimelightHelpers.triggerRewindCapture(name, secondaToCapture);
-		LimelightHelpers.setRewindEnabled(name,false);
+	public void endRewindAndCaptureGivenTime(double secondsToCapture) {
+		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+		LimelightHelpers.setRewindEnabled(name, false);
 	}
 
 	public String getName() {
