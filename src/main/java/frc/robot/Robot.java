@@ -186,6 +186,7 @@ public class Robot {
 		robotCommander.update();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		limelight.updateIsConnected();
 		limelight.updateMT1();
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();

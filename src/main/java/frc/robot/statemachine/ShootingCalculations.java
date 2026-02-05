@@ -82,6 +82,13 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
+		Logger.recordOutput(LOG_PATH + "/tangentVel", turretTangentialVelocity);
+		Logger.recordOutput(LOG_PATH + "/transVel", robotTranslationalVelocity);
+		Logger.recordOutput(LOG_PATH + "/turretFieldRelativeVelocity", turretFieldRelativeVelocity);
+		Logger.recordOutput(LOG_PATH + "/targetTurretVelocityCausedByTranslation", targetTurretVelocityCausedByTranslation.getRadians());
+		Logger.recordOutput(LOG_PATH + "/gyroYawAngularVelocity", gyroYawAngularVelocity.getRadians());
+
+
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
