@@ -18,6 +18,7 @@ import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.limelight.LimelightHelpers;
 import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -70,6 +71,7 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
+		LimelightHelpers.setRewindEnabled("", true);
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {

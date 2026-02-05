@@ -140,7 +140,6 @@ public class Robot {
 				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		);
-		LimelightHelpers.triggerRewindCapture("", (secondsOfMatch));
 	}
 
 	private void updateAllSubsystems() {
