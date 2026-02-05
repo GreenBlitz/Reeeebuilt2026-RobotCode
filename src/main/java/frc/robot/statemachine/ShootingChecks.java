@@ -49,11 +49,12 @@ public class ShootingChecks {
 		Translation2d targetTranslation,
 		boolean isPass
 	) {
-		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(robotPosition, targetTranslation).getAngle();
+		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, robotPosition).getAngle();
 		if (isPass) {
 			AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, robotPosition).getAngle();
 		}
-		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndTarget.getDegrees()) <= maxAngleFromCenter.getDegrees();
+		Logger.recordOutput("aaaaaaaa", AngleBetweenRobotAndTarget.getDegrees());
+		boolean isInAngleRange = AngleBetweenRobotAndTarget.getDegrees() <= maxAngleFromCenter.getDegrees();
 		Logger.recordOutput(logPath + "/isInRange", isInAngleRange);
 		return isInAngleRange;
 	}

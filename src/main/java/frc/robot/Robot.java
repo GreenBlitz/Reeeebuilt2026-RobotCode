@@ -164,7 +164,7 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 		Logger.recordOutput("is within distance", ShootingChecks.isWithinDistance(poseEstimator.getEstimatedPose().getTranslation(), StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS, "is within range", Field.getHubMiddle()));
-		Logger.recordOutput("is in angle range", ShootingChecks.isInAngleRange(poseEstimator.getEstimatedPose().getTranslation(), Rotation2d.fromDegrees(180), "is in angle range", Field.getHubMiddle(), false));
+		Logger.recordOutput("is in angle range", ShootingChecks.isInAngleRange(poseEstimator.getEstimatedPose().getTranslation(), Rotation2d.fromDegrees(90), "is in angle range", Field.getHubMiddle(), false));
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
