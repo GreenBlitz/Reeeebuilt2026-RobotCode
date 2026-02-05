@@ -9,7 +9,6 @@ import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.Supplier;
