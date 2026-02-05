@@ -5,11 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -37,7 +36,9 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 
@@ -62,6 +63,8 @@ public class Robot {
 	private final Roller belly;
 
 	private final RobotCommander robotCommander;
+
+	private final AutonomousChooser autonomousChooser;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
@@ -120,9 +123,11 @@ public class Robot {
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
+		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
+		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", (AutosBuilder.getAutoList(this)));
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+		new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(
 			(new ParallelCommandGroup(
 				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
 				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
@@ -217,7 +222,7 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return autonomousChooser.getChosenValue();
 	}
 
 }
