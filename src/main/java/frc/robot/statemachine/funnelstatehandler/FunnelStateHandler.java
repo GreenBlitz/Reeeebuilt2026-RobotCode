@@ -56,6 +56,10 @@ public class FunnelStateHandler {
 		return sensorInputsAutoLogged.debouncedValue;
 	}
 
+	public void sensorLogic() {
+		new ConditionalCommand(train.getCommandsBuilder().stop(), train.getCommandsBuilder().setPower(0.5), this::isBallAtSensor);
+	}
+
 	private Command neutral() {
 		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
 	}
@@ -82,6 +86,7 @@ public class FunnelStateHandler {
 	}
 
 	public void periodic() {
+		isBallAtSensor();
 		ballSensor.updateInputs(sensorInputsAutoLogged);
 
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
