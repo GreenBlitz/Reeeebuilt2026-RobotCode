@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -37,6 +40,8 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
+import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
@@ -127,6 +132,25 @@ public class Robot {
 				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
 				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
+		);
+
+		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, getRobotConfig());
+	}
+
+	public RobotConfig getRobotConfig() {
+		return new RobotConfig(
+			45,
+			6.325,
+			new ModuleConfig(
+				swerve.getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).getConstants().wheelDiameterMeters() / 2,
+				swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
+				0.96,
+				DCMotor.getKrakenX60Foc(1),
+				KrakenX60DriveBuilder.GEAR_RATIO,
+				KrakenX60DriveBuilder.SLIP_CURRENT,
+				1
+			),
+			swerve.getModules().getModulePositionsFromCenterMeters()
 		);
 	}
 
