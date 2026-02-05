@@ -270,7 +270,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
 	}
 
-	public void startRewind() {
+	public void enableRewind() {
 		LimelightHelpers.setRewindEnabled(name, true);
 	}
 
@@ -278,7 +278,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
 	}
 
-	public void endRewind() {
+	public void disableRewind() {
 		LimelightHelpers.setRewindEnabled(name, false);
 	}
 
