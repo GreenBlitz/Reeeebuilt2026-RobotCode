@@ -38,10 +38,10 @@ public class Field {
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
 
-	public static final double HIGHEST_HUB_Y_VALUE = getHubMiddle().getY() + HUB_Y_AXIS_LENGTH_METERS / 2;
-	public static final double LOWEST_HUB_Y_VALUE = getHubMiddle().getY() - HUB_Y_AXIS_LENGTH_METERS / 2;
+	public static final double MAX_HUB_Y_VALUE = getHubMiddle().getY() + HUB_Y_AXIS_LENGTH_METERS / 2;
+	public static final double MIN_HUB_Y_VALUE = getHubMiddle().getY() - HUB_Y_AXIS_LENGTH_METERS / 2;
 
-	private static final double MAX_X_VALUE_YOU_CANT_PASS_FROM_WHEN_BEHIND_HUB = 8;
+	private static final double MIN_X_VALUE_TO_PASS_BEHIND_HUB = 6;
 	private static final double TARGET_X_VALUE_FOR_PASSING = 3;
 
 	private static final Translation2d LOWER_PRESET_PASSING_TARGET = new Translation2d(1, 1);
@@ -84,11 +84,11 @@ public class Field {
 		return UPPER_PRESET_PASSING_TARGET;
 	}
 
-	public static double getMaxXValueYouCantPassFromWhenBehindHub() {
+	public static double getMinXValueToPassBehindHub() {
 		if (isFieldConventionAlliance()) {
-			return MAX_X_VALUE_YOU_CANT_PASS_FROM_WHEN_BEHIND_HUB;
+			return MIN_X_VALUE_TO_PASS_BEHIND_HUB;
 		}
-		return FieldMath.mirrorX(MAX_X_VALUE_YOU_CANT_PASS_FROM_WHEN_BEHIND_HUB);
+		return FieldMath.mirrorX(MIN_X_VALUE_TO_PASS_BEHIND_HUB);
 	}
 
 	public static Translation2d getTrenchMiddle(AllianceSide side) {

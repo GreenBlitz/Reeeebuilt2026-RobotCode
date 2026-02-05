@@ -12,5 +12,5 @@ Shooter Calibrations
 - [ ] Max/Min Y value you cant pass straight from
 - [ ] Preset Points for side passing
 - [ ] Target X value for passing
-- [ ] Max X value you cant pass from when behind hub
+- [ ] Min X value to pass behind hub
  
