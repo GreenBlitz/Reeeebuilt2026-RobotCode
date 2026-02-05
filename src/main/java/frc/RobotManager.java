@@ -59,8 +59,6 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.coast();
 		}
-		robot.getLimelight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
-		robot.getLimelight().disableRewind();
 	}
 
 	@Override
@@ -93,6 +91,12 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+	}
+
+	@Override
+	public void teleopExit(){
+		robot.getLimelight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS);
+		robot.getLimelight().disableRewind();
 	}
 
 	public static double getTeleopStartTimeSeconds() {
