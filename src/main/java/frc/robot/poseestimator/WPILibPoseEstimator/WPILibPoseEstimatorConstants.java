@@ -23,11 +23,11 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND = 0.5;
 
-	public static final double COLLISION_POSE_ESTIMATION_ERROR_MEASURE_REDUCTION_FACTOR = 0;
+	public static final double COLLISION_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR = 10;
 
-	public static final double TILT_POSE_ESTIMATION_ERROR_MEASURE_REDUCTION_FACTOR = 0;
+	public static final double TILT_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR = 5;
 
-	public static final double SKID_POSE_ESTIMATION_ERROR_MEASURE_REDUCTION_FACTOR = 0;
+	public static final double SKID_POSE_ESTIMATION_ACCURACY_MEASURE_REDUCTION_FACTOR = 2;
 
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 
