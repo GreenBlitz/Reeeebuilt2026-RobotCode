@@ -46,7 +46,7 @@ public class AutosBuilder {
 						robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 					).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
 						.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE)),
-					new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(1))
+					DEFAULT_PATH_TOLERANCE
 				),
 				PathFollowingCommandsBuilder.deadlineCommandWithPath(
 					robot.getSwerve(),
