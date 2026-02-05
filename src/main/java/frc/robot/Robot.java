@@ -199,8 +199,8 @@ public class Robot {
 
 	public RobotConfig getRobotConfig() {
 		return new RobotConfig(
-			45,
-			4.7,
+			60,
+			6.325,
 			new ModuleConfig(
 				swerve.getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).getConstants().wheelDiameterMeters() / 2,
 				swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
