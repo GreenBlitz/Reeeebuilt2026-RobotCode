@@ -164,15 +164,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
-		odometryCausedEstimatedPoseErrorMeasure += isColliding
+		odometryCausedEstimatedPoseErrorMeasure -= isColliding
 			? WPILibPoseEstimatorConstants.COLLISION_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
 			: 0;
 
-		odometryCausedEstimatedPoseErrorMeasure += isTilted
+		odometryCausedEstimatedPoseErrorMeasure -= isTilted
 			? WPILibPoseEstimatorConstants.TILT_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
 			: 0;
 
-		odometryCausedEstimatedPoseErrorMeasure += isSkidding
+		odometryCausedEstimatedPoseErrorMeasure -= isSkidding
 			? WPILibPoseEstimatorConstants.SKID_POSE_ESTIMATION_ERROR_MEASURE_ADDITION_FACTOR * changeInPoseNorm
 			: 0;
 	}
