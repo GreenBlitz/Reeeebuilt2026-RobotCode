@@ -13,7 +13,6 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 public class ShootingCalculations {
