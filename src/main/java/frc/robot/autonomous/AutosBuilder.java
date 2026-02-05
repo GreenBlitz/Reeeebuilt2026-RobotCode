@@ -61,9 +61,37 @@ public class AutosBuilder {
 		);
 	}
 
+	private static Supplier<PathPlannerAutoWrapper> getLeftFirstQuarterAuto(Robot robot) {
+		return () -> new PathPlannerAutoWrapper(
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder.deadlineCommandWithPath(
+					robot.getSwerve(),
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					PathHelper.PATH_PLANNER_PATHS.get("Right start 1-1").mirrorPath(),
+					DEFAULT_PATH_CONSTRAINS,
+					() -> new ParallelCommandGroup(
+						robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+						robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+					).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+						.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE)),
+					DEFAULT_PATH_TOLERANCE
+				),
+				PathFollowingCommandsBuilder.deadlineCommandWithPath(
+					robot.getSwerve(),
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					PathHelper.PATH_PLANNER_PATHS.get("Right 1-2").mirrorPath(),
+					DEFAULT_PATH_CONSTRAINS,
+					() -> robot.getRobotCommander().scoreSequence(),
+					DEFAULT_PATH_TOLERANCE
+				)
+			),
+			new Pose2d(),
+			"Left path type 1"
+		);
+	}
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(Robot robot) {
-		return List.of(getRightFirstQuarterAuto(robot));
+		return List.of(getRightFirstQuarterAuto(robot),getLeftFirstQuarterAuto(robot));
 	}
 
 
