@@ -248,7 +248,8 @@ public class ShootingChecks {
 	}
 
 	public static boolean isReadyToScore(Robot robot, Rotation2d maxAngleFromHubCenter, double maxShootingDistanceFromTargetMeters) {
-		double distanceFromHub = ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
+		double distanceFromHub = ShootingCalculations
+			.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands());
 		return isReadyToShoot(
 			robot,
 			ShootingInterpolations.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP.get(distanceFromHub),
