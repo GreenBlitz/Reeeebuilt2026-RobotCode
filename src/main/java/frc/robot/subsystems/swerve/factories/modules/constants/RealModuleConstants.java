@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve.factories.modules.constants;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
 import frc.robot.subsystems.swerve.factories.constants.SimulationSwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.records.ModuleSpecificConstants;
@@ -40,7 +41,7 @@ class RealModuleConstants {
 			logPath,
 			WHEEL_DIAMETER_METERS,
 			COUPLING_RATIO,
-			SimulationSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
+			RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
 			LOCATIONS[modulePosition.getIndex()]
 		);
 	}

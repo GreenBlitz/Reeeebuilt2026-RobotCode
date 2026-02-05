@@ -1,15 +1,21 @@
 package frc;
 
+import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.constants.field.Field;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
+import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.math.ToleranceMath;
 
 public class JoysticksBindings {
 
@@ -52,8 +58,9 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
+		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
+
 		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
@@ -65,8 +72,18 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyInterpolationCalibrationBindings(usedJoystick, robot);
+//		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.pathfindThenFollowPath(PathHelper.PATH_PLANNER_PATHS.get("right to left"), new PathConstraints(2.0,2.0, 5, 5)).andThen(robot.getSwerve().getCommandsBuilder().drive(() -> new ChassisPowers())));
+		usedJoystick.B.onTrue(robot.getSwerve().getCommandsBuilder().driveToPath(
+				() -> robot.getPoseEstimator().getEstimatedPose(),
+				PathHelper.PATH_PLANNER_PATHS.get("right to left"),
+				new Pose2d(1.1, 7.1, Rotation2d.fromDegrees(51)),
+				new PathConstraints(3, 3, 5, 5)
+		));
+		usedJoystick.Y.onTrue(PathFollowingCommandsBuilder.pathfindThenFollowPath(PathHelper.PATH_PLANNER_PATHS.get("left to right"), new PathConstraints(2.0,2.0, 5, 5)).andThen(robot.getSwerve().getCommandsBuilder().drive(() -> new ChassisPowers())));
+//		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("RIGHT2LEFT")).andThen(robot.getSwerve().getCommandsBuilder().drive(() -> new ChassisPowers())));
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 	}
+
 
 	private static void fourthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FOURTH_JOYSTICK;
