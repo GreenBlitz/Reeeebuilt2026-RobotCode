@@ -23,16 +23,16 @@ public class ShootingChecks {
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
-	public static boolean isInYRangeForPresetTargetPassing(Translation2d turretPosition) {
-		boolean isInYRangeForPresetTargetPassing = turretPosition.getY() < ShooterConstants.MAX_Y_VALUE_FOR_UNPASSABLE_AREA
-			&& turretPosition.getY() > ShooterConstants.MIN_Y_VALUE_FOR_UNPASSABLE_AREA;
+	public static boolean isInRangeForPresetTargetPassing(Translation2d turretPosition) {
+		boolean isInYRangeForPresetTargetPassing = turretPosition.getY() < Field.MAX_Y_VALUE_FOR_UNPASSABLE_AREA
+			&& turretPosition.getY() > Field.MIN_Y_VALUE_FOR_UNPASSABLE_AREA;
 		return isInYRangeForPresetTargetPassing;
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretPosition, String logPath) {
-		Translation2d blueRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
-		boolean isInPositionForPassing = !(isInYRangeForPresetTargetPassing(turretPosition)
-			&& blueRelativeTurretPosition.getX() > FieldMath.mirrorX(ShooterConstants.getMaxXValueForUnpassableArea()));
+		Translation2d allianceRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
+		boolean isInPositionForPassing = !(isInRangeForPresetTargetPassing(turretPosition)
+			&& allianceRelativeTurretPosition.getX() > FieldMath.mirrorX(Field.getMaxXValueForUnpassableArea()));
 		Logger.recordOutput(logPath + "/IsInPositionForPassing", isInPositionForPassing);
 		return isInPositionForPassing;
 	}

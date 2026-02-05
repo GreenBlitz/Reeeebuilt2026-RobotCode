@@ -38,6 +38,15 @@ public class Field {
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
 
+	public static final double MAX_Y_VALUE_FOR_UNPASSABLE_AREA = getHubMiddle().getY() + HUB_Y_AXIS_LENGTH_METERS / 2;
+	public static final double MIN_Y_VALUE_FOR_UNPASSABLE_AREA = getHubMiddle().getY() - HUB_Y_AXIS_LENGTH_METERS / 2;
+
+	private static final double MAX_X_VALUE_FOR_UNPASSABLE_AREA = 8;
+	private static final double TARGET_X_VALUE_FOR_PASSING = 3;
+
+	private static final Translation2d LOWER_PRESET_PASSING_TARGET = new Translation2d(1, 1);
+	private static final Translation2d UPPER_PRESET_PASSING_TARGET = FieldMath.mirror(LOWER_PRESET_PASSING_TARGET, false, true);
+
 	public static Translation2d getHubMiddle() {
 		return getAllianceRelative(HUB_MIDDLE);
 	}
@@ -52,6 +61,34 @@ public class Field {
 
 	public static Translation2d getTowerMiddle() {
 		return getAllianceRelative(TOWER_MIDDLE);
+	}
+
+	public static double getTargetXForPassing() {
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirrorX(TARGET_X_VALUE_FOR_PASSING);
+		}
+		return TARGET_X_VALUE_FOR_PASSING;
+	}
+
+	public static Translation2d getLowerPresetPassingTarget() {
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirror(LOWER_PRESET_PASSING_TARGET, true, false);
+		}
+		return LOWER_PRESET_PASSING_TARGET;
+	}
+
+	public static Translation2d getUpperYPresetPassingTarget() {
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirror(UPPER_PRESET_PASSING_TARGET, true, false);
+		}
+		return UPPER_PRESET_PASSING_TARGET;
+	}
+
+	public static double getMaxXValueForUnpassableArea() {
+		if (isFieldConventionAlliance()) {
+			return MAX_X_VALUE_FOR_UNPASSABLE_AREA;
+		}
+		return FieldMath.mirrorX(MAX_X_VALUE_FOR_UNPASSABLE_AREA);
 	}
 
 	public static Translation2d getTrenchMiddle(AllianceSide side) {
