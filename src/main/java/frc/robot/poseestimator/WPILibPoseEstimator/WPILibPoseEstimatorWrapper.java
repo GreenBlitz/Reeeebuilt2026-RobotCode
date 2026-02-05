@@ -40,7 +40,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private boolean isColliding;
 	private boolean isTilted;
 	private boolean isSkidding;
-	private double odometryDependantEstimatedPoseAccuracyMeasure;
+	private double odometryAccuracy;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -81,7 +81,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.isColliding = false;
 		this.isTilted = false;
 		this.isSkidding = false;
-		this.odometryDependantEstimatedPoseAccuracyMeasure = 1;
+		this.odometryAccuracy = 1;
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		}
 
 		updateOdometryProblemsStatus(data);
-		updateOdometryDependantEstimatedPoseAccuracyMeasure(data);
+		updateOdometryAccuracy(data);
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
@@ -189,7 +189,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Logger.recordOutput("/isColliding", isColliding);
 		Logger.recordOutput("/isTilted", isTilted);
 		Logger.recordOutput("/isSkidding", isSkidding);
-		Logger.recordOutput("/odometryDependantEstimatedPoseAccuracyMeasure", odometryDependantEstimatedPoseAccuracyMeasure);
+		Logger.recordOutput("/odometryDependantEstimatedPoseAccuracyMeasure", odometryAccuracy);
 	}
 
 	public void resetIsIMUOffsetCalibrated() {
@@ -223,23 +223,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		);
 	}
 
-	private void updateOdometryDependantEstimatedPoseAccuracyMeasure(OdometryData data) {
+	private void updateOdometryAccuracy(OdometryData data) {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
-		odometryDependantEstimatedPoseAccuracyMeasure -= isColliding
-			? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_DEPENDANT_ESTIMATED_POSE_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
-			: 0;
+		odometryAccuracy -= isColliding ? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
 
-		odometryDependantEstimatedPoseAccuracyMeasure -= isTilted
-			? WPILibPoseEstimatorConstants.TILT_ODOMETRY_DEPENDANT_ESTIMATED_POSE_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
-			: 0;
+		odometryAccuracy -= isTilted ? WPILibPoseEstimatorConstants.TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
 
-		odometryDependantEstimatedPoseAccuracyMeasure -= isSkidding
-			? WPILibPoseEstimatorConstants.SKID_ODOMETRY_DEPENDANT_ESTIMATED_POSE_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
-			: 0;
+		odometryAccuracy -= isSkidding ? WPILibPoseEstimatorConstants.SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
 
-		odometryDependantEstimatedPoseAccuracyMeasure = Math.max(odometryDependantEstimatedPoseAccuracyMeasure, 0);
+		odometryAccuracy = Math.max(odometryAccuracy, 0);
 	}
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
