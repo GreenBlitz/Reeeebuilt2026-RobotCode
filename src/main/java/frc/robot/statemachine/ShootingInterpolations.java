@@ -19,10 +19,6 @@ public class ShootingInterpolations {
 
 	public static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP;
 
-	public static final InterpolationMap<Double, Rotation2d> TURRET_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP;
-
-	public static final InterpolationMap<Double, Rotation2d> TURRET_TOLERANCE_TO_CONTINUE_SCORING_INTERPOLATION_MAP;
-
 	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP;
 
 	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING_INTERPOLATION_MAP;
@@ -144,19 +140,6 @@ public class ShootingInterpolations {
 			InverseInterpolator.forDouble(),
 			Interpolator.forDouble(),
 			Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
-		);
-
-
-		TURRET_TOLERANCE_TO_START_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
-			InverseInterpolator.forDouble(),
-			InterpolationMap.interpolatorForRotation2d(),
-			Map.of(1.5, Rotation2d.fromDegrees(3), 6.0, Rotation2d.fromDegrees(1))
-		);
-
-		TURRET_TOLERANCE_TO_CONTINUE_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
-			InverseInterpolator.forDouble(),
-			InterpolationMap.interpolatorForRotation2d(),
-			Map.of(1.5, Rotation2d.fromDegrees(3), 6.0, Rotation2d.fromDegrees(1))
 		);
 
 		FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(

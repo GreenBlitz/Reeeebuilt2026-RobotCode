@@ -21,7 +21,8 @@ public class ShootingCalculations {
 		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
 		new Translation2d(),
-		Field.getHubMiddle()
+		Field.getHubMiddle(),
+		new Rotation2d()
 	);
 
 	public static ShootingParams getShootingParams() {
@@ -71,6 +72,7 @@ public class ShootingCalculations {
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
+		Rotation2d turretToleranceForScoring = getTurretToleranceForScoring(turretPredictedPose);
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
@@ -79,13 +81,15 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
+		Logger.recordOutput(LOG_PATH + "/turretToleranceForScoring", turretToleranceForScoring);
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
 			turretTargetPosition,
 			turretTargetVelocityRPS,
 			turretPredictedPose,
-			targetTranslation
+			targetTranslation,
+			turretToleranceForScoring
 		);
 	}
 
@@ -126,6 +130,10 @@ public class ShootingCalculations {
 		double turretPosePredictionY = turretPose.getY() + (turretVelocities.getY() * ballFlightTime);
 
 		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
+	}
+
+	private static Rotation2d getTurretToleranceForScoring(Translation2d predictedTurretPose) {
+		return Rotation2d.fromRadians(2 * Math.atan(Field.HUB_UPPER_RADIUS_METERS / getDistanceFromHub(predictedTurretPose)));
 	}
 
 	public static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {

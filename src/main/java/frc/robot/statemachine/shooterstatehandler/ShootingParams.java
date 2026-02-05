@@ -10,5 +10,6 @@ public record ShootingParams(
 	Rotation2d targetTurretPosition,
 	Rotation2d targetTurretVelocityRPS,
 	Translation2d predictedTurretPoseWhenBallLands,
-	Translation2d targetLandingPosition
+	Translation2d targetLandingPosition,
+	Rotation2d turretToleranceForScoring
 ) {}
