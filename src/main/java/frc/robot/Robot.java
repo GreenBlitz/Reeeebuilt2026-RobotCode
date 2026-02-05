@@ -53,6 +53,7 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.limelight.LimelightHelpers;
 import frc.utils.math.StandardDeviations2D;
 
 /**
@@ -63,6 +64,7 @@ import frc.utils.math.StandardDeviations2D;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
+	public static final int secondsOfMatch = 160;
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Arm hood;
@@ -159,6 +161,7 @@ public class Robot {
 //			(new ParallelCommandGroup(
 //				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 //		);
+		LimelightHelpers.triggerRewindCapture(limelight.getName(), secondsOfMatch);
 	}
 
 	public void resetSubsystems() {
