@@ -273,13 +273,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			visionStdDevs.yStandardDeviations() * odometryCausedEstimatedPoseErrorMeasure,
 			visionStdDevs.angleStandardDeviations()
 		);
-		double averageCompensatedTranslationalStdDevs = (compensatedStdDevs.xStandardDeviations() + compensatedStdDevs.yStandardDeviations())
-			/ 2.0;
+		removeValueFromOdometryCausedEstimatedPoseErrorMeasure(compensatedStdDevs);
+		return compensatedStdDevs;
+	}
+
+	private void removeValueFromOdometryCausedEstimatedPoseErrorMeasure(StandardDeviations2D compensatedVisionStdDevs) {
+		double averageCompensatedTranslationalStdDevs = (compensatedVisionStdDevs.xStandardDeviations()
+			+ compensatedVisionStdDevs.yStandardDeviations()) / 2.0;
 		odometryCausedEstimatedPoseErrorMeasure += Math.pow(
 			WPILibPoseEstimatorConstants.ODOMETRY_CAUSED_ESTIMATED_POSE_ERROR_MEASURE_ADDITION_POWER_BASE,
 			-averageCompensatedTranslationalStdDevs
 		);
-		return compensatedStdDevs;
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
