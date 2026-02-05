@@ -18,7 +18,6 @@ import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.brakestate.BrakeStateManager;
-import frc.utils.limelight.LimelightHelpers;
 import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -61,7 +60,7 @@ public class RobotManager extends LoggedRobot {
 			BrakeStateManager.coast();
 		}
 		robot.getLimelight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
-		robot.getLimelight().endRewind();
+		robot.getLimelight().disableRewind();
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		robot.getSwerve().setIsRunningIndependently(true);
-		robot.getLimelight().startRewind();
+		robot.getLimelight().enableRewind();
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
