@@ -164,18 +164,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.processInputs(logPath, inputs.connectedInput());
 	}
 
-	public void startRewind() {
-		LimelightHelpers.setRewindEnabled(name, true);
-	}
-
-	public void captureGivenTime(double secondsToCapture){
-		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
-	}
-
-	public void endRewind() {
-		LimelightHelpers.setRewindEnabled(name, false);
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -280,6 +268,18 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void setMT2StdDevsCalculation(Supplier<StandardDeviations2D> calculateMT2StdDevs) {
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
+	}
+
+	public void startRewind() {
+		LimelightHelpers.setRewindEnabled(name, true);
+	}
+
+	public void captureGivenTime(double secondsToCapture){
+		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+	}
+
+	public void endRewind() {
+		LimelightHelpers.setRewindEnabled(name, false);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
