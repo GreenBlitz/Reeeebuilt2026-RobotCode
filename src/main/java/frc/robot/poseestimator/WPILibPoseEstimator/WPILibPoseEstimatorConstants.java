@@ -39,7 +39,9 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
-	// constant represents the addition to odometryDependantEstimatedPoseAccuracyMeasure when the compensated vision StdDevs are equal to one
+	/**
+	 * constant represents the addition to odometryDependantEstimatedPoseAccuracyMeasure when the compensated vision StdDevs are equal to one
+	 */
 	public static double ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE = 0.1;
 
 }
