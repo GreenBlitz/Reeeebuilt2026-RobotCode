@@ -270,6 +270,18 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
 	}
 
+	public void enableRewind() {
+		LimelightHelpers.setRewindEnabled(name, true);
+	}
+
+	public void captureGivenTime(double secondsToCapture) {
+		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+	}
+
+	public void disableRewind() {
+		LimelightHelpers.setRewindEnabled(name, false);
+	}
+
 	protected LimelightTarget2dValues getTarget2dValues() {
 		if (pipeline.isNeuralDetecting()) {
 			return inputs.neuralDetectionInputs().target2dValues;
