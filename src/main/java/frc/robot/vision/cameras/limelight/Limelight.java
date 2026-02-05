@@ -168,8 +168,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.setRewindEnabled(name, true);
 	}
 
-	public void endRewindAndCaptureGivenTime(double secondsToCapture) {
+	public void captureGivenTime(double secondsToCapture){
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+	}
+
+	public void endRewind(double seconds) {
 		LimelightHelpers.setRewindEnabled(name, false);
 	}
 
