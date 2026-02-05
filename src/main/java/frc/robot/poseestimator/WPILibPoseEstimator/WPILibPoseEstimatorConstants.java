@@ -39,8 +39,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
-	public static double ODOMETRY_CAUSED_ESTIMATED_POSE_ERROR_MEASURE_FACTOR = 0.3; // PLACE HOLDER due to changes in my math it must be between
-																					// 0 n 1
+	public static double ODOMETRY_CAUSED_ESTIMATED_POSE_ERROR_MEASURE_ADDITION_POWER_BASE = 0;
 
 
 }

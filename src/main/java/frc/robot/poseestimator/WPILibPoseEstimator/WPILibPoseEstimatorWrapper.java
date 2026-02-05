@@ -275,7 +275,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		);
 		double averageCompensatedStdDevsXY = (compensatedStdDevs.xStandardDeviations() + compensatedStdDevs.yStandardDeviations()) / 2.0;
 		odometryCausedEstimatedPoseErrorMeasure += Math
-			.pow(WPILibPoseEstimatorConstants.ODOMETRY_CAUSED_ESTIMATED_POSE_ERROR_MEASURE_FACTOR, -averageCompensatedStdDevsXY);
+			.pow(WPILibPoseEstimatorConstants.ODOMETRY_CAUSED_ESTIMATED_POSE_ERROR_MEASURE_ADDITION_POWER_BASE, -averageCompensatedStdDevsXY);
 		return compensatedStdDevs;
 	}
 
