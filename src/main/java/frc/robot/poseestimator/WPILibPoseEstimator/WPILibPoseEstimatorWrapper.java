@@ -146,8 +146,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			odometryData.getTimestampSeconds(),
 			Rotation2d.fromRadians(odometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ())
 		);
-		imuXYAccelerationGBuffer
-			.addSample(odometryData.getTimestampSeconds(), odometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero));
+		imuXYAccelerationGBuffer.addSample(odometryData.getTimestampSeconds(), odometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero));
 	}
 
 	@Override
