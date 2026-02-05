@@ -176,6 +176,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		odometryDependantEstimatedPoseAccuracyMeasure -= isSkidding
 			? WPILibPoseEstimatorConstants.SKID_ODOMETRY_DEPENDANT_ESTIMATED_POSE_ACCURACY_MEASURE_REDUCTION_FACTOR * changeInPoseNorm
 			: 0;
+
+		odometryDependantEstimatedPoseAccuracyMeasure = Math.max(odometryDependantEstimatedPoseAccuracyMeasure, 0);
 	}
 
 	@Override
