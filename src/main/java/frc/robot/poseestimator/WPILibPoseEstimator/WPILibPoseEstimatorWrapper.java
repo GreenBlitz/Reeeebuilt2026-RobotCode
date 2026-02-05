@@ -247,29 +247,26 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			compensateByOdometryDependantEstimatedPoseAccuracyMeasure(visionObservation.stdDevs()).asColumnVector()
+			compensateByOdometryAccuracy(visionObservation.stdDevs()).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private StandardDeviations2D compensateByOdometryDependantEstimatedPoseAccuracyMeasure(StandardDeviations2D visionStdDevs) {
+	private StandardDeviations2D compensateByOdometryAccuracy(StandardDeviations2D visionStdDevs) {
 		StandardDeviations2D compensatedStdDevs = new StandardDeviations2D(
-			visionStdDevs.xStandardDeviations() * odometryDependantEstimatedPoseAccuracyMeasure,
-			visionStdDevs.yStandardDeviations() * odometryDependantEstimatedPoseAccuracyMeasure,
+			visionStdDevs.xStandardDeviations() * odometryAccuracy,
+			visionStdDevs.yStandardDeviations() * odometryAccuracy,
 			visionStdDevs.angleStandardDeviations()
 		);
-		updateOdometryDependantEstimatedPoseAccuracyMeasure(compensatedStdDevs);
+		updateOdometryAccuracy(compensatedStdDevs);
 		return compensatedStdDevs;
 	}
 
-	private void updateOdometryDependantEstimatedPoseAccuracyMeasure(StandardDeviations2D compensatedVisionStdDevs) {
+	private void updateOdometryAccuracy(StandardDeviations2D compensatedVisionStdDevs) {
 		double averageCompensatedTranslationalStdDevs = (compensatedVisionStdDevs.xStandardDeviations()
 			+ compensatedVisionStdDevs.yStandardDeviations()) / 2.0;
-		odometryDependantEstimatedPoseAccuracyMeasure += Math.pow(
-			WPILibPoseEstimatorConstants.ODOMETRY_DEPENDENT_ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE,
-			averageCompensatedTranslationalStdDevs
-		);
-		odometryDependantEstimatedPoseAccuracyMeasure = Math.min(odometryDependantEstimatedPoseAccuracyMeasure, 1);
+		odometryAccuracy += Math.pow(WPILibPoseEstimatorConstants.ODOMETRY_ACCURACY_ADDITION_POWER_BASE, averageCompensatedTranslationalStdDevs);
+		odometryAccuracy = Math.min(odometryAccuracy, 1);
 	}
 
 	private void updateIsIMUOffsetCalibrated() {

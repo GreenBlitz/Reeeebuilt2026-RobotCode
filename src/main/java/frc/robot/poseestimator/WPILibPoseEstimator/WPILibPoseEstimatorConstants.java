@@ -29,6 +29,11 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
 
+	/**
+	 * constant represents the addition to odometryAccuracy when the compensated vision X and Y StdDevs average is equal to one
+	 */
+	public static double ODOMETRY_ACCURACY_ADDITION_POWER_BASE = 0;
+
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 
 	public static final Pose2d STARTING_ODOMETRY_POSE = new Pose2d();
@@ -38,11 +43,5 @@ public class WPILibPoseEstimatorConstants {
 	public static double MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV = 0.0025;
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
-
-	/**
-	 * constant represents the addition to odometryDependantEstimatedPoseAccuracyMeasure when the compensated vision X and Y StdDevs average is
-	 * equal to one
-	 */
-	public static double ODOMETRY_DEPENDENT_ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE = 0;
 
 }
