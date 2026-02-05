@@ -42,6 +42,6 @@ public class WPILibPoseEstimatorConstants {
 	/**
 	 * constant represents the addition to odometryDependantEstimatedPoseAccuracyMeasure when the compensated vision StdDevs are equal to one
 	 */
-	public static double ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE = 0;
+	public static double ODOMETRY_DEPENDENT_ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE = 0;
 
 }

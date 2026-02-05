@@ -272,7 +272,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double averageCompensatedTranslationalStdDevs = (compensatedVisionStdDevs.xStandardDeviations()
 			+ compensatedVisionStdDevs.yStandardDeviations()) / 2.0;
 		odometryDependantEstimatedPoseAccuracyMeasure += Math
-			.pow(WPILibPoseEstimatorConstants.ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE, averageCompensatedTranslationalStdDevs);
+			.pow(WPILibPoseEstimatorConstants.ODOMETRY_DEPENDENT_ESTIMATED_POSE_ACCURACY_MEASURE_ADDITION_POWER_BASE, averageCompensatedTranslationalStdDevs);
 		odometryDependantEstimatedPoseAccuracyMeasure = Math.min(odometryDependantEstimatedPoseAccuracyMeasure, 1);
 	}
 
