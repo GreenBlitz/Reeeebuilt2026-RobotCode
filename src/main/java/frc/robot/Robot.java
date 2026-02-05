@@ -140,22 +140,6 @@ public class Robot {
 		);
 	}
 
-	public void resetSubsystems() {
-		if (DriverStation.isEnabled()) {
-			return;
-		}
-
-		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
-			hood.setPosition(HoodConstants.MINIMUM_POSITION);
-		}
-		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
-			turret.setPosition(TurretConstants.MIN_POSITION);
-		}
-		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
-			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		}
-	}
-
 	private void updateAllSubsystems() {
 		swerve.update();
 		fourBar.update();
@@ -174,7 +158,7 @@ public class Robot {
 	public void periodic() {
 		BusChain.refreshAll();
 		updateAllSubsystems();
-		resetSubsystems();
+		robotCommander.update();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -329,7 +313,7 @@ public class Robot {
 	private IDigitalInput createHoodResetCheckSensor() {
 		return ROBOT_TYPE.isReal()
 			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),
+				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENSOR),
 				new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),
 				HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED
 			)

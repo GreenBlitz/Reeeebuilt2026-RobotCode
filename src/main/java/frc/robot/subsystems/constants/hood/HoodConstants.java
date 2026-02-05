@@ -33,7 +33,7 @@ public class HoodConstants {
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
 	}
 
-	public static final boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 	public static final double ARBITRARY_FEEDFORWARD = 0;
 	public static final double CURRENT_LIMIT = 40;
 	public static final double MOMENT_OF_INERTIA = 0.001;
@@ -46,9 +46,9 @@ public class HoodConstants {
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
 	public static final SysIdRoutine.Config SYSIDROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
-	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
+	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
 	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
-	public static final double RESET_HOOD_VOLTAGE = 1;
+	public static final double RESET_HOOD_VOLTAGE = -0.7;
 
 }
 
