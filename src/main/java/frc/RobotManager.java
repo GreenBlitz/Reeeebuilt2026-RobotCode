@@ -60,7 +60,8 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.coast();
 		}
-		robot.getLimelight().endRewindAndCaptureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
+		robot.getLimelight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS-GamePeriodUtils.getTimeUntilGameEnds());
+		robot.getLimelight().endRewind();
 	}
 
 	@Override
