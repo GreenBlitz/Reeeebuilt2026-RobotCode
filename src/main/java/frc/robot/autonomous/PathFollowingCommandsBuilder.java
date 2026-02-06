@@ -56,10 +56,6 @@ public class PathFollowingCommandsBuilder {
 		);
 	}
 
-	public static Command followPath(Swerve swerve, PathPlannerPath path) {
-		return swerve.asSubsystemCommand(AutoBuilder.followPath(path), "follow");
-	}
-
 	public static Command followPath(PathPlannerPath path) {
 		return AutoBuilder.followPath(path);
 	}
