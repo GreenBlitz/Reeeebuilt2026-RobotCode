@@ -141,7 +141,7 @@ public class PoseUtil {
 			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
 		return new SwerveModuleState(
 			moduleTranslationalVelocity.getNorm(),
-			moduleTranslationalVelocity.getNorm() > MathConstants.MAXIMUM_INVALID_ANGLE_VECTOR_NORM
+			moduleTranslationalVelocity.getNorm() > MathConstants.INVALID_ANGLE_MAXIMUM_VECTOR_NORM
 				? moduleTranslationalVelocity.getAngle()
 				: Rotation2d.kZero
 		);

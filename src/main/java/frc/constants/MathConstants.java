@@ -12,6 +12,6 @@ public class MathConstants {
 
 	public static final Rotation2d EIGHTH_CIRCLE = Rotation2d.fromRotations(0.125);
 
-	public static final double MAXIMUM_INVALID_ANGLE_VECTOR_NORM = 1e-6;
+	public static final double INVALID_ANGLE_MAXIMUM_VECTOR_NORM = 1e-6;
 
 }
