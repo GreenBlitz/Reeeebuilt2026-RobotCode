@@ -1,6 +1,8 @@
 package frc;
 
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -12,6 +14,8 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
@@ -68,8 +72,30 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 
-		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.followPath(robot.getSwerve(), PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost")));
-		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(robot.getSwerve(), PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot")));
+
+		PathPlannerPath path = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
+
+
+		usedJoystick.X.onTrue(
+			PathFollowingCommandsBuilder.followPath(robot.getSwerve(), path)
+				.handleInterrupt(() -> Logger.recordOutput("Test/Interrupted", TimeUtil.getCurrentTimeSeconds()))
+				.alongWith(
+					new InstantCommand(
+						() -> Logger.recordOutput(
+							"Test/TotalTime",
+							path.generateTrajectory(
+								robot.getSwerve().getRobotRelativeVelocity(),
+								robot.getPoseEstimator().getEstimatedPose().getRotation(),
+								robot.getRobotConfig()
+							).getTotalTimeSeconds()
+						)
+					)
+				)
+		);
+		usedJoystick.B.onTrue(
+			PathFollowingCommandsBuilder.followPath(robot.getSwerve(), PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot"))
+				.handleInterrupt(() -> Logger.recordOutput("Test/Interrupted", TimeUtil.getCurrentTimeSeconds()))
+		);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
