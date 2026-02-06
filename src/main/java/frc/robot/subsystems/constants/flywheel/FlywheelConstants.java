@@ -1,6 +1,10 @@
 package frc.robot.subsystems.constants.flywheel;
 
 
+import frc.robot.IDs;
+import frc.robot.subsystems.flywheel.FlyWheel;
+import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
+
 public class FlywheelConstants {
 
 	public final static double kP = 0.2;
@@ -22,5 +26,9 @@ public class FlywheelConstants {
 
 	public final static double MOMENT_OF_INERTIA = 0.01;
 	public final static int CURRENT_LIMIT = 80;
+
+	public static FlyWheel createFlyWheel() {
+		return KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
+	}
 
 }
