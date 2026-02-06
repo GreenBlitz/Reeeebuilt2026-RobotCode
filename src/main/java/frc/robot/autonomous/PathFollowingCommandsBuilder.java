@@ -19,37 +19,41 @@ import java.util.function.Supplier;
 public class PathFollowingCommandsBuilder {
 
 	public static Command commandDuringPath(
-			Swerve swerve,
-			Supplier<Pose2d> currentPose,
-			PathPlannerPath path,
-			PathConstraints pathfindingConstraints,
-			Supplier<Command> commandSupplier,
-			Pose2d tolerance) {
+		Swerve swerve,
+		Supplier<Pose2d> currentPose,
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints,
+		Supplier<Command> commandSupplier,
+		Pose2d tolerance
+	) {
 		return new ParallelCommandGroup(
-				commandSupplier.get(),
-				followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, tolerance));
+			commandSupplier.get(),
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, tolerance)
+		);
 	}
 
 	public static Command deadlinePathWithCommand(
-			Swerve swerve,
-			Supplier<Pose2d> currentPose,
-			PathPlannerPath path,
-			PathConstraints pathfindingConstraints,
-			Supplier<Command> commandSupplier) {
-		return new ParallelDeadlineGroup(commandSupplier.get(),
-				followAdjustedPath(swerve, currentPose, path, pathfindingConstraints));
+		Swerve swerve,
+		Supplier<Pose2d> currentPose,
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints,
+		Supplier<Command> commandSupplier
+	) {
+		return new ParallelDeadlineGroup(commandSupplier.get(), followAdjustedPath(swerve, currentPose, path, pathfindingConstraints));
 	}
 
 	public static Command commandAfterPath(
-			Swerve swerve,
-			Supplier<Pose2d> currentPose,
-			PathPlannerPath path,
-			PathConstraints pathfindingConstraints,
-			Supplier<Command> commandSupplier,
-			Pose2d tolerance) {
+		Swerve swerve,
+		Supplier<Pose2d> currentPose,
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints,
+		Supplier<Command> commandSupplier,
+		Pose2d tolerance
+	) {
 		return new SequentialCommandGroup(
-				followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, tolerance),
-				commandSupplier.get());
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, tolerance),
+			commandSupplier.get()
+		);
 	}
 
 	public static Command followPath(Swerve swerve, PathPlannerPath path) {
@@ -69,51 +73,56 @@ public class PathFollowingCommandsBuilder {
 	}
 
 	public static Command pathfindThenFollowPath(
-			PathPlannerPath path,
-			PathConstraints pathfindingConstraints,
-			double velocityBetweenPathfindingToPathFollowingMetersPerSecond) {
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints,
+		double velocityBetweenPathfindingToPathFollowingMetersPerSecond
+	) {
 		return AutoBuilder
-				.pathfindToPose(
-						Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)),
-						pathfindingConstraints,
-						velocityBetweenPathfindingToPathFollowingMetersPerSecond)
-				.andThen(followPath(path));
+			.pathfindToPose(
+				Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)),
+				pathfindingConstraints,
+				velocityBetweenPathfindingToPathFollowingMetersPerSecond
+			)
+			.andThen(followPath(path));
 	}
 
 	public static Command followPathOrPathfindAndFollowPath(
-			PathPlannerPath path,
-			Supplier<Pose2d> currentPose,
-			PathConstraints pathfindingConstraints) {
+		PathPlannerPath path,
+		Supplier<Pose2d> currentPose,
+		PathConstraints pathfindingConstraints
+	) {
 		return new ConditionalCommand(
-				followPath(path),
-				pathfindThenFollowPath(path, pathfindingConstraints),
-				() -> PathPlannerUtil
-						.isRobotInPathfindingDeadband(currentPose.get(),
-								Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path))));
+			followPath(path),
+			pathfindThenFollowPath(path, pathfindingConstraints),
+			() -> PathPlannerUtil
+				.isRobotInPathfindingDeadband(currentPose.get(), Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)))
+		);
 	}
 
 	public static Command followAdjustedPath(
-			Swerve swerve,
-			Supplier<Pose2d> currentPose,
-			PathPlannerPath path,
-			PathConstraints pathfindingConstraints) {
+		Swerve swerve,
+		Supplier<Pose2d> currentPose,
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints
+	) {
 		return swerve.asSubsystemCommand(
-				followPathOrPathfindAndFollowPath(path, currentPose, pathfindingConstraints).andThen(
-						swerve.getCommandsBuilder().moveToPoseByPID(currentPose,
-								Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)))),
-				"Follow Adjusted " + path.name);
+			followPathOrPathfindAndFollowPath(path, currentPose, pathfindingConstraints).andThen(
+				swerve.getCommandsBuilder().moveToPoseByPID(currentPose, Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)))
+			),
+			"Follow Adjusted " + path.name
+		);
 	}
 
 	public static Command followAdjustedPathThenStop(
-			Swerve swerve,
-			Supplier<Pose2d> currentPose,
-			PathPlannerPath path,
-			PathConstraints pathfindingConstraints,
-			Pose2d tolerance) {
+		Swerve swerve,
+		Supplier<Pose2d> currentPose,
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints,
+		Pose2d tolerance
+	) {
 		return followAdjustedPath(swerve, currentPose, path, pathfindingConstraints)
-				.until(() -> ToleranceMath.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)),
-						currentPose.get(), tolerance))
-				.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
+			.until(() -> ToleranceMath.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), tolerance))
+			.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
 	}
 
 }

@@ -50,12 +50,9 @@ import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link RobotManager} periodic methods (other than
- * the scheduler calls). Instead, the structure of the robot
- * (including subsystems, commands, and trigger mappings) should be declared
- * here.
+ * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link RobotManager} periodic methods (other than the scheduler calls). Instead, the structure of the robot
+ * (including subsystems, commands, and trigger mappings) should be declared here.
  */
 public class Robot {
 
@@ -98,42 +95,50 @@ public class Robot {
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
-				SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
-				ModulesFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
-				imu,
-				IMUFactory.createSignals(imu));
+			SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
+			ModulesFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
+			imu,
+			IMUFactory.createSignals(imu)
+		);
 
 		this.poseEstimator = new WPILibPoseEstimatorWrapper(
-				WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
-				swerve.getKinematics(),
-				swerve.getModules().getWheelPositions(0),
-				swerve.getModules().getCurrentStates(),
-				swerve.getIMUOrientation(),
-				swerve.getIMUAccelerationG().toTranslation2d(),
-				swerve.getIMUAbsoluteYaw().getTimestamp());
+			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
+			swerve.getKinematics(),
+			swerve.getModules().getWheelPositions(0),
+			swerve.getModules().getCurrentStates(),
+			swerve.getIMUOrientation(),
+			swerve.getIMUAccelerationG().toTranslation2d(),
+			swerve.getIMUAbsoluteYaw().getTimestamp()
+		);
 
 		this.limelight = new Limelight(
-				"limelight-new",
-				"Vision",
-				new Pose3d(
-						new Translation3d(-0.017, 0.357, 0.287),
-						new Rotation3d(Math.toRadians(2.44), Math.toRadians(29.15), Math.toRadians(-92.69))),
-				LimelightPipeline.APRIL_TAG);
+			"limelight-new",
+			"Vision",
+			new Pose3d(
+				new Translation3d(-0.017, 0.357, 0.287),
+				new Rotation3d(Math.toRadians(2.44), Math.toRadians(29.15), Math.toRadians(-92.69))
+			),
+			LimelightPipeline.APRIL_TAG
+		);
 
 		limelight.setMT1StdDevsCalculation(
-				LimelightStdDevCalculations.getMT1StdDevsCalculation(
-						limelight,
-						new StandardDeviations2D(0.5),
-						new StandardDeviations2D(0.05),
-						new StandardDeviations2D(0.5),
-						new StandardDeviations2D(-0.02)));
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelight,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.05),
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(-0.02)
+			)
+		);
 		limelight.setMT1PoseFilter(
-				LimelightFilters.megaTag1Filter(
-						limelight,
-						timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-						poseEstimator::isIMUOffsetCalibrated,
-						new Translation2d(0.1, 0.1),
-						Rotation2d.fromDegrees(10)));
+			LimelightFilters.megaTag1Filter(
+				limelight,
+				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+				poseEstimator::isIMUOffsetCalibrated,
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
+			)
+		);
 
 		robotCommander = new RobotCommander("StateMachine", this);
 
@@ -154,18 +159,19 @@ public class Robot {
 
 	public RobotConfig getRobotConfig() {
 		return new RobotConfig(
-				45,
-				6.325,
-				new ModuleConfig(
-						swerve.getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).getConstants()
-								.wheelDiameterMeters() / 2,
-						swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
-						0.96,
-						DCMotor.getKrakenX60Foc(1),
-						KrakenX60DriveBuilder.GEAR_RATIO,
-						KrakenX60DriveBuilder.SLIP_CURRENT,
-						1),
-				swerve.getModules().getModulePositionsFromCenterMeters());
+			45,
+			4.5,
+			new ModuleConfig(
+				swerve.getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).getConstants().wheelDiameterMeters() / 2,
+				swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
+				1,
+				DCMotor.getKrakenX60Foc(1),
+				KrakenX60DriveBuilder.GEAR_RATIO,
+				KrakenX60DriveBuilder.SLIP_CURRENT,
+				1
+			),
+			swerve.getModules().getModulePositionsFromCenterMeters()
+		);
 	}
 
 	private void updateAllSubsystems() {
@@ -178,8 +184,7 @@ public class Robot {
 	}
 
 	public boolean isTurretMoveLegal() {
-		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(),
-				turret.getPosition());
+		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {
@@ -192,8 +197,7 @@ public class Robot {
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 		ShootingCalculations
-				.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(),
-						swerve.getIMUAngularVelocityRPS()[2]);
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
