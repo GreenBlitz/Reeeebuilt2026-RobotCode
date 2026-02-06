@@ -10,6 +10,8 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.Set;
+
 
 public class RobotCommander extends GBSubsystem {
 
@@ -42,21 +44,21 @@ public class RobotCommander extends GBSubsystem {
 		this.currentState = RobotState.STAY_IN_PLACE;
 		Logger.recordOutput(logPath + "/CurrentState", RobotState.STAY_IN_PLACE);
 
-//		setDefaultCommand(
-//			new ConditionalCommand(
-//				asSubsystemCommand(Commands.none(), "Disabled"),
-//				new InstantCommand(
-//					() -> CommandScheduler.getInstance()
-//						.schedule(
-//							new DeferredCommand(
-//								() -> endState(currentState),
-//								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
-//							)
-//						)
-//				),
-//				this::isRunningIndependently
-//			)
-//		);
+		setDefaultCommand(
+			new ConditionalCommand(
+				asSubsystemCommand(Commands.none(), "Disabled"),
+				new InstantCommand(
+					() -> CommandScheduler.getInstance()
+						.schedule(
+							new DeferredCommand(
+								() -> endState(currentState),
+								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
+							)
+						)
+				),
+				this::isRunningIndependently
+			)
+		);
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {
@@ -85,7 +87,7 @@ public class RobotCommander extends GBSubsystem {
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 
-	private Command setState(RobotState robotState) {
+	public Command setState(RobotState robotState) {
 		return asSubsystemCommand(switch (robotState) {
 			case STAY_IN_PLACE -> stayInPlace();
 			case NEUTRAL -> neutral();
@@ -141,7 +143,7 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
-	private boolean isReadyToScore() {
+	public boolean isReadyToScore() {
 		return ShootingChecks.isReadyToScore(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
@@ -152,7 +154,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean isReadyToPass() {
+	public boolean isReadyToPass() {
 		return ShootingChecks.isReadyToPass(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
@@ -163,7 +165,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean canContinueScoring() {
+	public boolean canContinueScoring() {
 		return ShootingChecks.canContinueScoring(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
@@ -174,7 +176,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean canContinuePassing() {
+	public boolean canContinuePassing() {
 		return ShootingChecks.canContinuePassing(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
