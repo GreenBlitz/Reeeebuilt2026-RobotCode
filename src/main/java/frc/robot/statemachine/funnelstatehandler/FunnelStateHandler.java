@@ -10,7 +10,6 @@ import frc.robot.subsystems.roller.VelocityRoller;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
-
 public class FunnelStateHandler {
 
 	private final VelocityRoller train;
@@ -61,7 +60,7 @@ public class FunnelStateHandler {
 		return sensorInputsAutoLogged.debouncedValue;
 	}
 
-	public Command sensorLogic() {
+	public Command handleSensorBalls() {
 		if (isBallAtSensor() && (robotState == RobotState.PRE_PASS || robotState == RobotState.PRE_SCORE)) {
 			return setState(FunnelState.NEUTRAL);
 		}
@@ -94,7 +93,7 @@ public class FunnelStateHandler {
 	}
 
 	public void periodic() {
-		sensorLogic();
+		handleSensorBalls();
 		ballSensor.updateInputs(sensorInputsAutoLogged);
 
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
