@@ -37,7 +37,7 @@ public class RobotCommander extends GBSubsystem {
 			robot.getFourBarResetCheckSensor(),
 			logPath
 		);
-		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getTrainBallSensor());
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getTrainBallSensor(), currentState);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
