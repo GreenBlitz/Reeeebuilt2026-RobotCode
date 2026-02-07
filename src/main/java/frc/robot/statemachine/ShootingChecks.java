@@ -23,12 +23,16 @@ public class ShootingChecks {
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
-	public static boolean isInPositionForPassing(Pose2d robotPose, String logPath) {
-		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
-		boolean isInPositionForPassing = !(turretPosition.getY() < ShooterConstants.MAX_Y_FOR_UNPASSABLE_AREA
-			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_UNPASSABLE_AREA);
-		Logger.recordOutput(logPath + "/IsInPositionForPassing", isInPositionForPassing);
-		return isInPositionForPassing;
+	public static boolean isBehindHub(Translation2d turretTranslation) {
+		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
+	}
+
+	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
+		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
+		boolean isBehindHub = !isBehindHub(turretTranslation);
+		boolean isToCloseToHub = allianceRelativeTurretTranslation.getX() > FieldMath.mirrorX(Field.getMinXValueForBehindHubPassing());
+		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
+		return isBehindHub && isToCloseToHub;
 	}
 
 	private static boolean isWithinDistance(
@@ -286,7 +290,11 @@ public class ShootingChecks {
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass",
 			true
-		) && isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChecksLogPath + "/IsReadyToPass");
+		)
+			&& isInPositionForPassing(
+				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+				shootingChecksLogPath + "/IsReadyToPass"
+			);
 	}
 
 	public static boolean canContinueScoring(
@@ -330,7 +338,10 @@ public class ShootingChecks {
 			true
 		)
 			&& !isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())
-			&& isInPositionForPassing(robot.getPoseEstimator().getEstimatedPose(), shootingChecksLogPath + "canContinuePassing");
+			&& isInPositionForPassing(
+				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+				shootingChecksLogPath + "canContinuePassing"
+			);
 	}
 
 	public static boolean calibrationIsReadyToScore(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {

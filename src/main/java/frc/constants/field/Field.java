@@ -23,6 +23,8 @@ public class Field {
 	public static final double WIDTH_METERS = 8.06958;
 
 	private static final Translation2d HUB_MIDDLE = new Translation2d(4.62, 4.03);
+	public static final double HUB_X_AXIS_LENGTH_METERS = 1.19;
+	public static final double HUB_Y_AXIS_LENGTH_METERS = 1.19;
 
 	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
 	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
@@ -35,6 +37,15 @@ public class Field {
 
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
+
+	public static final double MAX_HUB_Y_VALUE = getHubMiddle().getY() + HUB_Y_AXIS_LENGTH_METERS / 2;
+	public static final double MIN_HUB_Y_VALUE = getHubMiddle().getY() - HUB_Y_AXIS_LENGTH_METERS / 2;
+
+	private static final double MIN_X_VALUE_FOR_BEHIND_HUB_PASSING = 6;
+	private static final double TARGET_X_VALUE_FOR_PASSING = 3;
+
+	private static final Translation2d LOWER_PRESET_PASSING_TARGET = new Translation2d(1, 1);
+	private static final Translation2d UPPER_PRESET_PASSING_TARGET = FieldMath.mirror(LOWER_PRESET_PASSING_TARGET, false, true);
 
 	public static Translation2d getHubMiddle() {
 		return getAllianceRelative(HUB_MIDDLE);
@@ -50,6 +61,34 @@ public class Field {
 
 	public static Translation2d getTowerMiddle() {
 		return getAllianceRelative(TOWER_MIDDLE);
+	}
+
+	public static double getTargetXForPassing() {
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirrorX(TARGET_X_VALUE_FOR_PASSING);
+		}
+		return TARGET_X_VALUE_FOR_PASSING;
+	}
+
+	public static Translation2d getLowerPresetPassingTarget() {
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirror(LOWER_PRESET_PASSING_TARGET, true, false);
+		}
+		return LOWER_PRESET_PASSING_TARGET;
+	}
+
+	public static Translation2d getUpperPresetPassingTarget() {
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirror(UPPER_PRESET_PASSING_TARGET, true, false);
+		}
+		return UPPER_PRESET_PASSING_TARGET;
+	}
+
+	public static double getMinXValueForBehindHubPassing() {
+		if (isFieldConventionAlliance()) {
+			return MIN_X_VALUE_FOR_BEHIND_HUB_PASSING;
+		}
+		return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_HUB_PASSING);
 	}
 
 	public static Translation2d getTrenchMiddle(AllianceSide side) {
