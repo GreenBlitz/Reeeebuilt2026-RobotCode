@@ -1,6 +1,7 @@
 package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.statemachine.ShootingCalculations;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
@@ -17,7 +18,7 @@ public class HubUtil {
 		if (!DriverStationUtil.isTeleop()) {
 			return Optional.empty();
 		}
-		String gameData = DriverStation.getGameSpecificMessage();
+		String gameData = /* DriverStation.getGameSpecificMessage() */ "Red";
 		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 			return Optional.empty();
@@ -59,35 +60,35 @@ public class HubUtil {
 		return autoLosingAlliance;
 	}
 
-	public static boolean isAutoWinnerShift() {
-		return getShiftsPassed() % 2 != 0;
+	public static boolean isAutoWinnerShift(double timeSinceTeleopInitSeconds) {
+		return getShiftsPassed(timeSinceTeleopInitSeconds) % 2 != 0;
 	}
 
-	public static int getShiftsPassed() {
-		if (TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.TELEOP_DURATION_SECONDS) {
+	public static int getShiftsPassed(double timeSinceTeleopInitSeconds) {
+		if (timeSinceTeleopInitSeconds >= GamePeriodUtils.TELEOP_DURATION_SECONDS) {
 			return (GamePeriodUtils.TELEOP_DURATION_SECONDS - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
 				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
 		} else {
-			return (int) (TimeUtil.getTimeSinceTeleopInitSeconds() - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
+			return (int) (timeSinceTeleopInitSeconds - GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
 				/ GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
 		}
 	}
 
-	public static Optional<DriverStation.Alliance> getActiveHub() {
+	public static Optional<DriverStation.Alliance> getActiveHub(double timeSinceTeleopInitSeconds) {
 		if (DriverStation.isAutonomous() || GamePeriodUtils.isTransitionShift() || GamePeriodUtils.isInEndgame()) {
 			return Optional.of(DriverStationUtil.getAlliance());
 		} else if (!DriverStationUtil.isTeleop() || GamePeriodUtils.hasGameEnded()) {
 			return Optional.empty();
 		}
 
-		return isAutoWinnerShift() ? autoWinnerAlliance : autoLosingAlliance;
+		return isAutoWinnerShift(timeSinceTeleopInitSeconds) ? autoWinnerAlliance : autoLosingAlliance;
 	}
 
-	public static boolean isOurHubActive() {
-		if (getActiveHub().isEmpty()) {
+	public static boolean isOurHubActive(double timeSinceTeleopInitSeconds) {
+		if (getActiveHub(timeSinceTeleopInitSeconds).isEmpty()) {
 			return false;
 		}
-		return getActiveHub().get().equals(DriverStationUtil.getAlliance());
+		return getActiveHub(timeSinceTeleopInitSeconds).get().equals(DriverStationUtil.getAlliance());
 	}
 
 	public static double timeUntilCurrentShiftEndsSeconds() {
@@ -105,14 +106,14 @@ public class HubUtil {
 	}
 
 	public static double getTimeLeftUntilActive() {
-		if (isOurHubActive()) {
+		if (isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds())) {
 			return 0;
 		}
 		return timeUntilCurrentShiftEndsSeconds();
 	}
 
 	public static double getTimeLeftUntilInactive() {
-		if (!isOurHubActive()) {
+		if (!isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds())) {
 			return 0;
 		}
 		return timeUntilCurrentShiftEndsSeconds();
@@ -123,6 +124,10 @@ public class HubUtil {
 			return false;
 		}
 		return DriverStationUtil.getAlliance().equals(autoWinnerAlliance.get());
+	}
+
+	public static boolean isOurHubActiveToShoot(double distanceFromHubMeters) {
+		return ShootingCalculations.isReadyToStartShooting(distanceFromHubMeters);
 	}
 
 }

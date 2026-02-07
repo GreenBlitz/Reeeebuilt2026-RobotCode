@@ -10,7 +10,9 @@ import frc.constants.field.Field;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
+import frc.utils.HubUtil;
 import frc.utils.InterpolationMap;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
@@ -269,6 +271,12 @@ public class ShootingCalculations {
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
+	}
+
+	public static boolean isReadyToStartShooting(double distanceFromHubMeters) {
+		return HubUtil.isOurHubActive(
+			TimeUtil.getTimeSinceTeleopInitSeconds() + DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters)
+		);
 	}
 
 }

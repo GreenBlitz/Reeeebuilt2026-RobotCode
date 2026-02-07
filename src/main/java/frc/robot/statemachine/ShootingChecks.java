@@ -154,7 +154,8 @@ public class ShootingChecks {
 		);
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		boolean isOurHubActive = HubUtil.isOurHubActive();
+		boolean isOurHubActive = HubUtil
+			.isOurHubActive(ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()));
 
 		return isFlywheelReadyToShoot
 			&& isHoodAtPosition
@@ -209,7 +210,8 @@ public class ShootingChecks {
 
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		boolean isOurHubActive = HubUtil.isOurHubActive();
+		boolean isOurHubActive = HubUtil
+			.isOurHubActiveToShoot(ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()));
 
 		return isFlywheelReadyToShoot
 			&& isHoodAtPosition
