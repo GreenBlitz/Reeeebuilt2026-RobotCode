@@ -3,6 +3,7 @@ package frc.robot.statemachine.funnelstatehandler;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
@@ -26,7 +27,9 @@ public class FunnelStateHandler {
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor) {
+	private final RobotState robotState;
+
+	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor, RobotState robotState) {
 		this.train = train;
 		this.belly = belly;
 		this.logPath = logPath + "/FunnelStateHandler";
@@ -35,6 +38,7 @@ public class FunnelStateHandler {
 		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyVoltage", 0);
 		this.ballSensor = ballSensor;
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
+		this.robotState = robotState;
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 	}
 
@@ -54,6 +58,13 @@ public class FunnelStateHandler {
 
 	public boolean isBallAtSensor() {
 		return sensorInputsAutoLogged.debouncedValue;
+	}
+
+	public Command handleSensorBalls() {
+		if (isBallAtSensor() && (robotState == RobotState.PRE_PASS || robotState == RobotState.PRE_SCORE)) {
+			return setState(FunnelState.NEUTRAL);
+		}
+		return setState(currentState);
 	}
 
 	private Command neutral() {
@@ -82,6 +93,7 @@ public class FunnelStateHandler {
 	}
 
 	public void periodic() {
+		handleSensorBalls();
 		ballSensor.updateInputs(sensorInputsAutoLogged);
 
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
