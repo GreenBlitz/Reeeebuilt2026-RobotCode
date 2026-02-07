@@ -1,7 +1,6 @@
 package frc.robot.statemachine.funnelstatehandler;
 
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.Robot;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.RobotState;
@@ -11,7 +10,6 @@ import frc.robot.subsystems.roller.VelocityRoller;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
-import java.util.Set;
 
 public class FunnelStateHandler {
 
@@ -64,7 +62,7 @@ public class FunnelStateHandler {
 	}
 
 	public Command sensorLogic() {
-		if (isBallAtSensor() && (robotState == RobotState.PRE_PASS || robotState == RobotState.PRE_SCORE) ) {
+		if (isBallAtSensor() && (robotState == RobotState.PRE_PASS || robotState == RobotState.PRE_SCORE)) {
 			return setState(FunnelState.NEUTRAL);
 		}
 		return setState(currentState);
