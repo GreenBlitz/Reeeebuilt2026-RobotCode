@@ -37,7 +37,7 @@ public class RobotCommander extends GBSubsystem {
 			robot.getFourBarResetCheckSensor(),
 			logPath
 		);
-		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getTrainBallSensor());
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -96,7 +96,7 @@ public class RobotCommander extends GBSubsystem {
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 
-	private Command setState(RobotState robotState) {
+	public Command setState(RobotState robotState) {
 		return asSubsystemCommand(switch (robotState) {
 			case STAY_IN_PLACE -> stayInPlace();
 			case NEUTRAL -> neutral();
@@ -152,7 +152,7 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
-	private boolean isReadyToScore() {
+	public boolean isReadyToScore() {
 		return ShootingChecks.isReadyToScore(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
@@ -163,7 +163,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean isReadyToPass() {
+	public boolean isReadyToPass() {
 		return ShootingChecks.isReadyToPass(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
@@ -174,7 +174,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean canContinueScoring() {
+	public boolean canContinueScoring() {
 		return ShootingChecks.canContinueScoring(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
@@ -185,7 +185,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean canContinuePassing() {
+	public boolean canContinuePassing() {
 		return ShootingChecks.canContinuePassing(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,

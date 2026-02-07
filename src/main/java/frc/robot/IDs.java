@@ -68,6 +68,8 @@ public class IDs {
 
 		public final static int HOOD_RESET_SENSOR = 7;
 
+		public final static int TRAIN_BALL_SENSOR = 9;
+
 	}
 
 }
