@@ -29,7 +29,7 @@ public class RobotCommander extends GBSubsystem {
 
 		this.logPath = logPath;
 
-		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getTrainBallSensor());
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -82,6 +82,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public void update() {
+		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}

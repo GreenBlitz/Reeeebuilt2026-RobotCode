@@ -63,6 +63,7 @@ public class Robot {
 	private final IDigitalInput turretResetCheckSensor;
 	private final IDigitalInput hoodResetCheckSensor;
 	private final VelocityRoller train;
+	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
@@ -88,6 +89,7 @@ public class Robot {
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
 		this.train = TrainConstant.createTrain();
+		this.trainBallSensor = TrainConstant.createTrainBallSensor();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
 		this.belly = BellyConstants.createBelly();
@@ -230,6 +232,10 @@ public class Robot {
 
 	public IDigitalInput getHoodResetCheckSensor() {
 		return hoodResetCheckSensor;
+	}
+
+	public IDigitalInput getTrainBallSensor() {
+		return trainBallSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {
