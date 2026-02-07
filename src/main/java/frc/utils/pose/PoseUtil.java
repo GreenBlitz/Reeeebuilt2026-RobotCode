@@ -125,7 +125,7 @@ public class PoseUtil {
 		return false;
 	}
 
-	public static SwerveModuleState[] getModuleTranslationalStates(
+	private static SwerveModuleState[] getModuleTranslationalStates(
 		SwerveModuleState[] moduleStates,
 		SwerveModuleState[] moduleRotationalStates
 	) {
