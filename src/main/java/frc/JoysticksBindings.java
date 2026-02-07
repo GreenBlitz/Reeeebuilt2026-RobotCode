@@ -1,14 +1,18 @@
 package frc;
 
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
+import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
@@ -53,8 +57,7 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
-		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
+		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -65,7 +68,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyInterpolationCalibrationBindings(usedJoystick, robot);
+		applyShootOnMoveBinds(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -89,12 +92,34 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
+	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+
+		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
+		usedJoystick.B.onTrue(
+			new SequentialCommandGroup(
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+				PathFollowingCommandsBuilder.followPath(depotToOutpost).deadlineFor(robot.getRobotCommander().scoreSequence())
+			)
+		);
+
+		PathPlannerPath outpostToDepot = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
+		usedJoystick.X.onTrue(
+			new SequentialCommandGroup(
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+				PathFollowingCommandsBuilder.followPath(outpostToDepot).deadlineFor(robot.getRobotCommander().scoreSequence())
+			)
+		);
+	}
+
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE));
 		joystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SCORE));
 		joystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.STAY_IN_PLACE));
-		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
+		joystick.POV_LEFT
+			.onTrue(robot.getRobotCommander().driveWith(RobotState.CALIBRATION_PRE_SCORE, robot.getRobotCommander().calibrationScoreSequence()));
 	}
 
 	private static void applyTurretCalibrationBindings(Arm turret, SmartJoystick joystick, double calibrationMaxPower) {
