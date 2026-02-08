@@ -48,6 +48,7 @@ public class FunnelStateHandler {
 			case SHOOT -> shoot();
 			case STOP -> stop();
 			case CALIBRATION -> calibration();
+			case SHOOT_WITHOUT_WAIT -> shootWithoutWait();
 		};
 		return new ParallelCommandGroup(
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", state.name())),
@@ -65,14 +66,24 @@ public class FunnelStateHandler {
 				robotState != RobotState.PRE_PASS) {
 			return;
 		}
-		FunnelState wantedState =
-				isBallAtSensor() ? FunnelState.NEUTRAL : FunnelState.SHOOT;
 
-		if (wantedState != currentState) {
+		FunnelState wantedState =  isBallAtSensor()
+		? FunnelState.NEUTRAL
+		: FunnelState.SHOOT;
+
+		if (wantedState != currentState && wantedState != FunnelState.SHOOT) {
 			CommandScheduler.getInstance().schedule(setState(wantedState));
 		}
+		CommandScheduler.getInstance().schedule(setState(FunnelState.SHOOT_WITHOUT_WAIT));
 	}
 
+
+	private Command shootWithoutWait() {
+		return new ParallelCommandGroup(
+				train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
+				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
+		);
+	}
 
 	private Command neutral() {
 		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
