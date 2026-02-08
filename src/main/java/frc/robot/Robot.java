@@ -129,6 +129,7 @@ public class Robot {
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
+		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", (AutosBuilder.getAutoList(this)));
 		simulationManager = new SimulationManager("SimulationManager", this);
@@ -139,8 +140,6 @@ public class Robot {
 				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		);
-
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 	}
 
 	public RobotConfig getRobotConfig() {
