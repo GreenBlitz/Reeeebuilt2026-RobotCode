@@ -1,5 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -107,7 +108,7 @@ public class ShooterStateHandler {
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromDegrees(21000))
 		);
 	}
 

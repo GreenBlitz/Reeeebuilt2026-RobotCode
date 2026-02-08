@@ -1,5 +1,7 @@
 package frc;
 
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -14,6 +16,8 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
+
+import java.util.Collections;
 
 public class JoysticksBindings {
 

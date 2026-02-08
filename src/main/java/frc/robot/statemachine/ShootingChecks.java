@@ -140,7 +140,7 @@ public class ShootingChecks {
 		);
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
+			Rotation2d.fromDegrees(21000),
 			flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath
@@ -186,8 +186,8 @@ public class ShootingChecks {
 		);
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
-			flywheelVelocityRPS,
+				Rotation2d.fromDegrees(21000),
+				flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath
 		);
