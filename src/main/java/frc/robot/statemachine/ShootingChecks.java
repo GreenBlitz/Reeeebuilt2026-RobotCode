@@ -372,9 +372,8 @@ public class ShootingChecks {
 	}
 
 	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters) {
-		return HubUtil.isOurHubActive(
-				TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
-		);
+		return HubUtil
+			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
 	}
 
 }
