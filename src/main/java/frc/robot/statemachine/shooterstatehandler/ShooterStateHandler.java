@@ -10,6 +10,7 @@ import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.function.Supplier;
 
@@ -117,11 +118,14 @@ public class ShooterStateHandler {
 		);
 	}
 
+	public static LoggedNetworkNumber flywelelDistace = new LoggedNetworkNumber("Tunable/flywelelDistace", 0.0);
+
 	private Command calibration() {
 		return new ParallelCommandGroup(
 			turret.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.turretCalibrationAngle.get()),
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
+			flyWheel.getCommandBuilder()
+				.setVelocityAsSupplier(() -> ShootingCalculations.FLYWHEEL_SCORING_INTERPOLATION_MAP.get(flywelelDistace.get()))
 		);
 	}
 
