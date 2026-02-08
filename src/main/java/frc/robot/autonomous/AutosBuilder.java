@@ -28,8 +28,8 @@ public class AutosBuilder {
 		Pose2d tolerance
 	) {
 		return List.of(
-			getRightStartingToRightMiddleToOutpostAuto(robot, scoreSequence, intake, resetSubsystems,constraints,tolerance),
-			getLeftStartingToLeftMiddleToDepotAuto(robot, scoreSequence, intake, resetSubsystems,constraints,tolerance)
+			getRightStartingToRightMiddleToOutpostAuto(robot, scoreSequence, intake, resetSubsystems, constraints, tolerance),
+			getLeftStartingToLeftMiddleToDepotAuto(robot, scoreSequence, intake, resetSubsystems, constraints, tolerance)
 		);
 	}
 
@@ -43,8 +43,8 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, constraints,tolerance,false),
-				rightMiddleToOutpostWithScoring(robot, scoreSequence,constraints,tolerance)
+				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, constraints, tolerance, false),
+				rightMiddleToOutpostWithScoring(robot, scoreSequence, constraints, tolerance)
 			),
 			new Pose2d(),
 			"R starting - R mid - Outpost"
@@ -61,8 +61,8 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				rightStartingLineToRightMiddle(robot, intake, resetSubsystems,constraints,tolerance, true),
-				leftMiddleToDepotWithScoring(robot, scoreSequence,constraints,tolerance)
+				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, constraints, tolerance, true),
+				leftMiddleToDepotWithScoring(robot, scoreSequence, constraints, tolerance)
 			),
 			new Pose2d(),
 			"L starting - L mid - Depot"
@@ -89,7 +89,12 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command rightMiddleToOutpostWithScoring(Robot robot, Supplier<Command> scoreSequence, PathConstraints constraints, Pose2d tolerance) {
+	private static Command rightMiddleToOutpostWithScoring(
+		Robot robot,
+		Supplier<Command> scoreSequence,
+		PathConstraints constraints,
+		Pose2d tolerance
+	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
@@ -100,7 +105,12 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command leftMiddleToDepotWithScoring(Robot robot, Supplier<Command> scoreSequence, PathConstraints constraints, Pose2d tolerance) {
+	private static Command leftMiddleToDepotWithScoring(
+		Robot robot,
+		Supplier<Command> scoreSequence,
+		PathConstraints constraints,
+		Pose2d tolerance
+	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),

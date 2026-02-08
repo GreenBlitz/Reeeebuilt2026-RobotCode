@@ -140,9 +140,10 @@ public class Robot {
 					robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
 					robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)
 				),
-				() -> robotCommander.scoreSequence()
-			, AutonomousConstants.DEFAULT_PATH_CONSTRAINS,
-					AutonomousConstants.DEFAULT_PATH_TOLERANCE))
+				() -> robotCommander.scoreSequence(),
+				AutonomousConstants.DEFAULT_PATH_CONSTRAINS,
+				AutonomousConstants.DEFAULT_PATH_TOLERANCE
+			))
 		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
