@@ -98,9 +98,7 @@ public class Robot {
 
 		this.belly = BellyConstants.createBelly();
 		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
-        this.turretCam = new Limelight("limelight-turret","vision",new Pose3d(), LimelightPipeline.APRIL_TAG)
-        Pose2d  robotCenter= turretCam.getRobotPoseFromTurretLimeLight();
-        System.out.println(robotCenter.toString());
+        this.turretCam = new Limelight("limelight-turret","vision",new Pose3d(), LimelightPipeline.APRIL_TAG);
         IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
 			SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
