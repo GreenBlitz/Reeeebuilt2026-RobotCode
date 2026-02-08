@@ -149,10 +149,10 @@ public class ShootingCalculations {
 		if (!ShootingChecks.isBehindHub(turretTranslation)) {
 			return new Translation2d(Field.getTargetXValueForPassing(), turretTranslation.getY());
 		}
-		if (turretTranslation.getY() > Field.WIDTH_METERS / 2) {
-			return Field.getUpperPresetPassingTarget();
+		if (Field.getAllianceRelative(turretTranslation).getY() > Field.WIDTH_METERS / 2) {
+			return Field.getDepotPresetPassingTarget();
 		}
-		return Field.getLowerPresetPassingTarget();
+		return Field.getOutpostPresetPassingTarget();
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
