@@ -70,12 +70,11 @@ public class Field {
 	}
 
 	public static Translation2d getOutpostPresetPassingTarget() {
-			return getAllianceRelative(OUTPOST_PRESET_PASSING_TARGET);
+		return getAllianceRelative(OUTPOST_PRESET_PASSING_TARGET);
 	}
 
 	public static Translation2d getDepotPresetPassingTarget() {
-			return getAllianceRelative(DEPOT_PRESET_PASSING_TARGET);
-
+		return getAllianceRelative(DEPOT_PRESET_PASSING_TARGET);
 	}
 
 	public static double getMinXValueForBehindHubPassing() {
