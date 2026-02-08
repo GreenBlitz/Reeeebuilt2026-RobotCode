@@ -3,7 +3,7 @@ Hood calibrations
 
 #### IDs
 - [ ] Motor id
-- [ ] Motor busChain
+- [ ] Motor bus chain
 
 #### Limits
 - [ ] Current limit
@@ -40,7 +40,7 @@ Hood calibrations
 
 #### MotionMagic
 - [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter__
+- [ ] Default max velocity per meter
 
 #### Simulation Constants
 - [ ] Moment of inertia
