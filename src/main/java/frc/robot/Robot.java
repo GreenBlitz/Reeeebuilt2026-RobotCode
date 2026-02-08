@@ -19,7 +19,6 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -46,6 +45,8 @@ import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -131,33 +132,21 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
-		Command intakeCommand = robotCommander.getIntakeStateHandler().intake();
-		Command scoreSequenceCommand = robotCommander.scoreSequence();
-		Command resetSubsystemsCommand = new ParallelCommandGroup(
-			robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR),
-			robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)
-		);
-
-
 		this.autonomousChooser = new AutonomousChooser(
 			"Autonomous Chooser",
 			AutosBuilder.getAutoList(
 				this,
-				() -> intakeCommand,
-				() -> resetSubsystemsCommand,
-				() -> scoreSequenceCommand,
+				autonomousIntakeCommand(),
+				autonomousResetSubsystemsCommand(),
+				autonomousScoringSequenceCommand(),
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_PATH_TOLERANCE
 			)
 		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(
-			(new ParallelCommandGroup(
-				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
-		);
+		new Trigger(() -> DriverStation.isTeleopEnabled())
+			.onTrue((robotCommander.resetSubsystems()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -265,6 +254,18 @@ public class Robot {
 
 	public SimulationManager getSimulationManager() {
 		return simulationManager;
+	}
+
+	public Supplier<Command> autonomousIntakeCommand() {
+		return () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
+	}
+
+	public Supplier<Command> autonomousScoringSequenceCommand() {
+		return () -> robotCommander.scoreSequence();
+	}
+
+	public Supplier<Command> autonomousResetSubsystemsCommand() {
+		return () -> robotCommander.resetSubsystems();
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
