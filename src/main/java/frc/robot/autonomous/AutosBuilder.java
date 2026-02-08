@@ -43,7 +43,7 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-					startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, false),
+				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, false),
 				rightMiddleToOutpostWithScoring(robot, scoreSequence, pathfindingConstraints, tolerance)
 			),
 			new Pose2d(),
@@ -61,7 +61,7 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-					startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, true),
+				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, true),
 				leftMiddleToDepotWithScoring(robot, scoreSequence, pathfindingConstraints, tolerance)
 			),
 			new Pose2d(),
