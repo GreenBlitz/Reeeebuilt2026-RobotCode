@@ -4,12 +4,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.JoysticksBindings;
 import frc.constants.MathConstants;
+import frc.joysticks.SmartJoystick;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
+import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
@@ -80,15 +83,16 @@ public class SwerveStateHandler {
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading;
 
+		double rotationalPower = speeds.omegaRadiansPerSecond / swerveConstants.velocityAt12VoltsMetersPerSecond();
 		if (turretAngle.getRotations() < TurretConstants.RANGE_MIDDLE.getRotations()) {
-			if (speeds.omegaRadiansPerSecond < 0) {
+			if (rotationalPower < SmartJoystick.DEADZONE) {
 				return speeds;
 			}
 			targetHeading = Rotation2d.fromDegrees(
 				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() - StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
 			);
 		} else {
-			if (speeds.omegaRadiansPerSecond > 0) {
+			if (rotationalPower > SmartJoystick.DEADZONE) {
 				return speeds;
 			}
 			targetHeading = Rotation2d.fromDegrees(
