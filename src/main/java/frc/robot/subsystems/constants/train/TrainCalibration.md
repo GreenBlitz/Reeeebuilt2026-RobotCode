@@ -15,6 +15,10 @@ Train calibrations
 - [ ] Gear ratio
 - [ ] Current limit
 - [ ] Is inverted
+
+#### Feed forward
 - [ ] kS
 - [ ] kV
+
+#### PID
 - [ ] PID

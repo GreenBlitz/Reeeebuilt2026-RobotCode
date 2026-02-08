@@ -13,10 +13,10 @@ Turret Calibration
 - [ ] max acceleration
 
 #### Configs
-- [ ] Check invertion
+- [ ] Check is inverted
 - [ ] Check gear ratio
 
-#### Motion magic
+#### Feed forward
 - [ ] Calibrate kS
 - [ ] Calibrate kV
 - [ ] Calibrate kA
