@@ -3,55 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 2.5
+        "x": 8.27,
+        "y": 4.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.667576242101418,
-        "y": 2.5056553898343186
+        "x": 5.789316239316239,
+        "y": 5.934273504273505
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.569672364672364,
-        "y": 2.5
+        "x": 0.7762678062678063,
+        "y": 5.947193732193732
       },
       "prevControl": {
-        "x": 5.3204535189186775,
-        "y": 2.4802524198647036
-      },
-      "nextControl": {
-        "x": 6.582091113885689,
-        "y": 2.5802219443722416
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.27,
-        "y": 3.3
-      },
-      "prevControl": {
-        "x": 8.760968660974365,
-        "y": 0.28958689458341613
+        "x": -0.22373219373219366,
+        "y": 5.947193732193732
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right 1 ball finish collect"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 0.272921108742,
+      "rotationDegrees": 45.0
     },
     {
-      "waypointRelativePos": 0.98,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 45.0
     }
   ],
   "constraintZones": [],
@@ -67,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 177.63954538860165
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
