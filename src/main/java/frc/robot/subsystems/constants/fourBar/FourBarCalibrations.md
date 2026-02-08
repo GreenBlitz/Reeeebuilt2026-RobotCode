@@ -20,6 +20,12 @@ FourBar calibrations
 - [ ] FourBar length
 - [ ] SysIdRoutineConfig
 
+#### FeedForward
+- [ ] kS
+- [ ] kG
+- [ ] kA
+- [ ] kV
+
 #### PID
 - [ ] kP
 - [ ] kI
@@ -30,16 +36,10 @@ FourBar calibrations
 - [ ] kI
 - [ ] kD
 
-#### FeedForward
-- [ ] kS
-- [ ] kG
-- [ ] kA
-- [ ] kV
-
 #### MotionMagic
 - [ ] Default max acceleration per meter square
 - [ ] Default max velocity per meter
-- 
+
 #### Digital input
 - [ ] Reset check sensor channel
 - [ ] Is reset check sensor inverted

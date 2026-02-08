@@ -27,10 +27,10 @@ Turret Calibration
 - [ ] Calibrate kD
 
 #### General
-- [ ] Check turret radius
 - [ ] Amount of degrees for the look at hub not to move
 - [ ] Max position
 - [ ] Min position
+- [ ] Offset from robot middle
 
 #### Reset Sensor
 - [ ] Check reset check sensor channel
