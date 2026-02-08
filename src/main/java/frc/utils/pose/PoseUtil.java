@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.constants.MathConstants;
 import frc.robot.poseestimator.Pose2dComponentsValue;
 import frc.robot.poseestimator.Pose3dComponentsValue;
 import frc.utils.AngleUnit;
@@ -124,7 +125,7 @@ public class PoseUtil {
 		return false;
 	}
 
-	public static SwerveModuleState[] getModuleTranslationalStates(
+	private static SwerveModuleState[] getModuleTranslationalStates(
 		SwerveModuleState[] moduleStates,
 		SwerveModuleState[] moduleRotationalStates
 	) {
@@ -138,7 +139,9 @@ public class PoseUtil {
 	private static SwerveModuleState getModuleTranslationalState(SwerveModuleState moduleState, SwerveModuleState moduleRotationalState) {
 		Translation2d moduleTranslationalVelocity = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
 			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
-		return new SwerveModuleState(moduleTranslationalVelocity.getNorm(), moduleTranslationalVelocity.getAngle());
+		return moduleTranslationalVelocity.getNorm() > MathConstants.MAXIMUM_NEGLIGIBLE_VECTOR_NORM
+			? new SwerveModuleState(moduleTranslationalVelocity.getNorm(), moduleTranslationalVelocity.getAngle())
+			: new SwerveModuleState();
 	}
 
 }
