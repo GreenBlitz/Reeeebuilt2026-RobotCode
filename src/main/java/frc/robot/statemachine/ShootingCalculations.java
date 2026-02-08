@@ -82,7 +82,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
-		Logger.recordOutput(LOG_PATH + "/OptimalPassingPosition", targetTranslation);
+		Logger.recordOutput(LOG_PATH + "/OptimalPassingTarget", targetTranslation);
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
@@ -147,7 +147,7 @@ public class ShootingCalculations {
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
 		if (!ShootingChecks.isBehindHub(turretTranslation)) {
-			return new Translation2d(Field.getTargetXForPassing(), turretTranslation.getY());
+			return new Translation2d(Field.getTargetXValueForPassing(), turretTranslation.getY());
 		}
 		if (turretTranslation.getY() > Field.WIDTH_METERS / 2) {
 			return Field.getUpperPresetPassingTarget();
