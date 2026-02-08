@@ -43,7 +43,7 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, false),
+					startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, false),
 				rightMiddleToOutpostWithScoring(robot, scoreSequence, pathfindingConstraints, tolerance)
 			),
 			new Pose2d(),
@@ -61,7 +61,7 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, true),
+					startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, true),
 				leftMiddleToDepotWithScoring(robot, scoreSequence, pathfindingConstraints, tolerance)
 			),
 			new Pose2d(),
@@ -69,18 +69,18 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command rightStartingLineToRightMiddle(
+	private static Command startingLineToMiddle(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
 		Pose2d tolerance,
-		boolean isMirrored
+		boolean isLeft
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			isMirrored
+			isLeft
 				? PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid").mirrorPath()
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
 			pathfindingConstraints,
