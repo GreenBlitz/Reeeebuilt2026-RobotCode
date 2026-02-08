@@ -141,7 +141,7 @@ public class Robot {
 					robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)
 				),
 				() -> robotCommander.scoreSequence(),
-				AutonomousConstants.DEFAULT_PATH_FINDING_CONSTRAINTS,
+				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_PATH_TOLERANCE
 			)
 		);

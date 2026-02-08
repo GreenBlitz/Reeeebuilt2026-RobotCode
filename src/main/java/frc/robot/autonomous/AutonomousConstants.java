@@ -10,7 +10,7 @@ public class AutonomousConstants {
 
 	public static final double PATHFINDING_DEADBAND_METERS = 0.5;
 
-	public static final PathConstraints DEFAULT_PATH_FINDING_CONSTRAINTS = new PathConstraints(
+	public static final PathConstraints DEFAULT_PATHFINDING_CONSTRAINTS = new PathConstraints(
 		4.200,
 		2.000,
 		Rotation2d.fromDegrees(540).getRadians(),
