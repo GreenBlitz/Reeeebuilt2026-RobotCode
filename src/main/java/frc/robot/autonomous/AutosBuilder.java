@@ -83,7 +83,7 @@ public class AutosBuilder {
 			isMirrored
 				? PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid").mirrorPath()
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
-				pathfindingConstraints,
+			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
 			tolerance
 		);
@@ -99,7 +99,7 @@ public class AutosBuilder {
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost"),
-				pathfindingConstraints,
+			pathfindingConstraints,
 			scoreSequence,
 			tolerance
 		);
@@ -115,7 +115,7 @@ public class AutosBuilder {
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
-				pathfindingConstraints,
+			pathfindingConstraints,
 			scoreSequence,
 			tolerance
 		);
