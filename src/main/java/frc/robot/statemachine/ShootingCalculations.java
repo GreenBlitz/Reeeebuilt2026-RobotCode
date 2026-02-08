@@ -82,7 +82,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
-		Logger.recordOutput(LOG_PATH + "/OptimalPassingTarget", new Pose2d(targetTranslation,new Rotation2d()));
+		Logger.recordOutput(LOG_PATH + "/OptimalPassingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
