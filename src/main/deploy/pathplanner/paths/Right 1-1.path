@@ -50,7 +50,7 @@
       "rotationDegrees": 135.0
     },
     {
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.98,
       "rotationDegrees": 135.0
     }
   ],
@@ -70,10 +70,10 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 177.63954538860165
   },
   "useDefaultConstraints": true
 }
