@@ -3,7 +3,7 @@ Hood calibrations
 
 #### IDs
 - [ ] Motor id
-- [ ] Motor buschain
+- [ ] Motor busChain
 
 #### Limits
 - [ ] Current limit
@@ -24,6 +24,10 @@ Hood calibrations
 - [ ] Starting position
 - [ ] Hood position tolerance
 
+#### FeedForward
+- [ ] kS
+- [ ] kG
+
 #### PID
 - [ ] kP
 - [ ] kI
@@ -34,13 +38,9 @@ Hood calibrations
 - [ ] kI
 - [ ] kD
 
-#### FeedForward
-- [ ] kS
-- [ ] kG
-
 #### MotionMagic
 - [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter
+- [ ] Default max velocity per meter__
 
 #### Simulation Constants
 - [ ] Moment of inertia

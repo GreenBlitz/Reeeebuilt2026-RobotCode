@@ -52,7 +52,6 @@ public class TurretConstants {
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 79.2;
 	}
 
-
 	public static final double CURRENT_LIMIT = 40;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double TURRET_RADIUS = 0.0;

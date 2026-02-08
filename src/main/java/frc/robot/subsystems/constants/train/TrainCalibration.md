@@ -21,4 +21,6 @@ Train calibrations
 - [ ] kV
 
 #### PID
-- [ ] PID
+- [ ] kP
+- [ ] kI
+- [ ] kD

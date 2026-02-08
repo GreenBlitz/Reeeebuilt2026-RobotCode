@@ -6,25 +6,27 @@ Turret Calibration
 - [ ] Check bus chain
 
 #### Limits
-- [ ] Check current limit
-- [ ] Check forward limit
-- [ ] Check backwards limit
-- [ ] Check max velocity
-- [ ] max acceleration
+- [ ] Current limit
+- [ ] Forward limit
+- [ ] Backwards limit
 
 #### Configs
 - [ ] Check is inverted
 - [ ] Check gear ratio
 
 #### Feed forward
-- [ ] Calibrate kS
-- [ ] Calibrate kV
-- [ ] Calibrate kA
+- [ ] kS
+- [ ] kV
+- [ ] kA
 
 #### PID
-- [ ] Calibrate kP
-- [ ] Calibrate kI
-- [ ] Calibrate kD
+- [ ] kP
+- [ ] kI
+- [ ] kD
+
+#### MotionMagic
+- [ ] Default max acceleration per meter square
+- [ ] Default max velocity per meter
 
 #### General
 - [ ] Amount of degrees for the look at hub not to move
