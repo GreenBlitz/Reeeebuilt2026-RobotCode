@@ -211,8 +211,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 		return new ArrayList<>();
 	}
-    public Pose2d getRobotPoseFromTurretLimeLight(Supplier<Pose3d> camPoseRelativeToRobotCenter,String cameraName) {
-        Pose3d centerOfTurret = LimelightHelpers.getBotPose3d(cameraName);
+    public Pose2d getRobotPoseFromTurretLimeLight(Supplier<Transform2d> camTransformRelativeToRobotCenter,String cameraName) {
+        //Pose3d limeLightPoseRelativeToField = LimelightHelpers.getBotPose3d(cameraName);
+        Pose2d limeLightPoseRelativeToField =LimelightHelpers.getBotPose3d_wpiBlue(cameraName).toPose2d();
+        return (limeLightPoseRelativeToField.transformBy((Transform2d) camTransformRelativeToRobotCenter);
+
     }
 
 	public Function<LimelightHelpers.RawDetection, Boolean> getNeuralDetectionFilter() {
