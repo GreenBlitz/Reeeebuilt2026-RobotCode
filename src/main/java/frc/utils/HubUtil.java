@@ -1,7 +1,7 @@
 package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.ShootingChecks;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
@@ -18,7 +18,7 @@ public class HubUtil {
 		if (!DriverStationUtil.isTeleop()) {
 			return Optional.empty();
 		}
-		String gameData = /* DriverStation.getGameSpecificMessage() */ "Red";
+		String gameData = DriverStation.getGameSpecificMessage();
 		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 			return Optional.empty();
@@ -127,7 +127,7 @@ public class HubUtil {
 	}
 
 	public static boolean isOurHubActiveToShoot(double distanceFromHubMeters) {
-		return ShootingCalculations.isReadyToStartShooting(distanceFromHubMeters);
+		return ShootingChecks.isHubReadyToStartShooting(distanceFromHubMeters);
 	}
 
 }

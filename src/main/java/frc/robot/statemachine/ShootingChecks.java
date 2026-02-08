@@ -9,6 +9,7 @@ import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
 import frc.utils.math.FieldMath;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.math.MathUtil.isNear;
@@ -370,5 +371,10 @@ public class ShootingChecks {
 		return calibrationCanContinueShooting(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "CalibrationPass");
 	}
 
+	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters) {
+		return HubUtil.isOurHubActive(
+				TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
+		);
+	}
 
 }

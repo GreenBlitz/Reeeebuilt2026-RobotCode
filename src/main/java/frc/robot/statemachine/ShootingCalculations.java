@@ -273,10 +273,8 @@ public class ShootingCalculations {
 		}
 	}
 
-	public static boolean isReadyToStartShooting(double distanceFromHubMeters) {
-		return HubUtil.isOurHubActive(
-			TimeUtil.getTimeSinceTeleopInitSeconds() + DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters)
-		);
+	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
+		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 	}
 
 }
