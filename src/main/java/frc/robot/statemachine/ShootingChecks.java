@@ -86,7 +86,7 @@ public class ShootingChecks {
 	) {
 		boolean isTurretAtPosition = MathUtil
 			.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), turretTolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isAtTurretPosition", isTurretAtPosition);
+		Logger.recordOutput(logPath + "/isTurretAtPosition", isTurretAtPosition);
 		return isTurretAtPosition;
 	}
 
