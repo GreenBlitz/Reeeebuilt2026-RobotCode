@@ -1,7 +1,6 @@
 package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.statemachine.ShootingChecks;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
@@ -124,10 +123,6 @@ public class HubUtil {
 			return false;
 		}
 		return DriverStationUtil.getAlliance().equals(autoWinnerAlliance.get());
-	}
-
-	public static boolean isOurHubActiveToShoot(double distanceFromHubMeters) {
-		return ShootingChecks.isHubReadyToStartShooting(distanceFromHubMeters);
 	}
 
 }
