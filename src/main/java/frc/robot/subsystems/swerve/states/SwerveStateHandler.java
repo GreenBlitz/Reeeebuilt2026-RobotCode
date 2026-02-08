@@ -79,18 +79,27 @@ public class SwerveStateHandler {
 
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading;
+		double joystickRotationalSpeed = 0;
 
 		if (turretAngle.getRotations() < TurretConstants.RANGE_MIDDLE.getRotations()) {
+			if (speeds.omegaRadiansPerSecond < 0) {
+				joystickRotationalSpeed = speeds.omegaRadiansPerSecond;
+			}
 			targetHeading = Rotation2d.fromDegrees(
 				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() - StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
 			);
 		} else {
+			if (speeds.omegaRadiansPerSecond > 0) {
+				joystickRotationalSpeed = speeds.omegaRadiansPerSecond;
+			}
 			targetHeading = Rotation2d.fromDegrees(
 				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() + StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
 			);
 		}
 
-		return AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
+		return finalSpeeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
