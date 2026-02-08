@@ -27,7 +27,7 @@ public class AutosBuilder {
 				firstQuarterAutoStart(robot, false),
 				defaultDeadlineCommandWithPath(
 					robot,
-					PathHelper.PATH_PLANNER_PATHS.get("Right 1-2"),
+					PathHelper.PATH_PLANNER_PATHS.get("Right from middle to outpost"),
 					() -> robot.getRobotCommander().scoreSequence()
 				)
 			),
@@ -42,7 +42,7 @@ public class AutosBuilder {
 				firstQuarterAutoStart(robot, true),
 				defaultDeadlineCommandWithPath(
 					robot,
-					PathHelper.PATH_PLANNER_PATHS.get("Left 1-2"),
+					PathHelper.PATH_PLANNER_PATHS.get("Left from middle to depot"),
 					() -> robot.getRobotCommander().scoreSequence()
 				)
 			),
@@ -65,7 +65,7 @@ public class AutosBuilder {
 	private static Command firstQuarterAutoStart(Robot robot, boolean isPathLeft) {
 		return defaultDeadlineCommandWithPath(
 			robot,
-			isPathLeft ? PathHelper.PATH_PLANNER_PATHS.get("Right 1-1").mirrorPath() : PathHelper.PATH_PLANNER_PATHS.get("Right 1-1"),
+			isPathLeft ? PathHelper.PATH_PLANNER_PATHS.get("Right intake on center line").mirrorPath() : PathHelper.PATH_PLANNER_PATHS.get("Right intake on center line"),
 			() -> resetSubsystemsAndIntakeAfter(robot)
 		);
 	}
