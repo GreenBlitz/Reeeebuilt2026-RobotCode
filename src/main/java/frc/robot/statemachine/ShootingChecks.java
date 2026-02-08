@@ -8,6 +8,7 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
+import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -140,7 +141,7 @@ public class ShootingChecks {
 		);
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			Rotation2d.fromDegrees(21000),
+				ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
 			flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath
@@ -186,7 +187,7 @@ public class ShootingChecks {
 		);
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-				Rotation2d.fromDegrees(21000),
+				ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
 				flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath
