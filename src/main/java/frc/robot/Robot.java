@@ -131,16 +131,21 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
+		Command intakeCommand = robotCommander.getIntakeStateHandler().intake();
+		Command scoreSequenceCommand = robotCommander.scoreSequence();
+		Command resetSubsystemsCommand = new ParallelCommandGroup(
+			robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR),
+			robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)
+		);
+
+
 		this.autonomousChooser = new AutonomousChooser(
 			"Autonomous Chooser",
 			AutosBuilder.getAutoList(
 				this,
-				() -> robotCommander.getIntakeStateHandler().intake(),
-				() -> new ParallelCommandGroup(
-					robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
-					robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)
-				),
-				() -> robotCommander.scoreSequence(),
+				() -> intakeCommand,
+				() -> resetSubsystemsCommand,
+				() -> scoreSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_PATH_TOLERANCE
 			)
