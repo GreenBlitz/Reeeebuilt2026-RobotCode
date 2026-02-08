@@ -32,7 +32,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"Right path type 1"
+			"R starting - R mid - Outpost"
 		);
 	}
 
@@ -47,7 +47,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"Left path type 1"
+			"L starting - L mid - Depot"
 		);
 	}
 

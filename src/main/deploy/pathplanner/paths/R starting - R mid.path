@@ -12,7 +12,7 @@
         "y": 2.5056553898343186
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "R starting"
     },
     {
       "anchor": {
@@ -46,11 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": 135.0
-    },
-    {
-      "waypointRelativePos": 0.98,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 135.0
     }
   ],
@@ -73,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 177.63954538860165
+    "rotation": 135.0
   },
   "useDefaultConstraints": true
 }
