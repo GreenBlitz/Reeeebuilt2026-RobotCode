@@ -1,5 +1,6 @@
 package frc.robot.autonomous;
 
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
@@ -22,11 +23,13 @@ public class AutosBuilder {
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
-		Supplier<Command> scoreSequence
+		Supplier<Command> scoreSequence,
+		PathConstraints constraints,
+		Pose2d tolerance
 	) {
 		return List.of(
-			getRightStartingToRightMiddleToOutpostAuto(robot, scoreSequence, intake, resetSubsystems),
-			getLeftStartingToLeftMiddleToDepotAuto(robot, scoreSequence, intake, resetSubsystems)
+			getRightStartingToRightMiddleToOutpostAuto(robot, scoreSequence, intake, resetSubsystems,constraints,tolerance),
+			getLeftStartingToLeftMiddleToDepotAuto(robot, scoreSequence, intake, resetSubsystems,constraints,tolerance)
 		);
 	}
 
@@ -34,12 +37,14 @@ public class AutosBuilder {
 		Robot robot,
 		Supplier<Command> scoreSequence,
 		Supplier<Command> intake,
-		Supplier<Command> resetSubsystems
+		Supplier<Command> resetSubsystems,
+		PathConstraints constraints,
+		Pose2d tolerance
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, false),
-				rightMiddleToOutpostWithScoring(robot, scoreSequence)
+				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, constraints,tolerance,false),
+				rightMiddleToOutpostWithScoring(robot, scoreSequence,constraints,tolerance)
 			),
 			new Pose2d(),
 			"R starting - R mid - Outpost"
@@ -50,12 +55,14 @@ public class AutosBuilder {
 		Robot robot,
 		Supplier<Command> scoreSequence,
 		Supplier<Command> intake,
-		Supplier<Command> resetSubsystems
+		Supplier<Command> resetSubsystems,
+		PathConstraints constraints,
+		Pose2d tolerance
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				rightStartingLineToRightMiddle(robot, intake, resetSubsystems, true),
-				leftMiddleToDepotWithScoring(robot, scoreSequence)
+				rightStartingLineToRightMiddle(robot, intake, resetSubsystems,constraints,tolerance, true),
+				leftMiddleToDepotWithScoring(robot, scoreSequence,constraints,tolerance)
 			),
 			new Pose2d(),
 			"L starting - L mid - Depot"
@@ -66,6 +73,8 @@ public class AutosBuilder {
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
+		PathConstraints constraints,
+		Pose2d tolerance,
 		boolean isMirrored
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
@@ -74,31 +83,31 @@ public class AutosBuilder {
 			isMirrored
 				? PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid").mirrorPath()
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
-			AutonomousConstants.DEFAULT_PATH_CONSTRAINS,
+			constraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
-			AutonomousConstants.DEFAULT_PATH_TOLERANCE
+			tolerance
 		);
 	}
 
-	private static Command rightMiddleToOutpostWithScoring(Robot robot, Supplier<Command> scoreSequence) {
+	private static Command rightMiddleToOutpostWithScoring(Robot robot, Supplier<Command> scoreSequence, PathConstraints constraints, Pose2d tolerance) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost"),
-			AutonomousConstants.DEFAULT_PATH_CONSTRAINS,
+			constraints,
 			scoreSequence,
-			AutonomousConstants.DEFAULT_PATH_TOLERANCE
+			tolerance
 		);
 	}
 
-	private static Command leftMiddleToDepotWithScoring(Robot robot, Supplier<Command> scoreSequence) {
+	private static Command leftMiddleToDepotWithScoring(Robot robot, Supplier<Command> scoreSequence, PathConstraints constraints, Pose2d tolerance) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
-			AutonomousConstants.DEFAULT_PATH_CONSTRAINS,
+			constraints,
 			scoreSequence,
-			AutonomousConstants.DEFAULT_PATH_TOLERANCE
+			tolerance
 		);
 	}
 

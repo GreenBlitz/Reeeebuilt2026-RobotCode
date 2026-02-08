@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
+import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
@@ -140,7 +141,8 @@ public class Robot {
 					robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)
 				),
 				() -> robotCommander.scoreSequence()
-			))
+			, AutonomousConstants.DEFAULT_PATH_CONSTRAINS,
+					AutonomousConstants.DEFAULT_PATH_TOLERANCE))
 		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
