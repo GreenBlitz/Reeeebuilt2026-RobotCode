@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
-import frc.joysticks.SmartJoystick;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -80,25 +79,27 @@ public class SwerveStateHandler {
 
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading;
+		double joystickRotationalSpeed = 0;
 
-		double rotationalPower = speeds.omegaRadiansPerSecond / swerveConstants.velocityAt12VoltsMetersPerSecond();
 		if (turretAngle.getRotations() < TurretConstants.RANGE_MIDDLE.getRotations()) {
-			if (rotationalPower < SmartJoystick.DEADZONE) {
-				return speeds;
+			if (speeds.omegaRadiansPerSecond < 0) {
+				joystickRotationalSpeed = speeds.omegaRadiansPerSecond;
 			}
 			targetHeading = Rotation2d.fromDegrees(
 				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() - StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
 			);
 		} else {
-			if (rotationalPower > SmartJoystick.DEADZONE) {
-				return speeds;
+			if (speeds.omegaRadiansPerSecond > 0) {
+				joystickRotationalSpeed = speeds.omegaRadiansPerSecond;
 			}
 			targetHeading = Rotation2d.fromDegrees(
 				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() + StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
 			);
 		}
 
-		return AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		ChassisSpeeds returnSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		returnSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
+		return returnSpeeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
