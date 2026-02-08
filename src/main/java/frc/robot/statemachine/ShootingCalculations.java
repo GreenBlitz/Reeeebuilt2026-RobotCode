@@ -153,26 +153,26 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			1.5,
-			Rotation2d.fromDegrees(30),
-			2.0,
-			Rotation2d.fromDegrees(30),
-			2.55,
-			Rotation2d.fromDegrees(32),
-			3.0,
-			Rotation2d.fromDegrees(32),
-			3.45,
-			Rotation2d.fromDegrees(35),
-			4.04,
-			Rotation2d.fromDegrees(38),
-			4.48,
-			Rotation2d.fromDegrees(38),
-			5.0,
-			Rotation2d.fromDegrees(42),
-			5.5,
-			Rotation2d.fromDegrees(42),
-			6.0,
-			Rotation2d.fromDegrees(42)
+//			1.5,
+//			Rotation2d.fromDegrees(30),
+//			2.0,
+//			Rotation2d.fromDegrees(30),
+//			2.55,
+//			Rotation2d.fromDegrees(32),
+//			3.0,
+//			Rotation2d.fromDegrees(32),
+//			3.45,
+//			Rotation2d.fromDegrees(35),
+//			4.04,
+//			Rotation2d.fromDegrees(38),
+//			4.48,
+//			Rotation2d.fromDegrees(38),
+//			5.0,
+//			Rotation2d.fromDegrees(42),
+//			5.5,
+//			Rotation2d.fromDegrees(42),
+//			6.0,
+//			Rotation2d.fromDegrees(42)
 		)
 	);
 
@@ -236,7 +236,8 @@ public class ShootingCalculations {
 	);
 
 	static {
-//		HOOD_SCORING_INTERPOLATION_MAP.put(6.0, Rotation2d.fromDegrees(42));
+		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
+		HOOD_SCORING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(45));
 		HOOD_SCORING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(45));
 		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(47));
 

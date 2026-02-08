@@ -46,7 +46,12 @@ public class JoysticksBindings {
 			chassisDriverInputs.xPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = THIRD_JOYSTICK.getAxisValue(Axis.RIGHT_X);
-		} else {
+		}else if (SECOND_JOYSTICK.isConnected()) {
+			chassisDriverInputs.xPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.yPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_X);
+			chassisDriverInputs.rotationalPower = SECOND_JOYSTICK.getAxisValue(Axis.RIGHT_X);
+		}
+		else {
 			chassisDriverInputs.xPower = 0;
 			chassisDriverInputs.yPower = 0;
 			chassisDriverInputs.rotationalPower = 0;
@@ -63,6 +68,7 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
+		applyShootOnMoveBinds(usedJoystick, robot);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
