@@ -60,12 +60,19 @@ public class FunnelStateHandler {
 		return sensorInputsAutoLogged.debouncedValue;
 	}
 
-	public Command handleSensorBalls() {
-		if (isBallAtSensor() && (robotState == RobotState.PRE_PASS || robotState == RobotState.PRE_SCORE)) {
-			return setState(FunnelState.NEUTRAL);
+	public void handleSensorBalls() {
+		if (robotState != RobotState.PRE_SCORE &&
+				robotState != RobotState.PRE_PASS) {
+			return;
 		}
-		return setState(currentState);
+		FunnelState wantedState =
+				isBallAtSensor() ? FunnelState.NEUTRAL : FunnelState.SHOOT;
+
+		if (wantedState != currentState) {
+			CommandScheduler.getInstance().schedule(setState(wantedState));
+		}
 	}
+
 
 	private Command neutral() {
 		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
@@ -93,8 +100,8 @@ public class FunnelStateHandler {
 	}
 
 	public void periodic() {
-		CommandScheduler.getInstance().schedule(handleSensorBalls());
 		ballSensor.updateInputs(sensorInputsAutoLogged);
+		handleSensorBalls();
 
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
 		Logger.processInputs(logPath, sensorInputsAutoLogged);
