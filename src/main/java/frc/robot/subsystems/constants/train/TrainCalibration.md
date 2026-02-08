@@ -8,6 +8,8 @@ Train calibrations
 - [ ] Digital input name
 - [ ] Inverted
 - [ ] Forward or Backward
+- [ ] Debounce time for ball sensor
+- [ ] Check sensor ID
 
 #### Config
 - [ ] Gear ratio
