@@ -133,7 +133,7 @@ public class Robot {
 
 		this.autonomousChooser = new AutonomousChooser(
 			"Autonomous Chooser",
-			(AutosBuilder.getAutoList(
+			AutosBuilder.getAutoList(
 				this,
 				() -> robotCommander.getIntakeStateHandler().intake(),
 				() -> new ParallelCommandGroup(
@@ -143,7 +143,7 @@ public class Robot {
 				() -> robotCommander.scoreSequence(),
 				AutonomousConstants.DEFAULT_PATH_FINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_PATH_TOLERANCE
-			))
+			)
 		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
