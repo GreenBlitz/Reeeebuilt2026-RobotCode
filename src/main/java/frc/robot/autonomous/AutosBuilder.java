@@ -79,7 +79,7 @@ public class AutosBuilder {
 				PathFollowingCommandsBuilder.deadlineCommandWithPath(
 					robot.getSwerve(),
 					() -> robot.getPoseEstimator().getEstimatedPose(),
-					PathHelper.PATH_PLANNER_PATHS.get("Right 1-2").mirrorPath(),
+					PathHelper.PATH_PLANNER_PATHS.get("Left 1-2"),
 					DEFAULT_PATH_CONSTRAINS,
 					() -> robot.getRobotCommander().scoreSequence(),
 					DEFAULT_PATH_TOLERANCE
