@@ -212,6 +212,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return new ArrayList<>();
 	}
     public Pose2d getRobotPoseFromTurretLimeLight(Supplier<Transform2d> camTransformRelativeToRobotCenter,String cameraName) {
+        // important remember that the pose the limelight helpers return are shifted by the given pose in the constructor
+        // to avoid shiftinge at the constructor use LimelightHelpers.setCameraPose_RobotSpace when pose is set to zero
+        // what transform 2d does is set the angle to 0 like a new axis were working on
+
         Pose3d limeLightPoseRelativeToField =LimelightHelpers.getBotPose3d_wpiBlue(cameraName);
         return (limeLightPoseRelativeToField.transformBy( camTransformRelativeToRobotCenter.get());
 
