@@ -65,7 +65,9 @@ public class AutosBuilder {
 	private static Command firstQuarterAutoStart(Robot robot, boolean isPathLeft) {
 		return defaultDeadlineCommandWithPath(
 			robot,
-			isPathLeft ? PathHelper.PATH_PLANNER_PATHS.get("Right intake on center line").mirrorPath() : PathHelper.PATH_PLANNER_PATHS.get("Right intake on center line"),
+			isPathLeft
+				? PathHelper.PATH_PLANNER_PATHS.get("Right intake on center line").mirrorPath()
+				: PathHelper.PATH_PLANNER_PATHS.get("Right intake on center line"),
 			() -> resetSubsystemsAndIntakeAfter(robot)
 		);
 	}
