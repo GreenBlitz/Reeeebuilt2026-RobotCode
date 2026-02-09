@@ -57,7 +57,7 @@ public class JoysticksBindings {
 			chassisDriverInputs.yPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = THIRD_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (SECOND_JOYSTICK.isConnected()) {
-			chassisDriverInputs.xPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.xPower = 0;//SECOND_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = SECOND_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else {
