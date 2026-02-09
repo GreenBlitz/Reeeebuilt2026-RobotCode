@@ -30,7 +30,8 @@ public class ShootingChecks {
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
-		boolean isTooCloseToHub = allianceRelativeTurretTranslation.getX() > FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
+		boolean isTooCloseToHub = allianceRelativeTurretTranslation.getX()
+			> FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
 		return !isBehindHub || !isTooCloseToHub;
 	}
@@ -53,9 +54,10 @@ public class ShootingChecks {
 		Translation2d targetTranslation,
 		boolean isPass
 	) {
-		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, robotPosition).getAngle();
-		if (isPass) {
-			AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(robotPosition, targetTranslation).getAngle();
+		Translation2d allianceRelativeRobotPosition = Field.getAllianceRelative(robotPosition);
+		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(allianceRelativeRobotPosition, targetTranslation).getAngle();
+		if (Field.isFieldConventionAlliance() && isPass) {
+			AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, allianceRelativeRobotPosition).getAngle();
 		}
 		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndTarget.getDegrees()) <= maxAngleFromCenter.getDegrees();
 		Logger.recordOutput(logPath + "/isInRange", isInAngleRange);
