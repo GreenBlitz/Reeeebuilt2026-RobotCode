@@ -20,10 +20,10 @@ public class ShootingChecks {
 
 	public static boolean isInAllianceZone(Translation2d position, String logPath) {
 		if (Field.isFieldConventionAlliance()) {
-			Logger.recordOutput(logPath,position.getX() < Field.getHubMiddle().getX());
+			Logger.recordOutput(logPath, position.getX() < Field.getHubMiddle().getX());
 			return position.getX() < Field.getHubMiddle().getX();
 		}
-		Logger.recordOutput(logPath,position.getX() > Field.getHubMiddle().getX());
+		Logger.recordOutput(logPath, position.getX() > Field.getHubMiddle().getX());
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
@@ -155,7 +155,10 @@ public class ShootingChecks {
 		);
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), logPath);
 
-		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()), logPath);
+		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(
+			ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()),
+			logPath
+		);
 
 		return isFlywheelReadyToShoot
 			&& isHoodAtPosition
@@ -210,8 +213,10 @@ public class ShootingChecks {
 
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), logPath);
 
-		boolean isHubReadyToStartShooting = ShootingChecks
-			.isHubReadyToStartShooting(ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()), logPath);
+		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(
+			ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()),
+			logPath
+		);
 
 		return isFlywheelReadyToShoot
 			&& isHoodAtPosition
@@ -371,7 +376,12 @@ public class ShootingChecks {
 	}
 
 	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters, String logPath) {
-		Logger.recordOutput( logPath, HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)));
+		Logger.recordOutput(
+			logPath,
+			HubUtil.isOurHubActive(
+				TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
+			)
+		);
 		return HubUtil
 			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
 	}
