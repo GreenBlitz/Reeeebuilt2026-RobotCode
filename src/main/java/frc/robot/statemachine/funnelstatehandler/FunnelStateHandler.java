@@ -62,14 +62,11 @@ public class FunnelStateHandler {
 	}
 
 	public void handleSensorBalls() {
-		if (robotState != RobotState.PRE_SCORE &&
-				robotState != RobotState.PRE_PASS) {
+		if (robotState != RobotState.PRE_SCORE && robotState != RobotState.PRE_PASS) {
 			return;
 		}
 
-		FunnelState wantedState =  isBallAtSensor()
-		? FunnelState.NEUTRAL
-		: FunnelState.SHOOT;
+		FunnelState wantedState = isBallAtSensor() ? FunnelState.NEUTRAL : FunnelState.SHOOT;
 
 		if (wantedState != currentState && wantedState != FunnelState.SHOOT) {
 			CommandScheduler.getInstance().schedule(setState(wantedState));
@@ -80,8 +77,8 @@ public class FunnelStateHandler {
 
 	private Command shootWithoutWait() {
 		return new ParallelCommandGroup(
-				train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
-				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
+			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
+			belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
 		);
 	}
 
