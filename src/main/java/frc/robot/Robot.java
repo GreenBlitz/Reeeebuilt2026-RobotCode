@@ -42,9 +42,12 @@ import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
+import frc.utils.HubUtil;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -175,6 +178,7 @@ public class Robot {
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		robotCommander.update();
+		Logger.recordOutput("is our hub active", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
