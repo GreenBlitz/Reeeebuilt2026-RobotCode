@@ -39,6 +39,15 @@ public class ShootingCalculations {
 		InterpolationMap<Double, Rotation2d> flywheelInterpolation,
 		Translation2d targetTranslation
 	) {
+		Logger.recordOutput("SymmetryTest/robotPose", robotPose); // good
+		Logger.recordOutput("SymmetryTest/fieldRelativeSpeeds", fieldRelativeSpeeds); // good
+		Logger.recordOutput("SymmetryTest/gyroYawAngularVelocity", gyroYawAngularVelocity); // small but not good
+		Logger.recordOutput("SymmetryTest/targetTranslation", targetTranslation); // good
+
+		gyroYawAngularVelocity = new Rotation2d();
+		fieldRelativeSpeeds.vxMetersPerSecond = 0;
+
+
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);
@@ -248,7 +257,7 @@ public class ShootingCalculations {
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.0, 1.11, 4.0, 1.25, 5.85, 1.35)
+		Map.of(2.0, 1.11 - 0.25, 4.0, 1.0, 5.85, 1.1)
 	);
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
