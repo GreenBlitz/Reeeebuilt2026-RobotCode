@@ -84,7 +84,7 @@ public class ShootingChecks {
 		String logPath
 	) {
 		boolean isAtHeading = MathUtil.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isAtHeading", isAtHeading);
+		Logger.recordOutput(logPath + "/isTurretAtTargetPosition", isAtHeading);
 		return isAtHeading;
 	}
 

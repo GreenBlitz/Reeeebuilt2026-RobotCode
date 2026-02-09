@@ -2,6 +2,7 @@ package frc;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
@@ -14,6 +15,8 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 
 public class JoysticksBindings {
@@ -106,7 +109,7 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(
 			new SequentialCommandGroup(
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				PathFollowingCommandsBuilder.followPath(depotToOutpost).deadlineFor(robot.getRobotCommander().scoreSequence())
+				PathFollowingCommandsBuilder.followPath(depotToOutpost).deadlineFor(robot.getRobotCommander().scoreSequence()).alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
 			)
 		);
 
@@ -114,7 +117,7 @@ public class JoysticksBindings {
 		usedJoystick.X.onTrue(
 			new SequentialCommandGroup(
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				PathFollowingCommandsBuilder.followPath(outpostToDepot).deadlineFor(robot.getRobotCommander().scoreSequence())
+				PathFollowingCommandsBuilder.followPath(outpostToDepot).deadlineFor(robot.getRobotCommander().scoreSequence()).alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
 			)
 		);
 	}

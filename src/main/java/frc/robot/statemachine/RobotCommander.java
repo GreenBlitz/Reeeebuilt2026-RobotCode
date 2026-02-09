@@ -220,7 +220,7 @@ public class RobotCommander extends GBSubsystem {
 						asSubsystemCommand(funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToScore), RobotState.PRE_SCORE)
 					),
 					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !isReadyToScore()), RobotState.SCORE)
 					)
 				)
 			)
