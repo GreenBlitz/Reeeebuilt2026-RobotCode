@@ -3,6 +3,7 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -111,6 +112,7 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 
+		Logger.recordOutput("MagicGreenSquare", new Pose2d(15.005, 7.281	, new Rotation2d()));
 
 		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
 		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
