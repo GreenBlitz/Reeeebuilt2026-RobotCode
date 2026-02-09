@@ -1,7 +1,5 @@
 package frc;
 
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,7 +15,6 @@ import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 
-import java.util.Collections;
 
 public class JoysticksBindings {
 
@@ -50,12 +47,11 @@ public class JoysticksBindings {
 			chassisDriverInputs.xPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = THIRD_JOYSTICK.getAxisValue(Axis.RIGHT_X);
-		}else if (SECOND_JOYSTICK.isConnected()) {
+		} else if (SECOND_JOYSTICK.isConnected()) {
 			chassisDriverInputs.xPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = SECOND_JOYSTICK.getAxisValue(Axis.RIGHT_X);
-		}
-		else {
+		} else {
 			chassisDriverInputs.xPower = 0;
 			chassisDriverInputs.yPower = 0;
 			chassisDriverInputs.rotationalPower = 0;
