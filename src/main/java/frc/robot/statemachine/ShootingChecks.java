@@ -32,8 +32,9 @@ public class ShootingChecks {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
 		boolean isTooCloseToHub = allianceRelativeTurretTranslation.getX()
-			> FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
+			< FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
+		Logger.recordOutput(logPath + "/IsTooCloseToHub", isTooCloseToHub);
 		return !isBehindHub || !isTooCloseToHub;
 	}
 

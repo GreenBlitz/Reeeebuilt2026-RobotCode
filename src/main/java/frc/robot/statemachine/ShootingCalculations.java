@@ -266,6 +266,7 @@ public class ShootingCalculations {
 		Interpolator.forDouble(),
 		Map.of(2.0, 1.11 - 0.25, 4.0, 1.0, 5.85, 1.1)
 	);
+	
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
