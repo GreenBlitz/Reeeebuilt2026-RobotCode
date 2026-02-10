@@ -22,7 +22,7 @@ public class ShootingChecks {
 			Logger.recordOutput(logPath, position.getX() < Field.getHubMiddle().getX());
 			return position.getX() < Field.getHubMiddle().getX();
 		}
-		Logger.recordOutput(logPath, position.getX() > Field.getHubMiddle().getX());
+		Logger.recordOutput(logPath + "/isInAllianceZone", position.getX() > Field.getHubMiddle().getX());
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
@@ -389,7 +389,7 @@ public class ShootingChecks {
 
 	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters, String logPath) {
 		Logger.recordOutput(
-			logPath,
+			logPath + "/isHubReadyToStartShooting",
 			HubUtil.isOurHubActive(
 				TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
 			)

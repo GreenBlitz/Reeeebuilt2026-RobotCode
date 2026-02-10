@@ -7,7 +7,6 @@ import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
-
 import java.util.Optional;
 
 public class HubUtil {

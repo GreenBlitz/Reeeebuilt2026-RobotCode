@@ -269,16 +269,16 @@ public class ShootingCalculations {
 		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
 	);
 
+	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
+		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+	}
+
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation(), LOG_PATH + "/isInAllianceZone")) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
-	}
-
-	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
-		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 	}
 
 }
