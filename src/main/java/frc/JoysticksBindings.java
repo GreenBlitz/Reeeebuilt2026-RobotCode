@@ -54,8 +54,8 @@ public class JoysticksBindings {
 			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (THIRD_JOYSTICK.isConnected()) {
-			chassisDriverInputs.xPower = 0;//THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
-			chassisDriverInputs.yPower = 0;//THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
+			chassisDriverInputs.xPower = 0;// THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.yPower = 0;// THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = THIRD_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (SECOND_JOYSTICK.isConnected()) {
 			chassisDriverInputs.xPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_Y);
@@ -111,7 +111,7 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
-		
+
 		ChassisPowers chassisPowers = new ChassisPowers();
 		chassisPowers.rotationalPower = 0.5;
 		joystick.B.onTrue(robot.getSwerve().getCommandsBuilder().driveByState(() -> chassisPowers, SwerveState.DEFAULT_PATH_PLANNER));
