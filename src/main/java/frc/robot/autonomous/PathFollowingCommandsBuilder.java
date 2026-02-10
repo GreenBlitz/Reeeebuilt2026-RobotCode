@@ -13,6 +13,7 @@ import frc.constants.field.Field;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.math.ToleranceMath;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
 
@@ -56,12 +57,12 @@ public class PathFollowingCommandsBuilder {
 		);
 	}
 
-
 	public static Command followPath(PathPlannerPath path) {
 		return AutoBuilder.followPath(path);
 	}
 
 	public static Command pathfindToPose(Pose2d targetPose, PathConstraints pathfindingConstraints) {
+		Logger.recordOutput("blablabla",targetPose);
 		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints);
 	}
 
