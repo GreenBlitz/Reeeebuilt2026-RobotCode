@@ -26,11 +26,25 @@ public class AutosBuilder {
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getRightStartingToRightMiddleToOutpostAuto(robot, scoreSequence, intake, resetSubsystems, pathfindingConstraints, tolerance),
-			getLeftStartingToLeftMiddleToDepotAuto(robot, scoreSequence, intake, resetSubsystems, pathfindingConstraints, tolerance)
+			getRightStartingToRightMiddleToOutpostAuto(
+				robot,
+				scoreSequence,
+				intake,
+				resetSubsystems,
+				pathfindingConstraints,
+				isNearEndOfPathTolerance
+			),
+			getLeftStartingToLeftMiddleToDepotAuto(
+				robot,
+				scoreSequence,
+				intake,
+				resetSubsystems,
+				pathfindingConstraints,
+				isNearEndOfPathTolerance
+			)
 		);
 	}
 
@@ -40,12 +54,12 @@ public class AutosBuilder {
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, false),
-				rightMiddleToOutpostWithScoring(robot, scoreSequence, pathfindingConstraints, tolerance)
+				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, false),
+				rightMiddleToOutpostWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
 			),
 			new Pose2d(),
 			"R starting - R mid - Outpost"
@@ -58,12 +72,12 @@ public class AutosBuilder {
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, tolerance, true),
-				leftMiddleToDepotWithScoring(robot, scoreSequence, pathfindingConstraints, tolerance)
+				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, true),
+				leftMiddleToDepotWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
 			),
 			new Pose2d(),
 			"L starting - L mid - Depot"
@@ -75,7 +89,7 @@ public class AutosBuilder {
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance,
+		Pose2d isNearEndOfPathTolerance,
 		boolean isLeft
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
@@ -86,7 +100,7 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
-			tolerance
+			isNearEndOfPathTolerance
 		);
 	}
 
@@ -94,7 +108,7 @@ public class AutosBuilder {
 		Robot robot,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
@@ -102,7 +116,7 @@ public class AutosBuilder {
 			PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost"),
 			pathfindingConstraints,
 			scoreSequence,
-			tolerance
+			isNearEndOfPathTolerance
 		);
 	}
 
@@ -110,7 +124,7 @@ public class AutosBuilder {
 		Robot robot,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
@@ -118,7 +132,7 @@ public class AutosBuilder {
 			PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
 			pathfindingConstraints,
 			scoreSequence,
-			tolerance
+			isNearEndOfPathTolerance
 		);
 	}
 

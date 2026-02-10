@@ -17,6 +17,6 @@ public class AutonomousConstants {
 		Rotation2d.fromDegrees(720).getRadians()
 	);
 
-	public static final Pose2d DEFAULT_PATH_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(1));
+	public static final Pose2d DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(1));
 
 }
