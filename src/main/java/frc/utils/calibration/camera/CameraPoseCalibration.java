@@ -2,6 +2,7 @@ package frc.utils.calibration.camera;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +20,7 @@ public class CameraPoseCalibration extends Command {
 	private final Pose3d tagPoseFieldRelative;
 	private final Pose2d expectedRobotPoseFieldRelative;
 	private final double tagCenterHeightFromGroundMeters;
+	private final Rotation2d robotYawRelativeToTagFacingYaw;
 
 	private final CameraPoseCalibrationInputsAutoLogged cameraPoseCalibrationInputs;
 
@@ -33,14 +35,15 @@ public class CameraPoseCalibration extends Command {
 
 	/**
 	 * limelight is funny so we invert the solution's y-axis </br>
-	 * Important specifications: tag pose in the field (tagPoseFieldRelative) yaw must be 180 degrees, Y difference from the tag should be 0,
-	 * robot should be parallel to tag.
+	 * Important specifications: tag pose in the field (tagPoseFieldRelative) yaw must be 180 degrees, Y difference from the tag should be 0, the
+	 * robot's face that the camera is on should be facing the tag and parallel to it.
 	 *
 	 * @param cameraName                      - name of the limelight in use
 	 * @param neededNumberOfCycles            - number of measurements decided by user
-	 * @param robotXAxisDistanceFromTag       - distance of the middle of the robot from the tag , "real life measurement"
-	 * @param tagCenterHeightFromGroundMeters - distance of the middle of the tag from the floor , "real life measurement"
+	 * @param robotXAxisDistanceFromTag       - distance of the middle of the robot from the tag, "real life measurement"
+	 * @param tagCenterHeightFromGroundMeters - distance of the middle of the tag from the floor, "real life measurement"
 	 * @param tagPoseFieldRelative            - position of the tag in the apriltag map on the camera
+	 * @param robotYawRelativeToTagFacingYaw  - the robot's yaw relative to its yaw when facing the tag, "real life measurement"
 	 *
 	 */
 	public CameraPoseCalibration(
@@ -49,7 +52,8 @@ public class CameraPoseCalibration extends Command {
 		int neededNumberOfCycles,
 		double robotXAxisDistanceFromTag,
 		double tagCenterHeightFromGroundMeters,
-		Pose3d tagPoseFieldRelative
+		Pose3d tagPoseFieldRelative,
+		Rotation2d robotYawRelativeToTagFacingYaw
 	) {
 		this.logPath = logPathPrefix + "/cameraPositionCalibration";
 		this.cameraName = cameraName;
@@ -62,6 +66,7 @@ public class CameraPoseCalibration extends Command {
 			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
 		);
 		this.tagCenterHeightFromGroundMeters = tagCenterHeightFromGroundMeters;
+		this.robotYawRelativeToTagFacingYaw = robotYawRelativeToTagFacingYaw;
 
 		this.cameraPoseCalibrationInputs = new CameraPoseCalibrationInputsAutoLogged();
 
@@ -110,16 +115,18 @@ public class CameraPoseCalibration extends Command {
 
 	private Pose3d calculateRobotRelativeCameraPosition() {
 		return new Pose3d(
-			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseFieldRelative.getX(),
-			-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseFieldRelative.getY()),
-			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundMeters,
+			new Translation3d(
+				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseFieldRelative.getX(),
+				-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseFieldRelative.getY()),
+				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundMeters
+			),
 			new Rotation3d(
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getX(),
 				-cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getY(),
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getZ()
 					- expectedRobotPoseFieldRelative.getRotation().getRadians()
 			)
-		);
+		).rotateBy(new Rotation3d(0, 0, robotYawRelativeToTagFacingYaw.unaryMinus().getRadians()));
 	}
 
 	private void sumMeasurementsValues() {
