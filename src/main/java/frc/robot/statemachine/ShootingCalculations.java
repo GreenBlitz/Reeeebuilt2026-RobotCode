@@ -123,13 +123,31 @@ public class ShootingCalculations {
 		);
 	}
 
-	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
-		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
-
+	private static Translation2d getPredictedTurretPoseByFlightTime(
+		Translation2d turretPose,
+		Translation2d turretVelocities,
+		double ballFlightTime
+	) {
 		double turretPosePredictionX = turretPose.getX() + (turretVelocities.getX() * ballFlightTime);
 		double turretPosePredictionY = turretPose.getY() + (turretVelocities.getY() * ballFlightTime);
 
 		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
+	}
+
+	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
+		Translation2d predictedTurretPose = turretPose;
+		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+
+		for (int i = 0; i < StateMachineConstants.MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME; i++) {
+			predictedTurretPose = getPredictedTurretPoseByFlightTime(predictedTurretPose, turretVelocities, ballFlightTime);
+			double newBallFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
+				.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
+			if (Math.abs(newBallFlightTime - ballFlightTime) <= StateMachineConstants.MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS) {
+				return predictedTurretPose;
+			}
+		}
+
+		return predictedTurretPose;
 	}
 
 	public static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
