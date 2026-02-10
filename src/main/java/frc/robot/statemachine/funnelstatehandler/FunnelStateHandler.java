@@ -63,6 +63,7 @@ public class FunnelStateHandler {
 
 	private Command moveRollsToSensors() {
 		return new ParallelCommandGroup(
+			// setState(FunnelState.MOVE_ROLLS_TO_SENSOR),
 			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
 			belly.getCommandsBuilder().setVoltage(6.7)
 		);
