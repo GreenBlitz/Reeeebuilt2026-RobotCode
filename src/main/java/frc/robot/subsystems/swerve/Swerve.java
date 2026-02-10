@@ -166,7 +166,10 @@ public class Swerve extends GBSubsystem {
 		modules.updateInputs();
 
 		currentState.log(constants.stateLogPath());
-
+		
+		Logger.recordOutput("TestTarget", kinematics.toChassisSpeeds(modules.getTargetStates()));
+		Logger.recordOutput("TestCurrent", kinematics.toChassisSpeeds(modules.getCurrentStates()));
+		
 		ChassisSpeeds allianceRelativeSpeeds = getAllianceRelativeVelocity();
 		Logger.recordOutput(constants.velocityLogPath() + "/Rotation", allianceRelativeSpeeds.omegaRadiansPerSecond);
 		Logger.recordOutput(constants.velocityLogPath() + "/X", allianceRelativeSpeeds.vxMetersPerSecond);

@@ -127,9 +127,9 @@ public class Robot {
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelight,
 				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.005),
+				new StandardDeviations2D(0.001),
 				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(-0.02)
+				new StandardDeviations2D(0.004)
 			)
 		);
 		limelight.setMT1PoseFilter(

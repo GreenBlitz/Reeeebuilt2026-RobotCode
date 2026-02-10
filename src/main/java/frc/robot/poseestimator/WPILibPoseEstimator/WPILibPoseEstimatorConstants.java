@@ -9,7 +9,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final String WPILIB_POSEESTIMATOR_LOGPATH = "WPILibPoseEstimator";
 
-	public static final StandardDeviations2D DEFAULT_ODOMETRY_STD_DEV = new StandardDeviations2D(0.03, 0.03, 0.03);
+	public static final StandardDeviations2D DEFAULT_ODOMETRY_STD_DEV = new StandardDeviations2D(0.02, 0.02, 0.02);
 
 	public static final StandardDeviations2D DEFAULT_VISION_STD_DEV = new StandardDeviations2D(0.0003, 0.0003, 0.003);
 
@@ -31,7 +31,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV = 0.0025;
 
-	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
+	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 5;
 
 	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
 
