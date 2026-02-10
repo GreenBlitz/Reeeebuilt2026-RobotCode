@@ -39,3 +39,8 @@ FourBar calibrations
 #### MotionMagic
 - [ ] Default max acceleration per meter square
 - [ ] Default max velocity per meter
+- 
+#### Digital input
+- [ ] Reset check sensor channel
+- [ ] Is reset check sensor inverted
+- [ ] Debounce time for reset check sensor

@@ -31,3 +31,8 @@ Turret Calibration
 - [ ] Amount of degrees for the look at hub not to move
 - [ ] Max position
 - [ ] Min position
+
+#### Reset Sensor
+- [ ] Check reset check sensor channel
+- [ ] Is reset check sensor inverted
+- [ ] Reset check sensor debounce time

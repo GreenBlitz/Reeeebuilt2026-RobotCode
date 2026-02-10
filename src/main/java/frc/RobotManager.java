@@ -4,6 +4,7 @@
 
 package frc;
 
+import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,6 +36,7 @@ public class RobotManager extends LoggedRobot {
 	private static double teleopStartTimeSeconds = -1;
 
 	public RobotManager() {
+		StatusLogger.disableAutoLogging();
 		if (Robot.ROBOT_TYPE.isReplay()) {
 			setUseTiming(false);
 		}
@@ -68,8 +70,7 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
-		robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
-		robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
+		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
@@ -82,8 +83,8 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(false);
-		robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(false);
+
+		robot.getSwerve().setIsRunningIndependently(false);
 	}
 
 	@Override
@@ -93,6 +94,11 @@ public class RobotManager extends LoggedRobot {
 
 	public static double getTeleopStartTimeSeconds() {
 		return teleopStartTimeSeconds;
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		robot.getSimulationManager().logPoses();
 	}
 
 	@Override

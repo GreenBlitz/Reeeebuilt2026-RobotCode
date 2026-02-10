@@ -3,8 +3,20 @@ package frc.robot.subsystems.constants.hood;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.IDs;
+import frc.robot.Robot;
+import frc.robot.RobotConstants;
+import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
+import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
+import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.TalonFXArmBuilder;
 
 public class HoodConstants {
 
@@ -33,7 +45,7 @@ public class HoodConstants {
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
 	}
 
-	public static final boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 	public static final double ARBITRARY_FEEDFORWARD = 0;
 	public static final double CURRENT_LIMIT = 40;
 	public static final double MOMENT_OF_INERTIA = 0.001;
@@ -46,6 +58,48 @@ public class HoodConstants {
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
 	public static final SysIdRoutine.Config SYSIDROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
+	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
+	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
+	public static final double RESET_HOOD_VOLTAGE = -0.7;
+
+	public static Arm createHood() {
+		ArmSimulationConstants hoodSimulationConstants = new ArmSimulationConstants(
+			MAXIMUM_POSITION,
+			MINIMUM_POSITION,
+			MINIMUM_POSITION,
+			MOMENT_OF_INERTIA,
+			HOOD_LENGTH_METERS
+		);
+		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
+			IDs.TalonFXIDs.HOOD,
+			IS_INVERTED,
+			IS_CONTINUOUS_WRAP,
+			new TalonFXFollowerConfig(),
+			SYSIDROUTINE_CONFIG,
+			FEEDBACK_CONFIGS,
+			REAL_SLOT,
+			SIMULATION_SLOT,
+			CURRENT_LIMIT,
+			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+			ARBITRARY_FEEDFORWARD,
+			FORWARD_SOFTWARE_LIMIT,
+			BACKWARD_SOFTWARE_LIMIT,
+			hoodSimulationConstants,
+			DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
+			DEFAULT_MAX_VELOCITY_PER_SECOND
+		);
+	}
+
+	public static IDigitalInput createHoodResetCheckSensor() {
+		return Robot.ROBOT_TYPE.isReal()
+			? new ChanneledDigitalInput(
+				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENSOR),
+				new Debouncer(RESET_CHECK_SENSOR_DEBOUNCE_TIME),
+				IS_RESET_CHECK_SENSOR_INVERTED
+			)
+			: new ChooserDigitalInput("hoodResetCheck");
+	}
 
 }
 

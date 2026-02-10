@@ -1,7 +1,6 @@
 package frc.robot.subsystems.flywheel;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.SmartJoystick;
 import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IRequest;
@@ -90,8 +89,6 @@ public class FlyWheel extends GBSubsystem {
 	}
 
 	public void applyCalibrationsBindings(SmartJoystick joystick) {
-		joystick.L1.onTrue(new InstantCommand(() -> getCommandBuilder().setIsSubsystemRunningIndependently(true)));
-		joystick.L3.onTrue(new InstantCommand(() -> getCommandBuilder().setIsSubsystemRunningIndependently(false)));
 		joystick.POV_LEFT.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(1)));
 		joystick.POV_UP.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(2)));
 		joystick.POV_DOWN.onTrue(getCommandBuilder().stop());
