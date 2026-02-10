@@ -82,6 +82,8 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
 		Logger.recordOutput(LOG_PATH + "/turretToleranceForScoring", turretToleranceForScoring);
+		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
+
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
@@ -119,7 +121,7 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			ShootingInterpolations.HOOD_PASSING_INTERPOLATION_MAP,
 			ShootingInterpolations.FLYWHEEL_PASSING_INTERPOLATION_MAP,
-			getOptimalPassingPosition(robotPose)
+			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose))
 		);
 	}
 
@@ -149,9 +151,14 @@ public class ShootingCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
-	public static Translation2d getOptimalPassingPosition(Pose2d robotPose) {
-		// to do
-		return new Translation2d(3, 4);
+	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
+		if (!ShootingChecks.isBehindHub(turretTranslation)) {
+			return new Translation2d(StateMachineConstants.getTargetXValueForPassing(), turretTranslation.getY());
+		}
+		if (Field.getAllianceRelative(turretTranslation).getY() > Field.WIDTH_METERS / 2) {
+			return StateMachineConstants.getDepotPresetPassingTarget();
+		}
+		return StateMachineConstants.getOutpostPresetPassingTarget();
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
