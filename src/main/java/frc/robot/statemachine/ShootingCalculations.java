@@ -80,7 +80,6 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
-		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		return new ShootingParams(
@@ -142,9 +141,17 @@ public class ShootingCalculations {
 			predictedTurretPose = getPredictedTurretPoseByFlightTime(predictedTurretPose, turretVelocities, ballFlightTime);
 			double newBallFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 				.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
-			if (Math.abs(newBallFlightTime - ballFlightTime) <= StateMachineConstants.MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS) {
+
+			Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(predictedTurretPose, new Rotation2d()));
+			Logger.recordOutput(LOG_PATH + "/estimatedBallFlightTime", newBallFlightTime);
+
+			if (
+				Math.abs(newBallFlightTime - ballFlightTime)
+					<= StateMachineConstants.MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS
+			) {
 				return predictedTurretPose;
 			}
+			ballFlightTime = newBallFlightTime;
 		}
 
 		return predictedTurretPose;
