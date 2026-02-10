@@ -98,7 +98,8 @@ public class HubUtil {
 
 	public static double timeUntilCurrentShiftEndsSeconds() {
 		if (
-			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.GAME_DURATION_SECONDS || TimeUtil.getTimeSinceTeleopInitSeconds() == -1
+			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.ACTIVE_HUB_TIME_AFTER_GAME_ENDS
+				|| TimeUtil.getTimeSinceTeleopInitSeconds() == -1
 		) {
 			return 0;
 		}
