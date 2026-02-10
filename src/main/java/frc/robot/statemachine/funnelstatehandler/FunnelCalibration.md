@@ -9,10 +9,8 @@ Funnel States Calibration
 - [ ] time for train to accelerate
 - #### shoot while intake
 - [ ] Voltage for train
-
-#### general calibration
-- [ ] put periodic in periodic
-
 #### MOVE_ROLLS_TO_SENSOR state
 -[ ] belly voltage
 -[ ] trainVelocity
+#### general calibration
+- [ ] put periodic in periodic
