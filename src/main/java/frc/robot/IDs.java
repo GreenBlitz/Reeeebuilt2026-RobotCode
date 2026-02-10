@@ -27,6 +27,8 @@ public class IDs {
 
 		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.ROBORIO);
 
+		public final static Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40, BusChain.ROBORIO);
+
 	}
 
 	public static class CANCoderIDs {
@@ -54,13 +56,20 @@ public class IDs {
 
 		public final static SparkMaxDeviceID INTAKE_ROLLERS = new SparkMaxDeviceID(6, SparkLowLevel.MotorType.kBrushless);
 
-		public final static SparkMaxDeviceID TRAIN = new SparkMaxDeviceID(25, SparkLowLevel.MotorType.kBrushless);
-
 		public final static SparkMaxDeviceID BELLY = new SparkMaxDeviceID(60, SparkLowLevel.MotorType.kBrushless);
 
 	}
 
 	public static class DigitalInputsIDs {
+
+		public final static int FOUR_BAR_RESET_SENSOR = 11;
+
+		public final static int TURRET_RESET_SENSOR = 12;
+
+		public final static int HOOD_RESET_SENSOR = 7;
+
+		public final static int TRAIN_BALL_SENSOR = 9;
+
 	}
 
 }

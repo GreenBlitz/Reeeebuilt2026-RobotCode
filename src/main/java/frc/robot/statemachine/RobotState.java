@@ -6,13 +6,14 @@ import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 public enum RobotState {
 
 	STAY_IN_PLACE,
-	DRIVE,
-	INTAKE,
-	PRE_SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
-	SHOOT(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_HUB)),
-	SHOOT_WHILE_INTAKE,
-	CALIBRATION_PRE_SHOOT,
-	CALIBRATION_SHOOT;
+	NEUTRAL,
+	PRE_SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	RESET_SUBSYSTEMS,
+	CALIBRATION_PRE_SCORE,
+	CALIBRATION_SCORE;
 
 	private final SwerveState swerveState;
 	private boolean swerveStateActive;

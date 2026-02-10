@@ -3,16 +3,14 @@ package frc.robot.subsystems.flywheel;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.GBCommandsBuilder;
 
 import java.util.function.Supplier;
 
-public class FlyWheelCommandBuilder extends GBCommandsBuilder {
+public class FlyWheelCommandBuilder {
 
 	private final FlyWheel flyWheel;
 
 	public FlyWheelCommandBuilder(FlyWheel flyWheel) {
-		super();
 		this.flyWheel = flyWheel;
 	}
 

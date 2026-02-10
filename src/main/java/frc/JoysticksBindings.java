@@ -1,17 +1,20 @@
 package frc;
 
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
+import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.calibration.camera.CameraPoseCalibration;
 
@@ -67,6 +70,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
+		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {

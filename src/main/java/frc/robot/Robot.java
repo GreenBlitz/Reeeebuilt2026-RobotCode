@@ -4,32 +4,37 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
-import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
-import frc.robot.subsystems.constants.belly.BellyConstants;
-import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
-import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.TalonFXArmBuilder;
+import frc.robot.subsystems.constants.belly.BellyConstants;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.train.TrainConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
-import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
 import frc.robot.subsystems.swerve.Swerve;
@@ -113,9 +118,10 @@ public class Robot {
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
-			swerve.getGyroAbsoluteYaw().getValue(),
-			swerve.getGyroAbsoluteYaw().getTimestamp(),
-			swerve.getIMUAcceleration()
+			swerve.getModules().getCurrentStates(),
+			swerve.getIMUOrientation(),
+			swerve.getIMUAccelerationG().toTranslation2d(),
+			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
 		this.limelight = new Limelight(
@@ -196,136 +202,6 @@ public class Robot {
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
-	}
-
-	private Pair<Roller, IDigitalInput> createIntakeRollers() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
-			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/IntakeRollers",
-			IDs.SparkMAXIDs.INTAKE_ROLLERS,
-			IntakeRollerConstants.IS_INVERTED,
-			IntakeRollerConstants.GEAR_RATIO,
-			IntakeRollerConstants.CURRENT_LIMIT,
-			IntakeRollerConstants.MOMENT_OF_INERTIA,
-			IntakeRollerConstants.DIGITAL_INPUT_NAME,
-			IntakeRollerConstants.DEBOUNCE_TIME,
-			IntakeRollerConstants.IS_FORWARD_LIMIT_SWITCH,
-			IntakeRollerConstants.IS_SENSOR_INVERTED
-		);
-	}
-
-	private VelocityPositionArm createTurret() {
-		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
-			TurretConstants.MAX_POSITION,
-			TurretConstants.MIN_POSITION,
-			TurretConstants.MIN_POSITION,
-			TurretConstants.MOMENT_OF_INERTIA,
-			TurretConstants.TURRET_RADIUS
-		);
-		return TalonFXArmBuilder.buildVelocityPositionArm(
-			TurretConstants.LOG_PATH,
-			IDs.TalonFXIDs.TURRET,
-			TurretConstants.IS_INVERTED,
-			TurretConstants.IS_CONTINUOUS_WRAP,
-			TurretConstants.TALON_FX_FOLLOWER_CONFIG,
-			TurretConstants.SYS_ID_ROUTINE_CONFIG,
-			TurretConstants.FEEDBACK_CONFIGS,
-			TurretConstants.REAL_SLOTS_CONFIG,
-			TurretConstants.SIMULATION_SLOTS_CONFIG,
-			TurretConstants.CURRENT_LIMIT,
-			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			TurretConstants.ARBITRARY_FEED_FORWARD,
-			TurretConstants.FORWARD_SOFTWARE_LIMIT,
-			TurretConstants.BACKWARDS_SOFTWARE_LIMIT,
-			turretSimulationConstants
-		);
-	}
-
-	private Arm createFourBar() {
-		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
-			FourBarConstants.MAXIMUM_POSITION,
-			FourBarConstants.MINIMUM_POSITION,
-			FourBarConstants.MAXIMUM_POSITION,
-			FourBarConstants.MOMENT_OF_INERTIA,
-			FourBarConstants.FOUR_BAR_LENGTH
-		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
-			FourBarConstants.LOG_PATH,
-			IDs.TalonFXIDs.FOUR_BAR,
-			FourBarConstants.IS_INVERTED,
-			FourBarConstants.IS_CONTINUOUS_WRAP,
-			FourBarConstants.TALON_FX_FOLLOWER_CONFIG,
-			FourBarConstants.SYS_ID_ROUTINE,
-			FourBarConstants.FEEDBACK_CONFIGS,
-			FourBarConstants.REAL_SLOT,
-			FourBarConstants.SIMULATION_SLOT,
-			FourBarConstants.CURRENT_LIMIT,
-			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			FourBarConstants.ARBITRARY_FEED_FORWARD,
-			FourBarConstants.FORWARD_SOFTWARE_LIMITS,
-			FourBarConstants.BACKWARD_SOFTWARE_LIMITS,
-			fourBarSimConstant,
-			FourBarConstants.MAX_ACCELERATION_RPS_SQUARE,
-			FourBarConstants.MAX_VELOCITY_RPS
-		);
-	}
-
-	private Arm createHood() {
-		ArmSimulationConstants hoodSimulationConstants = new ArmSimulationConstants(
-			HoodConstants.MAXIMUM_POSITION,
-			HoodConstants.MINIMUM_POSITION,
-			HoodConstants.MINIMUM_POSITION,
-			HoodConstants.MOMENT_OF_INERTIA,
-			HoodConstants.HOOD_LENGTH_METERS
-		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
-			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
-			IDs.TalonFXIDs.HOOD,
-			HoodConstants.IS_INVERTED,
-			HoodConstants.IS_CONTINUOUS_WRAP,
-			new TalonFXFollowerConfig(),
-			HoodConstants.SYSIDROUTINE_CONFIG,
-			HoodConstants.FEEDBACK_CONFIGS,
-			HoodConstants.REAL_SLOT,
-			HoodConstants.SIMULATION_SLOT,
-			HoodConstants.CURRENT_LIMIT,
-			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			HoodConstants.ARBITRARY_FEEDFORWARD,
-			HoodConstants.FORWARD_SOFTWARE_LIMIT,
-			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
-			hoodSimulationConstants,
-			HoodConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
-			HoodConstants.DEFAULT_MAX_VELOCITY_PER_SECOND
-		);
-	}
-
-	private Pair<Roller, IDigitalInput> createTrainAndSignal() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
-			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
-			TrainConstant.IS_INVERTED,
-			TrainConstant.GEAR_RATIO,
-			TrainConstant.CURRENT_LIMIT,
-			TrainConstant.MOMENT_OF_INERTIA,
-			TrainConstant.FUNNEL_INPUT_NAME,
-			TrainConstant.DEBOUNCE_TIME,
-			TrainConstant.IS_FORWARD_LIMIT_SWITCH,
-			TrainConstant.IS_FORWARD_LIMIT_SWITCH_INVERTED
-		);
-	}
-
-	private Roller createBelly() {
-		return SparkMaxRollerBuilder.build(
-			BellyConstants.LOG_PATH,
-			IDs.SparkMAXIDs.BELLY,
-			BellyConstants.IS_INVERTED,
-			BellyConstants.GEAR_RATIO,
-			BellyConstants.CURRENT_LIMIT,
-			BellyConstants.MOMENT_OF_INERTIA
-		);
-	}
-
-	public IDigitalInput getIntakeRollerSensor() {
-		return intakeRollerSensor;
 	}
 
 	public Roller getIntakeRoller() {
