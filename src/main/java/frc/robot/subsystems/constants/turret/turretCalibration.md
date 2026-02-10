@@ -25,8 +25,8 @@ Turret Calibration
 - [ ] kD
 
 #### MotionMagic
-- [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter
+- [ ] Default max acceleration per second square
+- [ ] Default max velocity per second
 
 #### General
 - [ ] Amount of degrees for the look at hub not to move

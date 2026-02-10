@@ -39,8 +39,8 @@ Hood calibrations
 - [ ] kD
 
 #### MotionMagic
-- [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter
+- [ ] Default max acceleration per second square
+- [ ] Default max velocity per second
 
 #### Simulation Constants
 - [ ] Moment of inertia
