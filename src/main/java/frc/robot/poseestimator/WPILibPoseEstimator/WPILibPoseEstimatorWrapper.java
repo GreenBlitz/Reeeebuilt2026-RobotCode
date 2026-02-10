@@ -259,6 +259,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			visionStdDevs.angleStandardDeviations()
 		);
 		updateOdometryAccuracy(compensatedStdDevs);
+		Logger.recordOutput(logPath + "compensatedStdDevs", compensatedStdDevs);
 		return compensatedStdDevs;
 	}
 

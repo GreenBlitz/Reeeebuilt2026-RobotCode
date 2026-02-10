@@ -9,7 +9,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final String WPILIB_POSEESTIMATOR_LOGPATH = "WPILibPoseEstimator";
 
-	public static final StandardDeviations2D DEFAULT_ODOMETRY_STD_DEV = new StandardDeviations2D(0.003, 0.003, 0.003);
+	public static final StandardDeviations2D DEFAULT_ODOMETRY_STD_DEV = new StandardDeviations2D(0.03, 0.03, 0.03);
 
 	public static final StandardDeviations2D DEFAULT_VISION_STD_DEV = new StandardDeviations2D(0.0003, 0.0003, 0.003);
 
@@ -23,16 +23,16 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND = 0.5;
 
-	public static final double COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
+	public static final double COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0.07;
 
-	public static final double TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
+	public static final double TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0.05;
 
-	public static final double SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
+	public static final double SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0.02;
 
 	/**
 	 * constant represents the addition to odometryAccuracy when the compensated vision X and Y StdDevs average is equal to one
 	 */
-	public static double ODOMETRY_ACCURACY_ADDITION_POWER_BASE = 0;
+	public static double ODOMETRY_ACCURACY_ADDITION_POWER_BASE = 0.001;
 
 	public static final Rotation2d INITIAL_IMU_YAW = new Rotation2d();
 

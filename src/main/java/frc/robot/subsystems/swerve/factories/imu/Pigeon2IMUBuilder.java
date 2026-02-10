@@ -23,9 +23,9 @@ public class Pigeon2IMUBuilder {
 
 	private static Pigeon2Configuration buildIMUConfig() {
 		Pigeon2Configuration imuConfig = new Pigeon2Configuration();
-		imuConfig.MountPose.MountPoseYaw = -91.21009826660156;
-		imuConfig.MountPose.MountPosePitch = 0.07380151748657227;
-		imuConfig.MountPose.MountPoseRoll = -1.997267484664917;
+		imuConfig.MountPose.MountPoseYaw = -90.62126922607422;
+		imuConfig.MountPose.MountPosePitch = 0.6566115617752075;
+		imuConfig.MountPose.MountPoseRoll = -2.043001651763916;
 		return imuConfig;
 	}
 
