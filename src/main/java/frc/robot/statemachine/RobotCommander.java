@@ -4,20 +4,17 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
-import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.Set;
 
 public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;
 	private final Swerve swerve;
-	private final IntakeStateHandler intakeStateHandler;
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
@@ -31,12 +28,6 @@ public class RobotCommander extends GBSubsystem {
 
 		this.logPath = logPath;
 
-		this.intakeStateHandler = new IntakeStateHandler(
-			robot.getFourBar(),
-			robot.getIntakeRoller(),
-			robot.getFourBarResetCheckSensor(),
-			logPath
-		);
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getTrainBallSensor());
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
@@ -51,21 +42,21 @@ public class RobotCommander extends GBSubsystem {
 		this.currentState = RobotState.STAY_IN_PLACE;
 		Logger.recordOutput(logPath + "/CurrentState", RobotState.STAY_IN_PLACE);
 
-		setDefaultCommand(
-			new ConditionalCommand(
-				asSubsystemCommand(Commands.none(), "Disabled"),
-				new InstantCommand(
-					() -> CommandScheduler.getInstance()
-						.schedule(
-							new DeferredCommand(
-								() -> endState(currentState),
-								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
-							)
-						)
-				),
-				this::isRunningIndependently
-			)
-		);
+//		setDefaultCommand(
+//			new ConditionalCommand(
+//				asSubsystemCommand(Commands.none(), "Disabled"),
+//				new InstantCommand(
+//					() -> CommandScheduler.getInstance()
+//						.schedule(
+//							new DeferredCommand(
+//								() -> endState(currentState),
+//								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
+//							)
+//						)
+//				),
+//				this::isRunningIndependently
+//			)
+//		);
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {
@@ -90,7 +81,6 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public void update() {
-		intakeStateHandler.periodic();
 		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
@@ -217,7 +207,6 @@ public class RobotCommander extends GBSubsystem {
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING
-
 		);
 	}
 
@@ -230,7 +219,7 @@ public class RobotCommander extends GBSubsystem {
 						asSubsystemCommand(funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToScore), RobotState.PRE_SCORE)
 					),
 					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !isReadyToScore()), RobotState.SCORE)
 					)
 				)
 			)
@@ -290,10 +279,6 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};
-	}
-
-	public IntakeStateHandler getIntakeStateHandler() {
-		return intakeStateHandler;
 	}
 
 }

@@ -52,10 +52,6 @@ public class FunnelStateHandler {
 		);
 	}
 
-	public boolean isBallAtSensor() {
-		return sensorInputsAutoLogged.debouncedValue;
-	}
-
 	private Command neutral() {
 		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
 	}

@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -89,7 +90,7 @@ public class ShootingChecks {
 		String logPath
 	) {
 		boolean isAtHeading = MathUtil.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), tolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isAtHeading", isAtHeading);
+		Logger.recordOutput(logPath + "/isTurretAtTargetPosition", isAtHeading);
 		return isAtHeading;
 	}
 
@@ -219,7 +220,7 @@ public class ShootingChecks {
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShooterConstants.flywheelCalibrationRotations.get(),
+			ShootingCalculations.FLYWHEEL_SCORING_INTERPOLATION_MAP.get(ShooterStateHandler.flywelelDistace.get()),
 			flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath
@@ -242,7 +243,7 @@ public class ShootingChecks {
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShooterConstants.flywheelCalibrationRotations.get(),
+			ShootingCalculations.FLYWHEEL_SCORING_INTERPOLATION_MAP.get(ShooterStateHandler.flywelelDistace.get()),
 			flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath

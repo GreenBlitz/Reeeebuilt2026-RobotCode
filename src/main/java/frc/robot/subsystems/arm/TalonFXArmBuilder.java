@@ -200,6 +200,7 @@ public class TalonFXArmBuilder {
 			currentLimit
 		);
 		motor.applyConfiguration(configuration);
+
 		return new VelocityPositionArm(logPath, motor, signals, voltageRequest, velocityPositionRequest, configuration.Slot0.kG);
 	}
 

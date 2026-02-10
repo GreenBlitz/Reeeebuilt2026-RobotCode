@@ -39,6 +39,15 @@ public class ShootingCalculations {
 		InterpolationMap<Double, Rotation2d> flywheelInterpolation,
 		Translation2d targetTranslation
 	) {
+		Logger.recordOutput("SymmetryTest/robotPose", robotPose); // good
+		Logger.recordOutput("SymmetryTest/fieldRelativeSpeeds", fieldRelativeSpeeds); // good
+		Logger.recordOutput("SymmetryTest/gyroYawAngularVelocity", gyroYawAngularVelocity); // small but not good
+		Logger.recordOutput("SymmetryTest/targetTranslation", targetTranslation); // good
+
+		gyroYawAngularVelocity = new Rotation2d();
+		fieldRelativeSpeeds.vxMetersPerSecond = 0;
+
+
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);
@@ -62,15 +71,15 @@ public class ShootingCalculations {
 		);
 
 		Rotation2d predictedAngleToTarget = targetTranslation.minus(turretPredictedPose).getAngle();
+		double distanceFromTurretPredictedPoseToHub = getDistanceFromHub(turretPredictedPose);
 
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(predictedAngleToTarget.unaryMinus());
 		Rotation2d targetTurretVelocityCausedByTranslation = Rotation2d
-			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretToTargetMeters);
+			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretPredictedPoseToHub);
 		Rotation2d turretTargetVelocityRPS = Rotation2d
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
-		double distanceFromTurretPredictedPoseToHub = getDistanceFromHub(turretPredictedPose);
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
@@ -82,6 +91,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
+		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToHub);
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		return new ShootingParams(
 			flywheelTargetRPS,
@@ -159,54 +169,32 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			1.5,
-			Rotation2d.fromDegrees(30),
-			2.0,
-			Rotation2d.fromDegrees(30),
-			2.5,
-			Rotation2d.fromDegrees(30),
-			3.0,
-			Rotation2d.fromDegrees(35),
-			3.6,
-			Rotation2d.fromDegrees(37),
-			4.0,
-			Rotation2d.fromDegrees(38),
-			4.5,
-			Rotation2d.fromDegrees(43),
-			5.0,
-			Rotation2d.fromDegrees(40),
-			5.5,
-			Rotation2d.fromDegrees(45),
-			6.0,
-			Rotation2d.fromDegrees(44)
+			// 1.5,
+//			Rotation2d.fromDegrees(30),
+//			2.0,
+//			Rotation2d.fromDegrees(30),
+//			2.55,
+//			Rotation2d.fromDegrees(32),
+//			3.0,
+//			Rotation2d.fromDegrees(32),
+//			3.45,
+//			Rotation2d.fromDegrees(35),
+//			4.04,
+//			Rotation2d.fromDegrees(38),
+//			4.48,
+//			Rotation2d.fromDegrees(38),
+//			5.0,
+//			Rotation2d.fromDegrees(42),
+//			5.5,
+//			Rotation2d.fromDegrees(42),
+//			6.0,
+//			Rotation2d.fromDegrees(42)
 		)
 	);
 
-	private static final InterpolationMap<Double, Rotation2d> FLYWHEEL_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
+	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
-		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(
-			1.5,
-			Rotation2d.fromDegrees(16400),
-			2.0,
-			Rotation2d.fromDegrees(17200),
-			2.55,
-			Rotation2d.fromDegrees(19300),
-			3.0,
-			Rotation2d.fromDegrees(20400),
-			3.45,
-			Rotation2d.fromDegrees(20800),
-			4.04,
-			Rotation2d.fromDegrees(21800),
-			4.48,
-			Rotation2d.fromDegrees(23000),
-			5.0,
-			Rotation2d.fromDegrees(23350),
-			5.5,
-			Rotation2d.fromDegrees(24350),
-			6.0,
-			Rotation2d.fromDegrees(25350)
-		)
+		InterpolationMap.interpolatorForRotation2d()
 	);
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_PASSING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
@@ -243,30 +231,40 @@ public class ShootingCalculations {
 			1.5,
 			Rotation2d.fromDegrees(16400),
 			2.0,
-			Rotation2d.fromDegrees(16500),
-			2.5,
-			Rotation2d.fromDegrees(18000),
+			Rotation2d.fromDegrees(17200),
+			2.55,
+			Rotation2d.fromDegrees(19300),
 			3.0,
-			Rotation2d.fromDegrees(18500),
-			3.6,
-			Rotation2d.fromDegrees(19700),
-			4.0,
+			Rotation2d.fromDegrees(20400),
+			3.45,
 			Rotation2d.fromDegrees(20800),
-			4.5,
-			Rotation2d.fromDegrees(21500),
-			5.0,
+			4.04,
+			Rotation2d.fromDegrees(21800),
+			4.48,
 			Rotation2d.fromDegrees(23000),
+			5.0,
+			Rotation2d.fromDegrees(23350),
 			5.5,
-			Rotation2d.fromDegrees(23700),
+			Rotation2d.fromDegrees(24350),
 			6.0,
-			Rotation2d.fromDegrees(24800)
+			Rotation2d.fromDegrees(25350)
 		)
 	);
+
+	static {
+		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
+		HOOD_SCORING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(45));
+		HOOD_SCORING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(45));
+		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(47));
+
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(16700));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26300));
+	}
 
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
+		Map.of(2.0, 1.11 - 0.25, 4.0, 1.0, 5.85, 1.1)
 	);
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {

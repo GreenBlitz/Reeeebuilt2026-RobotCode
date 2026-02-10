@@ -6,7 +6,7 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 
 public class SimulationSwerveConstants {
 
-	public static final double VELOCITY_AT_12_VOLTS_METERS_PER_SECOND = 4.133;
+	public static final double VELOCITY_AT_12_VOLTS_METERS_PER_SECOND = 5.054;
 	public static final Rotation2d MAX_ROTATIONAL_VELOCITY_PER_SECOND = Rotation2d.fromRadians(8.742);
 
 	private static final PIDConstants TRANSLATION_METERS_PID_CONSTANTS = new PIDConstants(5.5, 0, 0);

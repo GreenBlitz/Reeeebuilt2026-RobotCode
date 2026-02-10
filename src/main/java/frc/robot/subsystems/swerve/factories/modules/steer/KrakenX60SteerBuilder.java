@@ -30,7 +30,7 @@ import frc.utils.AngleUnit;
 
 class KrakenX60SteerBuilder {
 
-	private static final double GEAR_RATIO = 12.8;
+	private static final double GEAR_RATIO = 150.0 / 7.0;
 	private static final double MOMENT_OF_INERTIA_METERS_SQUARED = 0.00001;
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
@@ -64,10 +64,10 @@ class KrakenX60SteerBuilder {
 		steerConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
 		if (Robot.ROBOT_TYPE.isReal()) {
-			steerConfig.Slot0.kS = 0.295;
+			steerConfig.Slot0.kS = 0.24;
 			steerConfig.Slot0.kV = 0;
 			steerConfig.Slot0.kA = 0;
-			steerConfig.Slot0.kP = 70;
+			steerConfig.Slot0.kP = 50;
 			steerConfig.Slot0.kI = 0;
 			steerConfig.Slot0.kD = 0;
 		} else {

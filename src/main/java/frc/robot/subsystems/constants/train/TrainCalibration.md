@@ -2,7 +2,7 @@ Train calibrations
 ---------------------
 
 #### IDs
-- [ ] Motor id
+- [x] Motor id
 
 #### Digital input
 - [ ] Digital input name
@@ -12,6 +12,6 @@ Train calibrations
 - [ ] Check sensor ID
 
 #### Config
-- [ ] Gear ratio
-- [ ] Current limit
-- [ ] Is inverted
+- [x] Gear ratio
+- [x] Current limit
+- [x] Is inverted

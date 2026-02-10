@@ -13,8 +13,8 @@ SwerveConstants:
 
 Gyro:
 -----------------------
-- [ ] ID
-- [ ] Mount pose
+- [x] ID
+- [x] Mount pose
 
 Modules:
 -----------------------

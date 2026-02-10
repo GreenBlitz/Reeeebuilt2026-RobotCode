@@ -3,6 +3,7 @@ package frc.robot.subsystems.constants.hood;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,24 +26,25 @@ public class HoodConstants {
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
 
 	static {
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 280;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
-		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		REAL_SLOT.kS = 0.5;
+		REAL_SLOT.kG = 0.08;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
+		REAL_SLOT.GravityType = GravityTypeValue.Elevator_Static;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;
 		SIMULATION_SLOT.kD = 0;
 		SIMULATION_SLOT.kG = 0;
 		SIMULATION_SLOT.kS = 0;
-		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		SIMULATION_SLOT.GravityType = GravityTypeValue.Elevator_Static;
 
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 40.05;
 	}
 
 	public static final boolean IS_INVERTED = true;
@@ -50,12 +52,12 @@ public class HoodConstants {
 	public static final double CURRENT_LIMIT = 40;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double HOOD_LENGTH_METERS = 0.3;
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(80);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(0);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(BACKWARD_SOFTWARE_LIMIT.getDegrees() - 3);
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(FORWARD_SOFTWARE_LIMIT.getDegrees() + 3);
-	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3);
-	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
+
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(59.9);
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(30.1);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(30);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(60);
+
 	public static final SysIdRoutine.Config SYSIDROUTINE_CONFIG = new SysIdRoutine.Config();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
@@ -64,30 +66,28 @@ public class HoodConstants {
 
 	public static Arm createHood() {
 		ArmSimulationConstants hoodSimulationConstants = new ArmSimulationConstants(
-			MAXIMUM_POSITION,
-			MINIMUM_POSITION,
-			MINIMUM_POSITION,
-			MOMENT_OF_INERTIA,
-			HOOD_LENGTH_METERS
+			HoodConstants.MAXIMUM_POSITION,
+			HoodConstants.MINIMUM_POSITION,
+			HoodConstants.MINIMUM_POSITION,
+			HoodConstants.MOMENT_OF_INERTIA,
+			HoodConstants.HOOD_LENGTH_METERS
 		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
 			IDs.TalonFXIDs.HOOD,
-			IS_INVERTED,
-			IS_CONTINUOUS_WRAP,
+			HoodConstants.IS_INVERTED,
+			HoodConstants.IS_CONTINUOUS_WRAP,
 			new TalonFXFollowerConfig(),
-			SYSIDROUTINE_CONFIG,
-			FEEDBACK_CONFIGS,
-			REAL_SLOT,
-			SIMULATION_SLOT,
-			CURRENT_LIMIT,
+			HoodConstants.SYSIDROUTINE_CONFIG,
+			HoodConstants.FEEDBACK_CONFIGS,
+			HoodConstants.REAL_SLOT,
+			HoodConstants.SIMULATION_SLOT,
+			HoodConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			ARBITRARY_FEEDFORWARD,
-			FORWARD_SOFTWARE_LIMIT,
-			BACKWARD_SOFTWARE_LIMIT,
-			hoodSimulationConstants,
-			DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
-			DEFAULT_MAX_VELOCITY_PER_SECOND
+			HoodConstants.ARBITRARY_FEEDFORWARD,
+			HoodConstants.FORWARD_SOFTWARE_LIMIT,
+			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
+			hoodSimulationConstants
 		);
 	}
 
