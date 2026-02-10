@@ -13,5 +13,5 @@ Funnel States Calibration
 #### general calibration
 - [ ] put periodic in periodic
 
-#### belly
+#### MOVE_ROLLS_TO_SENSOR
 -[ ] bellys voltage in the state MOVE_ROLLS_TO_SENSOR
