@@ -36,7 +36,7 @@ public class ShootingChecks {
 				> FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
 		}
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
-		Logger.recordOutput(logPath + "/IsFarEnoughFromHub", isFarEnoughBehindHub);
+		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
 		return !isBehindHub || isFarEnoughBehindHub;
 	}
 
