@@ -2,8 +2,9 @@ Shooter Calibrations
 -----------------------------
 
 #### Constants
-- [ ] Check default rotations per second for flywheel
+- [ ] Default rotations per second for flywheel
 
-#### State Handler
-- [ ] Check hood interpolation
-- [ ] Check fly wheel interpolation
+#### Interpolations
+- [ ] Hood interpolation
+- [ ] Flywheel interpolation
+- [ ] Ball flight time interpolation
