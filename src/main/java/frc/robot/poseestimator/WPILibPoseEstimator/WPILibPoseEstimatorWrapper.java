@@ -1,23 +1,21 @@
 package frc.robot.poseestimator.WPILibPoseEstimator;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
 import frc.utils.buffers.RingBuffer.RingBuffer;
+import frc.utils.math.StandardDeviations2D;
 import frc.utils.math.StatisticsMath;
 import frc.utils.pose.PoseUtil;
 import org.littletonrobotics.junction.Logger;
@@ -32,10 +30,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final PoseEstimator<SwerveModulePosition[]> poseEstimator;
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
-	private final TimeInterpolatableBuffer<Translation2d> imuXYAccelerationGBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
+
+	private boolean isColliding;
+	private boolean isTilted;
+	private boolean isSkidding;
+	private double odometryAccuracy;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -70,10 +72,12 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.isIMUOffsetCalibrated = false;
 		this.poseToIMUYawDifferenceBuffer = new RingBuffer<>(WPILibPoseEstimatorConstants.POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE);
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
-		this.imuXYAccelerationGBuffer = TimeInterpolatableBuffer
-			.createBuffer(WPILibPoseEstimatorConstants.IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS);
-	}
 
+		this.isColliding = false;
+		this.isTilted = false;
+		this.isSkidding = false;
+		this.odometryAccuracy = 1;
+	}
 
 	@Override
 	public Pose2d getEstimatedPose() {
@@ -112,11 +116,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			);
 		}
 
+		updateOdometryProblemsStatus(data);
+		updateOdometryAccuracy(data);
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
-		data.getIMUXYAccelerationG().ifPresent((acceleration) -> imuXYAccelerationGBuffer.addSample(data.getTimestampSeconds(), acceleration));
-
 		lastOdometryData.setWheelPositions(data.getWheelPositions());
 		lastOdometryData.setWheelStates(data.getWheelStates());
 		lastOdometryData.setIMUOrientation(data.getIMUOrientation());
@@ -146,7 +150,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			odometryData.getTimestampSeconds(),
 			Rotation2d.fromRadians(odometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ())
 		);
-		imuXYAccelerationGBuffer.addSample(odometryData.getTimestampSeconds(), odometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero));
 	}
 
 	@Override
@@ -175,40 +178,54 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		}
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
 
-		lastOdometryData.getIMUXYAccelerationG()
-			.ifPresent(
-				(imuXYAcceleration) -> Logger.recordOutput(
-					logPath + "/isColliding",
-					PoseUtil.getIsColliding(imuXYAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
-				)
-			);
-
-		lastOdometryData.getIMUOrientation()
-			.ifPresent(
-				(imuOrientation) -> Logger.recordOutput(
-					logPath + "/isTilted",
-					PoseUtil.getIsTilted(
-						Rotation2d.fromRadians(imuOrientation.getX()),
-						Rotation2d.fromRadians(imuOrientation.getY()),
-						WPILibPoseEstimatorConstants.MINIMUM_TILT_IMU_ROLL,
-						WPILibPoseEstimatorConstants.MINIMUM_TILT_IMU_PITCH
-					)
-				)
-			);
-
-		Logger.recordOutput(
-			logPath + "/isSkidding",
-			PoseUtil.getIsSkidding(
-				kinematics,
-				lastOdometryData.getWheelStates(),
-				WPILibPoseEstimatorConstants.MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND
-			)
-		);
+		Logger.recordOutput("/isColliding", isColliding);
+		Logger.recordOutput("/isTilted", isTilted);
+		Logger.recordOutput("/isSkidding", isSkidding);
+		Logger.recordOutput("/odometryAccuracy", odometryAccuracy);
 	}
 
 	public void resetIsIMUOffsetCalibrated() {
 		poseToIMUYawDifferenceBuffer.clear();
 		isIMUOffsetCalibrated = false;
+	}
+
+	private void updateOdometryProblemsStatus(OdometryData data) {
+		isColliding = data.getIMUXYAccelerationG()
+			.map(
+				imuXYAcceleration -> PoseUtil
+					.getIsColliding(imuXYAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
+			)
+			.orElse(false);
+
+		isTilted = data.getIMUOrientation()
+			.map(
+				imuOrientation -> PoseUtil.getIsTilted(
+					Rotation2d.fromRadians(imuOrientation.getX()),
+					Rotation2d.fromRadians(imuOrientation.getY()),
+					WPILibPoseEstimatorConstants.MINIMUM_TILT_IMU_ROLL,
+					WPILibPoseEstimatorConstants.MINIMUM_TILT_IMU_PITCH
+				)
+			)
+			.orElse(false);
+
+		isSkidding = PoseUtil.getIsSkidding(
+			kinematics,
+			data.getWheelStates(),
+			WPILibPoseEstimatorConstants.MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND
+		);
+	}
+
+	private void updateOdometryAccuracy(OdometryData data) {
+		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
+		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
+
+		odometryAccuracy -= isColliding ? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
+
+		odometryAccuracy -= isTilted ? WPILibPoseEstimatorConstants.TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
+
+		odometryAccuracy -= isSkidding ? WPILibPoseEstimatorConstants.SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
+
+		odometryAccuracy = Math.max(odometryAccuracy, 0);
 	}
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
@@ -230,24 +247,26 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getCollisionCompensatedVisionStdDevs(visionObservation)
+			compensateByOdometryAccuracy(visionObservation.stdDevs()).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private Matrix<N3, N1> getCollisionCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
-		boolean isColliding = imuXYAccelerationGBuffer.getSample(visionObservation.timestampSeconds())
-			.map(
-				(imuAccelerationG) -> PoseUtil
-					.getIsColliding(imuAccelerationG, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
-			)
-			.orElse(false);
+	private StandardDeviations2D compensateByOdometryAccuracy(StandardDeviations2D visionStdDevs) {
+		StandardDeviations2D compensatedStdDevs = new StandardDeviations2D(
+			visionStdDevs.xStandardDeviations() * odometryAccuracy,
+			visionStdDevs.yStandardDeviations() * odometryAccuracy,
+			visionStdDevs.angleStandardDeviations()
+		);
+		updateOdometryAccuracy(compensatedStdDevs);
+		return compensatedStdDevs;
+	}
 
-		return isColliding
-			? visionObservation.stdDevs()
-				.asColumnVector()
-				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
-			: visionObservation.stdDevs().asColumnVector();
+	private void updateOdometryAccuracy(StandardDeviations2D compensatedVisionStdDevs) {
+		double averageCompensatedTranslationalStdDevs = (compensatedVisionStdDevs.xStandardDeviations()
+			+ compensatedVisionStdDevs.yStandardDeviations()) / 2.0;
+		odometryAccuracy += Math.pow(WPILibPoseEstimatorConstants.ODOMETRY_ACCURACY_ADDITION_POWER_BASE, averageCompensatedTranslationalStdDevs);
+		odometryAccuracy = Math.min(odometryAccuracy, 1);
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
