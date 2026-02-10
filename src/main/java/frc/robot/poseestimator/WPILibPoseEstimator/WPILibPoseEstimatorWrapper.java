@@ -213,7 +213,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void resetOdometry(Pose2d pose) {
-		odometryEstimator.resetPose(pose);
+		poseEstimator.resetPose(poseEstimator.getEstimatedPosition());
 	}
 
 	public void resetIsIMUOffsetCalibrated() {

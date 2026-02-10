@@ -79,11 +79,8 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
 		applyShootOnMoveBinds(usedJoystick, robot);
-		usedJoystick.POV_DOWN.whileTrue(robot.getSwerve().getCommandsBuilder().wheelRadiusCalibration());
 		usedJoystick.POV_UP
 			.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetOdometry(robot.getPoseEstimator().getEstimatedPose())));
-		usedJoystick.POV_RIGHT.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("forward")));
-		usedJoystick.POV_LEFT.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("backward")));
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
@@ -120,8 +117,6 @@ public class JoysticksBindings {
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-
-		Logger.recordOutput("MagicGreenSquare", new Pose2d(15.005, 7.281, new Rotation2d()));
 
 		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
 		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
