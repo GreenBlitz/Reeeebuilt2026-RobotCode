@@ -131,7 +131,6 @@ public class Robot {
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
@@ -258,6 +257,8 @@ public class Robot {
 		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
 
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
+
+		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.autonomousChooser = new AutonomousChooser(
 			"Autonomous Chooser",
