@@ -20,7 +20,6 @@ public class GamePeriodUtils {
 		return TimeUtil.getTimeSinceTeleopInitSeconds() <= TRANSITION_SHIFT_DURATION_SECONDS;
 	}
 
-
 	public static boolean hasGameEnded() {
 		return TimeUtil.getTimeSinceTeleopInitSeconds() >= GAME_DURATION_SECONDS;
 	}
