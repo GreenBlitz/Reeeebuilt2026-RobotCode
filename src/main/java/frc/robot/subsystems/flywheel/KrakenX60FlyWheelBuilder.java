@@ -61,7 +61,7 @@ public class KrakenX60FlyWheelBuilder {
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
 			.build(motor.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
 
-		Phoenix6Request<Rotation2d> velocityRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
+		Phoenix6Request<Rotation2d> velocityRequest = Phoenix6RequestBuilder.build(new MotionMagicVelocityVoltage(0), 0, true);
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
 		motor.applyConfiguration(buildConfig());

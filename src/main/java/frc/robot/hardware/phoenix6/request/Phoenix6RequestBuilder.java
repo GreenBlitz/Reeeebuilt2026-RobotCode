@@ -23,6 +23,8 @@ public class Phoenix6RequestBuilder {
 		);
 	}
 
+	public static Phoenix6VelocityVoltageRequest
+
 	public static Phoenix6FeedForwardRequest build(VelocityVoltage velocityVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
 		return new Phoenix6FeedForwardRequest(
 			Rotation2d.fromRotations(velocityVoltage.Velocity),
