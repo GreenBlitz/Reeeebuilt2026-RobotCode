@@ -142,13 +142,6 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command resetSubsystems() {
-		return new ParallelDeadlineGroup(
-			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
-			intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
-		);
-	}
-
 	private Command calibrationPreShoot() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
