@@ -17,6 +17,7 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
@@ -71,7 +72,7 @@ public class Robot {
 
 	private final RobotCommander robotCommander;
 
-	private final AutonomousChooser autonomousChooser;
+	private AutonomousChooser autonomousChooser;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
@@ -132,21 +133,12 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				this,
-				autonomousIntakeCommand(),
-				autonomousResetSubsystemsCommand(),
-				autonomousScoringSequenceCommand(),
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
-			)
-		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
 		new Trigger(() -> DriverStation.isTeleopEnabled())
-			.onTrue((robotCommander.resetSubsystems()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+
+		configureAuto();
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -256,20 +248,28 @@ public class Robot {
 		return simulationManager;
 	}
 
-	public Supplier<Command> autonomousIntakeCommand() {
-		return () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
-	}
-
-	public Supplier<Command> autonomousScoringSequenceCommand() {
-		return () -> robotCommander.scoreSequence();
-	}
-
-	public Supplier<Command> autonomousResetSubsystemsCommand() {
-		return () -> robotCommander.resetSubsystems();
-	}
-
 	public PathPlannerAutoWrapper getAutonomousCommand() {
 		return autonomousChooser.getChosenValue();
+	}
+
+	private void configureAuto() {
+		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
+
+		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
+
+		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
+
+		this.autonomousChooser = new AutonomousChooser(
+			"Autonomous Chooser",
+			AutosBuilder.getAutoList(
+				this,
+				autonomousIntakeCommand,
+				autonomousResetSubsystemsCommand,
+				autonomousScoringSequenceCommand,
+				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+			)
+		);
 	}
 
 }
