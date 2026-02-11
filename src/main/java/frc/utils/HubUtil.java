@@ -5,6 +5,7 @@ import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
+
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class HubUtil {
 		if (!DriverStationUtil.isTeleop()) {
 			return Optional.empty();
 		}
-		String gameData = /* DriverStation.getGameSpecificMessage() */ "Blue";
+		String gameData = DriverStation.getGameSpecificMessage();
 
 		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();

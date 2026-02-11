@@ -1,6 +1,7 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
@@ -18,12 +19,14 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position, String logPath) {
+		boolean isPositionInAllianceZone = position.getX() < Field.getHubMiddle().getX();
+		boolean isPositionNotInAllianceZone = position.getX() > Field.getHubMiddle().getX();
 		if (Field.isFieldConventionAlliance()) {
-			Logger.recordOutput(logPath, position.getX() < Field.getHubMiddle().getX());
-			return position.getX() < Field.getHubMiddle().getX();
+			Logger.recordOutput(logPath + "/isInAllianceZone", isPositionInAllianceZone);
+			return isPositionInAllianceZone;
 		}
-		Logger.recordOutput(logPath + "/isInAllianceZone", position.getX() > Field.getHubMiddle().getX());
-		return position.getX() > Field.getHubMiddle().getX();
+		Logger.recordOutput(logPath + "/isInAllianceZone", isPositionNotInAllianceZone);
+		return isPositionNotInAllianceZone;
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
@@ -162,10 +165,10 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			logPath
 		);
-		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), logPath);
+		boolean isInAllianceZone = isInAllianceZone(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), logPath);
 
 		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(
-			ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()),
+			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
 			logPath
 		);
 
@@ -189,15 +192,15 @@ public class ShootingChecks {
 		String actionLogPath,
 		boolean isPass
 	) {
-		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
+		Translation2d predictedTurretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
 
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(turretPosition, maxShootingDistanceFromTargetMeters, logPath, target);
+		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, logPath, target);
 
-		boolean isInRange = isInAngleRange(turretPosition, maxAngleFromTargetCenter, logPath, target, isPass);
+		boolean isInRange = isInAngleRange(predictedTurretPosition, maxAngleFromTargetCenter, logPath, target, isPass);
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
@@ -220,10 +223,10 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), logPath);
+		boolean isInAllianceZone = isInAllianceZone(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), logPath);
 
 		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(
-			ShootingCalculations.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation()),
+			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
 			logPath
 		);
 
@@ -323,7 +326,9 @@ public class ShootingChecks {
 			true
 		)
 			&& isInPositionForPassing(
-				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+				ShootingCalculations.getFieldRelativeTurretPosition(
+					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
+				),
 				shootingChecksLogPath + "/IsReadyToPass"
 			);
 	}
@@ -346,7 +351,11 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Shooting",
 			false
-		) && isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), shootingChecksLogPath + "/isInAllianceZone");
+		)
+			&& isInAllianceZone(
+				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
+				shootingChecksLogPath + "/isInAllianceZone"
+			);
 	}
 
 	public static boolean canContinuePassing(
@@ -368,9 +377,14 @@ public class ShootingChecks {
 			"Passing",
 			true
 		)
-			&& !isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), shootingChecksLogPath + "/isInAllianceZone")
+			&& !isInAllianceZone(
+				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
+				shootingChecksLogPath + "/isInAllianceZone"
+			)
 			&& isInPositionForPassing(
-				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+				ShootingCalculations.getFieldRelativeTurretPosition(
+					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
+				),
 				shootingChecksLogPath + "/CanContinuePassing"
 			);
 	}
