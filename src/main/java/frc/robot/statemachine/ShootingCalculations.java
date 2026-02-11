@@ -269,6 +269,16 @@ public class ShootingCalculations {
 		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
 	);
 
+	public static boolean isFlyWheelInToleranceRange(Rotation2d currentVelocity, Rotation2d flywheelTolerance) {
+		Rotation2d flywheelToleranceMin = currentVelocity.minus(flywheelTolerance);
+		Rotation2d flywheelToleranceMax = currentVelocity.plus(flywheelTolerance);
+
+		if (currentVelocity.getRotations() < flywheelToleranceMax.getRotations() && currentVelocity.getRotations() > flywheelToleranceMin.getRotations()) {
+			return true;
+		}
+			return false;
+	}
+
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
@@ -276,5 +286,4 @@ public class ShootingCalculations {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
 	}
-
 }
