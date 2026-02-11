@@ -91,8 +91,9 @@ public class LimelightFilters {
 			return () -> {
 				Logger.recordOutput("Expected", expectedYawSupplier.get());
 				Logger.recordOutput("Supplied", cameraSuppliedRobotYaw.get());
-				return  !isExpectedYawCalibrated.get()
-				|| ToleranceMath.isNearWrapped(expectedYawSupplier.get(), cameraSuppliedRobotYaw.get(), expectedYawTolerance);};
+				return !isExpectedYawCalibrated.get()
+					|| ToleranceMath.isNearWrapped(expectedYawSupplier.get(), cameraSuppliedRobotYaw.get(), expectedYawTolerance);
+			};
 		}
 
 		private static Filter isYawNotZero(Supplier<Rotation2d> robotYaw) {

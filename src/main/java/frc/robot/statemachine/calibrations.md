@@ -4,4 +4,6 @@
 - [ ] Max angle from goal center
 - [ ] Max distance to shoot
 - [ ] Seconds to wait after shoot
-- [ ] degrees of overshoot for aim at hub assist
+- [ ] Degrees of overshoot for aim at hub assist
+- [ ] Maximum amount of times to recalculate flight time
+- [ ] Minimum difference between flight times to stop recalculations
