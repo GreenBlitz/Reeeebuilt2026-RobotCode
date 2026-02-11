@@ -19,14 +19,13 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position, String logPath) {
-		boolean isPositionInAllianceZone = position.getX() < Field.getHubMiddle().getX();
-		boolean isPositionNotInAllianceZone = position.getX() > Field.getHubMiddle().getX();
+		boolean isPositionInAllianceZone = position.getX() < Field.MIN_HUB_X_VALUE;
 		if (Field.isFieldConventionAlliance()) {
 			Logger.recordOutput(logPath + "/isInAllianceZone", isPositionInAllianceZone);
 			return isPositionInAllianceZone;
 		}
-		Logger.recordOutput(logPath + "/isInAllianceZone", isPositionNotInAllianceZone);
-		return isPositionNotInAllianceZone;
+		Logger.recordOutput(logPath + "/isInAllianceZone", !isPositionInAllianceZone);
+		return !isPositionInAllianceZone;
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
@@ -136,14 +135,14 @@ public class ShootingChecks {
 		String actionLogPath,
 		boolean isPass
 	) {
-		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
+		Translation2d predictedTurretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(turretPosition, maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
+		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
 
-		boolean isInRange = isInAngleRange(turretPosition, maxAngleFromTargetCenter, logPath, targetTranslation, isPass);
+		boolean isInRange = isInAngleRange(predictedTurretPosition, maxAngleFromTargetCenter, logPath, targetTranslation, isPass);
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),

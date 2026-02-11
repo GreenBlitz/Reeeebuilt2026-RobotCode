@@ -20,7 +20,6 @@ public class HubUtil {
 			return Optional.empty();
 		}
 		String gameData = DriverStation.getGameSpecificMessage();
-
 		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 			return Optional.empty();
