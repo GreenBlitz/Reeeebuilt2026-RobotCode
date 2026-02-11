@@ -6,20 +6,20 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
-
 import java.util.Optional;
 
 public class HubUtil {
 
 	private static Optional<DriverStation.Alliance> autoWinnerAlliance = getAutoWinningAlliance();
 	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoWinningAlliance();
-	private static final LoggedNetworkBoolean isOurHubActive = new LoggedNetworkBoolean("/Tunable/isOurHubActive", true);
+	private static final LoggedNetworkBoolean isOurHubActive = new LoggedNetworkBoolean("/Tunable/isOurHubActive", false);
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		if (!DriverStationUtil.isTeleop()) {
 			return Optional.empty();
 		}
-		String gameData = DriverStation.getGameSpecificMessage();
+		String gameData = /* DriverStation.getGameSpecificMessage() */ "Blue";
+
 		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 			return Optional.empty();
@@ -86,8 +86,8 @@ public class HubUtil {
 	}
 
 	public static boolean isOurHubActive(double timeSinceTeleopInitSeconds) {
-		if (!isOurHubActive.get()) {
-			return true;
+		if (!DriverStation.isFMSAttached()) {
+			return isOurHubActive.get();
 		}
 		if (getActiveHub(timeSinceTeleopInitSeconds).isEmpty()) {
 			return false;

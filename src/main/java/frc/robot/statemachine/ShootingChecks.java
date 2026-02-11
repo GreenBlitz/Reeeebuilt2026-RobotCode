@@ -366,8 +366,8 @@ public class ShootingChecks {
 		)
 			&& !isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation(), shootingChecksLogPath + "/isInAllianceZone")
 			&& isInPositionForPassing(
-				robot.getPoseEstimator().getEstimatedPose().getTranslation(),
-				shootingChecksLogPath + "canContinuePassing"
+				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+				shootingChecksLogPath + "/canContinuePassing"
 			);
 	}
 
@@ -388,14 +388,10 @@ public class ShootingChecks {
 	}
 
 	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters, String logPath) {
-		Logger.recordOutput(
-			logPath + "/isHubReadyToStartShooting",
-			HubUtil.isOurHubActive(
-				TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
-			)
-		);
-		return HubUtil
+		boolean isOurHubActive = HubUtil
 			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
+		Logger.recordOutput(logPath + "/isHubReadyToStartShooting", isOurHubActive);
+		return isOurHubActive;
 	}
 
 }
