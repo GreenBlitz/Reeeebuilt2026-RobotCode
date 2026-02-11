@@ -214,7 +214,7 @@ public class ShootingChecks {
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShootingCalculations.FLYWHEEL_SCORING_INTERPOLATION_MAP.get(ShooterStateHandler.flywelelDistace.get()),
+			ShooterConstants.flywheelCalibrationRotations.get(),
 			flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath
@@ -231,13 +231,13 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		String actionLogPath
 	) {
-		String logPath = shootingChecksLogPath + "/calibrationIsReadyTo" + actionLogPath;
+		String logPath = shootingChecksLogPath + "/calibrationCanContinueTo" + actionLogPath;
 
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShootingCalculations.FLYWHEEL_SCORING_INTERPOLATION_MAP.get(ShooterStateHandler.flywelelDistace.get()),
+			ShooterConstants.flywheelCalibrationRotations.get(),
 			flywheelVelocityRPS,
 			flywheelVelocityToleranceRPS,
 			logPath

@@ -116,10 +116,10 @@ public class JoysticksBindings {
 
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
 
-		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
-		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
+//		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
+//		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.B.onTrue(
@@ -127,12 +127,10 @@ public class JoysticksBindings {
 				PathFollowingCommandsBuilder
 					.pathfindToPose(depotToOutpost.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
 					.asProxy(),
-				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()).asProxy(),
 				new ParallelCommandGroup(
 					PathFollowingCommandsBuilder.followPath(depotToOutpost)
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-						.asProxy(),
-					robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT).asProxy()
+						.asProxy()
 				)
 			)
 		);
@@ -143,12 +141,10 @@ public class JoysticksBindings {
 				PathFollowingCommandsBuilder
 					.pathfindToPose(outpostToDepot.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
 					.asProxy(),
-				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()).asProxy(),
 				new ParallelCommandGroup(
 					PathFollowingCommandsBuilder.followPath(outpostToDepot)
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-						.asProxy(),
-					robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT).asProxy()
+						.asProxy()
 				)
 			)
 		);
