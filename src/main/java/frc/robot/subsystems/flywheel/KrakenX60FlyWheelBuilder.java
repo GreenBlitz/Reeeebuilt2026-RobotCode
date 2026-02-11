@@ -1,6 +1,7 @@
 package frc.robot.subsystems.flywheel;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -75,6 +76,11 @@ public class KrakenX60FlyWheelBuilder {
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
 		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
 		configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+		MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+		motionMagicConfigs.MotionMagicAcceleration = FlywheelConstants.MAX_ACCELERATION.getRotations();
+		configuration.withMotionMagic(motionMagicConfigs);
+
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
 			configuration.Slot0.kP = FlywheelConstants.kP;
 			configuration.Slot0.kI = FlywheelConstants.kI;

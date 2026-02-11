@@ -1,8 +1,5 @@
 package frc.robot.statemachine.shooterstatehandler;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
@@ -10,7 +7,6 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
-import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
@@ -128,14 +124,6 @@ public class ShooterStateHandler {
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
 		);
-	}
-
-	private Command flywheelMotionMagic(Rotation2d wantedVelocity) {
-		TalonFXConfiguration config = new TalonFXConfiguration();
-		MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
-		motionMagicConfigs.MotionMagicCruiseVelocity  = wantedVelocity.getRotations();
-		motionMagicConfigs.MotionMagicAcceleration = FlywheelConstants.MAX_ACCELERATION.getRotations();
-		flyWheel.getSubsystem().get
 	}
 
 	public boolean isTurretAtSensor() {
