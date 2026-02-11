@@ -146,11 +146,12 @@ public class Robot {
 		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isTeleopEnabled())
-			.onTrue((new ParallelCommandGroup(
-					getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-					getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-			)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+		new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(
+			(new ParallelCommandGroup(
+				getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+				getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+			)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+		);
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -270,8 +271,8 @@ public class Robot {
 
 	public Supplier<Command> autonomousResetSubsystemsCommand() {
 		return () -> new ParallelCommandGroup(
-				getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-				getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
+			getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
+			getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 		);
 	}
 
