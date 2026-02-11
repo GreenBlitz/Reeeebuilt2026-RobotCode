@@ -19,7 +19,6 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -146,12 +145,8 @@ public class Robot {
 		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isTeleopEnabled()).onTrue(
-			(new ParallelCommandGroup(
-				getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-				getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-			)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
-		);
+		new Trigger(() -> DriverStation.isTeleopEnabled())
+			.onTrue((robotCommander.resetSubsystems()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -270,10 +265,7 @@ public class Robot {
 	}
 
 	public Supplier<Command> autonomousResetSubsystemsCommand() {
-		return () -> new ParallelCommandGroup(
-			getRobotCommander().getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-			getRobotCommander().getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-		);
+		return () -> robotCommander.resetSubsystems();
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
