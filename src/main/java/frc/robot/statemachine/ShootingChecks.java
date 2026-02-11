@@ -164,12 +164,10 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			logPath
 		);
-		boolean isInAllianceZone = isInAllianceZone(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), logPath);
+		boolean isInAllianceZone = isInAllianceZone(predictedTurretPosition, logPath);
 
-		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(
-			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
-			logPath
-		);
+		boolean isHubReadyToStartShooting = ShootingChecks
+			.isHubReadyToStartShooting(ShootingCalculations.getDistanceFromHub(predictedTurretPosition), logPath);
 
 		return isFlywheelReadyToShoot
 			&& isHoodAtPosition
@@ -222,12 +220,10 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isInAllianceZone = isInAllianceZone(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), logPath);
+		boolean isInAllianceZone = isInAllianceZone(predictedTurretPosition, logPath);
 
-		boolean isHubReadyToStartShooting = ShootingChecks.isHubReadyToStartShooting(
-			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
-			logPath
-		);
+		boolean isHubReadyToStartShooting = ShootingChecks
+			.isHubReadyToStartShooting(ShootingCalculations.getDistanceFromHub(predictedTurretPosition), logPath);
 
 		return isFlywheelReadyToShoot
 			&& isHoodAtPosition
