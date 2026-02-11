@@ -138,7 +138,7 @@ public class ShootingCalculations {
 		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 
 		for (int i = 0; i < StateMachineConstants.MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME; i++) {
-			predictedTurretPose = getPredictedTurretPoseByFlightTime(predictedTurretPose, turretVelocities, ballFlightTime);
+			predictedTurretPose = getPredictedTurretPoseByFlightTime(turretPose, turretVelocities, ballFlightTime);
 			double newBallFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 				.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
 
