@@ -163,26 +163,26 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			// 1.5,
-//			Rotation2d.fromDegrees(30),
-//			2.0,
-//			Rotation2d.fromDegrees(30),
-//			2.55,
-//			Rotation2d.fromDegrees(32),
-//			3.0,
-//			Rotation2d.fromDegrees(32),
-//			3.45,
-//			Rotation2d.fromDegrees(35),
-//			4.04,
-//			Rotation2d.fromDegrees(38),
-//			4.48,
-//			Rotation2d.fromDegrees(38),
-//			5.0,
-//			Rotation2d.fromDegrees(42),
-//			5.5,
-//			Rotation2d.fromDegrees(42),
-//			6.0,
-//			Rotation2d.fromDegrees(42)
+			 1.5,
+			Rotation2d.fromDegrees(30),
+			2.0,
+			Rotation2d.fromDegrees(30),
+			2.55,
+			Rotation2d.fromDegrees(32),
+			3.0,
+			Rotation2d.fromDegrees(32),
+			3.45,
+			Rotation2d.fromDegrees(35),
+			4.04,
+			Rotation2d.fromDegrees(38),
+			4.48,
+			Rotation2d.fromDegrees(38),
+			5.0,
+			Rotation2d.fromDegrees(42),
+			5.5,
+			Rotation2d.fromDegrees(42),
+			6.0,
+			Rotation2d.fromDegrees(42)
 		)
 	);
 
@@ -207,8 +207,8 @@ public class ShootingCalculations {
 			Rotation2d.fromDegrees(37),
 			4.0,
 			Rotation2d.fromDegrees(38),
-			4.5,
-			Rotation2d.fromDegrees(43),
+				4.68,
+			Rotation2d.fromDegrees(45),
 			5.0,
 			Rotation2d.fromDegrees(40),
 			5.5,
@@ -246,8 +246,8 @@ public class ShootingCalculations {
 	);
 
 	static {
-		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
-		HOOD_SCORING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(45));
+//		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
+//		HOOD_SCORING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(45));
 		HOOD_SCORING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(45));
 		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(47));
 
@@ -258,7 +258,7 @@ public class ShootingCalculations {
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.0, 1.11 - 0.25, 4.0, 1.0, 5.85, 1.1)
+		Map.of(2.0, 1.0 , 4.0, 1.25, 5.85, 1.35)
 	);
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
