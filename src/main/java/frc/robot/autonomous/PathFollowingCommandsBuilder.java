@@ -28,10 +28,9 @@ public class PathFollowingCommandsBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/pathfindThenFollowPath");
 		return new ParallelCommandGroup(
 			commandSupplier.get(),
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance,logPath)
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath)
 		);
 	}
 
@@ -43,8 +42,7 @@ public class PathFollowingCommandsBuilder {
 		Supplier<Command> commandSupplier,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/deadlinePathWithCommand");
-		return new ParallelDeadlineGroup(commandSupplier.get(), followAdjustedPath(swerve, currentPose, path, pathfindingConstraints,logPath));
+		return new ParallelDeadlineGroup(commandSupplier.get(), followAdjustedPath(swerve, currentPose, path, pathfindingConstraints, logPath));
 	}
 
 	public static Command deadlineCommandWithPath(
@@ -56,9 +54,8 @@ public class PathFollowingCommandsBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/deadlineCommandWithPath");
 		return new ParallelDeadlineGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance,logPath),
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
 			commandSupplier.get()
 		);
 	}
@@ -72,26 +69,25 @@ public class PathFollowingCommandsBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/commandAfterPath");
 		return new SequentialCommandGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance,logPath),
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
 			commandSupplier.get()
 		);
 	}
 
 
-	public static Command followPath(PathPlannerPath path,String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "/Autonomous");
+	public static Command followPath(PathPlannerPath path, String logPath) {
+		Logger.recordOutput(logPath + "/CurrentCommand", "followPath " + path.name);
 		return AutoBuilder.followPath(path);
 	}
 
-	public static Command pathfindToPose(Pose2d targetPose, PathConstraints pathfindingConstraints,String logPath) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/pathfindThenFollowPath");
+	public static Command pathfindToPose(Pose2d targetPose, PathConstraints pathfindingConstraints, String logPath) {
+		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose");
 		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints);
 	}
 
-	public static Command pathfindThenFollowPath(PathPlannerPath path, PathConstraints pathfindingConstraints,String logPath) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/pathfindThenFollowPath");
+	public static Command pathfindThenFollowPath(PathPlannerPath path, PathConstraints pathfindingConstraints, String logPath) {
+		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath " + path.name);
 		return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints);
 	}
 
@@ -101,13 +97,14 @@ public class PathFollowingCommandsBuilder {
 		double velocityBetweenPathfindingToPathFollowingMetersPerSecond,
 		String logPath
 	) {
+		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath " + path.name);
 		return AutoBuilder
 			.pathfindToPose(
 				Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)),
 				pathfindingConstraints,
 				velocityBetweenPathfindingToPathFollowingMetersPerSecond
 			)
-			.andThen(followPath(path,logPath));
+			.andThen(followPath(path, logPath));
 	}
 
 	public static Command followPathOrPathfindAndFollowPath(
@@ -116,10 +113,9 @@ public class PathFollowingCommandsBuilder {
 		PathConstraints pathfindingConstraints,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/pathfindThenFollowPath");
 		return new ConditionalCommand(
-			followPath(path,logPath),
-			pathfindThenFollowPath(path, pathfindingConstraints,logPath),
+			followPath(path, logPath),
+			pathfindThenFollowPath(path, pathfindingConstraints, logPath),
 			() -> PathPlannerUtil
 				.isRobotInPathfindingDeadband(currentPose.get(), Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)))
 		);
@@ -132,9 +128,8 @@ public class PathFollowingCommandsBuilder {
 		PathConstraints pathfindingConstraints,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/pathfindThenFollowPath");
 		return swerve.asSubsystemCommand(
-			followPathOrPathfindAndFollowPath(path, currentPose, pathfindingConstraints,logPath).andThen(
+			followPathOrPathfindAndFollowPath(path, currentPose, pathfindingConstraints, logPath).andThen(
 				swerve.getCommandsBuilder().moveToPoseByPID(currentPose, Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)))
 			),
 			"Follow Adjusted " + path.name
@@ -149,8 +144,7 @@ public class PathFollowingCommandsBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		String logPath
 	) {
-//		Logger.recordOutput(logPath + "/CurrentCommand", "/pathfindThenFollowPath");
-		return followAdjustedPath(swerve, currentPose, path, pathfindingConstraints,logPath)
+		return followAdjustedPath(swerve, currentPose, path, pathfindingConstraints, logPath)
 			.until(
 				() -> ToleranceMath
 					.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), isNearEndOfPathTolerance)
