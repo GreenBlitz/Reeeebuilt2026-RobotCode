@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
@@ -147,6 +148,15 @@ public class Robot {
 
 		new Trigger(() -> DriverStation.isTeleopEnabled())
 			.onTrue((robotCommander.resetSubsystems()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+		configureAuto();
+	}
+
+	private void configureAuto(){
+		Supplier<Command> scoringCommand = () -> new WaitUntilCommand(() -> robotCommander.isReadyToScore()).andThen(robotCommander.scoreSequence());
+		Supplier<Command> intakeCommand = () -> robotCommander.getIntakeStateHandler().intake();
+
+		new EventTrigger("SCORE").onTrue(scoringCommand.get());
+		new EventTrigger("INTAKE").onTrue(intakeCommand.get());
 	}
 
 	public RobotConfig getRobotConfig() {

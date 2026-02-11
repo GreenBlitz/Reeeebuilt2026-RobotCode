@@ -44,7 +44,9 @@ public class AutosBuilder {
 				resetSubsystems,
 				pathfindingConstraints,
 				isNearEndOfPathTolerance
-			)
+			),
+			getLeftStartingToRightTroughNeutralZoneAuto(robot,pathfindingConstraints,isNearEndOfPathTolerance),
+			getRightStartingToRightTroughNeutralZoneAuto(robot,pathfindingConstraints,isNearEndOfPathTolerance)
 		);
 	}
 
@@ -84,6 +86,29 @@ public class AutosBuilder {
 		);
 	}
 
+	private static Supplier<PathPlannerAutoWrapper> getRightStartingToRightTroughNeutralZoneAuto(
+		Robot robot,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,false),
+			new Pose2d(),
+			"L starting - Neutral Zone - Right finish"
+		);
+	}
+	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToRightTroughNeutralZoneAuto(
+		Robot robot,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,true),
+			new Pose2d(),
+			"R starting - Neutral Zone - left finish"
+		);
+	}
+
 	private static Command startingLineToMiddle(
 		Robot robot,
 		Supplier<Command> intake,
@@ -101,6 +126,22 @@ public class AutosBuilder {
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
 			isNearEndOfPathTolerance
+		);
+	}
+	private static Command moveSidesThroughNeutralZoneWithIntakeAndScoring(
+		Robot robot,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance,
+		boolean isLeft
+	) {
+		return PathFollowingCommandsBuilder.followAdjustedPathThenStop(
+			robot.getSwerve(),
+			() -> robot.getPoseEstimator().getEstimatedPose(),
+			isLeft
+				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Left finish through neutral zone").mirrorPath()
+				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Left finish through neutral zone"),
+				pathfindingConstraints,
+				isNearEndOfPathTolerance
 		);
 	}
 
