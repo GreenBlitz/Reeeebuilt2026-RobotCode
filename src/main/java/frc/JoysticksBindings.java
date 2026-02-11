@@ -95,7 +95,7 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(
 			new SequentialCommandGroup(
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				PathFollowingCommandsBuilder.followPath(depotToOutpost).deadlineFor(robot.getRobotCommander().scoreSequence())
+				PathFollowingCommandsBuilder.followPath(depotToOutpost,robot.getSwerve().getLogPath()).deadlineFor(robot.getRobotCommander().scoreSequence())
 			)
 		);
 
@@ -103,7 +103,7 @@ public class JoysticksBindings {
 		usedJoystick.X.onTrue(
 			new SequentialCommandGroup(
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				PathFollowingCommandsBuilder.followPath(outpostToDepot).deadlineFor(robot.getRobotCommander().scoreSequence())
+				PathFollowingCommandsBuilder.followPath(outpostToDepot,robot.getSwerve().getLogPath()).deadlineFor(robot.getRobotCommander().scoreSequence())
 			)
 		);
 	}
