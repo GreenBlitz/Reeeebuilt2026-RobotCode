@@ -11,7 +11,7 @@ Funnel States Calibration
 - #### shoot while intake
 - [ ] Voltage for train
 
-#### MOVE_ROLLS_TO_SENSOR state
+#### MOVE_BALLS_TO_SENSOR state(roll the balls to the sensor)
 - [ ] belly voltage
 - [ ] train velocity
 

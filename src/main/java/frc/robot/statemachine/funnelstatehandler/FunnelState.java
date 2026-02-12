@@ -6,7 +6,6 @@ public enum FunnelState {
 
 	STOP,
 	SHOOT(Rotation2d.fromRotations(18), 1),
-	NEUTRAL,
 	ROLL_UNTIL_SENSOR(Rotation2d.fromRotations(6), 7),
 	CALIBRATION;
 
