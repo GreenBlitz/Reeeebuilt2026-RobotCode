@@ -42,13 +42,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private Supplier<StandardDeviations2D> calculateMT1StdDevs;
 	private Supplier<StandardDeviations2D> calculateMT2StdDevs;
-   private Supplier<Pose3d> robotRelativeCameraPoseSupplier;
+	private Supplier<Pose3d> robotRelativeCameraPoseSupplier;
 	private LimelightPipeline pipeline;
 
-	public Limelight(String name, String logPathPrefix, LimelightPipeline pipeline,Supplier<Pose3d> robotRelativeCameraPoseSupplier) {
+	public Limelight(String name, String logPathPrefix, LimelightPipeline pipeline, Supplier<Pose3d> robotRelativeCameraPoseSupplier) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
-        this.robotRelativeCameraPoseSupplier=robotRelativeCameraPoseSupplier;
+		this.robotRelativeCameraPoseSupplier = robotRelativeCameraPoseSupplier;
 		this.robotRelativeCameraPose = robotRelativeCameraPoseSupplier.get();
 		setRobotRelativeCameraPose(new Pose3d());
 
@@ -133,18 +133,18 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
-    public void updateMT1() {
-        if (pipeline.isUsingMT()) {
-            inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-            inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
-            Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
-            Pose2d robotCenterPose = calculateRobotCenterRelativeToField(robotRelativeCameraPoseSupplier, getMT1RawData().pose());
-            mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), robotCenterPose, calculateMT1StdDevs.get());
-            if (doesObservationExist(mt1PoseObservation)) {
-                Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
-            }
-        }
-    }
+	public void updateMT1() {
+		if (pipeline.isUsingMT()) {
+			inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+			inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
+			Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
+			Pose2d robotCenterPose = calculateRobotCenterRelativeToField(robotRelativeCameraPoseSupplier, getMT1RawData().pose());
+			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), robotCenterPose, calculateMT1StdDevs.get());
+			if (doesObservationExist(mt1PoseObservation)) {
+				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
+			}
+		}
+	}
 
 	public void updateMT2() {
 		if (pipeline.isUsingMT()) {

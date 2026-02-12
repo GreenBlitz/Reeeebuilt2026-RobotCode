@@ -52,7 +52,6 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
-import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -80,8 +79,10 @@ public class Robot {
 	private final IPoseEstimator poseEstimator;
 
 	private final Limelight limelight;
+	private final Pose3d tempPose;
 
 	public Robot() {
+		this.tempPose = new Pose3d(0.268, 0.003, 0.244, new Rotation3d(Math.toRadians(0.13), Math.toRadians(27.68), Math.toRadians(1.37)));
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = TurretConstants.createTurret();
@@ -129,12 +130,7 @@ public class Robot {
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
-		this.limelight = new Limelight(
-			"limelight-left",
-			"Vision",
-			new Pose3d(0.268, 0.003, 0.244, new Rotation3d(Math.toRadians(0.13), Math.toRadians(27.68), Math.toRadians(1.37))),
-			LimelightPipeline.APRIL_TAG , () ->
-		);
+		this.limelight = new Limelight("limelight-left", "Vision", LimelightPipeline.APRIL_TAG, () -> this.tempPose);
 		limelight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelight,
