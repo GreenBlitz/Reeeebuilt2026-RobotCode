@@ -31,7 +31,7 @@ public class IntakeStateHandler {
 		this.rollers = rollers;
 		this.fourBarResetCheckSensor = fourBarResetCheckSensor;
 		this.fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
-		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
+		this.hasFourBarBeenReset = true;
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}

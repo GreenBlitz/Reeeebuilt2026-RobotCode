@@ -14,7 +14,11 @@ public class AutonomousChooser {
 		autoList.forEach(auto -> chooser.addOption(auto.get().getName(), auto));
 		chooser.addDefaultOption("None", PathPlannerAutoWrapper::new);
 	}
-
+	
+	public LoggedDashboardChooser<Supplier<PathPlannerAutoWrapper>> getChooser() {
+		return chooser;
+	}
+	
 	public PathPlannerAutoWrapper getChosenValue() {
 		return chooser.get().get();
 	}

@@ -162,7 +162,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+		return isInRange && isWithinDistance;
 	}
 
 	private static boolean canContinueShooting(

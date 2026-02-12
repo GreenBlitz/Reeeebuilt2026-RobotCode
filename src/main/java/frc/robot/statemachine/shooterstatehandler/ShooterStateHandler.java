@@ -47,8 +47,8 @@ public class ShooterStateHandler {
 		this.turretResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hoodResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.currentState = ShooterState.STAY_IN_PLACE;
-		this.hasHoodBeenReset = Robot.ROBOT_TYPE.isSimulation();
-		this.hasTurretBeenReset = Robot.ROBOT_TYPE.isSimulation();
+		this.hasHoodBeenReset = true;
+		this.hasTurretBeenReset = true;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
