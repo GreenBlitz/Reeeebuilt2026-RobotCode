@@ -212,7 +212,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return new ArrayList<>();
 	}
 
-	public static Pose2d getRobotPoseFromTurretLimeLight(
+	public static Pose2d calculateRobotCenterRelativeToField(
 		Supplier<Pose2d> limeLightPoseRelativeToRobotCenter,
 		Pose2d limeLightPoseRelativeToField
 	) {
