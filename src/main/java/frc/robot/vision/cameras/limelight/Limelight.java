@@ -50,7 +50,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.logPath = logPathPrefix + "/" + name;
 
 		this.robotRelativeCameraPose = robotRelativeCameraPose;
-		setRobotRelativeCameraPose(robotRelativeCameraPose);
+		setRobotRelativeCameraPose(new Pose3d());
 
 		this.neuralDetections = new ArrayList<>();
 		this.colorDetections = new ArrayList<>();
@@ -133,18 +133,18 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
-	public void updateMT1() {
-		if (pipeline.isUsingMT()) {
-			inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-			inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
-			Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
-
-			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), getMT1RawData().pose(), calculateMT1StdDevs.get());
-			if (doesObservationExist(mt1PoseObservation)) {
-				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
-			}
-		}
-	}
+    public void updateMT1() {
+        if (pipeline.isUsingMT()) {
+            inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+            inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
+            Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
+            Pose2d robotCenterPose = calculateRobotCenterRelativeToField(() -> robotRelativeCameraPose.toPose2d(), getMT1RawData().pose());
+            mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), robotCenterPose, calculateMT1StdDevs.get());
+            if (doesObservationExist(mt1PoseObservation)) {
+                Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
+            }
+        }
+    }
 
 	public void updateMT2() {
 		if (pipeline.isUsingMT()) {
