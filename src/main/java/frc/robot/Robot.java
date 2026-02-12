@@ -118,7 +118,7 @@ public class Robot {
 			"Vision",
 			new Pose3d(
 				new Translation3d(-0.017, 0.357, 0.287),
-				new Rotation3d(Math.toRadians(2.44), Math.toRadians(29.15), Math.toRadians(-92.69))
+				new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0))
 			),
 			LimelightPipeline.APRIL_TAG
 		);
