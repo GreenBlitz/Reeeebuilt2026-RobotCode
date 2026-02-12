@@ -105,7 +105,7 @@ public class AutosBuilder {
 		return () -> new PathPlannerAutoWrapper(
 			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,true),
 			new Pose2d(),
-			"R starting - Neutral Zone - left finish"
+			"R starting - Neutral Zone - Left finish"
 		);
 	}
 
@@ -138,8 +138,8 @@ public class AutosBuilder {
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			isLeft
-				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Left finish through neutral zone").mirrorPath()
-				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Left finish through neutral zone"),
+				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone intake - Left shoot").mirrorPath()
+				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone intake - Left shoot"),
 				pathfindingConstraints,
 				isNearEndOfPathTolerance
 		);
