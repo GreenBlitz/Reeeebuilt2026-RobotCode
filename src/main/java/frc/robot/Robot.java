@@ -48,6 +48,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 
@@ -200,9 +201,12 @@ public class Robot {
 		limelight.updateMT1();
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
-		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
-
+		
+		if (limelight.getIndependentRobotPose().isPresent()){
+			ShootingCalculations
+					.updateShootingParams(limelight.getIndependentRobotPose().get().robotPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+			Logger.recordOutput("diff", poseEstimator.getEstimatedPose().getTranslation().getDistance(limelight.getIndependentRobotPose().get().robotPose().getTranslation()));
+		}
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
