@@ -72,14 +72,13 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
 		applyShootOnMoveBinds(usedJoystick, robot);
-		usedJoystick.POV_UP
-			.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetOdometry(robot.getPoseEstimator().getEstimatedPose())));
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
@@ -119,6 +118,9 @@ public class JoysticksBindings {
 
 		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
 		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
+
+		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
+
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.B.onTrue(
