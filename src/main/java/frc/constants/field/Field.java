@@ -23,6 +23,7 @@ public class Field {
 	public static final double WIDTH_METERS = 8.06958;
 
 	private static final Translation2d HUB_MIDDLE = new Translation2d(4.62, 4.03);
+	public static final double HUB_SIDE_LENGTH_METERS = 1.19;
 
 	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
 	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
@@ -35,6 +36,9 @@ public class Field {
 
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
+
+	public static final double MAX_HUB_Y_VALUE = getHubMiddle().getY() + HUB_SIDE_LENGTH_METERS / 2;
+	public static final double MIN_HUB_Y_VALUE = getHubMiddle().getY() - HUB_SIDE_LENGTH_METERS / 2;
 
 	public static Translation2d getHubMiddle() {
 		return getAllianceRelative(HUB_MIDDLE);
