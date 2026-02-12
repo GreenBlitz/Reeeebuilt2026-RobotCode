@@ -144,6 +144,13 @@ public class ShootingChecks {
 			logPath
 		);
 
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
+			flywheelVelocityRPS,
+			flywheelVelocityToleranceRPS,
+			logPath
+		);
+
 		boolean isHoodAtPosition = isHoodAtPositon(
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
 			hoodPosition,
@@ -151,7 +158,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
 	private static boolean canContinueShooting(
