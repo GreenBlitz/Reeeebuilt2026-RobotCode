@@ -20,6 +20,7 @@ import frc.robot.subsystems.arm.TalonFXArmBuilder;
 
 public class HoodConstants {
 
+	public final static String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood";
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -71,7 +72,7 @@ public class HoodConstants {
 			HOOD_LENGTH_METERS
 		);
 		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
-			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
+			LOG_PATH,
 			IDs.TalonFXIDs.HOOD,
 			IS_INVERTED,
 			IS_CONTINUOUS_WRAP,
