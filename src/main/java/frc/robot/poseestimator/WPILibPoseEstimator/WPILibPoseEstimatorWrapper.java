@@ -244,11 +244,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		poseEstimator.addVisionMeasurement(
-			visionObservation.robotPose(),
+		RobotPoseObservation visionMeasurment = new RobotPoseObservation(
 			visionObservation.timestampSeconds(),
-			compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs())).asColumnVector()
+			visionObservation.robotPose(),
+			compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs()))
 		);
+		poseEstimator.addVisionMeasurement(
+			visionMeasurment.robotPose(),
+			visionMeasurment.timestampSeconds(),
+			visionMeasurment.stdDevs().asColumnVector()
+		);
+		Logger.recordOutput(logPath + "/visionMeasurement", visionMeasurment.stdDevs());
 		this.lastVisionObservation = visionObservation;
 	}
 
@@ -257,7 +263,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			visionStdDevs.xStandardDeviations(),
 			visionStdDevs.yStandardDeviations(),
 			isIMUOffsetCalibrated
-				? visionStdDevs.angleStandardDeviations() * WPILibPoseEstimatorConstants.CALIBRATED_IMU_OFFSET_VISION_STD_DEVS_ADDITION
+				? visionStdDevs.angleStandardDeviations() + WPILibPoseEstimatorConstants.CALIBRATED_IMU_OFFSET_VISION_STD_DEVS_ADDITION
 				: visionStdDevs.angleStandardDeviations()
 		);
 	}
