@@ -21,7 +21,7 @@ public class ShootingChecks {
 	public static boolean isInAllianceZone(Translation2d position, String logPath) {
 		Translation2d allianceRelativePosition = Field.getAllianceRelative(position);
 
-		boolean isPositionInAllianceZone = allianceRelativePosition.getX() >= FieldMath.mirrorX(Field.MIN_HUB_X_VALUE);
+		boolean isPositionInAllianceZone = allianceRelativePosition.getX() >= FieldMath.mirrorX(Field.MAX_HUB_X_VALUE);
 		if (Field.isFieldConventionAlliance()) {
 			Logger.recordOutput(logPath + "/isInAllianceZone", !isPositionInAllianceZone);
 			return !isPositionInAllianceZone;
