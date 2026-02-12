@@ -45,7 +45,6 @@ public class RobotManager extends LoggedRobot {
 		this.roborioCycles = 0;
 		this.robot = new Robot();
 
-//		createAutoReadyForConstructionChooser();
 		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
@@ -106,22 +105,6 @@ public class RobotManager extends LoggedRobot {
 		robot.periodic();
 		AlertManager.reportAlerts();
 	}
-
-//	private void createAutoReadyForConstructionChooser() {
-//		SendableChooser<Boolean> autoReadyForConstructionSendableChooser = new SendableChooser<>();
-//		autoReadyForConstructionSendableChooser.setDefaultOption("false", false);
-//		autoReadyForConstructionSendableChooser.addOption("true", true);
-//		autoReadyForConstructionSendableChooser.onChange(isReady -> {
-//			if (isReady) {
-//				this.autonomousCommand = robot.getAutonomousCommand();
-//				BrakeStateManager.brake();
-//			} else {
-//				BrakeStateManager.coast();
-//			}
-//			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
-//		});
-//		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);
-//	}
 
 	private void updateTimeRelatedData() {
 		roborioCycles++;
