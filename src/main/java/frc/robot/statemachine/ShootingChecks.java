@@ -334,10 +334,7 @@ public class ShootingChecks {
 			"Shooting",
 			false
 		)
-			&& isInAllianceZone(
-				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-				shootingChecksLogPath
-			)
+			&& isInAllianceZone(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), shootingChecksLogPath)
 			&& isHubReadyToStartShooting(
 				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
 				shootingChecksLogPath + "/canContinueScoring"
