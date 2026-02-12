@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class LimelightFilters {
+
 	public static Filter detectedObjectFilter(Limelight limelight) {
 		return Filter.nonFilteringFilter();
 	}
