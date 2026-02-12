@@ -25,7 +25,7 @@ Turret Calibration
 - [ ] kD
 
 #### MotionMagic
-- [ ] Default max acceleration per second square
+- [ ] Default max acceleration per second squared
 - [ ] Default max velocity per second
 
 #### General

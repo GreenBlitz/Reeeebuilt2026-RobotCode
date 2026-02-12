@@ -37,7 +37,7 @@ FourBar calibrations
 - [ ] kD
 
 #### MotionMagic
-- [ ] Default max acceleration per second square
+- [ ] Default max acceleration per second squared
 - [ ] Default max velocity per second
 
 #### Digital input
