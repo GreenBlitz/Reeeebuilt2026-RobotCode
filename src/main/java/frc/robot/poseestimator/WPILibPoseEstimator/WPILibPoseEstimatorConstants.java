@@ -13,8 +13,6 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D DEFAULT_VISION_STD_DEV = new StandardDeviations2D(0.0003, 0.0003, 0.003);
 
-	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
-
 	public static final double MINIMUM_COLLISION_IMU_ACCELERATION_G = 2;
 
 	public static final Rotation2d MINIMUM_TILT_IMU_ROLL = Rotation2d.fromDegrees(4);
@@ -28,6 +26,8 @@ public class WPILibPoseEstimatorConstants {
 	public static final double TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
 
 	public static final double SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
+
+	public static final double IMU_CALIBRATION_VISION_STD_DEVS_ADDITION_FACTOR = 0;
 
 	/**
 	 * constant represents the addition to odometryAccuracy when the compensated vision X and Y StdDevs average is equal to one
