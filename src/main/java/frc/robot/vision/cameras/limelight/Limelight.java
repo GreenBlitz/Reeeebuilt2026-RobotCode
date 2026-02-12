@@ -42,13 +42,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private Supplier<StandardDeviations2D> calculateMT1StdDevs;
 	private Supplier<StandardDeviations2D> calculateMT2StdDevs;
-
+   private Supplier<Pose3d> robotRelativeCameraPoseSupplier;
 	private LimelightPipeline pipeline;
 
 	public Limelight(String name, String logPathPrefix, LimelightPipeline pipeline,Supplier<Pose3d> robotRelativeCameraPoseSupplier) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
-
+        this.robotRelativeCameraPoseSupplier=robotRelativeCameraPoseSupplier;
 		this.robotRelativeCameraPose = robotRelativeCameraPoseSupplier.get();
 		setRobotRelativeCameraPose(new Pose3d());
 
@@ -138,7 +138,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
             inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
             inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
             Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
-            Pose2d robotCenterPose = calculateRobotCenterRelativeToField(() -> robotRelativeCameraPose.toPose2d(), getMT1RawData().pose());
+            Pose2d robotCenterPose = calculateRobotCenterRelativeToField(robotRelativeCameraPoseSupplier, getMT1RawData().pose());
             mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), robotCenterPose, calculateMT1StdDevs.get());
             if (doesObservationExist(mt1PoseObservation)) {
                 Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
@@ -213,12 +213,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public static Pose2d calculateRobotCenterRelativeToField(
-		Supplier<Pose2d> limeLightPoseRelativeToRobotCenter,
+		Supplier<Pose3d> limeLightPoseRelativeToRobotCenter,
 		Pose2d limeLightPoseRelativeToField
 	) {
 		Transform2d camTransformRelativeToRobotCenter = new Transform2d(
 			new Pose2d(0, 0, Rotation2d.fromDegrees(0.0)),
-			limeLightPoseRelativeToRobotCenter.get()
+			limeLightPoseRelativeToRobotCenter.get().toPose2d()
 		);
 		return (limeLightPoseRelativeToField.transformBy(camTransformRelativeToRobotCenter.inverse()));
 	}
