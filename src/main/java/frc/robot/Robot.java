@@ -126,9 +126,9 @@ public class Robot {
 		limelight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelight,
-				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.4),
 				new StandardDeviations2D(0.05),
-				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(-0.02)
 			)
 		);
