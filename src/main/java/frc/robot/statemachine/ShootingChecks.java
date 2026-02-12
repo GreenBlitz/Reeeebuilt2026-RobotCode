@@ -164,18 +164,9 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			logPath
 		);
-		boolean isInAllianceZone = isInAllianceZone(predictedTurretPosition, logPath);
 
-		boolean isHubReadyToStartShooting = ShootingChecks
-			.isHubReadyToStartShooting(ShootingCalculations.getDistanceFromHub(predictedTurretPosition), logPath);
-
-		return isFlywheelReadyToShoot
-			&& isHoodAtPosition
-			&& isInRange
-			&& isWithinDistance
-			&& isAtTurretAtTarget
-			&& isInAllianceZone
-			&& isHubReadyToStartShooting /* && isPoseReliable */;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget
+		/* && isPoseReliable */;
 	}
 
 	private static boolean canContinueShooting(
@@ -220,18 +211,8 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isInAllianceZone = isInAllianceZone(predictedTurretPosition, logPath);
 
-		boolean isHubReadyToStartShooting = ShootingChecks
-			.isHubReadyToStartShooting(ShootingCalculations.getDistanceFromHub(predictedTurretPosition), logPath);
-
-		return isFlywheelReadyToShoot
-			&& isHoodAtPosition
-			&& isInRange
-			&& isWithinDistance
-			&& isAtTurretAtTarget
-			&& isInAllianceZone
-			&& isHubReadyToStartShooting /* && isPoseReliable */;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget /* && isPoseReliable */;
 	}
 
 	private static boolean calibrationIsReadyToScore(
@@ -298,7 +279,15 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Shoot",
 			false
-		);
+		)
+			&& isHubReadyToStartShooting(
+				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
+				shootingChecksLogPath + "/isReadyToScore"
+			)
+			&& isInAllianceZone(
+				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
+				shootingChecksLogPath + "/isReadyToScore"
+			);
 	}
 
 	public static boolean isReadyToPass(
@@ -350,6 +339,10 @@ public class ShootingChecks {
 			&& isInAllianceZone(
 				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
 				shootingChecksLogPath + "/isInAllianceZone"
+			)
+			&& isHubReadyToStartShooting(
+				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
+				shootingChecksLogPath + "/canContinueScoring"
 			);
 	}
 
@@ -372,10 +365,6 @@ public class ShootingChecks {
 			"Passing",
 			true
 		)
-			&& !isInAllianceZone(
-				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-				shootingChecksLogPath + "/isInAllianceZone"
-			)
 			&& isInPositionForPassing(
 				ShootingCalculations.getFieldRelativeTurretPosition(
 					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
