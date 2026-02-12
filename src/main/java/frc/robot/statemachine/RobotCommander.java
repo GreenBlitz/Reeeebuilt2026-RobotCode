@@ -232,15 +232,11 @@ public class RobotCommander extends GBSubsystem {
 			shooterStateHandler.setState(ShooterState.SHOOT),
 			new RepeatCommand(
 				new SequentialCommandGroup(
-					new ParallelCommandGroup(
-						asSubsystemCommand(
-							funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::isReadyToScore),
-							RobotState.PRE_SCORE
-						)
+					asSubsystemCommand(
+						funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::isReadyToScore),
+						RobotState.PRE_SCORE
 					),
-					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
-					)
+					asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
 				)
 			)
 		);
