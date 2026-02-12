@@ -9,7 +9,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final String WPILIB_POSEESTIMATOR_LOGPATH = "WPILibPoseEstimator";
 
-	public static final StandardDeviations2D DEFAULT_ODOMETRY_STD_DEV = new StandardDeviations2D(0.003, 0.003, 0.003);
+	public static final StandardDeviations2D DEFAULT_ODOMETRY_STD_DEV = new StandardDeviations2D(0.3, 0.3, 0.003);
 
 	public static final StandardDeviations2D DEFAULT_VISION_STD_DEV = new StandardDeviations2D(0.0003, 0.0003, 0.003);
 
