@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class LimelightFilters {
 
@@ -25,14 +26,13 @@ public class LimelightFilters {
 		Translation2d robotInFieldTolerance,
 		Rotation2d yawAtAngleTolerance
 	) {
-		double timestamp = limelight.getMT1RawData().timestampSeconds();
 		return MegaTagFilters.isRobotInField(() -> limelight.getMT1RawData().pose().getTranslation(), robotInFieldTolerance)
 			.and(
-				MegaTagFilters.doesYawExistAtTimestamp(timestamp, wantedYawAtTimestamp)
-					.and(
+				MegaTagFilters.doesYawExistAtTimestamp(limelight.getMT1RawData().timestampSeconds(), wantedYawAtTimestamp)
+					.implies(
 						MegaTagFilters.isYawAtExpectedAngle(
 							() -> limelight.getMT1RawData().pose().getRotation(),
-							() -> wantedYawAtTimestamp.apply(timestamp).get(),
+							() -> wantedYawAtTimestamp.apply(limelight.getMT1RawData().timestampSeconds()).get(),
 							isYawCalibrated,
 							yawAtAngleTolerance
 						)
