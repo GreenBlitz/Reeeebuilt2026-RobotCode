@@ -45,11 +45,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private LimelightPipeline pipeline;
 
-	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
+	public Limelight(String name, String logPathPrefix, LimelightPipeline pipeline,Supplier<Pose3d> robotRelativeCameraPoseSupplier) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
 
-		this.robotRelativeCameraPose = robotRelativeCameraPose;
+		this.robotRelativeCameraPose = robotRelativeCameraPoseSupplier.get();
 		setRobotRelativeCameraPose(new Pose3d());
 
 		this.neuralDetections = new ArrayList<>();

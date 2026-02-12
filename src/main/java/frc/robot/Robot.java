@@ -52,6 +52,8 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
+import java.util.function.Supplier;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link RobotManager} periodic methods (other than the scheduler calls). Instead, the structure of the robot
@@ -72,7 +74,6 @@ public class Robot {
 	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
-
 	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
@@ -132,9 +133,8 @@ public class Robot {
 			"limelight-left",
 			"Vision",
 			new Pose3d(0.268, 0.003, 0.244, new Rotation3d(Math.toRadians(0.13), Math.toRadians(27.68), Math.toRadians(1.37))),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG , () ->
 		);
-
 		limelight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelight,
