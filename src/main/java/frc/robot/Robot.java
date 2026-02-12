@@ -137,9 +137,9 @@ public class Robot {
 			"Autonomous Chooser",
 			AutosBuilder.getAutoList(
 				this,
-				autonomousIntakeCommand(),
-				autonomousResetSubsystemsCommand(),
-				autonomousScoringSequenceCommand(),
+				() -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
+				() -> robotCommander.scoreSequence(),
+				() -> getRobotCommander().resetSubsystems(),
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
@@ -148,15 +148,6 @@ public class Robot {
 
 		new Trigger(() -> DriverStation.isTeleopEnabled())
 			.onTrue((robotCommander.resetSubsystems()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-		configureAuto();
-	}
-
-	private void configureAuto(){
-		Supplier<Command> scoringCommand = () -> new WaitUntilCommand(() -> robotCommander.isReadyToScore()).andThen(robotCommander.scoreSequence());
-		Supplier<Command> intakeCommand = () -> robotCommander.getIntakeStateHandler().intake();
-
-		new EventTrigger("SCORE").onTrue(scoringCommand.get());
-		new EventTrigger("INTAKE").onTrue(intakeCommand.get());
 	}
 
 	public RobotConfig getRobotConfig() {
