@@ -87,8 +87,7 @@ public class LimelightFilters {
 			Supplier<Boolean> isExpectedYawCalibrated,
 			Rotation2d expectedYawTolerance
 		) {
-			return () -> {
-				return !isExpectedYawCalibrated.get()
+			return () -> !isExpectedYawCalibrated.get()
 					|| ToleranceMath.isNearWrapped(expectedYawSupplier.get(), cameraSuppliedRobotYaw.get(), expectedYawTolerance);
 			};
 		}
