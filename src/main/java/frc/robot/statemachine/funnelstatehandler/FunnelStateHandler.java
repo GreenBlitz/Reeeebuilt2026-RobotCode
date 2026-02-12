@@ -62,7 +62,7 @@ public class FunnelStateHandler {
 				train.getCommandsBuilder().setVelocity(currentState.getTrainVelocity()),
 				belly.getCommandsBuilder().setVoltage(currentState.getBellyVoltage())
 			).until(this::isBallAtSensor),
-			setState(FunnelState.STOP)
+			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
 		);
 	}
 
