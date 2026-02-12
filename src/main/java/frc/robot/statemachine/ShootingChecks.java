@@ -210,7 +210,6 @@ public class ShootingChecks {
 			logPath
 		);
 
-
 		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget /* && isPoseReliable */;
 	}
 
