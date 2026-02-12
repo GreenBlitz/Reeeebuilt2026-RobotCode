@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
@@ -103,7 +104,7 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
-			case RESET_SUBSYSTEMS -> resetSubsystems();
+			case RESET_SUBSYSTEMS -> resetShooterSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
 	}
@@ -134,10 +135,17 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
-	private Command resetSubsystems() {
+	private Command resetShooterSubsystems() {
 		return new ParallelDeadlineGroup(
 			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
 			funnelStateHandler.setState(FunnelState.NEUTRAL)
+		);
+	}
+
+	public Command resetSubsystems() {
+		return new ParallelDeadlineGroup(
+			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+			intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
 		);
 	}
 
