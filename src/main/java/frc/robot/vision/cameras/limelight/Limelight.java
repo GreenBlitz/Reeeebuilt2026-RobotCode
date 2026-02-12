@@ -138,8 +138,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 			inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
 			Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
-			Supplier<Pose2d> robotRelativeCameraPoseSupplier = () -> robotRelativeCameraPose.toPose2d();
-			Pose2d robotCenterPose = calculateRobotCenterRelativeToField(robotRelativeCameraPoseSupplier, getMT1RawData().pose());
+			Pose2d robotCenterPose = calculateRobotCenterRelativeToField(() -> robotRelativeCameraPose.toPose2d(), getMT1RawData().pose());
 			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), robotCenterPose, calculateMT1StdDevs.get());
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
