@@ -88,7 +88,7 @@ public class FlyWheel extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/targetVelocity", velocityRequest.getSetPoint());
 	}
 
-	public void applyCalibrationsBindings(SmartJoystick joystick) {
+	public void applyCalibrationBindings(SmartJoystick joystick) {
 		joystick.POV_LEFT.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(1)));
 		joystick.POV_UP.onTrue(getCommandBuilder().setTargetVelocity(Rotation2d.fromRotations(2)));
 		joystick.POV_DOWN.onTrue(getCommandBuilder().stop());

@@ -2,11 +2,13 @@ package frc.robot.subsystems.constants.flywheel;
 
 
 import frc.robot.IDs;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 
 public class FlywheelConstants {
 
+	public final static String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/FlyWheel";
 	public final static double kP = 12;
 	public final static double kI = 2;
 	public final static double kD = 0;
@@ -27,7 +29,7 @@ public class FlywheelConstants {
 	public final static int CURRENT_LIMIT = 40;
 
 	public static FlyWheel createFlyWheel() {
-		return KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
+		return KrakenX60FlyWheelBuilder.build(LOG_PATH, IDs.TalonFXIDs.FLYWHEEL);
 	}
 
 }

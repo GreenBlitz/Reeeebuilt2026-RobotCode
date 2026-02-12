@@ -7,6 +7,7 @@ import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
 
 public class IntakeRollerConstants {
 
+	public final static String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/IntakeRollers";
 	public final static int GEAR_RATIO = 10;
 	public final static int CURRENT_LIMIT = 20;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
@@ -14,7 +15,7 @@ public class IntakeRollerConstants {
 
 	public static Roller createIntakeRollers() {
 		return SparkMaxRollerBuilder.build(
-			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/IntakeRollers",
+			LOG_PATH,
 			IDs.SparkMAXIDs.INTAKE_ROLLERS,
 			IS_INVERTED,
 			GEAR_RATIO,
