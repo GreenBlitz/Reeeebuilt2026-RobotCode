@@ -274,7 +274,7 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-		if (ShootingChecks.isInAllianceZone(getFieldRelativeTurretPosition(robotPose), LOG_PATH + "/isInAllianceZone")) {
+		if (ShootingChecks.isInAllianceZone(getFieldRelativeTurretPosition(robotPose), LOG_PATH)) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
