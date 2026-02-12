@@ -6,7 +6,6 @@ import frc.constants.field.Field;
 import frc.robot.vision.DetectedObjectType;
 import frc.utils.Filter;
 import frc.utils.math.ToleranceMath;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public class LimelightFilters {
 		return MegaTagFilters.isRobotInField(() -> limelight.getMT1RawData().pose().getTranslation(), robotInFieldTolerance)
 			.and(
 				MegaTagFilters.doesYawExistAtTimestamp(timestamp, wantedYawAtTimestamp)
-					.implies(
+					.and(
 						MegaTagFilters.isYawAtExpectedAngle(
 							() -> limelight.getMT1RawData().pose().getRotation(),
 							() -> wantedYawAtTimestamp.apply(timestamp).get(),
@@ -89,10 +88,9 @@ public class LimelightFilters {
 			Rotation2d expectedYawTolerance
 		) {
 			return () -> {
-				Logger.recordOutput("Expected", expectedYawSupplier.get());
-				Logger.recordOutput("Supplied", cameraSuppliedRobotYaw.get());
-				return  !isExpectedYawCalibrated.get()
-				|| ToleranceMath.isNearWrapped(expectedYawSupplier.get(), cameraSuppliedRobotYaw.get(), expectedYawTolerance);};
+				return !isExpectedYawCalibrated.get()
+					|| ToleranceMath.isNearWrapped(expectedYawSupplier.get(), cameraSuppliedRobotYaw.get(), expectedYawTolerance);
+			};
 		}
 
 		private static Filter isYawNotZero(Supplier<Rotation2d> robotYaw) {

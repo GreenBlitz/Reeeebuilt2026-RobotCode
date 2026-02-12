@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
-import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 

@@ -11,8 +11,6 @@ public interface IOdometryEstimator {
 
 	void resetPose(OdometryData odometryData, Pose2d poseMeters);
 
-	void resetOdometry(Pose2d pose);
-
 	Pose2d getOdometryPose();
 
 	void setHeading(Rotation2d newHeading);

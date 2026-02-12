@@ -4,12 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -48,9 +43,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
-import org.littletonrobotics.junction.Logger;
 
-import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -138,7 +131,7 @@ public class Robot {
 		limelight.setMT1PoseFilter(
 			LimelightFilters.megaTag1Filter(
 				limelight,
-				timestamp -> Optional.of(poseEstimator.getEstimatedPose().getRotation()),
+				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
 				new Translation2d(0.1, 0.1),
 				Rotation2d.fromDegrees(10)
@@ -201,12 +194,7 @@ public class Robot {
 		limelight.updateMT1();
 		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
-		
-		if (limelight.getIndependentRobotPose().isPresent()){
-			ShootingCalculations
-					.updateShootingParams(limelight.getIndependentRobotPose().get().robotPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
-			Logger.recordOutput("diff", poseEstimator.getEstimatedPose().getTranslation().getDistance(limelight.getIndependentRobotPose().get().robotPose().getTranslation()));
-		}
+
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last

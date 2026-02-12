@@ -163,7 +163,7 @@ public class ShootingCalculations {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			 1.5,
+			1.5,
 			Rotation2d.fromDegrees(30),
 			2.0,
 			Rotation2d.fromDegrees(30),
@@ -187,9 +187,9 @@ public class ShootingCalculations {
 	);
 
 	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
-			InverseInterpolator.forDouble(),
-			InterpolationMap.interpolatorForRotation2d(),
-			Map.of(
+		InverseInterpolator.forDouble(),
+		InterpolationMap.interpolatorForRotation2d(),
+		Map.of(
 			1.5,
 			Rotation2d.fromDegrees(16400),
 			2.0,
@@ -210,8 +210,8 @@ public class ShootingCalculations {
 			Rotation2d.fromDegrees(23500),
 			6.0,
 			Rotation2d.fromDegrees(25000)
-			)
-			);
+		)
+	);
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_PASSING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
@@ -280,7 +280,7 @@ public class ShootingCalculations {
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.5, 1.0 , 4.0, 1.0, 5.85, 1.1)
+		Map.of(2.5, 1.0, 4.0, 1.0, 5.85, 1.1)
 	);
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {

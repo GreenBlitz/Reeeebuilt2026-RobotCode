@@ -3,7 +3,6 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -123,63 +122,63 @@ public class JoysticksBindings {
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.B.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(depotToOutpost.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
-								.asProxy(),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()).asProxy(),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(depotToOutpost)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-										.asProxy(),
-								robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT).asProxy()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(depotToOutpost.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
+					.asProxy(),
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()).asProxy(),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(depotToOutpost)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
+						.asProxy(),
+					robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT).asProxy()
 				)
+			)
 		);
 
 		PathPlannerPath outpostToDepot = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
 		usedJoystick.X.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(outpostToDepot.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
-								.asProxy(),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()).asProxy(),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(outpostToDepot)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-										.asProxy(),
-								robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT).asProxy()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(outpostToDepot.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
+					.asProxy(),
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()).asProxy(),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(outpostToDepot)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
+						.asProxy(),
+					robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT).asProxy()
 				)
+			)
 		);
-		
-		
+
+
 		PathPlannerPath depotToOutpost2 = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.POV_RIGHT.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(depotToOutpost2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
-								.asProxy(),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(depotToOutpost2)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-										.asProxy()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(depotToOutpost2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
+					.asProxy(),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(depotToOutpost2)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
+						.asProxy()
 				)
+			)
 		);
-		
+
 		PathPlannerPath outpostToDepot2 = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
 		usedJoystick.POV_LEFT.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(outpostToDepot2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
-								.asProxy(),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(outpostToDepot2)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-										.asProxy()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(outpostToDepot2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
+					.asProxy(),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(outpostToDepot2)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
+						.asProxy()
 				)
+			)
 		);
 	}
 

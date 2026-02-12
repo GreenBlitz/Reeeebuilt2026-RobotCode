@@ -67,7 +67,7 @@ class KrakenX60SteerBuilder {
 			steerConfig.Slot0.kS = 0.24;
 			steerConfig.Slot0.kV = 0;
 			steerConfig.Slot0.kA = 0;
-			steerConfig.Slot0.kP = 80;
+			steerConfig.Slot0.kP = 50;
 			steerConfig.Slot0.kI = 0;
 			steerConfig.Slot0.kD = 0;
 		} else {
