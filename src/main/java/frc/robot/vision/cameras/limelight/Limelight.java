@@ -212,6 +212,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return new ArrayList<>();
 	}
 
+	public static Pose2d getRobotPoseFromTurretLimeLight(Pose2d limeLightPoseRelativeToRobotCenter, Pose2d limeLightPoseRelativeToField) {
+		Transform2d camTransformRelativeToRobotCenter = new Transform2d(
+			new Pose2d(0, 0, Rotation2d.fromDegrees(0.0)),
+			limeLightPoseRelativeToRobotCenter
+		);
+		return (limeLightPoseRelativeToField.transformBy(camTransformRelativeToRobotCenter.inverse()));
+	}
+
 	public Function<LimelightHelpers.RawDetection, Boolean> getNeuralDetectionFilter() {
 		return neuralDetectionFilter;
 	}
