@@ -247,19 +247,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			compensateByIsIMUCalibrated(visionObservation.stdDevs()).asColumnVector()
+			compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs())).asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private StandardDeviations2D compensateByIsIMUCalibrated(StandardDeviations2D visionStdDevs) {
+	private StandardDeviations2D compensateByIsIMUOffsetCalibrated(StandardDeviations2D visionStdDevs) {
 		return new StandardDeviations2D(
-			compensateByOdometryAccuracy(visionStdDevs).xStandardDeviations(),
-			compensateByOdometryAccuracy(visionStdDevs).yStandardDeviations(),
+			visionStdDevs.xStandardDeviations(),
+			visionStdDevs.yStandardDeviations(),
 			isIMUOffsetCalibrated
-				? compensateByOdometryAccuracy(visionStdDevs).angleStandardDeviations()
-					* WPILibPoseEstimatorConstants.IMU_CALIBRATION_VISION_STD_DEVS_ADDITION_FACTOR
-				: compensateByOdometryAccuracy(visionStdDevs).angleStandardDeviations()
+				? visionStdDevs.angleStandardDeviations() * WPILibPoseEstimatorConstants.CALIBRATED_IMU_OFFSET_VISION_STD_DEVS_ADDITION
+				: visionStdDevs.angleStandardDeviations()
 		);
 	}
 
