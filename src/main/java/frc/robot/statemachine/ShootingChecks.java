@@ -336,7 +336,7 @@ public class ShootingChecks {
 		)
 			&& isInAllianceZone(
 				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-				shootingChecksLogPath + "/isInAllianceZone"
+				shootingChecksLogPath
 			)
 			&& isHubReadyToStartShooting(
 				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
