@@ -19,6 +19,7 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
@@ -188,11 +189,11 @@ public class Robot {
 	}
 
 	private void configureAuto(){
-		Supplier<Command> scoringCommand = () -> new WaitUntilCommand(() -> robotCommander.isReadyToScore()).andThen(robotCommander.scoreSequence());
-		Supplier<Command> intakeCommand = () -> robotCommander.getIntakeStateHandler().intake();
+		Command scoringCommand = robotCommander.scoreSequence();
+		Command intakeCommand = robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
 
-		new EventTrigger("SCORE").onTrue(scoringCommand.get());
-		new EventTrigger("INTAKE").onTrue(intakeCommand.get());
+		new EventTrigger("SCORE").onTrue(scoringCommand);
+		new EventTrigger("INTAKE").whileTrue(intakeCommand);
 	}
 
 	public RobotConfig getRobotConfig() {

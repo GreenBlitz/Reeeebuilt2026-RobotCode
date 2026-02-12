@@ -94,7 +94,7 @@ public class AutosBuilder {
 		return () -> new PathPlannerAutoWrapper(
 			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,false),
 			new Pose2d(),
-			"L starting - Neutral Zone - Right finish"
+			"R starting - Neutral Zone - Left finish"
 		);
 	}
 	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToRightTroughNeutralZoneAuto(
@@ -105,7 +105,7 @@ public class AutosBuilder {
 		return () -> new PathPlannerAutoWrapper(
 			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,true),
 			new Pose2d(),
-			"R starting - Neutral Zone - Left finish"
+			"L starting - Neutral Zone - Right finish"
 		);
 	}
 
