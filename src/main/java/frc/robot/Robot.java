@@ -19,7 +19,6 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
@@ -54,7 +53,6 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
-import java.util.Optional;
 
 import java.util.function.Supplier;
 
@@ -188,7 +186,7 @@ public class Robot {
 		configureAuto();
 	}
 
-	private void configureAuto(){
+	private void configureAuto() {
 		Command scoringCommand = robotCommander.scoreSequence();
 		Command intakeCommand = robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
 

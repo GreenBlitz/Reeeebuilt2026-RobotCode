@@ -142,7 +142,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), getMT1RawData().pose(), calculateMT1StdDevs.get());
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
-				if (mt1PoseFilter.passesFilter()){
+				if (mt1PoseFilter.passesFilter()) {
 					Logger.recordOutput(logPath + "/passedFilterObservation", mt1PoseObservation);
 				}
 			}

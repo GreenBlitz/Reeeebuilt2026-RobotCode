@@ -45,8 +45,8 @@ public class AutosBuilder {
 				pathfindingConstraints,
 				isNearEndOfPathTolerance
 			),
-			getLeftStartingToRightTroughNeutralZoneAuto(robot,pathfindingConstraints,isNearEndOfPathTolerance),
-			getRightStartingToRightTroughNeutralZoneAuto(robot,pathfindingConstraints,isNearEndOfPathTolerance)
+			getLeftStartingToRightTroughNeutralZoneAuto(robot, pathfindingConstraints, isNearEndOfPathTolerance),
+			getRightStartingToRightTroughNeutralZoneAuto(robot, pathfindingConstraints, isNearEndOfPathTolerance)
 		);
 	}
 
@@ -92,18 +92,19 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return () -> new PathPlannerAutoWrapper(
-			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,false),
+			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot, pathfindingConstraints, isNearEndOfPathTolerance, false),
 			new Pose2d(),
 			"R starting - Neutral Zone - Left finish"
 		);
 	}
+
 	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToRightTroughNeutralZoneAuto(
 		Robot robot,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return () -> new PathPlannerAutoWrapper(
-			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot,pathfindingConstraints,isNearEndOfPathTolerance,true),
+			moveSidesThroughNeutralZoneWithIntakeAndScoring(robot, pathfindingConstraints, isNearEndOfPathTolerance, true),
 			new Pose2d(),
 			"L starting - Neutral Zone - Right finish"
 		);
@@ -128,6 +129,7 @@ public class AutosBuilder {
 			isNearEndOfPathTolerance
 		);
 	}
+
 	private static Command moveSidesThroughNeutralZoneWithIntakeAndScoring(
 		Robot robot,
 		PathConstraints pathfindingConstraints,
@@ -140,8 +142,8 @@ public class AutosBuilder {
 			isLeft
 				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone intake - Left shoot").mirrorPath()
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone intake - Left shoot"),
-				pathfindingConstraints,
-				isNearEndOfPathTolerance
+			pathfindingConstraints,
+			isNearEndOfPathTolerance
 		);
 	}
 
