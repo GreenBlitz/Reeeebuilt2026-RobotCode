@@ -138,7 +138,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 			inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
 			Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
-			Pose2d robotCenterPose = getRobotPoseFromTurretLimeLight(robotRelativeCameraPose.toPose2d(), getMT1RawData().pose());
+			Supplier<Pose2d> robotRelativeCameraPoseSupplier = () -> robotRelativeCameraPose.toPose2d();
+			Pose2d robotCenterPose = calculateRobotCenterRelativeToField(robotRelativeCameraPoseSupplier, getMT1RawData().pose());
 			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), robotCenterPose, calculateMT1StdDevs.get());
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
@@ -212,10 +213,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return new ArrayList<>();
 	}
 
-	public static Pose2d getRobotPoseFromTurretLimeLight(Pose2d limeLightPoseRelativeToRobotCenter, Pose2d limeLightPoseRelativeToField) {
+	public static Pose2d calculateRobotCenterRelativeToField(
+		Supplier<Pose2d> limeLightPoseRelativeToRobotCenter,
+		Pose2d limeLightPoseRelativeToField
+	) {
 		Transform2d camTransformRelativeToRobotCenter = new Transform2d(
 			new Pose2d(0, 0, Rotation2d.fromDegrees(0.0)),
-			limeLightPoseRelativeToRobotCenter
+			limeLightPoseRelativeToRobotCenter.get()
 		);
 		return (limeLightPoseRelativeToField.transformBy(camTransformRelativeToRobotCenter.inverse()));
 	}
