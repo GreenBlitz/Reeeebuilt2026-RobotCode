@@ -19,14 +19,12 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position, String logPath) {
-		boolean isPositionInAllianceZone = position.getX() <= FieldMath.mirrorX(Field.MAX_HUB_X_VALUE);
-		if (Field.isFieldConventionAlliance()) {
-			Logger.recordOutput(logPath + "/isInAllianceZone", isPositionInAllianceZone);
-			return isPositionInAllianceZone;
-		}
-		isPositionInAllianceZone = position.getX() <= Field.MAX_HUB_X_VALUE;
-		Logger.recordOutput(logPath + "/isInAllianceZone", !isPositionInAllianceZone);
-		return !isPositionInAllianceZone;
+		Translation2d allianceRelativePose = Field.getAllianceRelative(position);
+
+		boolean isPositionInAllianceZone = allianceRelativePose.getX() <= Field.MIN_HUB_X_VALUE;
+
+		Logger.recordOutput(logPath + "/isInAllianceZone", isPositionInAllianceZone);
+		return isPositionInAllianceZone;
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
