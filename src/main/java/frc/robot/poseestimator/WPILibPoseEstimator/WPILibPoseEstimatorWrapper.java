@@ -244,18 +244,22 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		RobotPoseObservation compensatedVisionMeasurement = new RobotPoseObservation(
+		RobotPoseObservation compensatedVisionObservation = new RobotPoseObservation(
 			visionObservation.timestampSeconds(),
 			visionObservation.robotPose(),
-			compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs()))
+			compensateByPoseEstimatorConditions(visionObservation)
 		);
 		poseEstimator.addVisionMeasurement(
-			compensatedVisionMeasurement.robotPose(),
-			compensatedVisionMeasurement.timestampSeconds(),
-			compensatedVisionMeasurement.stdDevs().asColumnVector()
+			compensatedVisionObservation.robotPose(),
+			compensatedVisionObservation.timestampSeconds(),
+			compensatedVisionObservation.stdDevs().asColumnVector()
 		);
-		Logger.recordOutput(logPath + "/compensatedVisionMeasurement", compensatedVisionMeasurement.stdDevs());
+		Logger.recordOutput(logPath + "/lastCompensatedVisionObservationStdDevs", compensatedVisionObservation.stdDevs());
 		this.lastVisionObservation = visionObservation;
+	}
+
+	private StandardDeviations2D compensateByPoseEstimatorConditions(RobotPoseObservation visionObservation) {
+		return compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs()));
 	}
 
 	private StandardDeviations2D compensateByIsIMUOffsetCalibrated(StandardDeviations2D visionStdDevs) {
@@ -263,7 +267,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			visionStdDevs.xStandardDeviations(),
 			visionStdDevs.yStandardDeviations(),
 			isIMUOffsetCalibrated
-				? visionStdDevs.angleStandardDeviations() + WPILibPoseEstimatorConstants.CALIBRATED_IMU_OFFSET_VISION_STD_DEVS_ADDITION
+				? visionStdDevs.angleStandardDeviations() + WPILibPoseEstimatorConstants.CALIBRATED_IMU_OFFSET_VISION_ANGLE_STD_DEVS_ADDITION
 				: visionStdDevs.angleStandardDeviations()
 		);
 	}

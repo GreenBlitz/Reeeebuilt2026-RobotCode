@@ -27,7 +27,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0;
 
-	public static final double CALIBRATED_IMU_OFFSET_VISION_STD_DEVS_ADDITION = 0;
+	public static final double CALIBRATED_IMU_OFFSET_VISION_ANGLE_STD_DEVS_ADDITION = 0;
 
 	/**
 	 * constant represents the addition to odometryAccuracy when the compensated vision X and Y StdDevs average is equal to one
