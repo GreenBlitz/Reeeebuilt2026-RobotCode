@@ -17,7 +17,6 @@ import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
-import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
