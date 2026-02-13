@@ -229,7 +229,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
-		addVisionMeasurement(visionRobotPoseObservation);
+		RobotPoseObservation compensatedVisionObservation = new RobotPoseObservation(
+			visionRobotPoseObservation.timestampSeconds(),
+			visionRobotPoseObservation.robotPose(),
+			compensateByPoseEstimatorConditions(visionRobotPoseObservation.stdDevs())
+		);
+		Logger.recordOutput(logPath + "/lastCompensatedVisionObservationStdDevs", compensatedVisionObservation.stdDevs());
+		addVisionMeasurement(compensatedVisionObservation);
 
 		getEstimatedPoseToIMUYawDifference(
 			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
@@ -244,17 +250,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		RobotPoseObservation compensatedVisionObservation = new RobotPoseObservation(
-			visionObservation.timestampSeconds(),
-			visionObservation.robotPose(),
-			compensateByPoseEstimatorConditions(visionObservation.stdDevs())
-		);
 		poseEstimator.addVisionMeasurement(
-			compensatedVisionObservation.robotPose(),
-			compensatedVisionObservation.timestampSeconds(),
-			compensatedVisionObservation.stdDevs().asColumnVector()
+			visionObservation.robotPose(),
+			visionObservation.timestampSeconds(),
+			visionObservation.stdDevs().asColumnVector()
 		);
-		Logger.recordOutput(logPath + "/lastCompensatedVisionObservationStdDevs", compensatedVisionObservation.stdDevs());
 		this.lastVisionObservation = visionObservation;
 	}
 
