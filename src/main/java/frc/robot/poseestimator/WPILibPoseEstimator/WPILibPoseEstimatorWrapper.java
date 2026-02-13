@@ -234,12 +234,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			visionRobotPoseObservation.robotPose(),
 			compensateByPoseEstimatorConditions(visionRobotPoseObservation.stdDevs())
 		);
-		Logger.recordOutput(logPath + "/lastCompensatedVisionObservationStdDevs", compensatedVisionObservation.stdDevs());
 		addVisionMeasurement(compensatedVisionObservation);
 
 		getEstimatedPoseToIMUYawDifference(
-			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
-			visionRobotPoseObservation.timestampSeconds()
+			imuYawBuffer.getSample(compensatedVisionObservation.timestampSeconds()),
+			compensatedVisionObservation.timestampSeconds()
 		).ifPresent(yawDifference -> {
 			poseToIMUYawDifferenceBuffer.insert(yawDifference);
 
