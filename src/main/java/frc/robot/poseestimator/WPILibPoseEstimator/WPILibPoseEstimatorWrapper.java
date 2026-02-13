@@ -229,11 +229,16 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
-		addVisionMeasurement(visionRobotPoseObservation);
+		RobotPoseObservation compensatedVisionObservation = new RobotPoseObservation(
+			visionRobotPoseObservation.timestampSeconds(),
+			visionRobotPoseObservation.robotPose(),
+			compensateByPoseEstimatorConditions(visionRobotPoseObservation.stdDevs())
+		);
+		addVisionMeasurement(compensatedVisionObservation);
 
 		getEstimatedPoseToIMUYawDifference(
-			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
-			visionRobotPoseObservation.timestampSeconds()
+			imuYawBuffer.getSample(compensatedVisionObservation.timestampSeconds()),
+			compensatedVisionObservation.timestampSeconds()
 		).ifPresent(yawDifference -> {
 			poseToIMUYawDifferenceBuffer.insert(yawDifference);
 
@@ -247,9 +252,23 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			compensateByOdometryAccuracy(visionObservation.stdDevs()).asColumnVector()
+			visionObservation.stdDevs().asColumnVector()
 		);
 		this.lastVisionObservation = visionObservation;
+	}
+
+	private StandardDeviations2D compensateByPoseEstimatorConditions(StandardDeviations2D visionStdDevs) {
+		return compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionStdDevs));
+	}
+
+	private StandardDeviations2D compensateByIsIMUOffsetCalibrated(StandardDeviations2D visionStdDevs) {
+		return new StandardDeviations2D(
+			visionStdDevs.xStandardDeviations(),
+			visionStdDevs.yStandardDeviations(),
+			isIMUOffsetCalibrated
+				? visionStdDevs.angleStandardDeviations() + WPILibPoseEstimatorConstants.CALIBRATED_IMU_OFFSET_VISION_ANGLE_STD_DEVS_ADDITION
+				: visionStdDevs.angleStandardDeviations()
+		);
 	}
 
 	private StandardDeviations2D compensateByOdometryAccuracy(StandardDeviations2D visionStdDevs) {
