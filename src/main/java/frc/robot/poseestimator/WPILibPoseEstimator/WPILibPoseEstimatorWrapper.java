@@ -244,17 +244,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
-		RobotPoseObservation visionMeasurment = new RobotPoseObservation(
+		RobotPoseObservation compensatedVisionMeasurement = new RobotPoseObservation(
 			visionObservation.timestampSeconds(),
 			visionObservation.robotPose(),
 			compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs()))
 		);
 		poseEstimator.addVisionMeasurement(
-			visionMeasurment.robotPose(),
-			visionMeasurment.timestampSeconds(),
-			visionMeasurment.stdDevs().asColumnVector()
+			compensatedVisionMeasurement.robotPose(),
+			compensatedVisionMeasurement.timestampSeconds(),
+			compensatedVisionMeasurement.stdDevs().asColumnVector()
 		);
-		Logger.recordOutput(logPath + "/visionMeasurement", visionMeasurment.stdDevs());
+		Logger.recordOutput(logPath + "/compensatedVisionMeasurement", compensatedVisionMeasurement.stdDevs());
 		this.lastVisionObservation = visionObservation;
 	}
 
