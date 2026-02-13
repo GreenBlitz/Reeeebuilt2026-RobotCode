@@ -5,24 +5,16 @@ Hood calibrations
 - [ ] Motor id
 - [ ] Motor bus chain
 
+#### Motor config
+- [ ] Is Inverted
+- [ ] Gear ratio
+
 #### Limits
-- [ ] Current limit
-- [ ] Forward limit
-- [ ] Backwards limit
 - [ ] Max position
 - [ ] Min position
-
-#### Motor config
-- [ ] Gear ratio
-- [ ] Neutral mode
-- [ ] Is Inverted
-
-#### General Constants
-- [ ] Arm length
-- [ ] Arm weight
-- [ ] SysIdRoutineConfig
-- [ ] Starting position
-- [ ] Hood position tolerance
+- [ ] Forward limit
+- [ ] Backwards limit
+- [ ] Current limit
 
 #### FeedForward
 - [ ] kS
@@ -42,11 +34,14 @@ Hood calibrations
 - [ ] Default max acceleration per second squared
 - [ ] Default max velocity per second
 
-#### Simulation Constants
-- [ ] Moment of inertia
-- [ ] Is starting position max or min
-
 #### Reset Sensor
 - [ ] Reset check sensor channel
 - [ ] Is reset check sensor inverted
 - [ ] Reset check sensor debounce time
+
+#### General Constants
+- [ ] Arm length
+- [ ] SysIdRoutineConfig
+- [ ] Position tolerance
+- [ ] Reset voltage
+

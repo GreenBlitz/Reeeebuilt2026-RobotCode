@@ -5,20 +5,16 @@ FourBar calibrations
 - [ ] motor id
 - [ ] motor BusChain
 
+#### Motor config
+- [ ] Is Inverted
+- [ ] Sensor to mechanism ratio
+
 #### Limits
-- [ ] Current limit
-- [ ] Forward limit
-- [ ] Backwards limit
 - [ ] Max position
 - [ ] Min position
-
-#### Motor config
-- [ ] Sensor to mechanism ratio
-- [ ] Is Inverted
-
-#### General Constants
-- [ ] FourBar length
-- [ ] SysIdRoutineConfig
+- [ ] Forward limit
+- [ ] Backwards limit
+- [ ] Current limit
 
 #### FeedForward
 - [ ] kS
@@ -44,3 +40,8 @@ FourBar calibrations
 - [ ] Reset check sensor channel
 - [ ] Is reset check sensor inverted
 - [ ] Debounce time for reset check sensor
+
+#### General Constants
+- [ ] Reset voltage
+- [ ] FourBar length
+- [ ] SysIdRoutineConfig

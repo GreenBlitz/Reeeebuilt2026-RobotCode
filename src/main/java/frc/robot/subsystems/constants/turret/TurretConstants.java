@@ -22,8 +22,11 @@ import frc.robot.subsystems.arm.VelocityPositionArm;
 public class TurretConstants {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Turret";
+
 	public static final boolean IS_INVERTED = false;
 	public static final boolean IS_CONTINUOUS_WRAP = false;
+
+	public static final double CURRENT_LIMIT = 40;
 
 	public static final TalonFXFollowerConfig TALON_FX_FOLLOWER_CONFIG = new TalonFXFollowerConfig();
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE_CONFIG = new SysIdRoutine.Config();
@@ -33,6 +36,8 @@ public class TurretConstants {
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
 	static {
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 79.2;
+
 		REAL_SLOTS_CONFIG.kP = 1;
 		REAL_SLOTS_CONFIG.kI = 0;
 		REAL_SLOTS_CONFIG.kD = 0;
@@ -48,23 +53,17 @@ public class TurretConstants {
 		SIMULATION_SLOTS_CONFIG.kS = 0;
 		SIMULATION_SLOTS_CONFIG.kV = 0;
 		SIMULATION_SLOTS_CONFIG.kA = 0;
-
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 79.2;
 	}
 
-	public static final double CURRENT_LIMIT = 40;
-	public static final double MOMENT_OF_INERTIA = 0.001;
-	public static final double TURRET_RADIUS = 0.0;
-	public static final double ARBITRARY_FEED_FORWARD = 0.0;
-	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.17, -0.25, 0.45);
-
+	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(180);
+	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-180);
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(120);
 	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-120);
-	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-180);
-	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(180);
+
+	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.17, -0.25, 0.45);
+	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
 
 	public static final Rotation2d RANGE_MIDDLE = Rotation2d.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
-	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
 	public static final Rotation2d SCREW_MAX_RANGE_EDGE = TurretCalculations
 		.getRangeEdge(MAX_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE.times(-1));
 	public static final Rotation2d SCREW_MIN_RANGE_EDGE = TurretCalculations.getRangeEdge(MIN_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE);
@@ -72,6 +71,10 @@ public class TurretConstants {
 	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public static final double RESET_TURRET_VOLTAGE = 1;
+
+	public static final double MOMENT_OF_INERTIA = 0.001;
+	public static final double TURRET_RADIUS = 0.0;
+	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 
 	public static VelocityPositionArm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(

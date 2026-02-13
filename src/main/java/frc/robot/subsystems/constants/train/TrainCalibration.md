@@ -1,20 +1,14 @@
 Train calibrations
 ---------------------
 
-#### IDs
+#### Motor
 - [ ] Motor id
-
-#### Digital input
-- [ ] Digital input name
-- [ ] Inverted
-- [ ] Forward or Backward
-- [ ] Debounce time for ball sensor
-- [ ] Check sensor ID
+- [ ] Motor bus chain
 
 #### Config
+- [ ] Is inverted
 - [ ] Gear ratio
 - [ ] Current limit
-- [ ] Is inverted
 
 #### Feed forward
 - [ ] kS
@@ -24,3 +18,9 @@ Train calibrations
 - [ ] kP
 - [ ] kI
 - [ ] kD
+
+#### Digital input
+- [ ] Sensor channel
+- [ ] Digital input name
+- [ ] Is inverted
+- [ ] Debounce time
