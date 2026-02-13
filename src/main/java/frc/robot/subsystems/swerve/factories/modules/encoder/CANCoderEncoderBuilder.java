@@ -31,10 +31,10 @@ class CANCoderEncoderBuilder {
 
 	static double getCANCoderOffset(int id) {
 		return switch (id) {
-			case 0 -> 0.447509765625;
-			case 1 -> 0.396484375;
-			case 2 -> -0.04833984375;
-			case 3 -> -0.130859375;
+			case 0 -> 0.440673828125;
+			case 1 -> -0.101806640625;
+			case 2 -> -0.048583984375;
+			case 3 -> 0.36865234375;
 			default -> 0;
 		};
 	}

@@ -7,7 +7,7 @@ import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 
 public class FlywheelConstants {
 
-	public final static double kP = 0.2;
+	public final static double kP = 0.25;
 	public final static double kI = 0;
 	public final static double kD = 0;
 	public final static double kV = 0.0771;

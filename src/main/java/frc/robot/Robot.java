@@ -4,12 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -126,9 +121,9 @@ public class Robot {
 		limelight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelight,
-				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.4),
 				new StandardDeviations2D(0.05),
-				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(-0.02)
 			)
 		);
