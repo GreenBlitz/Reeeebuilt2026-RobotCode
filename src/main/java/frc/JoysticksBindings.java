@@ -52,8 +52,8 @@ public class JoysticksBindings {
 			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (THIRD_JOYSTICK.isConnected()) {
-			chassisDriverInputs.xPower = 0;// THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
-			chassisDriverInputs.yPower = 0;// THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
+			chassisDriverInputs.xPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.yPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = THIRD_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (SECOND_JOYSTICK.isConnected()) {
 			chassisDriverInputs.xPower = SECOND_JOYSTICK.getAxisValue(Axis.LEFT_Y);
@@ -105,10 +105,6 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
-
-		ChassisPowers chassisPowers = new ChassisPowers();
-		chassisPowers.rotationalPower = 0.5;
-		joystick.B.onTrue(robot.getSwerve().getCommandsBuilder().driveByState(() -> chassisPowers, SwerveState.DEFAULT_PATH_PLANNER));
 	}
 
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
@@ -117,9 +113,6 @@ public class JoysticksBindings {
 
 		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
 		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
-
-//		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
-
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.B.onTrue(
@@ -148,35 +141,6 @@ public class JoysticksBindings {
 				)
 			)
 		);
-
-
-//		PathPlannerPath depotToOutpost2 = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
-//		usedJoystick.POV_RIGHT.onTrue(
-//			new SequentialCommandGroup(
-//				PathFollowingCommandsBuilder
-//					.pathfindToPose(depotToOutpost2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
-//					.asProxy(),
-//				new ParallelCommandGroup(
-//					PathFollowingCommandsBuilder.followPath(depotToOutpost2)
-//						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-//						.asProxy()
-//				)
-//			)
-//		);
-//
-//		PathPlannerPath outpostToDepot2 = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
-//		usedJoystick.POV_LEFT.onTrue(
-//			new SequentialCommandGroup(
-//				PathFollowingCommandsBuilder
-//					.pathfindToPose(outpostToDepot2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
-//					.asProxy(),
-//				new ParallelCommandGroup(
-//					PathFollowingCommandsBuilder.followPath(outpostToDepot2)
-//						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
-//						.asProxy()
-//				)
-//			)
-//		);
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
