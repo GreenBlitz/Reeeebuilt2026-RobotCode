@@ -247,7 +247,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		RobotPoseObservation compensatedVisionObservation = new RobotPoseObservation(
 			visionObservation.timestampSeconds(),
 			visionObservation.robotPose(),
-			compensateByPoseEstimatorConditions(visionObservation)
+			compensateByPoseEstimatorConditions(visionObservation.stdDevs())
 		);
 		poseEstimator.addVisionMeasurement(
 			compensatedVisionObservation.robotPose(),
@@ -258,8 +258,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.lastVisionObservation = visionObservation;
 	}
 
-	private StandardDeviations2D compensateByPoseEstimatorConditions(RobotPoseObservation visionObservation) {
-		return compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionObservation.stdDevs()));
+	private StandardDeviations2D compensateByPoseEstimatorConditions(StandardDeviations2D visionStdDevs) {
+		return compensateByIsIMUOffsetCalibrated(compensateByOdometryAccuracy(visionStdDevs));
 	}
 
 	private StandardDeviations2D compensateByIsIMUOffsetCalibrated(StandardDeviations2D visionStdDevs) {
