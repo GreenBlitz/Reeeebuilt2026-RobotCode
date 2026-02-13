@@ -13,7 +13,6 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import org.littletonrobotics.junction.Logger;
 
-
 public class ShootingCalculations {
 
 	private static final String LOG_PATH = "ShootingCalculations";
