@@ -62,8 +62,8 @@ public class AutosBuilder {
 				neutralZoneMiddleToStartingLine(
 					robot,
 					intake,
-					scoreSequence,
 					resetSubsystems,
+					scoreSequence,
 					pathfindingConstraints,
 					isNearEndOfPathTolerance,
 					true
@@ -88,8 +88,8 @@ public class AutosBuilder {
 				neutralZoneMiddleToStartingLine(
 					robot,
 					intake,
-					scoreSequence,
 					resetSubsystems,
+					scoreSequence,
 					pathfindingConstraints,
 					isNearEndOfPathTolerance,
 					false
