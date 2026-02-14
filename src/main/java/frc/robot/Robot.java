@@ -137,8 +137,8 @@ public class Robot {
 			AutosBuilder.getAutoList(
 				this,
 				() -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
-				() -> robotCommander.scoreSequence(),
 				() -> getRobotCommander().resetSubsystems(),
+				() -> robotCommander.scoreSequence(),
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
