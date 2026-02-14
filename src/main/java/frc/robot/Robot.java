@@ -79,7 +79,7 @@ public class Robot {
 	private final IPoseEstimator poseEstimator;
 
 	private final Limelight limelight;
-	private  Pose3d tempPose;
+	private Pose3d tempPose;
 
 	public Robot() {
 		// this.tempPose = new Pose3d(0.268, 0.003, 0.244, new Rotation3d(Math.toRadians(0.13), Math.toRadians(27.68), Math.toRadians(1.37)));
@@ -136,7 +136,11 @@ public class Robot {
 			LimelightPipeline.APRIL_TAG,
 			() -> new Pose3d(
 				new Translation3d(0.268, 0.003, 0.244).rotateBy(new Rotation3d(0, 0, swerve.getIMUOrientation().getZ())),
-				new Rotation3d(Math.toRadians(0.13), Math.toRadians(27.68), swerve.getIMUAbsoluteYaw().getValue().getRadians())
+				new Rotation3d(
+					Math.toRadians(0.13),
+					Math.toRadians(27.68),
+					swerve.getIMUAbsoluteYaw().getValue().getRadians() + Math.toRadians(1.37)
+				)
 			)
 		);
 		limelight.setMT1StdDevsCalculation(
