@@ -17,8 +17,18 @@ public class Phoenix6RequestBuilder {
 		);
 	}
 
-	public static Phoenix6FeedForwardRequest build(MotionMagicVelocityVoltage motionMagicVelocityVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
-		return new Phoenix6FeedForwardRequest(Rotation2d.kZero, motionMagicVelocityVoltage.withEnableFOC(enableFOC), velocity -> motionMagicVelocityVoltage.withVelocity(velocity.getRotations()), motionMagicVelocityVoltage::withFeedForward, defaultArbitraryFeedForward);
+	public static Phoenix6FeedForwardRequest build(
+		MotionMagicVelocityVoltage motionMagicVelocityVoltage,
+		double defaultArbitraryFeedForward,
+		boolean enableFOC
+	) {
+		return new Phoenix6FeedForwardRequest(
+			Rotation2d.kZero,
+			motionMagicVelocityVoltage.withEnableFOC(enableFOC),
+			velocity -> motionMagicVelocityVoltage.withVelocity(velocity.getRotations()),
+			motionMagicVelocityVoltage::withFeedForward,
+			defaultArbitraryFeedForward
+		);
 	}
 
 	public static Phoenix6FeedForwardRequest build(VelocityVoltage velocityVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
