@@ -7,12 +7,6 @@ import frc.utils.math.FieldMath;
 
 public class StateMachineConstants {
 
-	public static final Rotation2d TURRET_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(3);
-	public static final Rotation2d TURRET_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(3);
-	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING = Rotation2d.fromRotations(1);
-	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING = Rotation2d.fromRotations(1);
-	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(5);
-	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(5);
 	public static final Rotation2d TURRET_TOLERANCE_TO_START_PASSING = Rotation2d.fromDegrees(3);
 	public static final Rotation2d TURRET_TOLERANCE_TO_CONTINUE_PASSING = Rotation2d.fromDegrees(3);
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING = Rotation2d.fromRotations(1);

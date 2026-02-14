@@ -153,14 +153,8 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public boolean isReadyToScore() {
-		return ShootingChecks.isReadyToScore(
-			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
-			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING,
-			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
-		);
+		return ShootingChecks
+			.isReadyToScore(robot, StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER, StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS);
 	}
 
 	public boolean isReadyToPass() {
@@ -175,14 +169,8 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public boolean canContinueScoring() {
-		return ShootingChecks.canContinueScoring(
-			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
-			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING,
-			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
-		);
+		return ShootingChecks
+			.canContinueScoring(robot, StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER, StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS);
 	}
 
 	public boolean canContinuePassing() {
@@ -197,11 +185,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToScore() {
-		return ShootingChecks.calibrationIsReadyToScore(
-			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING
-		);
+		return ShootingChecks.calibrationIsReadyToScore(robot);
 	}
 
 	private boolean calibrationIsReadyToPass() {
@@ -213,12 +197,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationCanContinueScoring() {
-		return ShootingChecks.calibrationCanContinueScoring(
-			robot,
-			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING
-
-		);
+		return ShootingChecks.calibrationCanContinueScoring(robot);
 	}
 
 	public Command scoreSequence() {
