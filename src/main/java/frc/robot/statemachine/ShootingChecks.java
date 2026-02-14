@@ -237,7 +237,7 @@ public class ShootingChecks {
 				shootingChecksLogPath + "/isReadyToScore"
 			)
 			&& isInAllianceZone(
-				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
+				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
 				shootingChecksLogPath + "/isReadyToScore"
 			);
 	}
@@ -282,7 +282,10 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Shooting"
 		)
-			&& isInAllianceZone(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), shootingChecksLogPath)
+			&& isInAllianceZone(
+				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+				shootingChecksLogPath
+			)
 			&& isHubReadyToStartShooting(
 				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
 				shootingChecksLogPath + "/canContinueScoring"
