@@ -29,7 +29,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getLeftStartingToRightTroughNeutralZoneAuto(
+			getLeftStartingToOutpostTroughNeutralZoneAuto(
 				robot,
 				intake,
 				scoreSequence,
@@ -37,7 +37,7 @@ public class AutosBuilder {
 				pathfindingConstraints,
 				isNearEndOfPathTolerance
 			),
-			getRightStartingToLeftTroughNeutralZoneAuto(
+			getRightStartingToDepotTroughNeutralZoneAuto(
 				robot,
 				intake,
 				scoreSequence,
@@ -48,7 +48,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getRightStartingToLeftTroughNeutralZoneAuto(
+	private static Supplier<PathPlannerAutoWrapper> getRightStartingToDepotTroughNeutralZoneAuto(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
@@ -67,14 +67,15 @@ public class AutosBuilder {
 					pathfindingConstraints,
 					isNearEndOfPathTolerance,
 					true
-				)
+				),
+				leftStartingLineToDepot(robot,intake,resetSubsystems,scoreSequence,pathfindingConstraints,isNearEndOfPathTolerance)
 			),
 			new Pose2d(),
-			"R starting - Neutral Zone - Left finish"
+			"R starting - Neutral Zone - Depot finish"
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToRightTroughNeutralZoneAuto(
+	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToOutpostTroughNeutralZoneAuto(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
@@ -93,10 +94,18 @@ public class AutosBuilder {
 					pathfindingConstraints,
 					isNearEndOfPathTolerance,
 					false
+				),
+				rightStartingLineToOutpost(
+					robot,
+					intake,
+					resetSubsystems,
+					scoreSequence,
+					pathfindingConstraints,
+					isNearEndOfPathTolerance
 				)
 			),
 			new Pose2d(),
-			"L starting - Neutral Zone - right finish"
+			"L starting - Neutral Zone - Outpost finish"
 		);
 	}
 
@@ -116,6 +125,42 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
+			isNearEndOfPathTolerance
+		);
+	}
+	
+	private static Command leftStartingLineToDepot(
+		Robot robot,
+		Supplier<Command> intake,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance
+	) {
+		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
+			robot.getSwerve(),
+			() -> robot.getPoseEstimator().getEstimatedPose(),
+				PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
+			pathfindingConstraints,
+			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(),scoreSequence.get())),
+			isNearEndOfPathTolerance
+		);
+	}
+
+	private static Command rightStartingLineToOutpost(
+		Robot robot,
+		Supplier<Command> intake,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance
+	) {
+		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
+			robot.getSwerve(),
+			() -> robot.getPoseEstimator().getEstimatedPose(),
+				PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost"),
+			pathfindingConstraints,
+			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(),scoreSequence.get())),
 			isNearEndOfPathTolerance
 		);
 	}
