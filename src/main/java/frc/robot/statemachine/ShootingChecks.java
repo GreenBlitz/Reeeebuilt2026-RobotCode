@@ -21,10 +21,10 @@ public class ShootingChecks {
 	public static boolean isInAllianceZone(Translation2d position, String logPath) {
 		Translation2d allianceRelativePose = Field.getAllianceRelative(position);
 
-		boolean isPositionInAllianceZone = allianceRelativePose.getX() <= Field.MIN_HUB_X_VALUE;
+		boolean isInAlliance = allianceRelativePose.getX() <= Field.MIN_HUB_X_VALUE;
 
-		Logger.recordOutput(logPath + "/isInAllianceZone", isPositionInAllianceZone);
-		return isPositionInAllianceZone;
+		Logger.recordOutput(logPath + "/isInAllianceZone", isInAlliance);
+		return isInAlliance;
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
@@ -53,41 +53,6 @@ public class ShootingChecks {
 		boolean isWithinDistance = robotPosition.getDistance(targetTranslation) <= maxShootingDistanceFromTargetMeters;
 		Logger.recordOutput(logPath + "/isInDistance", isWithinDistance);
 		return isWithinDistance;
-	}
-
-	private static boolean isInAngleRange(
-		Translation2d robotPosition,
-		Rotation2d maxAngleFromCenter,
-		String logPath,
-		Translation2d targetTranslation,
-		boolean isPass
-	) {
-		Translation2d allianceRelativeRobotPosition = Field.getAllianceRelative(robotPosition);
-		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(allianceRelativeRobotPosition, targetTranslation).getAngle();
-		if (Field.isFieldConventionAlliance() && isPass) {
-			AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(targetTranslation, allianceRelativeRobotPosition).getAngle();
-		}
-		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndTarget.getDegrees()) <= maxAngleFromCenter.getDegrees();
-		Logger.recordOutput(logPath + "/isInRange", isInAngleRange);
-		return isInAngleRange;
-	}
-
-	private static boolean isInAngleRangeToShoot(
-		Translation2d turretPosition,
-		Rotation2d maxAngleFromCenter,
-		String logPath,
-		Translation2d targetTranslation
-	) {
-		return isInAngleRange(turretPosition, maxAngleFromCenter, logPath, targetTranslation, false);
-	}
-
-	private static boolean isInAngleRangeToPass(
-		Translation2d TurretPosition,
-		Rotation2d maxAngleFromCenter,
-		String logPath,
-		Translation2d targetTranslation
-	) {
-		return isInAngleRange(TurretPosition, maxAngleFromCenter, logPath, targetTranslation, true);
 	}
 
 	private static boolean isTurretAtTargetPosition(
@@ -282,7 +247,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
-		Rotation2d maxAngleFromTargetCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		return isReadyToShoot(
@@ -299,12 +263,6 @@ public class ShootingChecks {
 					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
 				),
 				shootingChecksLogPath + "/IsReadyToPass"
-			)
-			&& isInAngleRangeToPass(
-				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-				maxAngleFromTargetCenter,
-				shootingChecksLogPath + "/isReadyToPass",
-				ShootingCalculations.getShootingParams().targetLandingPosition()
 			);
 	}
 
@@ -336,7 +294,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
-		Rotation2d maxAngleFromTargetCenter,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		return canContinueShooting(
@@ -353,12 +310,6 @@ public class ShootingChecks {
 					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
 				),
 				shootingChecksLogPath + "/CanContinuePassing"
-			)
-			&& isInAngleRangeToPass(
-				ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-				maxAngleFromTargetCenter,
-				shootingChecksLogPath + "/canContinuePassing",
-				ShootingCalculations.getShootingParams().targetLandingPosition()
 			);
 	}
 

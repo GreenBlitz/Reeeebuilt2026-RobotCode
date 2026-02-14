@@ -7,9 +7,9 @@ public class GamePeriodUtils {
 
 	public static final int TRANSITION_SHIFT_DURATION_SECONDS = 10;
 	public static final int ALLIANCE_SHIFT_DURATION_SECONDS = 25;
-	public static final int TELEOP_DURATION_SECONDS = 110;
+	public static final int ENDGAME_START_TIME_SECONDS = 110;
 	public static final int ENDGAME_DURATION_SECONDS = 30;
-	public static final int GAME_DURATION_SECONDS = TELEOP_DURATION_SECONDS + ENDGAME_DURATION_SECONDS;
+	public static final int GAME_DURATION_SECONDS = ENDGAME_START_TIME_SECONDS + ENDGAME_DURATION_SECONDS;
 	public static final int HUB_SENSOR_ACTIVE_AFTER_GAME_ENDS_SECONDS = 3;
 	public static final int ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS = GAME_DURATION_SECONDS + HUB_SENSOR_ACTIVE_AFTER_GAME_ENDS_SECONDS;
 
@@ -25,7 +25,7 @@ public class GamePeriodUtils {
 	}
 
 	public static boolean isInEndgame() {
-		return TimeUtil.getTimeSinceTeleopInitSeconds() >= TELEOP_DURATION_SECONDS
+		return TimeUtil.getTimeSinceTeleopInitSeconds() >= ENDGAME_START_TIME_SECONDS
 			&& TimeUtil.getTimeSinceTeleopInitSeconds() <= ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS;
 	}
 
