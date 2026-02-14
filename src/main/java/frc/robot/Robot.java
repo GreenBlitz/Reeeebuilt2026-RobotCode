@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -172,9 +171,9 @@ public class Robot {
 			"Autonomous Chooser",
 			AutosBuilder.getAutoList(
 				this,
-				autonomousIntakeCommand(),
-				autonomousResetSubsystemsCommand(),
-				autonomousScoringSequenceCommand(),
+				() -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
+				() -> getRobotCommander().resetSubsystems(),
+				() -> robotCommander.scoreSequence(),
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
@@ -183,15 +182,6 @@ public class Robot {
 
 		new Trigger(() -> DriverStation.isTeleopEnabled())
 			.onTrue((robotCommander.resetSubsystems()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-		configureAuto();
-	}
-
-	private void configureAuto() {
-		Command scoringCommand = robotCommander.scoreSequence();
-		Command intakeCommand = robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
-
-		new EventTrigger("SCORE").onTrue(scoringCommand);
-		new EventTrigger("INTAKE").whileTrue(intakeCommand);
 	}
 
 	public RobotConfig getRobotConfig() {
