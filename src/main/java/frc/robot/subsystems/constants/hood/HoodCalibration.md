@@ -20,7 +20,6 @@ Hood calibrations
 - [ ] kS
 - [ ] kG
 - [ ] kV
-- [ ] kA
 ##### (SysId)
 
 
@@ -33,10 +32,6 @@ Hood calibrations
 - [ ] kP
 - [ ] kI
 - [ ] kD
-
-#### MotionMagic
-- [ ] Default max acceleration per second squared
-- [ ] Default max velocity per second
 
 #### Reset Sensor
 - [ ] Sensor channel

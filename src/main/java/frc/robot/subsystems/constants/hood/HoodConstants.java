@@ -55,9 +55,6 @@ public class HoodConstants {
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() + 3);
 	public static final double CURRENT_LIMIT = 40;
 
-	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3);
-	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
-
 	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
 	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public static final double RESET_HOOD_VOLTAGE = -0.7;
@@ -75,7 +72,7 @@ public class HoodConstants {
 			MOMENT_OF_INERTIA,
 			HOOD_LENGTH_METERS
 		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
 			IDs.TalonFXIDs.HOOD,
 			IS_INVERTED,
@@ -90,9 +87,7 @@ public class HoodConstants {
 			ARBITRARY_FEEDFORWARD,
 			FORWARD_SOFTWARE_LIMIT,
 			BACKWARD_SOFTWARE_LIMIT,
-			hoodSimulationConstants,
-			DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
-			DEFAULT_MAX_VELOCITY_PER_SECOND
+			hoodSimulationConstants
 		);
 	}
 
