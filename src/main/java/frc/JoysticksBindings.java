@@ -68,9 +68,28 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
+//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+//		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
+
+		ChassisPowers Y = new ChassisPowers();
+		Y.xPower = 0;
+		Y.yPower = 0.2;
+		ChassisPowers X = new ChassisPowers();
+		X.xPower = 0.2;
+		X.yPower = 0;
+		ChassisPowers Ym = new ChassisPowers();
+		Ym.xPower = 0;
+		Ym.yPower = -0.2;
+		ChassisPowers Xm = new ChassisPowers();
+		Xm.xPower = -0.2;
+		Xm.yPower = 0;
+		usedJoystick.B.whileTrue(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(Ym)).withTimeout(1)
+//				.andThen(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(new ChassisPowers())))
+		);
+		usedJoystick.X.whileTrue(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(Y)).withTimeout(1)
+//				.andThen(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(new ChassisPowers())))
+		);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
