@@ -3,6 +3,7 @@ package frc.robot.poseestimator.WPILibPoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 
 public class WPILibPoseEstimatorConstants {
@@ -23,11 +24,20 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final double MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND = 0.5;
 
-	public static final double COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0.07;
+	public static final LoggedNetworkNumber COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR = new LoggedNetworkNumber(
+		"tunable/COLLISION_ODOMETRY_ACCURACY",
+		0
+	);
 
-	public static final double TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0.05;
+	public static final LoggedNetworkNumber TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR = new LoggedNetworkNumber(
+		"tunable/TILT_ODOMETRY_ACCURACY",
+		0
+	);
 
-	public static final double SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = 0.02;
+	public static final LoggedNetworkNumber SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR = new LoggedNetworkNumber(
+		"tunable/SKID_ODOMETRY_ACCURACY",
+		0
+	);
 
 	/**
 	 * constant represents the addition to odometryAccuracy when the compensated vision X and Y StdDevs average is equal to one

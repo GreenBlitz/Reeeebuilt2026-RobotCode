@@ -219,11 +219,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Twist2d changeInPose = kinematics.toTwist2d(lastOdometryData.getWheelPositions(), data.getWheelPositions());
 		double changeInPoseNorm = Math.hypot(changeInPose.dx, changeInPose.dy);
 
-		odometryAccuracy -= isColliding ? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
+		odometryAccuracy -= isColliding ? WPILibPoseEstimatorConstants.COLLISION_ODOMETRY_ACCURACY_REDUCTION_FACTOR.get() * changeInPoseNorm : 0;
 
-		odometryAccuracy -= isTilted ? WPILibPoseEstimatorConstants.TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
+		odometryAccuracy -= isTilted ? WPILibPoseEstimatorConstants.TILT_ODOMETRY_ACCURACY_REDUCTION_FACTOR.get() * changeInPoseNorm : 0;
 
-		odometryAccuracy -= isSkidding ? WPILibPoseEstimatorConstants.SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR * changeInPoseNorm : 0;
+		odometryAccuracy -= isSkidding ? WPILibPoseEstimatorConstants.SKID_ODOMETRY_ACCURACY_REDUCTION_FACTOR.get() * changeInPoseNorm : 0;
 
 		odometryAccuracy = Math.max(odometryAccuracy, 0);
 	}

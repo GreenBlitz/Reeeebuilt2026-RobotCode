@@ -6,8 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,7 +17,6 @@ import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
-import frc.robot.poseestimator.OdometryData;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -54,9 +51,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
-import frc.utils.time.TimeUtil;
 
-import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
