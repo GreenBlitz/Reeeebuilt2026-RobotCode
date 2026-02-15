@@ -9,14 +9,13 @@ import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 public class BellyConstants {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Belly";
-	public final static int GEAR_RATIO = 1;
 	public final static int CURRENT_LIMIT = 40;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
 	public final static FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public final static boolean IS_INVERTED = true;
 
 	static {
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = GEAR_RATIO;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 1;
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 	}
 

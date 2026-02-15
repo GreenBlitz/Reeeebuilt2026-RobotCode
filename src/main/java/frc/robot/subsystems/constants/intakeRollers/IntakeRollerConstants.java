@@ -8,14 +8,13 @@ import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 
 public class IntakeRollerConstants {
 
-	public final static int GEAR_RATIO = 10;
 	public final static int CURRENT_LIMIT = 20;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
 	public final static FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public final static boolean IS_INVERTED = false;
 
 	static {
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = GEAR_RATIO;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 10;
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 	}
 
