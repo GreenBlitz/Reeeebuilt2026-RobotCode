@@ -33,6 +33,10 @@ public class InterpolationMap<K, V> extends InterpolatingTreeMap<K, V> {
 		return Arrays.stream(keys).map(super::get);
 	}
 
+	public V get(K key) {
+		if (key<)
+	}
+
 	public static Interpolator<Rotation2d> interpolatorForRotation2d() {
 		return (startValue, endValue, t) -> Rotation2d
 			.fromDegrees(Interpolator.forDouble().interpolate(startValue.getDegrees(), endValue.getDegrees(), t));
