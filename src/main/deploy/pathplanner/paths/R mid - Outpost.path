@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7762678062678063,
-        "y": 5.947193732193732
+        "x": 8.27,
+        "y": 3.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.2975374211037549,
-        "y": 4.278106713648796
+        "x": 6.565043390183243,
+        "y": 3.427328643431081
       },
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": "R mid"
+    },
+    {
+      "anchor": {
+        "x": 5.543831908831908,
+        "y": 2.5
+      },
+      "prevControl": {
+        "x": 5.783595818063775,
+        "y": 2.429195566312178
+      },
+      "nextControl": {
+        "x": 4.458532763532764,
+        "y": 2.820498575498576
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,21 +36,26 @@
         "y": 2.148646723646724
       },
       "prevControl": {
-        "x": 1.7321987921203335,
-        "y": 3.701285810665269
+        "x": 2.428488095238096,
+        "y": 2.253392857142858
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Outpost"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.2,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -48,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

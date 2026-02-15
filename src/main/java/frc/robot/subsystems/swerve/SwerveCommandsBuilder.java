@@ -156,10 +156,7 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command driveByDriversInputs(SwerveState state) {
-		return swerve.asSubsystemCommand(
-			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
-			"Drive by drivers inputs with state"
-		);
+		return new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state), swerve);
 	}
 
 	public Command resetTargetSpeeds() {
@@ -174,7 +171,7 @@ public class SwerveCommandsBuilder {
 		return swerve.asSubsystemCommand(
 			new DeferredCommand(
 				() -> new SequentialCommandGroup(
-					pathToPose(currentPose.get(), targetPose.get(), pathfindingConstraints),
+					pathToPose(currentPose.get(), targetPose.get(), pathfindingConstraints, swerve.getLogPath()),
 					moveToPoseByPID(currentPose, targetPose.get())
 				),
 				Set.of(swerve)
@@ -183,12 +180,12 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints) {
+	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints, String logPath) {
 		Command pathFollowingCommand;
 		if (PathPlannerUtil.isRobotInPathfindingDeadband(currentPose, targetPose)) {
-			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints);
+			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints, logPath);
 		} else {
-			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints);
+			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints, swerve.getLogPath());
 		}
 
 		return swerve.asSubsystemCommand(
@@ -200,7 +197,10 @@ public class SwerveCommandsBuilder {
 	public Command driveToPath(Supplier<Pose2d> currentPose, PathPlannerPath path, Pose2d targetPose, PathConstraints pathfindingConstraints) {
 		return new DeferredCommand(
 			() -> new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints),
+				swerve.asSubsystemCommand(
+					PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints, swerve.getLogPath()),
+					"Autonomouus"
+				),
 				moveToPoseByPID(currentPose, Field.getAllianceRelative(targetPose))
 			),
 			Set.of(swerve)

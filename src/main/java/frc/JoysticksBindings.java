@@ -113,13 +113,15 @@ public class JoysticksBindings {
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
 					)
-				),
+				,"67"),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(depotToOutpost)
+					PathFollowingCommandsBuilder.followPath(depotToOutpost,robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
-				)
+				),
+				PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
+					.deadlineFor(robot.getRobotCommander().scoreSequence())
 			)
 		);
 
@@ -134,13 +136,15 @@ public class JoysticksBindings {
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
 					)
-				),
+				,robot.getSwerve().getLogPath()),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(outpostToDepot)
+					PathFollowingCommandsBuilder.followPath(outpostToDepot,robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
-				)
+				),
+				PathFollowingCommandsBuilder.followPath(outpostToDepot, robot.getSwerve().getLogPath())
+					.deadlineFor(robot.getRobotCommander().scoreSequence())
 			)
 		);
 	}
