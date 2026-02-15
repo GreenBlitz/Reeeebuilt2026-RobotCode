@@ -71,10 +71,15 @@ public class KrakenX60FlyWheelBuilder {
 
 	public static TalonFXConfiguration buildConfig() {
 		TalonFXConfiguration configuration = new TalonFXConfiguration();
+
 		configuration.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
+		configuration.CurrentLimits.SupplyCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
+		configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
+
 		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
 		configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
 			configuration.Slot0.kP = FlywheelConstants.kP;
 			configuration.Slot0.kI = FlywheelConstants.kI;
@@ -90,17 +95,24 @@ public class KrakenX60FlyWheelBuilder {
 			configuration.Slot0.kA = FlywheelConstants.kA_SIM;
 			configuration.Slot0.kS = FlywheelConstants.kS_SIM;
 		}
+
 		return configuration;
 	}
 
 	public static TalonFXFollowerConfig buildFollowerConfig() {
 		TalonFXFollowerConfig followerConfig = new TalonFXFollowerConfig();
+
 		followerConfig.motorConfig.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_FOLLOWER;
+		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		followerConfig.motorConfig.CurrentLimits.SupplyCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
+		followerConfig.motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
 		followerConfig.followerIDs = new TalonFXFollowerConfig.TalonFXFollowerID[] {
 			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, MotorAlignmentValue.Aligned)};
+
 		return followerConfig;
 	}
 
