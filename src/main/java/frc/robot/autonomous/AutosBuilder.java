@@ -1,6 +1,5 @@
 package frc.robot.autonomous;
 
-import edu.wpi.first.wpilibj2.command.*;
 import frc.utils.auto.PathPlannerAutoWrapper;
 
 import java.util.List;
