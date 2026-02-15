@@ -92,7 +92,6 @@ public class FunnelStateHandler {
 
 
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
-		Logger.recordOutput(logPath + "/bellyVoltage", currentState.getBellyVoltage());
 		Logger.processInputs(logPath, sensorInputsAutoLogged);
 	}
 
