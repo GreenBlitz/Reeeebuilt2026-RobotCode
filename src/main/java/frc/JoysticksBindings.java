@@ -141,6 +141,91 @@ public class JoysticksBindings {
 				)
 			)
 		);
+
+		PathPlannerPath towerToHub = PathHelper.PATH_PLANNER_PATHS.get("Tower-to-Hub");
+		usedJoystick.POV_UP.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(towerToHub.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(towerToHub)
+										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
+								robot.getRobotCommander().scoreSequence()
+						)
+				)
+		);
+
+		PathPlannerPath hubToTower = PathHelper.PATH_PLANNER_PATHS.get("Hub-to-Tower");
+		usedJoystick.POV_DOWN.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(hubToTower.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(hubToTower)
+										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
+								robot.getRobotCommander().scoreSequence()
+						)
+				)
+		);
+
+		PathPlannerPath rightToLeftDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Right-To-Left-Diagonal");
+		usedJoystick.POV_LEFT.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(rightToLeftDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(rightToLeftDiagonal)
+										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
+								robot.getRobotCommander().scoreSequence()
+						)
+				)
+		);
+
+		PathPlannerPath leftToRightDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Left-to-Right-Diagonal");
+		usedJoystick.POV_RIGHT.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(leftToRightDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(leftToRightDiagonal)
+										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
+								robot.getRobotCommander().scoreSequence()
+						)
+				)
+		);
+
+
+//		PathPlannerPath depotToOutpost2 = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
+//		usedJoystick.POV_RIGHT.onTrue(
+//			new SequentialCommandGroup(
+//				PathFollowingCommandsBuilder
+//					.pathfindToPose(depotToOutpost2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
+//					.asProxy(),
+//				new ParallelCommandGroup(
+//					PathFollowingCommandsBuilder.followPath(depotToOutpost2)
+//						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
+//						.asProxy()
+//				)
+//			)
+//		);
+//
+//		PathPlannerPath outpostToDepot2 = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
+//		usedJoystick.POV_LEFT.onTrue(
+//			new SequentialCommandGroup(
+//				PathFollowingCommandsBuilder
+//					.pathfindToPose(outpostToDepot2.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3))
+//					.asProxy(),
+//				new ParallelCommandGroup(
+//					PathFollowingCommandsBuilder.followPath(outpostToDepot2)
+//						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
+//						.asProxy()
+//				)
+//			)
+//		);
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {

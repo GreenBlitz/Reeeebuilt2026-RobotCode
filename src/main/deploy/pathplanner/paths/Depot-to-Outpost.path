@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.5,
-        "y": 6.94
+        "y": 6.217328136073706
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.5,
-        "y": 5.203614600051434
+        "y": 4.48094273612514
       },
       "isLocked": false,
       "linkedName": "Depot"
