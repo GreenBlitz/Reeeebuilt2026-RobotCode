@@ -135,7 +135,7 @@ public class Robot {
 			"Vision",
 			LimelightPipeline.APRIL_TAG,
 			() -> new Pose3d(
-				new Translation3d(0.268, 0.003, 0.244).rotateBy(new Rotation3d(0, 0, swerve.getIMUOrientation().getZ())),
+				new Translation3d(0.268, 0.003, 0.244).rotateBy(new Rotation3d(0, 0, swerve.getIMUAbsoluteYaw().getValue().getRadians())),
 				new Rotation3d(
 					Math.toRadians(0.13),
 					Math.toRadians(27.68),

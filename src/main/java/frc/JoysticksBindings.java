@@ -58,6 +58,7 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getSwerve().getModules().resetModulesAngleByEncoder()));
+		usedJoystick.B.onTrue(robot.getSwerve().getCommandsBuilder().pointWheels(Rotation2d.kZero, false));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

@@ -216,10 +216,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Supplier<Pose3d> limeLightPoseRelativeToRobotCenter,
 		Pose2d limeLightPoseRelativeToField
 	) {
-		Transform2d camTransformRelativeToRobotCenter = new Transform2d(
-			new Pose2d(0, 0, Rotation2d.fromDegrees(0.0)),
-			limeLightPoseRelativeToRobotCenter.get().toPose2d()
-		);
+		Transform2d camTransformRelativeToRobotCenter = new Transform2d(new Pose2d(), limeLightPoseRelativeToRobotCenter.get().toPose2d());
 		return (limeLightPoseRelativeToField.transformBy(camTransformRelativeToRobotCenter.inverse()));
 	}
 
