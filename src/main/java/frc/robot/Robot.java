@@ -134,9 +134,6 @@ public class Robot {
 		);
 
 		this.limelightFront = new Limelight("limelight-front", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
-		this.limelightRight = new Limelight("limelight-right", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
-		this.limelightLeft = new Limelight("limelight-left", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
-
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
@@ -146,25 +143,6 @@ public class Robot {
 				new StandardDeviations2D()
 			)
 		);
-		limelightRight.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightRight,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
-			)
-		);
-		limelightLeft.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightLeft,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
-			)
-		);
-
 		limelightFront.setMT1PoseFilter(
 			LimelightFilters.megaTag1Filter(
 				limelightFront,
@@ -174,6 +152,17 @@ public class Robot {
 				Rotation2d.fromDegrees(0)
 			)
 		);
+
+		this.limelightRight = new Limelight("limelight-right", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
+		limelightRight.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelightRight,
+				new StandardDeviations2D(),
+				new StandardDeviations2D(),
+				new StandardDeviations2D(),
+				new StandardDeviations2D()
+			)
+		);
 		limelightRight.setMT1PoseFilter(
 			LimelightFilters.megaTag1Filter(
 				limelightRight,
@@ -181,6 +170,17 @@ public class Robot {
 				poseEstimator::isIMUOffsetCalibrated,
 				new Translation2d(),
 				Rotation2d.fromDegrees(0)
+			)
+		);
+
+		this.limelightLeft = new Limelight("limelight-left", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
+		limelightLeft.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelightLeft,
+				new StandardDeviations2D(),
+				new StandardDeviations2D(),
+				new StandardDeviations2D(),
+				new StandardDeviations2D()
 			)
 		);
 		limelightLeft.setMT1PoseFilter(
