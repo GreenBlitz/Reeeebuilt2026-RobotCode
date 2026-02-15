@@ -3,7 +3,6 @@ package frc.robot.subsystems.flywheel;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -41,6 +40,7 @@ public class KrakenX60FlyWheelBuilder {
 
 	public static FlyWheel build(String logPath, Phoenix6DeviceID motorID) {
 		TalonFXFollowerConfig followerConfig = buildFollowerConfig();
+
 		FlywheelSimulation simulationMotor = new FlywheelSimulation(
 			new FlywheelSim(
 				LinearSystemId.createFlywheelSystem(
@@ -72,13 +72,13 @@ public class KrakenX60FlyWheelBuilder {
 	public static TalonFXConfiguration buildConfig() {
 		TalonFXConfiguration configuration = new TalonFXConfiguration();
 
+		configuration.MotorOutput.Inverted = FlywheelConstants.IS_MASTER_INVERTED;
+		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
+
 		configuration.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
 		configuration.CurrentLimits.SupplyCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
-		configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
 			configuration.Slot0.kP = FlywheelConstants.kP;
@@ -102,8 +102,8 @@ public class KrakenX60FlyWheelBuilder {
 	public static TalonFXFollowerConfig buildFollowerConfig() {
 		TalonFXFollowerConfig followerConfig = new TalonFXFollowerConfig();
 
+		followerConfig.motorConfig.MotorOutput.Inverted = FlywheelConstants.IS_FOLLOWER_INVERTED;
 		followerConfig.motorConfig.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_FOLLOWER;
-		followerConfig.motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
