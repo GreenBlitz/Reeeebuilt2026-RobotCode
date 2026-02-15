@@ -89,6 +89,7 @@ public class FunnelStateHandler {
 
 	public void periodic() {
 		ballSensor.updateInputs(sensorInputsAutoLogged);
+
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
 		Logger.processInputs(logPath, sensorInputsAutoLogged);
 	}
