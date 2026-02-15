@@ -8,17 +8,21 @@ Hood calibrations
 #### Motor config
 - [ ] Is Inverted
 - [ ] Gear ratio
+- [ ] Current limit
 
 #### Limits
 - [ ] Max position
 - [ ] Min position
 - [ ] Forward limit
 - [ ] Backwards limit
-- [ ] Current limit
 
 #### FeedForward
 - [ ] kS
 - [ ] kG
+- [ ] kV
+- [ ] kA
+##### (SysId)
+
 
 #### PID
 - [ ] kP
@@ -35,13 +39,10 @@ Hood calibrations
 - [ ] Default max velocity per second
 
 #### Reset Sensor
-- [ ] Reset check sensor channel
-- [ ] Is reset check sensor inverted
-- [ ] Reset check sensor debounce time
-
-#### General Constants
-- [ ] Arm length
-- [ ] SysIdRoutineConfig
-- [ ] Position tolerance
+- [ ] Sensor channel
+- [ ] Is inverted
+- [ ] Debounce time
 - [ ] Reset voltage
 
+#### General Constants
+- [x] Arm length

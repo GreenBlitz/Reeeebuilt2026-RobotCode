@@ -26,11 +26,6 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(100);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
-
-	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(91);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(10);
 	public static final int CURRENT_LIMIT = 40;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
@@ -57,6 +52,12 @@ public class FourBarConstants {
 		SIMULATION_SLOT.kS = 0;
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
+
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(100);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
+
+	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(91);
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(10);
 
 	public static final Rotation2d MAX_ACCELERATION_RPS_SQUARE = Rotation2d.fromRotations(3);
 	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);

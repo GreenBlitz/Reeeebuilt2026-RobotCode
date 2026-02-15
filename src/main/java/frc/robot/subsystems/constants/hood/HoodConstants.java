@@ -60,9 +60,9 @@ public class HoodConstants {
 
 	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
 	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
+	public static final double RESET_HOOD_VOLTAGE = -0.7;
 
 	public static final double HOOD_LENGTH_METERS = 0.3;
-	public static final double RESET_HOOD_VOLTAGE = -0.7;
 	public static final double ARBITRARY_FEEDFORWARD = 0;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final SysIdRoutine.Config SYSID_ROUTINE_CONFIG = new SysIdRoutine.Config();

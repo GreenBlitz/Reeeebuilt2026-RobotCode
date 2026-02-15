@@ -9,10 +9,8 @@
 #### Motor config
 - [ ] Master is inverted
 - [ ] Follower is inverted
-- [ ] master sensor to mechanism ratio
-- [ ] Follower sensor to mechanism ratio
-
-#### Limits
+- [ ] master gear ratio
+- [ ] Follower gear ratio
 - [ ] Current limit
 
 #### Feed forward
@@ -24,7 +22,3 @@
 - [ ] kP
 - [ ] kI
 - [ ] kD
-
-#### Tolerances
-- [ ] Velocity tolerance RPS
-

@@ -34,3 +34,5 @@ Turret Calibration
 - [ ] Sensor channel
 - [ ] Is inverted
 - [ ] Debounce time
+- [ ] Reset voltage
+

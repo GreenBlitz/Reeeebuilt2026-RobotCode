@@ -7,20 +7,21 @@ FourBar calibrations
 
 #### Motor config
 - [ ] Is Inverted
-- [ ] Sensor to mechanism ratio
+- [ ] Gear ratio
+- [ ] Current limit
 
 #### Limits
 - [ ] Max position
 - [ ] Min position
 - [ ] Forward limit
 - [ ] Backwards limit
-- [ ] Current limit
 
 #### FeedForward
 - [ ] kS
 - [ ] kG
 - [ ] kA
 - [ ] kV
+##### (SysId)
 
 #### PID
 - [ ] kP
@@ -37,11 +38,10 @@ FourBar calibrations
 - [ ] Default max velocity per second
 
 #### Digital input
-- [ ] Reset check sensor channel
-- [ ] Is reset check sensor inverted
-- [ ] Debounce time for reset check sensor
+- [ ] Sensor channel
+- [ ] Is inverted
+- [ ] Debounce time
+- [ ] Reset voltage
 
 #### General Constants
-- [ ] Reset voltage
-- [ ] FourBar length
-- [ ] SysIdRoutineConfig
+- [x] FourBar length

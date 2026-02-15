@@ -21,6 +21,5 @@ Train calibrations
 
 #### Digital input
 - [ ] Sensor channel
-- [ ] Digital input name
 - [ ] Is inverted
 - [ ] Debounce time
