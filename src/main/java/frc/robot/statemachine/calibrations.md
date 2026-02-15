@@ -46,6 +46,6 @@ State machine Calibrations
 - [ ] Target X value for passing
 - [ ] Min X value to pass behind hub
 
-#### General
+#### Advanced flight time calculation
 - [ ] Maximum amount of times to recalculate flight time
 - [ ] Minimum difference between flight times to stop recalculations
