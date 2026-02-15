@@ -3,7 +3,6 @@ package frc.utils;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
-import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
@@ -95,11 +94,8 @@ public class HubUtil {
 		return getActiveHub(timeSinceTeleopInitSeconds).get().equals(DriverStationUtil.getAlliance());
 	}
 
-	public static double timeUntilCurrentShiftEndsSeconds() {
-		if (
-			TimeUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodUtils.ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS
-				|| TimeUtil.getTimeSinceTeleopInitSeconds() == -1
-		) {
+	public static double timeUntilCurrentShiftEndsSeconds(double timeSinceTeleopInitSeconds) {
+		if (timeSinceTeleopInitSeconds >= GamePeriodUtils.ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS || timeSinceTeleopInitSeconds == -1) {
 			return 0;
 		}
 		if (GamePeriodUtils.isTransitionShift()) {
@@ -110,18 +106,18 @@ public class HubUtil {
 		return GamePeriodUtils.getTimeUntilShiftEnds();
 	}
 
-	public static double getTimeLeftUntilActive() {
-		if (isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds())) {
+	public static double getTimeLeftUntilActive(double timeSinceTeleopInitSeconds) {
+		if (isOurHubActive(timeSinceTeleopInitSeconds)) {
 			return 0;
 		}
-		return timeUntilCurrentShiftEndsSeconds();
+		return timeUntilCurrentShiftEndsSeconds(timeSinceTeleopInitSeconds);
 	}
 
-	public static double getTimeLeftUntilInactive() {
-		if (!isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds())) {
+	public static double getTimeLeftUntilInactive(double timeSinceTeleopInitSeconds) {
+		if (!isOurHubActive(timeSinceTeleopInitSeconds)) {
 			return 0;
 		}
-		return timeUntilCurrentShiftEndsSeconds();
+		return timeUntilCurrentShiftEndsSeconds(timeSinceTeleopInitSeconds);
 	}
 
 	public static boolean isRobotAllianceAutoWinner() {
