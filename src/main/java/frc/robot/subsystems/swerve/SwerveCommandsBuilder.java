@@ -199,7 +199,7 @@ public class SwerveCommandsBuilder {
 			() -> new SequentialCommandGroup(
 				swerve.asSubsystemCommand(
 					PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints, swerve.getLogPath()),
-					"Autonomouus"
+					"driveToPath"
 				),
 				moveToPoseByPID(currentPose, Field.getAllianceRelative(targetPose))
 			),
