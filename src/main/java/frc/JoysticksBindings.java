@@ -4,9 +4,7 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -17,6 +15,8 @@ import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.robot.subsystems.swerve.states.DriveRelative;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
@@ -47,6 +47,11 @@ public class JoysticksBindings {
 
 	public static void updateChassisDriverInputs() {
 		if (MAIN_JOYSTICK.isConnected()) {
+//			MAIN_JOYSTICK.A.whileTrue(new RunCommand(() -> {
+//				chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+//				chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
+//				chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
+//			}));
 			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
@@ -74,22 +79,30 @@ public class JoysticksBindings {
 
 		ChassisPowers Y = new ChassisPowers();
 		Y.xPower = 0;
-		Y.yPower = 0.2;
+		Y.yPower = 0.1;
 		ChassisPowers X = new ChassisPowers();
-		X.xPower = 0.2;
+		X.xPower = 0.1;
 		X.yPower = 0;
 		ChassisPowers Ym = new ChassisPowers();
 		Ym.xPower = 0;
-		Ym.yPower = -0.2;
+		Ym.yPower = -0.1;
 		ChassisPowers Xm = new ChassisPowers();
-		Xm.xPower = -0.2;
+		Xm.xPower = -0.1;
 		Xm.yPower = 0;
-		usedJoystick.B.whileTrue(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(Ym)).withTimeout(1)
-//				.andThen(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(new ChassisPowers())))
-		);
-		usedJoystick.X.whileTrue(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(Y)).withTimeout(1)
-//				.andThen(new InstantCommand(() -> robot.getSwerve().setDriversPowerInputs(new ChassisPowers())))
-		);
+
+        usedJoystick.A.onTrue(
+                robot.getSwerve().getCommandsBuilder().turnToHeading(Rotation2d.fromDegrees(270))
+        );
+		usedJoystick.X.whileTrue(
+			robot.getSwerve().getCommandsBuilder().driveByState(() -> X, SwerveState.DEFAULT_DRIVE
+                    .withDriveRelative(DriveRelative.ROBOT_RELATIVE)
+                    )
+            );
+        usedJoystick.B.whileTrue(
+                robot.getSwerve().getCommandsBuilder().driveByState(() -> Xm, SwerveState.DEFAULT_DRIVE
+                        .withDriveRelative(DriveRelative.ROBOT_RELATIVE)
+                )
+        );
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
