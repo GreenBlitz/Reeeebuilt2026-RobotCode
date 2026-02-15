@@ -98,7 +98,7 @@ public class ShootingChecks {
 		String actionLogPath
 	) {
 		Translation2d predictedTurretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
-		String logPath = shootingChecksLogPath + "/isReadyTo" + actionLogPath;
+		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
@@ -223,7 +223,7 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return isReadyToShoot(
+		boolean isReadyToShoot = isReadyToShoot(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -231,15 +231,16 @@ public class ShootingChecks {
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			"Score"
-		)
-			&& isHubReadyToStartShooting(
-				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
-				shootingChecksLogPath + "/isReadyToScore"
-			)
-			&& isInAllianceZone(
-				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
-				shootingChecksLogPath + "/isReadyToScore"
-			);
+		);
+		boolean isHubActiveToShoot = isHubReadyToStartShooting(
+			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
+			shootingChecksLogPath + "/IsReadyToScore"
+		);
+		boolean isInAllianceZone = isInAllianceZone(
+			ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+			shootingChecksLogPath + "/IsReadyToScore"
+		);
+		return isReadyToShoot && isHubActiveToShoot && isInAllianceZone;
 	}
 
 	public static boolean isReadyToPass(
@@ -249,7 +250,7 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return isReadyToShoot(
+		boolean isReadyToShoot = isReadyToShoot(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -257,13 +258,14 @@ public class ShootingChecks {
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass"
-		)
-			&& isInPositionForPassing(
-				ShootingCalculations.getFieldRelativeTurretPosition(
-					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
-				),
-				shootingChecksLogPath + "/IsReadyToPass"
-			);
+		);
+		boolean isInPositionForPassing = isInPositionForPassing(
+			ShootingCalculations.getFieldRelativeTurretPosition(
+				new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
+			),
+			shootingChecksLogPath + "/IsReadyToPass"
+		);
+		return isReadyToShoot && isInPositionForPassing;
 	}
 
 	public static boolean canContinueScoring(
@@ -273,23 +275,24 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return canContinueShooting(
+		boolean canContinueShooting = canContinueShooting(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
 			headingTolerance,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
-			"Shooting"
-		)
-			&& isInAllianceZone(
-				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
-				shootingChecksLogPath + "/canContinueScoring"
-			)
-			&& isHubReadyToStartShooting(
-				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
-				shootingChecksLogPath + "/canContinueScoring"
-			);
+			"Scoring"
+		);
+		boolean isInAllianceZone = isInAllianceZone(
+			ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+			shootingChecksLogPath + "/CanContinueScoring"
+		);
+		boolean isHubReadyToStartShooting = isHubReadyToStartShooting(
+			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
+			shootingChecksLogPath + "/CanContinueScoring"
+		);
+		return canContinueShooting && isInAllianceZone && isHubReadyToStartShooting;
 	}
 
 	public static boolean canContinuePassing(
@@ -299,7 +302,7 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		double maxShootingDistanceFromTargetMeters
 	) {
-		return canContinueShooting(
+		boolean canContinuePassing = canContinueShooting(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
@@ -307,13 +310,14 @@ public class ShootingChecks {
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Passing"
-		)
-			&& isInPositionForPassing(
-				ShootingCalculations.getFieldRelativeTurretPosition(
-					new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
-				),
-				shootingChecksLogPath + "/CanContinuePassing"
-			);
+		);
+		boolean isInPositionForPassing = isInPositionForPassing(
+			ShootingCalculations.getFieldRelativeTurretPosition(
+				new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
+			),
+			shootingChecksLogPath + "/CanContinuePassing"
+		);
+		return canContinuePassing && isInPositionForPassing;
 	}
 
 	public static boolean calibrationIsReadyToScore(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
