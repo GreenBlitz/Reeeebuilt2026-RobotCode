@@ -237,7 +237,7 @@ public class ShootingChecks {
 			shootingChecksLogPath + "/IsReadyToScore"
 		);
 		boolean isInAllianceZone = isInAllianceZone(
-			ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+			robot.getPoseEstimator().getEstimatedPose().getTranslation(),
 			shootingChecksLogPath + "/IsReadyToScore"
 		);
 		return isReadyToShoot && isHubActiveToShoot && isInAllianceZone;
@@ -285,7 +285,7 @@ public class ShootingChecks {
 			"Scoring"
 		);
 		boolean isInAllianceZone = isInAllianceZone(
-			ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
+			robot.getPoseEstimator().getEstimatedPose().getTranslation(),
 			shootingChecksLogPath + "/CanContinueScoring"
 		);
 		boolean isHubReadyToStartShooting = isHubReadyToStartShooting(
