@@ -8,7 +8,7 @@ Funnel States Calibration
 - [ ] Voltage for train
 - [ ] time for train to accelerate
 
-- #### shoot while intake
+#### shoot while intake
 - [ ] Voltage for train
 
 #### move balls to sensor

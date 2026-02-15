@@ -59,8 +59,8 @@ public class FunnelStateHandler {
 	private Command rollUntilSensor() {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
-				train.getCommandsBuilder().setVelocity(currentState.getTrainVelocity()),
-				belly.getCommandsBuilder().setVoltage(currentState.getBellyVoltage())
+				train.getCommandsBuilder().setVelocity(FunnelState.ROLL_UNTIL_SENSOR.getTrainVelocity()),
+				belly.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getBellyVoltage())
 			).until(this::isBallAtSensor),
 			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
 		);
@@ -90,7 +90,9 @@ public class FunnelStateHandler {
 	public void periodic() {
 		ballSensor.updateInputs(sensorInputsAutoLogged);
 
+
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
+		Logger.recordOutput(logPath + "/bellyVoltage", currentState.getBellyVoltage());
 		Logger.processInputs(logPath, sensorInputsAutoLogged);
 	}
 
