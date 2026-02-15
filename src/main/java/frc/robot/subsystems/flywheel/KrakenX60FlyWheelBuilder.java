@@ -72,11 +72,13 @@ public class KrakenX60FlyWheelBuilder {
 	public static TalonFXConfiguration buildConfig() {
 		TalonFXConfiguration configuration = new TalonFXConfiguration();
 
-		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
 		configuration.MotorOutput.Inverted = FlywheelConstants.IS_MASTER_INVERTED;
+		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
 
 		configuration.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
+		configuration.CurrentLimits.SupplyCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
+		configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
 		if (Robot.ROBOT_TYPE.equals(RobotType.REAL)) {
 			configuration.Slot0.kP = FlywheelConstants.kP;
@@ -105,6 +107,8 @@ public class KrakenX60FlyWheelBuilder {
 
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		followerConfig.motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+		followerConfig.motorConfig.CurrentLimits.SupplyCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
+		followerConfig.motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
 		followerConfig.followerIDs = new TalonFXFollowerConfig.TalonFXFollowerID[] {
 			new TalonFXFollowerConfig.TalonFXFollowerID("flyWheelFollower", IDs.TalonFXIDs.FLYWHEEL_FOLLOWER, MotorAlignmentValue.Aligned)};
