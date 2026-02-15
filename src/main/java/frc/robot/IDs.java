@@ -1,9 +1,7 @@
 package frc.robot;
 
-import com.revrobotics.spark.SparkLowLevel;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
-import frc.robot.hardware.rev.motors.SparkMaxDeviceID;
 
 public class IDs {
 
@@ -29,6 +27,10 @@ public class IDs {
 
 		public static final Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40, BusChain.ROBORIO);
 
+		public static final Phoenix6DeviceID INTAKE_ROLLERS = new Phoenix6DeviceID(50, BusChain.ROBORIO);
+
+		public static final Phoenix6DeviceID BELLY = new Phoenix6DeviceID(60, BusChain.ROBORIO);
+
 	}
 
 	public static class CANCoderIDs {
@@ -53,10 +55,6 @@ public class IDs {
 	}
 
 	public static class SparkMAXIDs {
-
-		public static final SparkMaxDeviceID INTAKE_ROLLERS = new SparkMaxDeviceID(6, SparkLowLevel.MotorType.kBrushless);
-
-		public static final SparkMaxDeviceID BELLY = new SparkMaxDeviceID(60, SparkLowLevel.MotorType.kBrushless);
 
 	}
 
