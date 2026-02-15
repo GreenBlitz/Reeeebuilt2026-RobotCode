@@ -18,18 +18,16 @@ public class TrainConstant {
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Train";
 
 	public static final boolean IS_INVERTED = false;
-
 	public static final int CURRENT_LIMIT = 20;
-	public static final double MOMENT_OF_INERTIA = 0.001;
 
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final Slot0Configs REAL_SLOTS_CONFIG = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
-	public static final double TRAIN_BALL_SENSOR_DEBOUNCE_TIME = 0.15;
-	public static final boolean SENSOR_INVERTED = true;
-
 	static {
+		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 25.0 / 6.0;
+
 		REAL_SLOTS_CONFIG.kP = 2;
 		REAL_SLOTS_CONFIG.kI = 0;
 		REAL_SLOTS_CONFIG.kD = 0;
@@ -45,10 +43,12 @@ public class TrainConstant {
 		SIMULATION_SLOTS_CONFIG.kS = 0;
 		SIMULATION_SLOTS_CONFIG.kV = 0.52;
 		SIMULATION_SLOTS_CONFIG.kA = 0;
-
-		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 25.0 / 6.0;
 	}
+
+	public static final double TRAIN_BALL_SENSOR_DEBOUNCE_TIME = 0.15;
+	public static final boolean SENSOR_INVERTED = true;
+
+	public static final double MOMENT_OF_INERTIA = 0.001;
 
 	public static VelocityRoller createTrain() {
 		return TalonFXRollerBuilder.buildVelocityRoller(
