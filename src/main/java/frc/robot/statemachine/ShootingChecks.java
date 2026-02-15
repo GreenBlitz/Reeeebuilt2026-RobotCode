@@ -18,13 +18,10 @@ public class ShootingChecks {
 
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
-	public static boolean isInAllianceZone(Translation2d position, String logPath) {
+	public static boolean isInAllianceZone(Translation2d position) {
 		Translation2d allianceRelativePose = Field.getAllianceRelative(position);
 
-		boolean isInAlliance = allianceRelativePose.getX() <= Field.MIN_HUB_X_VALUE;
-
-		Logger.recordOutput(logPath + "/isInAllianceZone", isInAlliance);
-		return isInAlliance;
+		return allianceRelativePose.getX() <= Field.MIN_HUB_X_VALUE;
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
@@ -233,13 +230,11 @@ public class ShootingChecks {
 			"Score"
 		);
 		boolean isHubActiveToShoot = isHubReadyToStartShooting(
-			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
-			shootingChecksLogPath + "/IsReadyToScore"
+			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
 		);
-		boolean isInAllianceZone = isInAllianceZone(
-			robot.getPoseEstimator().getEstimatedPose().getTranslation(),
-			shootingChecksLogPath + "/IsReadyToScore"
-		);
+		Logger.recordOutput(shootingChecksLogPath + "/IsReadyToScore" + "/IsHubActiveToShoot", isHubActiveToShoot);
+		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
+		Logger.recordOutput(shootingChecksLogPath + "/IsReadyToScore" + "/IsInAllianceZone", isInAllianceZone);
 		return isReadyToShoot && isHubActiveToShoot && isInAllianceZone;
 	}
 
@@ -284,13 +279,9 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Scoring"
 		);
-		boolean isInAllianceZone = isInAllianceZone(
-			robot.getPoseEstimator().getEstimatedPose().getTranslation(),
-			shootingChecksLogPath + "/CanContinueScoring"
-		);
+		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 		boolean isHubReadyToStartShooting = isHubReadyToStartShooting(
-			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
-			shootingChecksLogPath + "/CanContinueScoring"
+			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
 		);
 		return canContinueShooting && isInAllianceZone && isHubReadyToStartShooting;
 	}
@@ -336,10 +327,9 @@ public class ShootingChecks {
 		return calibrationCanContinueShooting(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "CalibrationPass");
 	}
 
-	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters, String logPath) {
+	public static boolean isHubReadyToStartShooting(double distanceFromHubMeters) {
 		boolean isOurHubActive = HubUtil
 			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
-		Logger.recordOutput(logPath + "/isHubReadyToStartShooting", isOurHubActive);
 		return isOurHubActive;
 	}
 
