@@ -47,14 +47,14 @@ public class JoysticksBindings {
 
 	public static void updateChassisDriverInputs() {
 		if (MAIN_JOYSTICK.isConnected()) {
-//			MAIN_JOYSTICK.A.whileTrue(new RunCommand(() -> {
-//				chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
-//				chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
-//				chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
-//			}));
-			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			MAIN_JOYSTICK.Y.whileTrue(new RunCommand(() -> {
+				chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+				chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
+				chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
+			}));
+//			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
-			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
+//			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (THIRD_JOYSTICK.isConnected()) {
 			chassisDriverInputs.xPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
@@ -75,19 +75,14 @@ public class JoysticksBindings {
 		// bindings...
 //		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 //		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
+		usedJoystick.POV_UP.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
 
-		ChassisPowers Y = new ChassisPowers();
-		Y.xPower = 0;
-		Y.yPower = 0.1;
 		ChassisPowers X = new ChassisPowers();
-		X.xPower = 0.1;
+		X.xPower = 0.3;
 		X.yPower = 0;
-		ChassisPowers Ym = new ChassisPowers();
-		Ym.xPower = 0;
-		Ym.yPower = -0.1;
+
 		ChassisPowers Xm = new ChassisPowers();
-		Xm.xPower = -0.1;
+		Xm.xPower = -0.3;
 		Xm.yPower = 0;
 
         usedJoystick.A.onTrue(
@@ -108,7 +103,28 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
-		applyShootOnMoveBinds(usedJoystick, robot);
+        ChassisPowers Ym = new ChassisPowers();
+        Ym.xPower = 0;
+        Ym.yPower = -0.1;
+        ChassisPowers Y = new ChassisPowers();
+        Y.xPower = 0;
+        Y.yPower = 0.1;
+
+        usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
+        usedJoystick.A.onTrue(
+                robot.getSwerve().getCommandsBuilder().turnToHeading(Rotation2d.fromDegrees(180))
+        );
+
+        usedJoystick.X.whileTrue(
+                robot.getSwerve().getCommandsBuilder().driveByState(() -> Y, SwerveState.DEFAULT_DRIVE
+                        .withDriveRelative(DriveRelative.ROBOT_RELATIVE)
+                )
+        );
+        usedJoystick.B.whileTrue(
+                robot.getSwerve().getCommandsBuilder().driveByState(() -> Ym, SwerveState.DEFAULT_DRIVE
+                        .withDriveRelative(DriveRelative.ROBOT_RELATIVE)
+                )
+        );
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {

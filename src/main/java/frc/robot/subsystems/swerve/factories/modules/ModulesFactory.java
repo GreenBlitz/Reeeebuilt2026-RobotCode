@@ -31,21 +31,20 @@ public class ModulesFactory {
 	}
 
 	public static Modules create(String logPath) {
-//		return new Modules(
-//			logPath,
-//			createModule(logPath, ModuleUtil.ModulePosition.FRONT_LEFT),
-//			createModule(logPath, ModuleUtil.ModulePosition.FRONT_RIGHT),
-//			createModule(logPath, ModuleUtil.ModulePosition.BACK_LEFT),
-//			createModule(logPath, ModuleUtil.ModulePosition.BACK_RIGHT)
-//		);
 		return new Modules(
 			logPath,
-			createModule(logPath, ModuleUtil.ModulePosition.BACK_RIGHT),
-			createModule(logPath, ModuleUtil.ModulePosition.BACK_LEFT),
+			createModule(logPath, ModuleUtil.ModulePosition.FRONT_LEFT),
 			createModule(logPath, ModuleUtil.ModulePosition.FRONT_RIGHT),
-			createModule(logPath, ModuleUtil.ModulePosition.FRONT_LEFT)
+			createModule(logPath, ModuleUtil.ModulePosition.BACK_LEFT),
+			createModule(logPath, ModuleUtil.ModulePosition.BACK_RIGHT)
 		);
-
+//		return new Modules(
+//			logPath,
+//			createModule(logPath, ModuleUtil.ModulePosition.BACK_RIGHT),
+//			createModule(logPath, ModuleUtil.ModulePosition.BACK_LEFT),
+//			createModule(logPath, ModuleUtil.ModulePosition.FRONT_RIGHT),
+//			createModule(logPath, ModuleUtil.ModulePosition.FRONT_LEFT)
+//		);
 	}
 
 }
