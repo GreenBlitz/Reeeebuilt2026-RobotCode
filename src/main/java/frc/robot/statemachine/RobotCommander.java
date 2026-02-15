@@ -124,11 +124,17 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command neutral() {
-		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.NEUTRAL), funnelStateHandler.setState(FunnelState.NEUTRAL));
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.NEUTRAL),
+			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
+		);
 	}
 
 	private Command preShoot() {
-		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.NEUTRAL));
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.SHOOT),
+			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
+		);
 	}
 
 	private Command shoot() {
@@ -138,7 +144,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command resetShooterSubsystems() {
 		return new ParallelDeadlineGroup(
 			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
-			funnelStateHandler.setState(FunnelState.NEUTRAL)
+			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
 		);
 	}
 
@@ -152,7 +158,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command calibrationPreShoot() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
-			funnelStateHandler.setState(FunnelState.NEUTRAL)
+			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
 		);
 	}
 
@@ -234,12 +240,11 @@ public class RobotCommander extends GBSubsystem {
 			shooterStateHandler.setState(ShooterState.SHOOT),
 			new RepeatCommand(
 				new SequentialCommandGroup(
-					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToScore), RobotState.PRE_SCORE)
+					asSubsystemCommand(
+						funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::isReadyToScore),
+						RobotState.PRE_SCORE
 					),
-					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
-					)
+					asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
 				)
 			)
 		);
@@ -251,7 +256,10 @@ public class RobotCommander extends GBSubsystem {
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::isReadyToPass), RobotState.PRE_PASS)
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::isReadyToPass),
+							RobotState.PRE_PASS
+						)
 					),
 					new ParallelCommandGroup(
 						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinuePassing()), RobotState.PASS)
@@ -268,7 +276,7 @@ public class RobotCommander extends GBSubsystem {
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
 						asSubsystemCommand(
-							funnelStateHandler.setState(FunnelState.NEUTRAL).until(this::calibrationIsReadyToScore),
+							funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::calibrationIsReadyToScore),
 							RobotState.CALIBRATION_PRE_SCORE
 						)
 					),
