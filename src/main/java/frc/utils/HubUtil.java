@@ -12,7 +12,7 @@ import java.util.Optional;
 public class HubUtil {
 
 	private static Optional<DriverStation.Alliance> autoWinnerAlliance = getAutoWinningAlliance();
-	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoWinningAlliance();
+	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
 	private static final LoggedNetworkBoolean isOurHubActive = new LoggedNetworkBoolean("/Tunable/isOurHubActive", false);
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {

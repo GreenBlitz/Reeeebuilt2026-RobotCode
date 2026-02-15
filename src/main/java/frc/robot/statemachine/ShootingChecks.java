@@ -98,7 +98,7 @@ public class ShootingChecks {
 		String actionLogPath
 	) {
 		Translation2d predictedTurretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
-		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
+		String logPath = shootingChecksLogPath + "/isReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
@@ -284,7 +284,7 @@ public class ShootingChecks {
 		)
 			&& isInAllianceZone(
 				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
-				shootingChecksLogPath
+				shootingChecksLogPath + "/canContinueScoring"
 			)
 			&& isHubReadyToStartShooting(
 				ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands()),
