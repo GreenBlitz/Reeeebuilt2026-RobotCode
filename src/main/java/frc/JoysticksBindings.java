@@ -106,6 +106,7 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
+
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
