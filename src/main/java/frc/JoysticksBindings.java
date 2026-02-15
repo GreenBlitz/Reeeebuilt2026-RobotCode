@@ -125,7 +125,7 @@ public class JoysticksBindings {
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
 					),
-						robot.getSwerve().getLogPath()
+					robot.getSwerve().getLogPath()
 				),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
