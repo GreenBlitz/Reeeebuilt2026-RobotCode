@@ -3,6 +3,7 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -11,6 +12,7 @@ import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
+import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
@@ -66,7 +68,16 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
+		usedJoystick.B.onTrue((new InstantCommand(() -> robot.getSwerve().setIsRunningIndependently(true))));
+		usedJoystick.X.onTrue(
+			(robot.getSwerve()
+				.getCommandsBuilder()
+				.driveToPose(
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					() -> new Pose2d(4, 4, Rotation2d.k180deg),
+					AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS
+				))
+		);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -112,11 +123,12 @@ public class JoysticksBindings {
 						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					)
-				,"67"),
+					),
+					"67"
+				),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(depotToOutpost,robot.getSwerve().getLogPath())
+					PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
 				),
@@ -135,11 +147,12 @@ public class JoysticksBindings {
 						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					)
-				,robot.getSwerve().getLogPath()),
+					),
+					robot.getSwerve().getLogPath()
+				),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(outpostToDepot,robot.getSwerve().getLogPath())
+					PathFollowingCommandsBuilder.followPath(outpostToDepot, robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
 				),

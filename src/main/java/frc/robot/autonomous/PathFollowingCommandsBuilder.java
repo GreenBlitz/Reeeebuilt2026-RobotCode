@@ -75,14 +75,13 @@ public class PathFollowingCommandsBuilder {
 		);
 	}
 
-
 	public static Command followPath(PathPlannerPath path, String logPath) {
 		Logger.recordOutput(logPath + "/CurrentCommand", "followPath " + path.name);
 		return AutoBuilder.followPath(path);
 	}
 
 	public static Command pathfindToPose(Pose2d targetPose, PathConstraints pathfindingConstraints, String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose");
+		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose:" + targetPose);
 		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints);
 	}
 
