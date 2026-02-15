@@ -133,7 +133,10 @@ public class Robot {
 						robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
 						robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 				).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
-		);	}
+		);
+
+		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
+	}
 
 	public RobotConfig getRobotConfig() {
 		return new RobotConfig(

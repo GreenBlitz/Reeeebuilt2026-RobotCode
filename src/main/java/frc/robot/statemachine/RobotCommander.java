@@ -104,7 +104,7 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
-			case RESET_SUBSYSTEMS -> resetShooterSubsystems();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
 	}
@@ -141,17 +141,10 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
-	private Command resetShooterSubsystems() {
+	private Command resetSubsystems() {
 		return new ParallelDeadlineGroup(
 			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
 			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
-		);
-	}
-
-	public Command resetSubsystems() {
-		return new ParallelDeadlineGroup(
-			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
-			intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
 		);
 	}
 
