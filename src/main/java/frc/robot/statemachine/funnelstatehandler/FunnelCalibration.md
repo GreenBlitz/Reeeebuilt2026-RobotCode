@@ -8,6 +8,3 @@ Funnel States Calibration
 #### move balls to sensor
 - [ ] belly voltage
 - [ ] train velocity
-
-#### general calibration
-- [ ] put periodic in periodic
