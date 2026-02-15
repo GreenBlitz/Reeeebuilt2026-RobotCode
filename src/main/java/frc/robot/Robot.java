@@ -48,8 +48,6 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
-import java.util.Optional;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link RobotManager} periodic methods (other than the scheduler calls). Instead, the structure of the robot
@@ -127,16 +125,16 @@ public class Robot {
 		limelight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelight,
-				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.4),
 				new StandardDeviations2D(0.05),
-				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(-0.02)
 			)
 		);
 		limelight.setMT1PoseFilter(
 			LimelightFilters.megaTag1Filter(
 				limelight,
-				timestamp -> Optional.of(poseEstimator.getEstimatedPose().getRotation()),
+				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
 				new Translation2d(0.1, 0.1),
 				Rotation2d.fromDegrees(10)
