@@ -21,7 +21,7 @@ public class ShootingChecks {
 	public static boolean isInAllianceZone(Translation2d position) {
 		Translation2d allianceRelativePose = Field.getAllianceRelative(position);
 
-		return allianceRelativePose.getX() <= Field.MIN_HUB_X_VALUE;
+		return allianceRelativePose.getX() <= Field.ALLIANCE_ZONE_LINE_X;
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
