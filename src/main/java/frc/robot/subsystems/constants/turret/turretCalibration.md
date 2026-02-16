@@ -2,37 +2,37 @@ Turret Calibration
 ------------------------
 
 #### ID
-- [ ] Check motor ID
-- [ ] Check bus chain
-
-#### Limits
-- [ ] Check current limit
-- [ ] Check forward limit
-- [ ] Check backwards limit
-- [ ] Check max velocity
-- [ ] max acceleration
+- [ ] Motor ID
+- [ ] Bus chain
 
 #### Configs
-- [ ] Check invertion
-- [ ] Check gear ratio
+- [ ] Is inverted
+- [ ] Gear ratio
+- [ ] Current limit
 
-#### Motion magic
-- [ ] Calibrate kS
-- [ ] Calibrate kV
-- [ ] Calibrate kA
-
-#### PID
-- [ ] Calibrate kP
-- [ ] Calibrate kI
-- [ ] Calibrate kD
-
-#### General
-- [ ] Check turret radius
-- [ ] Amount of degrees for the look at hub not to move
+#### Limits
 - [ ] Max position
 - [ ] Min position
+##### (Must complete each other to 360 degrees)
+- [ ] Forward limit
+- [ ] Backwards limit
+
+#### Feed forward
+- [ ] kS
+- [ ] kV
+
+#### PID
+- [ ] kP
+- [ ] kI
+- [ ] kD
+
+#### General
+- [ ] Amount of degrees for the look at hub not to move
+- [ ] Offset from robot middle
 
 #### Reset Sensor
-- [ ] Check reset check sensor channel
-- [ ] Is reset check sensor inverted
-- [ ] Reset check sensor debounce time
+- [ ] Sensor channel
+- [ ] Is inverted
+- [ ] Debounce time
+- [ ] Reset voltage
+
