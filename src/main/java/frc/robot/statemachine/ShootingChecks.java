@@ -19,9 +19,11 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position) {
-		Translation2d allianceRelativePose = Field.getAllianceRelative(position);
-
-		return allianceRelativePose.getX() <= Field.ALLIANCE_ZONE_LINE_X_VALUE;
+		Translation2d allianceRelativeAllianceStartLine = Field.getAllianceRelative(new Translation2d(Field.ALLIANCE_LINE_X_VALUE, 0));
+		if (Field.isFieldConventionAlliance()) {
+			return position.getX() <= allianceRelativeAllianceStartLine.getX();
+		}
+		return position.getX() >= allianceRelativeAllianceStartLine.getX();
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
