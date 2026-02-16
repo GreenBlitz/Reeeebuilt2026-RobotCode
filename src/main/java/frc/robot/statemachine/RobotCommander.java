@@ -161,7 +161,9 @@ public class RobotCommander extends GBSubsystem {
 	public boolean isReadyToScore() {
 		return ShootingChecks.isReadyToScore(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
@@ -171,7 +173,9 @@ public class RobotCommander extends GBSubsystem {
 	public boolean isReadyToPass() {
 		return ShootingChecks.isReadyToPass(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
@@ -181,7 +185,9 @@ public class RobotCommander extends GBSubsystem {
 	public boolean canContinueScoring() {
 		return ShootingChecks.canContinueScoring(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
@@ -191,7 +197,9 @@ public class RobotCommander extends GBSubsystem {
 	public boolean canContinuePassing() {
 		return ShootingChecks.canContinuePassing(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
@@ -201,7 +209,9 @@ public class RobotCommander extends GBSubsystem {
 	private boolean calibrationIsReadyToScore() {
 		return ShootingChecks.calibrationIsReadyToScore(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING
 		);
 	}
@@ -209,7 +219,9 @@ public class RobotCommander extends GBSubsystem {
 	private boolean calibrationIsReadyToPass() {
 		return ShootingChecks.calibrationIsReadyToPass(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING
 		);
 	}
@@ -217,7 +229,9 @@ public class RobotCommander extends GBSubsystem {
 	private boolean calibrationCanContinueScoring() {
 		return ShootingChecks.calibrationCanContinueScoring(
 			robot,
+			robot.getFlyWheel().getVelocity(),
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
+			robot.getHood().getPosition(),
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING
 
 		);
