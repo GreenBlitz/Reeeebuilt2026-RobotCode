@@ -79,9 +79,11 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
+
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+
 	private final IPoseEstimator poseEstimator;
 
 	public Robot() {
