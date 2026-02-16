@@ -170,7 +170,7 @@ public class JoysticksBindings {
 				)
 		);
 
-		PathPlannerPath rightToLeftDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Right-To-Left-Diagonal");
+		PathPlannerPath rightToLeftDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Left-To-Right-Diagonal").mirrorPath() ;
 		usedJoystick.POV_LEFT.onTrue(
 				new SequentialCommandGroup(
 						PathFollowingCommandsBuilder
@@ -184,7 +184,7 @@ public class JoysticksBindings {
 				)
 		);
 
-		PathPlannerPath leftToRightDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Left-to-Right-Diagonal");
+		PathPlannerPath leftToRightDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Left-To-Right-Diagonal");
 		usedJoystick.POV_RIGHT.onTrue(
 				new SequentialCommandGroup(
 						PathFollowingCommandsBuilder

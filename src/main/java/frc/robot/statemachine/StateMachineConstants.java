@@ -26,7 +26,7 @@ public class StateMachineConstants {
 
 	public static final double TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS = 0.05;
 	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
-	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 5;
+	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 1;
 	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.07;
 	private static final double MIN_X_VALUE_FOR_BEHIND_HUB_PASSING = 6;
 	private static final double TARGET_X_VALUE_FOR_PASSING = Field.getAllianceRelative(Field.getHubMiddle()).getX() - 1;

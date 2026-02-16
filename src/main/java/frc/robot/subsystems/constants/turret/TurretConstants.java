@@ -31,7 +31,7 @@ public class TurretConstants {
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
 	static {
-		REAL_SLOTS_CONFIG.kP = 700;
+		REAL_SLOTS_CONFIG.kP = 600;
 		REAL_SLOTS_CONFIG.kI = 1;
 		REAL_SLOTS_CONFIG.kD = 0;
 		REAL_SLOTS_CONFIG.kG = 0;
