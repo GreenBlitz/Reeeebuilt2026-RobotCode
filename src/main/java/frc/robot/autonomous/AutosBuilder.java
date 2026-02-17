@@ -100,7 +100,7 @@ public class AutosBuilder {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-				startingSide == AllianceSide.OUTPOST
+			startingSide == AllianceSide.OUTPOST
 				? PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost")
 				: PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
 			pathfindingConstraints,
