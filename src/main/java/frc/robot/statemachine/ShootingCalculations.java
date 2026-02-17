@@ -234,7 +234,7 @@ public class ShootingCalculations {
 	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble(),
-		Map.of(2.5, 0.55, 3.14, 1.05, 3.85, 0.95, 4.89, 1.05)
+		Map.of(2.5, 0.65, 3.0, 1.05, 3.85, 0.95, 4.89, 1.05)
 	);
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
