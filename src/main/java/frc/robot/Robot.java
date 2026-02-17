@@ -43,9 +43,12 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+
+import java.util.List;
 
 import java.util.function.Supplier;
 
@@ -72,13 +75,15 @@ public class Robot {
 
 	private final RobotCommander robotCommander;
 
-	private AutonomousChooser autonomousChooser;
-
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 
+	private AutonomousChooser autonomousChooser;
+
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
+
+		this.autonomousChooser = new AutonomousChooser("autonomousChooser", List.of());
 
 		this.turret = TurretConstants.createTurret();
 		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
@@ -188,6 +193,10 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
+	public AutonomousChooser getAutonomousChooser() {
+		return autonomousChooser;
+	}
+
 	public Roller getIntakeRoller() {
 		return intakeRoller;
 	}
@@ -250,28 +259,6 @@ public class Robot {
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
 		return autonomousChooser.getChosenValue();
-	}
-
-	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
-
-		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
-
-		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
-
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
-
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				this,
-				autonomousResetSubsystemsCommand,
-				autonomousIntakeCommand,
-				autonomousScoringSequenceCommand,
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
-			)
-		);
 	}
 
 }

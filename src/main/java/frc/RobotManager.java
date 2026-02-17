@@ -7,11 +7,8 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
-import frc.robot.autonomous.AutonomousConstants;
 import frc.utils.HubUtil;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -22,6 +19,7 @@ import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -48,7 +46,6 @@ public class RobotManager extends LoggedRobot {
 		this.roborioCycles = 0;
 		this.robot = new Robot();
 
-		createAutoReadyForConstructionChooser();
 		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
@@ -111,19 +108,8 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void createAutoReadyForConstructionChooser() {
-		SendableChooser<Boolean> autoReadyForConstructionSendableChooser = new SendableChooser<>();
-		autoReadyForConstructionSendableChooser.setDefaultOption("false", false);
-		autoReadyForConstructionSendableChooser.addOption("true", true);
-		autoReadyForConstructionSendableChooser.onChange(isReady -> {
-			if (isReady) {
-				this.autonomousCommand = robot.getAutonomousCommand();
-				BrakeStateManager.brake();
-			} else {
-				BrakeStateManager.coast();
-			}
-			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
-		});
-		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);
+		this.autonomousCommand = robot.getAutonomousCommand();
+		BrakeStateManager.brake();
 	}
 
 	private void updateTimeRelatedData() {
