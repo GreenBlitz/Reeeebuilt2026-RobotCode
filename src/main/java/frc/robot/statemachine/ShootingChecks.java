@@ -19,12 +19,7 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position) {
-		boolean isPositionInAllianceZone = position.getX() <= Field.ALLIANCE_START_LINE_X_VALUE;
-		if (Field.isFieldConventionAlliance()) {
-			Logger.recordOutput(shootingChecksLogPath + "/IsInAllianceZone", isPositionInAllianceZone);
-			return isPositionInAllianceZone;
-		}
-		isPositionInAllianceZone = position.getX() >= FieldMath.mirrorX(Field.ALLIANCE_START_LINE_X_VALUE);
+		boolean isPositionInAllianceZone = Field.getAllianceRelative(position).getX() <= Field.ALLIANCE_START_LINE_X_VALUE;
 		Logger.recordOutput(shootingChecksLogPath + "/IsInAllianceZone", isPositionInAllianceZone);
 		return isPositionInAllianceZone;
 	}
