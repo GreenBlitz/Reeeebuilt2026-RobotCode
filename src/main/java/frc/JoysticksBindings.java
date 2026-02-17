@@ -14,6 +14,7 @@ import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
@@ -110,91 +111,93 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
 
-		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
-		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
+		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL));
+		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT));
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.B.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(depotToOutpost.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(depotToOutpost)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-								robot.getRobotCommander().scoreSequence()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(depotToOutpost.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+				robot.getRobotCommander()
+					.getShooterStateHandler()
+					.setState(ShooterState.SHOOT)
+					.until(() -> robot.getRobotCommander().isReadyToScore()),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(depotToOutpost),
+					robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT)
 				)
+			)
 		);
 
 		PathPlannerPath outpostToDepot = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
 		usedJoystick.X.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(outpostToDepot.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(outpostToDepot)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-								robot.getRobotCommander().scoreSequence()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(outpostToDepot.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+				robot.getRobotCommander()
+					.getShooterStateHandler()
+					.setState(ShooterState.SHOOT)
+					.until(() -> robot.getRobotCommander().isReadyToScore()),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(outpostToDepot),
+					robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT)
 				)
+			)
 		);
 
 		PathPlannerPath towerToHub = PathHelper.PATH_PLANNER_PATHS.get("Tower-to-Hub");
 		usedJoystick.POV_UP.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(towerToHub.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(towerToHub)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-								robot.getRobotCommander().scoreSequence()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(towerToHub.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(towerToHub)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
 				)
+			)
 		);
 
 		PathPlannerPath hubToTower = PathHelper.PATH_PLANNER_PATHS.get("Hub-to-Tower");
 		usedJoystick.POV_DOWN.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(hubToTower.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(hubToTower)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-								robot.getRobotCommander().scoreSequence()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(hubToTower.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(hubToTower)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
 				)
+			)
 		);
 
 		PathPlannerPath rightToLeftDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Right-To-Left-Diagonal");
 		usedJoystick.POV_LEFT.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(rightToLeftDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(rightToLeftDiagonal)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-								robot.getRobotCommander().scoreSequence()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(rightToLeftDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(rightToLeftDiagonal)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
 				)
+			)
 		);
 
 		PathPlannerPath leftToRightDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Left-to-Right-Diagonal");
 		usedJoystick.POV_RIGHT.onTrue(
-				new SequentialCommandGroup(
-						PathFollowingCommandsBuilder
-								.pathfindToPose(leftToRightDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
-						robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-						new ParallelCommandGroup(
-								PathFollowingCommandsBuilder.followPath(leftToRightDiagonal)
-										.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-								robot.getRobotCommander().scoreSequence()
-						)
+			new SequentialCommandGroup(
+				PathFollowingCommandsBuilder
+					.pathfindToPose(leftToRightDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+
+				new ParallelCommandGroup(
+					PathFollowingCommandsBuilder.followPath(leftToRightDiagonal)
+						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds())))
 				)
+			)
 		);
 
 
