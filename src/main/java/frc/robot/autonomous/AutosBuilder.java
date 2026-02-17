@@ -58,15 +58,15 @@ public class AutosBuilder {
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
-		AllianceSide side
+		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, side),
-				sideMiddleToSideWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, side)
+				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
+				sideMiddleToSideWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide)
 			),
 			new Pose2d(),
-			side == AllianceSide.OUTPOST ? "R starting - R mid - Outpost" : "L starting - L mid - Depot"
+			startingSide == AllianceSide.OUTPOST ? "R starting - R mid - Outpost" : "L starting - L mid - Depot"
 		);
 	}
 
@@ -76,12 +76,12 @@ public class AutosBuilder {
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
-		AllianceSide side
+		AllianceSide startingSide
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			side == AllianceSide.DEPOT
+			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid").mirrorPath()
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
 			pathfindingConstraints,
@@ -95,12 +95,12 @@ public class AutosBuilder {
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
-		AllianceSide side
+		AllianceSide startingSide
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			side == AllianceSide.OUTPOST
+				startingSide == AllianceSide.OUTPOST
 				? PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost")
 				: PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
 			pathfindingConstraints,
