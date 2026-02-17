@@ -63,7 +63,7 @@ public class AutosBuilder {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
 				startingLineToMiddleCommand(robot, resetSubsystems, intake, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
-				sideMiddleToSideWithScoringCommand(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide)
+				middleToAllienceSideWithScoringCommand(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide)
 			),
 			new Pose2d(),
 			startingSide == AllianceSide.OUTPOST ? "R starting - R mid - Outpost" : "L starting - L mid - Depot"
@@ -90,7 +90,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command sideMiddleToSideWithScoringCommand(
+	private static Command middleToAllienceSideWithScoringCommand(
 		Robot robot,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
