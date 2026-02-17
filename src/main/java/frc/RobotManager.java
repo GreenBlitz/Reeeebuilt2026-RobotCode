@@ -7,12 +7,8 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
-import frc.robot.autonomous.AutonomousConstants;
-import frc.robot.autonomous.AutosBuilder;
 import frc.utils.HubUtil;
 import frc.utils.auto.AutonomousChooser;
 import frc.utils.driverstation.DriverStationUtil;
@@ -52,7 +48,7 @@ public class RobotManager extends LoggedRobot {
 		this.roborioCycles = 0;
 		this.robot = new Robot();
 
-			JoysticksBindings.configureBindings(robot);
+		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
 	}
@@ -114,10 +110,7 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void createAutoReadyForConstructionChooser() {
-		AutonomousChooser autonomousChooser = new AutonomousChooser(
-				"Autonomous",
-				List.of()
-		);
+		AutonomousChooser autonomousChooser = new AutonomousChooser("Autonomous", List.of());
 		this.autonomousCommand = robot.getAutonomousCommand();
 		BrakeStateManager.brake();
 	}
