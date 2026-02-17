@@ -60,23 +60,14 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		AllianceSide side
 	) {
-		return () -> side == AllianceSide.DEPOT
-			? new PathPlannerAutoWrapper(
-				new SequentialCommandGroup(
-					startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.OUTPOST),
-					rightMiddleToOutpostWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-				),
-				new Pose2d(),
-				"R starting - R mid - Outpost"
-			)
-			: new PathPlannerAutoWrapper(
-				new SequentialCommandGroup(
-					startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT),
-					leftMiddleToDepotWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-				),
-				new Pose2d(),
-				"L starting - L mid - Depot"
-			);
+		return () -> new PathPlannerAutoWrapper(
+			new SequentialCommandGroup(
+				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, side),
+				sideMiddleToSideWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, side)
+			),
+			new Pose2d(),
+			side == AllianceSide.OUTPOST ? "R starting - R mid - Outpost" : "L starting - L mid - Depot"
+		);
 	}
 
 	private static Command startingLineToMiddle(
@@ -99,32 +90,19 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command rightMiddleToOutpostWithScoring(
+	private static Command sideMiddleToSideWithScoring(
 		Robot robot,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
+		Pose2d isNearEndOfPathTolerance,
+		AllianceSide side
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost"),
-			pathfindingConstraints,
-			scoreSequence,
-			isNearEndOfPathTolerance
-		);
-	}
-
-	private static Command leftMiddleToDepotWithScoring(
-		Robot robot,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
+			side == AllianceSide.OUTPOST
+				? PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost")
+				: PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
 			pathfindingConstraints,
 			scoreSequence,
 			isNearEndOfPathTolerance
