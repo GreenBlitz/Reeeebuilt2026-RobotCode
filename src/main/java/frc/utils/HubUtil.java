@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.Alert;
-
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
+
 import java.util.Optional;
 
 public class HubUtil {
@@ -106,14 +106,14 @@ public class HubUtil {
 		return GamePeriodUtils.getTimeUntilShiftEnds();
 	}
 
-	public static double getTimeLeftUntilActive(double timeSinceTeleopInitSeconds) {
+	public static double getTimeLeftUntilActiveSeconds(double timeSinceTeleopInitSeconds) {
 		if (isOurHubActive(timeSinceTeleopInitSeconds)) {
 			return 0;
 		}
 		return timeUntilCurrentShiftEndsSeconds(timeSinceTeleopInitSeconds);
 	}
 
-	public static double getTimeLeftUntilInactive(double timeSinceTeleopInitSeconds) {
+	public static double getTimeLeftUntilInactiveSeconds(double timeSinceTeleopInitSeconds) {
 		if (!isOurHubActive(timeSinceTeleopInitSeconds)) {
 			return 0;
 		}

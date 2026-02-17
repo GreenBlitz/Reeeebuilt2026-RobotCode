@@ -1,0 +1,124 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.3745670225331734,
+        "y": 2.43
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.988446026091892,
+        "y": 2.3654448398576515
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.806144721228311,
+        "y": 2.43
+      },
+      "prevControl": {
+        "x": 3.4176037959614067,
+        "y": 2.386963226571769
+      },
+      "nextControl": {
+        "x": 6.230129610576599,
+        "y": 2.437639367375645
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.50549228943709,
+        "y": 1.1031198102016606
+      },
+      "prevControl": {
+        "x": 6.3514459592530965,
+        "y": 1.329658531060477
+      },
+      "nextControl": {
+        "x": 6.688398576507076,
+        "y": 0.8341399762752064
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.796595492284064,
+        "y": 1.1031198102016606
+      },
+      "prevControl": {
+        "x": 7.796595492284064,
+        "y": 0.2752909445344761
+      },
+      "nextControl": {
+        "x": 7.796595492284064,
+        "y": 7.1067593442866155
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.796595492284064,
+        "y": 7.171304863582444
+      },
+      "prevControl": {
+        "x": 7.796595492284064,
+        "y": 4.0726384976508685
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -135.0
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Pre pass",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": 3.0,
+      "command": null
+    },
+    {
+      "name": "Pass",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -135.0
+  },
+  "useDefaultConstraints": true
+}

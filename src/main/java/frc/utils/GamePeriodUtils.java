@@ -10,8 +10,8 @@ public class GamePeriodUtils {
 	public static final int ENDGAME_START_TIME_SECONDS = 110;
 	public static final int ENDGAME_DURATION_SECONDS = 30;
 	public static final int GAME_DURATION_SECONDS = ENDGAME_START_TIME_SECONDS + ENDGAME_DURATION_SECONDS;
-	public static final int HUB_SENSOR_ACTIVE_AFTER_GAME_ENDS_SECONDS = 3;
-	public static final int ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS = GAME_DURATION_SECONDS + HUB_SENSOR_ACTIVE_AFTER_GAME_ENDS_SECONDS;
+	public static final int SECONDS_TO_SCORE_AFTER_GAME_ENDS = 3;
+	public static final int ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS = GAME_DURATION_SECONDS + SECONDS_TO_SCORE_AFTER_GAME_ENDS;
 
 	public static boolean isTransitionShift() {
 		if (!DriverStationUtil.isTeleop()) {
