@@ -42,9 +42,12 @@ import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -72,8 +75,12 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 
+	private AutonomousChooser autonomousChooser;
+
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
+
+		this.autonomousChooser = new AutonomousChooser("autonomousChooser", List.of());
 
 		this.turret = TurretConstants.createTurret();
 		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
@@ -187,6 +194,10 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
+	public AutonomousChooser getAutonomousChooser() {
+		return autonomousChooser;
+	}
+
 	public Roller getIntakeRoller() {
 		return intakeRoller;
 	}
@@ -248,7 +259,7 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return autonomousChooser.getChosenValue();
 	}
 
 }

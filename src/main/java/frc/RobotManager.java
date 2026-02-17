@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.utils.HubUtil;
-import frc.utils.auto.AutonomousChooser;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -21,7 +20,6 @@ import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.List;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -110,7 +108,6 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void createAutoReadyForConstructionChooser() {
-		AutonomousChooser autonomousChooser = new AutonomousChooser("Autonomous", List.of());
 		this.autonomousCommand = robot.getAutonomousCommand();
 		BrakeStateManager.brake();
 	}
