@@ -3,7 +3,6 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -12,7 +11,6 @@ import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
-import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
@@ -68,16 +66,7 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.B.onTrue((new InstantCommand(() -> robot.getSwerve().setIsRunningIndependently(true))));
-		usedJoystick.X.onTrue(
-			(robot.getSwerve()
-				.getCommandsBuilder()
-				.driveToPose(
-					() -> robot.getPoseEstimator().getEstimatedPose(),
-					() -> new Pose2d(4, 4, Rotation2d.k180deg),
-					AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS
-				))
-		);
+		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
