@@ -68,7 +68,6 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
-		usedJoystick.X.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

@@ -265,8 +265,8 @@ public class Robot {
 			"Autonomous Chooser",
 			AutosBuilder.getAutoList(
 				this,
-				autonomousIntakeCommand,
 				autonomousResetSubsystemsCommand,
+				autonomousIntakeCommand,
 				autonomousScoringSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE

@@ -23,27 +23,27 @@ public class AutosBuilder {
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(
 		Robot robot,
-		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
+		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getStartingSideToMiddleSideToAllianceSideAuto(
+			getStartingLineToMiddleToAllianceSideAuto(
 				robot,
-				scoreSequence,
-				intake,
 				resetSubsystems,
+				intake,
+				scoreSequence,
 				pathfindingConstraints,
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-			getStartingSideToMiddleSideToAllianceSideAuto(
+			getStartingLineToMiddleToAllianceSideAuto(
 				robot,
-				scoreSequence,
-				intake,
 				resetSubsystems,
+				intake,
+				scoreSequence,
 				pathfindingConstraints,
 				isNearEndOfPathTolerance,
 				AllianceSide.DEPOT
@@ -51,18 +51,18 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getStartingSideToMiddleSideToAllianceSideAuto(
+	private static Supplier<PathPlannerAutoWrapper> getStartingLineToMiddleToAllianceSideAuto(
 		Robot robot,
-		Supplier<Command> scoreSequence,
-		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
+		Supplier<Command> intake,
+		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
 		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToMiddle(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
+				startingLineToMiddle(robot, resetSubsystems, intake, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
 				sideMiddleToSideWithScoring(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide)
 			),
 			new Pose2d(),
@@ -72,8 +72,8 @@ public class AutosBuilder {
 
 	private static Command startingLineToMiddle(
 		Robot robot,
-		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
+		Supplier<Command> intake,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
 		AllianceSide startingSide
