@@ -24,11 +24,11 @@ public class PathFollowingCommandsBuilder {
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
 		Supplier<Command> commandSupplier,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return new ParallelCommandGroup(
 			commandSupplier.get(),
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, tolerance)
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance)
 		);
 	}
 
@@ -42,16 +42,30 @@ public class PathFollowingCommandsBuilder {
 		return new ParallelDeadlineGroup(commandSupplier.get(), followAdjustedPath(swerve, currentPose, path, pathfindingConstraints));
 	}
 
+	public static Command deadlineCommandWithPath(
+		Swerve swerve,
+		Supplier<Pose2d> currentPose,
+		PathPlannerPath path,
+		PathConstraints pathfindingConstraints,
+		Supplier<Command> commandSupplier,
+		Pose2d isNearEndOfPathTolerance
+	) {
+		return new ParallelDeadlineGroup(
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance),
+			commandSupplier.get()
+		);
+	}
+
 	public static Command commandAfterPath(
 		Swerve swerve,
 		Supplier<Pose2d> currentPose,
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
 		Supplier<Command> commandSupplier,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return new SequentialCommandGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, tolerance),
+			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance),
 			commandSupplier.get()
 		);
 	}
@@ -115,10 +129,13 @@ public class PathFollowingCommandsBuilder {
 		Supplier<Pose2d> currentPose,
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
-		Pose2d tolerance
+		Pose2d isNearEndOfPathTolerance
 	) {
 		return followAdjustedPath(swerve, currentPose, path, pathfindingConstraints)
-			.until(() -> ToleranceMath.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), tolerance))
+			.until(
+				() -> ToleranceMath
+					.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), isNearEndOfPathTolerance)
+			)
 			.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
 	}
 
