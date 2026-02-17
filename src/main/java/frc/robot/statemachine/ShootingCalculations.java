@@ -221,6 +221,10 @@ public class ShootingCalculations {
 		)
 	);
 
+	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
+			InverseInterpolator.forDouble(),
+			Interpolator.forDouble());
+
 	static {
 		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
 		HOOD_SCORING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(45));
@@ -229,13 +233,14 @@ public class ShootingCalculations {
 
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(16700));
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26300));
+
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.5, 0.55);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(3.14, 1.05);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(3.85, 0.95);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.89, 1.05);
 	}
 
-	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
-		InverseInterpolator.forDouble(),
-		Interpolator.forDouble(),
-		Map.of(2.5, 0.65, 3.0, 1.05, 3.85, 0.95, 4.89, 1.05)
-	);
+
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
