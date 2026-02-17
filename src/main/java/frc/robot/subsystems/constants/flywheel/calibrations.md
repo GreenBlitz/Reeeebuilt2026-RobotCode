@@ -1,18 +1,24 @@
  Flywheel calibrations
 --------------------------------
+
+#### General
+- [ ] Bus chain
 - [ ] Motor id
 - [ ] Follower id
-- [ ] Sensor to mechanism ratio
-- [ ] Follower sensor to mechanism ratio
+
+#### Motor config
+- [ ] Master is inverted
+- [ ] Follower is inverted
+- [ ] master gear ratio
+- [ ] Follower gear ratio
 - [ ] Current limit
-- [ ] Bus chain
-- [ ] Follower inverted
-- [ ] Master inverted
-- [ ] kP
-- [ ] kI
-- [ ] kD
+
+#### Feed forward
 - [ ] kS
 - [ ] kV
 - [ ] kA
-- [ ] Velocity tolerance rotation2d per second
 
+#### PID
+- [ ] kP
+- [ ] kI
+- [ ] kD
