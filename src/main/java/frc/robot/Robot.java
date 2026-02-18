@@ -20,7 +20,6 @@ import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -136,7 +135,9 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));;
+		new Trigger(() -> DriverStation.isEnabled())
+			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+		;
 
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 		new Trigger(() -> DriverStation.isTeleopEnabled())
