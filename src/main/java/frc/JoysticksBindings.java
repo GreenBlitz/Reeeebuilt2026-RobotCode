@@ -13,6 +13,8 @@ import frc.robot.statemachine.RobotState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.robot.subsystems.swerve.states.DriveRelative;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 
@@ -58,6 +60,16 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getSwerve().getModules().resetModulesAngleByEncoder()));
+		usedJoystick.X.whileTrue(robot.getSwerve().getCommandsBuilder().pointWheels(new Rotation2d(), false));
+		usedJoystick.Y.whileTrue(robot.getSwerve().getCommandsBuilder().turnToHeading(new Rotation2d()));
+		ChassisPowers chassisPowers = new ChassisPowers();
+		chassisPowers.yPower = 0.2;
+		usedJoystick.B.whileTrue(
+				robot.getSwerve()
+						.getCommandsBuilder()
+						.driveByState(() -> chassisPowers, SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE))
+		);
+		usedJoystick.POV_UP.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
