@@ -11,10 +11,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
+import frc.robot.autonomous.AutonomousConstants;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
@@ -40,9 +43,12 @@ import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -66,6 +72,8 @@ public class Robot {
 	private final Roller belly;
 
 	private final RobotCommander robotCommander;
+
+	private AutonomousChooser autonomousChooser;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
@@ -128,14 +136,13 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(
-			(new ParallelCommandGroup(
-				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
-				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
-		);
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));;
 
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
+		new Trigger(() -> DriverStation.isTeleopEnabled())
+			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+
+		configureAuto();
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -246,7 +253,29 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return autonomousChooser.getChosenValue();
+	}
+
+	private void configureAuto() {
+		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
+
+		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
+
+		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
+
+		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
+
+		this.autonomousChooser = new AutonomousChooser(
+			"Autonomous Chooser",
+			AutosBuilder.getAutoList(
+				this,
+				autonomousResetSubsystemsCommand,
+				autonomousIntakeCommand,
+				autonomousScoringSequenceCommand,
+				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+			)
+		);
 	}
 
 }
