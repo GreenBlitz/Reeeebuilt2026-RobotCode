@@ -12,20 +12,20 @@
         "y": 2.354060949681077
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     },
     {
       "anchor": {
-        "x": 2.75,
+        "x": 2.5,
         "y": 7.0
       },
       "prevControl": {
-        "x": 2.4975974486180026,
+        "x": 2.2475974486180026,
         "y": 5.625946137491142
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left"
     }
   ],
   "rotationTargets": [],
@@ -61,7 +61,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.83910138561657
+    "rotation": 139.18275234636548
   },
   "useDefaultConstraints": true
 }

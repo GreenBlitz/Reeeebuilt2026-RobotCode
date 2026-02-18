@@ -14,6 +14,7 @@ import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
@@ -108,10 +109,10 @@ public class JoysticksBindings {
 
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
+		usedJoystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 
 		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.NEUTRAL).asProxy());
-		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
+		new EventTrigger("shoot").onTrue(robot.getRobotCommander().scoreSequence());
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
 		usedJoystick.B.onTrue(
@@ -139,6 +140,59 @@ public class JoysticksBindings {
 					robot.getRobotCommander().scoreSequence()
 				)
 			)
+		);
+		
+		PathPlannerPath rightToLeftDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Right-To-Left-Diagonal");
+		usedJoystick.POV_LEFT.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(rightToLeftDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						robot.getRobotCommander()
+								.getShooterStateHandler()
+								.setState(ShooterState.SHOOT)
+								.until(() -> robot.getRobotCommander().isReadyToScore()),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(rightToLeftDiagonal),
+								robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT)
+						)
+				)
+		);
+		
+		PathPlannerPath leftToRightDiagonal = PathHelper.PATH_PLANNER_PATHS.get("Left-to-Right-Diagonal");
+		usedJoystick.POV_RIGHT.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(leftToRightDiagonal.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						robot.getRobotCommander()
+								.getShooterStateHandler()
+								.setState(ShooterState.SHOOT)
+								.until(() -> robot.getRobotCommander().isReadyToScore()),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(leftToRightDiagonal),
+								robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT)
+						)
+				)
+		);
+		
+		PathPlannerPath leftToRightClose = PathHelper.PATH_PLANNER_PATHS.get("Left-To-Right-Close" + "");
+		usedJoystick.L1.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(leftToRightClose.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(leftToRightClose)
+						)
+				)
+		);
+		
+		PathPlannerPath rightToLeftClose = PathHelper.PATH_PLANNER_PATHS.get("Right-To-Left-Close");
+		usedJoystick.R1.onTrue(
+				new SequentialCommandGroup(
+						PathFollowingCommandsBuilder
+								.pathfindToPose(rightToLeftClose.flipPath().getStartingHolonomicPose().get(), new PathConstraints(2, 2, 3, 3)),
+						new ParallelCommandGroup(
+								PathFollowingCommandsBuilder.followPath(rightToLeftClose))
+				)
 		);
 	}
 
