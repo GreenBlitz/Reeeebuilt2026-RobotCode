@@ -72,6 +72,9 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
+		applyIntakeRollerCalibrationsBindings(robot, usedJoystick);
+		applyFourBarCalibrationBindings(robot, usedJoystick, 0.3);
+		applyBellyCalibrationBindings(robot, usedJoystick, 0.3);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
@@ -170,8 +173,10 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(turret.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
 	}
 
-	private static void applyFourBarCalibrationBindings(Arm fourBar, SmartJoystick joystick, double calibrationMaxPower) {
+	private static void applyFourBarCalibrationBindings(Robot robot, SmartJoystick joystick, double calibrationMaxPower) {
 		// Check limits
+		Arm fourBar = robot.getFourBar();
+
 		joystick.R1.whileTrue(fourBar.getCommandsBuilder().setPower(() -> joystick.getAxisValue(Axis.LEFT_Y) * calibrationMaxPower));
 
 		fourBar.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
@@ -195,7 +200,7 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(hood.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(5)));
 	}
 
-	public static void applyIntakeRollerCalibrationsBindings(SmartJoystick joystick, Robot robot) {
+	public static void applyIntakeRollerCalibrationsBindings(Robot robot, SmartJoystick joystick) {
 		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(6));
 		joystick.POV_DOWN.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(-6));
 	}
@@ -205,9 +210,9 @@ public class JoysticksBindings {
 		joystick.Y.onTrue(train.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
 	}
 
-	private static void applyBellyCalibrationBindings(Roller belly, SmartJoystick joystick, double maxCalibrationPower) {
-		joystick.X.onTrue(belly.getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
-		joystick.Y.onTrue(belly.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
+	private static void applyBellyCalibrationBindings(Robot robot, SmartJoystick joystick, double maxCalibrationPower) {
+		joystick.X.onTrue(robot.getBelly().getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
+		joystick.Y.onTrue(robot.getBelly().getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
 	}
 
 }
