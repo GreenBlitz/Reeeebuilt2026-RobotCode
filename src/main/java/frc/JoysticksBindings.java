@@ -2,7 +2,6 @@ package frc;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
@@ -57,7 +56,14 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getSwerve().getModules().resetModulesAngleByEncoder()));
+//		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getSwerve().getModules().resetModulesAngleByEncoder()));
+//		usedJoystick.X.whileTrue(robot.getSwerve().getCommandsBuilder().pointWheels(new Rotation2d(), false));
+//		usedJoystick.POV_UP.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(robot.getPoseEstimator().getEstimatedPose())));
+//		usedJoystick.Y.whileTrue(robot.getSwerve().getCommandsBuilder().turnToHeading(new Rotation2d()));
+//		ChassisPowers chassisPowers = new ChassisPowers();
+//		chassisPowers.yPower = -0.2;
+//		usedJoystick.B.whileTrue(robot.getSwerve().getCommandsBuilder().driveByState(() -> chassisPowers, SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE)));
+		usedJoystick.A.onTrue(robot.getSwerve().getCommandsBuilder().pointWheels(Rotation2d.kZero, true));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
