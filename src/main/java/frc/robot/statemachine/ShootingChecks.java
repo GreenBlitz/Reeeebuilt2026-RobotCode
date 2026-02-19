@@ -1,7 +1,6 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
@@ -120,7 +119,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance && isAtTurretAtTarget
+		return isFlywheelReadyToShoot && isHoodAtPosition && isAtTurretAtTarget && isWithinDistance
 		/* && isPoseReliable */;
 	}
 
@@ -159,7 +158,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance && isAtTurretAtTarget /* && isPoseReliable */;
+		return isFlywheelReadyToShoot && isHoodAtPosition && isAtTurretAtTarget && isWithinDistance /* && isPoseReliable */;
 	}
 
 	static boolean calibrationIsReadyToShoot(
@@ -253,9 +252,7 @@ public class ShootingChecks {
 			"Pass"
 		);
 		boolean isInPositionForPassing = isInPositionForPassing(
-			ShootingCalculations.getFieldRelativeTurretPosition(
-				new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
-			),
+			ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
 			shootingChecksLogPath + "/IsReadyToPass"
 		);
 		return isReadyToShoot && isInPositionForPassing;
@@ -301,9 +298,7 @@ public class ShootingChecks {
 			"Passing"
 		);
 		boolean isInPositionForPassing = isInPositionForPassing(
-			ShootingCalculations.getFieldRelativeTurretPosition(
-				new Pose2d(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(), robot.getTurret().getPosition())
-			),
+			ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
 			shootingChecksLogPath + "/CanContinuePassing"
 		);
 		return canContinuePassing && isInPositionForPassing;
