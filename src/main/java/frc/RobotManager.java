@@ -120,6 +120,7 @@ public class RobotManager extends LoggedRobot {
 			} else {
 				BrakeStateManager.coast();
 			}
+			this.autonomousCommand = robot.getAutonomousCommand();
 			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
 		});
 		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);

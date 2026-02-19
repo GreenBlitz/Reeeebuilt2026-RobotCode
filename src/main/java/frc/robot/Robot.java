@@ -79,8 +79,6 @@ public class Robot {
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 
-	private AutonomousChooser autonomousChooser;
-
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
