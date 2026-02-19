@@ -173,7 +173,6 @@ public class ShootingChecks {
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			robot.getFlyWheel().getVelocity(),
 			ShooterConstants.flywheelCalibrationRotations.get(),
-
 			flywheelVelocityToleranceRPS,
 			logPath
 		);
@@ -181,7 +180,6 @@ public class ShootingChecks {
 		boolean isHoodAtPosition = isHoodAtPositon(
 			robot.getHood().getPosition(),
 			ShooterConstants.hoodCalibrationAngle.get(),
-
 			hoodPositionTolerance,
 			logPath
 		);
