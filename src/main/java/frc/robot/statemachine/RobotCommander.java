@@ -169,6 +169,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
@@ -180,6 +181,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}
@@ -191,6 +193,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
@@ -202,6 +205,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}

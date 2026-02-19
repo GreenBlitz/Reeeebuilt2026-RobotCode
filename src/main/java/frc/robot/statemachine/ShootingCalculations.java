@@ -20,6 +20,7 @@ public class ShootingCalculations {
 		new Rotation2d(),
 		HoodConstants.MINIMUM_POSITION,
 		TurretConstants.MIN_POSITION,
+		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
 		new Translation2d(),
 		Field.getHubMiddle()
@@ -70,11 +71,17 @@ public class ShootingCalculations {
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
+
+		Rotation2d notPredictedUnsafeTurretTarget = targetTranslation.minus(fieldRelativeTurretTranslation).getAngle();
+		notPredictedUnsafeTurretTarget = notPredictedUnsafeTurretTarget.minus(robotPose.getRotation());
+		if (ShootingChecks.isPredictedNotGoingThrewHub(turretTargetPosition,notPredictedUnsafeTurretTarget,StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,targetTranslation.equals(Field.getHubMiddle()) ? "Shoot" : "Pass"))
+			turretTargetPosition = notPredictedUnsafeTurretTarget;
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/turretStaticTarget", notPredictedUnsafeTurretTarget);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
@@ -87,6 +94,7 @@ public class ShootingCalculations {
 			flywheelTargetRPS,
 			hoodTargetPosition,
 			turretTargetPosition,
+			notPredictedUnsafeTurretTarget,
 			turretTargetVelocityRPS,
 			turretPredictedPose,
 			targetTranslation
@@ -208,7 +216,7 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+		if (true) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);

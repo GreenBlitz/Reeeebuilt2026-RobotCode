@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -112,10 +113,16 @@ public class ShootingChecks {
 		return isFlywheelAtVelocity;
 	}
 
-	private static boolean isHoodAtPositon(Rotation2d targetHoodPosition, Rotation2d hoodPosition, Rotation2d tolerance, String logPath) {
+	private static boolean isHoodAtPosition(Rotation2d targetHoodPosition, Rotation2d hoodPosition, Rotation2d tolerance, String logPath) {
 		boolean isHoodAtPosition = MathUtil.isNear(targetHoodPosition.getDegrees(), hoodPosition.getDegrees(), tolerance.getDegrees());
-		Logger.recordOutput(logPath + "/isHoodAtPositon", isHoodAtPosition);
+		Logger.recordOutput(logPath + "/isHoodAtPosition", isHoodAtPosition);
 		return isHoodAtPosition;
+	}
+
+	public static boolean isPredictedNotGoingThrewHub(Rotation2d targetTurretPosition, Rotation2d staticTurretTarget, Rotation2d goodRangeFromStaticTarget, String logPath) {
+		boolean isPredictedNotGoingThrewHub = !(TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + goodRangeFromStaticTarget.getDegrees())).getDegrees() <= targetTurretPosition.getDegrees() && TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - goodRangeFromStaticTarget.getDegrees())).getDegrees() >= targetTurretPosition.getDegrees());
+		Logger.recordOutput(logPath + "/isPredictedNotGoingThrewHub", isPredictedNotGoingThrewHub);
+		return isPredictedNotGoingThrewHub;
 	}
 
 	private static boolean isReadyToShoot(
@@ -124,12 +131,12 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromTargetCenter,
+		Rotation2d goodRangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters,
 		Translation2d targetTranslation,
 		String actionLogPath,
 		boolean isPass
 	) {
-		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
@@ -155,14 +162,18 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(
+		boolean isHoodAtPosition = isHoodAtPosition(
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
 			hoodPosition,
 			hoodPositionTolerance,
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+		boolean isPredictedNotGoingThrewHub = isPredictedNotGoingThrewHub(ShootingCalculations.getShootingParams().targetTurretPosition(),ShootingCalculations.getShootingParams().staticTurretPosition(), goodRangeFromStaticTargetForTurret,logPath);
+
+		boolean isReadyToShoot = isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget && isPredictedNotGoingThrewHub;
+		Logger.recordOutput(logPath + "/IsReadyToShoot",isReadyToShoot);
+		return isReadyToShoot;
 	}
 
 	private static boolean canContinueShooting(
@@ -171,12 +182,12 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromTargetCenter,
+		Rotation2d goodRangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters,
 		Translation2d target,
 		String actionLogPath,
 		boolean isPass
 	) {
-		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		Translation2d turretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
 
@@ -201,60 +212,18 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(
+		boolean isHoodAtPosition = isHoodAtPosition(
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
 			hoodPosition,
 			hoodPositionTolerance,
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
-	}
+		boolean isPredictedNotGoingThrewHub = isPredictedNotGoingThrewHub(ShootingCalculations.getShootingParams().targetTurretPosition(),ShootingCalculations.getShootingParams().staticTurretPosition(), goodRangeFromStaticTargetForTurret,logPath);
 
-	private static boolean calibrationIsReadyToScore(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRPS,
-		Rotation2d hoodPositionTolerance,
-		String actionLogPath
-	) {
-		String logPath = shootingChecksLogPath + "/calibrationIsReadyTo" + actionLogPath;
-
-		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
-		Rotation2d hoodPosition = robot.getHood().getPosition();
-
-		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShooterConstants.flywheelCalibrationRotations.get(),
-			flywheelVelocityRPS,
-			flywheelVelocityToleranceRPS,
-			logPath
-		);
-
-		boolean isHoodAtPosition = isHoodAtPositon(ShooterConstants.hoodCalibrationAngle.get(), hoodPosition, hoodPositionTolerance, logPath);
-
-		return isFlywheelReadyToShoot && isHoodAtPosition;
-	}
-
-	private static boolean calibrationCanContinueShooting(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRPS,
-		Rotation2d hoodPositionTolerance,
-		String actionLogPath
-	) {
-		String logPath = shootingChecksLogPath + "/calibrationIsReadyTo" + actionLogPath;
-
-		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
-		Rotation2d hoodPosition = robot.getHood().getPosition();
-
-		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
-			ShooterConstants.flywheelCalibrationRotations.get(),
-			flywheelVelocityRPS,
-			flywheelVelocityToleranceRPS,
-			logPath
-		);
-
-		boolean isHoodAtPosition = isHoodAtPositon(ShooterConstants.hoodCalibrationAngle.get(), hoodPosition, hoodPositionTolerance, logPath);
-
-		return isFlywheelReadyToShoot && isHoodAtPosition;
+		boolean canContinueShooting = isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget && isPredictedNotGoingThrewHub;
+		Logger.recordOutput(logPath + "/canContinueShooting",canContinueShooting);
+		return canContinueShooting;
 	}
 
 	public static boolean isReadyToScore(
@@ -263,6 +232,7 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
+		Rotation2d goodRangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		return isReadyToShoot(
@@ -271,6 +241,7 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			headingTolerance,
 			maxAngleFromHubCenter,
+			goodRangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			"Shoot",
@@ -284,6 +255,7 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromTargetCenter,
+		Rotation2d goodRangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		return isReadyToShoot(
@@ -292,6 +264,7 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			headingTolerance,
 			maxAngleFromTargetCenter,
+			goodRangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass",
@@ -309,6 +282,7 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
+		Rotation2d goodRangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		return canContinueShooting(
@@ -317,6 +291,7 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			headingTolerance,
 			maxAngleFromHubCenter,
+			goodRangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			"Shooting",
@@ -330,6 +305,7 @@ public class ShootingChecks {
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromTargetCenter,
+		Rotation2d goodRangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		return canContinueShooting(
@@ -338,6 +314,7 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			headingTolerance,
 			maxAngleFromTargetCenter,
+			goodRangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Passing",
@@ -348,6 +325,52 @@ public class ShootingChecks {
 				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
 				shootingChecksLogPath + "/CanContinuePassing"
 			);
+	}
+
+	private static boolean calibrationIsReadyToScore(
+			Robot robot,
+			Rotation2d flywheelVelocityToleranceRPS,
+			Rotation2d hoodPositionTolerance,
+			String actionLogPath
+	) {
+		String logPath = shootingChecksLogPath + "/calibrationIsReadyTo" + actionLogPath;
+
+		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
+		Rotation2d hoodPosition = robot.getHood().getPosition();
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+				ShooterConstants.flywheelCalibrationRotations.get(),
+				flywheelVelocityRPS,
+				flywheelVelocityToleranceRPS,
+				logPath
+		);
+
+		boolean isHoodAtPosition = isHoodAtPosition(ShooterConstants.hoodCalibrationAngle.get(), hoodPosition, hoodPositionTolerance, logPath);
+
+		return isFlywheelReadyToShoot && isHoodAtPosition;
+	}
+
+	private static boolean calibrationCanContinueShooting(
+			Robot robot,
+			Rotation2d flywheelVelocityToleranceRPS,
+			Rotation2d hoodPositionTolerance,
+			String actionLogPath
+	) {
+		String logPath = shootingChecksLogPath + "/calibrationIsReadyTo" + actionLogPath;
+
+		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
+		Rotation2d hoodPosition = robot.getHood().getPosition();
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+				ShooterConstants.flywheelCalibrationRotations.get(),
+				flywheelVelocityRPS,
+				flywheelVelocityToleranceRPS,
+				logPath
+		);
+
+		boolean isHoodAtPosition = isHoodAtPosition(ShooterConstants.hoodCalibrationAngle.get(), hoodPosition, hoodPositionTolerance, logPath);
+
+		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
 	public static boolean calibrationIsReadyToScore(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
