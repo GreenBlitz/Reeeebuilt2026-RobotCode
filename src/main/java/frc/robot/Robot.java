@@ -80,11 +80,11 @@ public class Robot {
 
 	private final Swerve swerve;
 
+	private final IPoseEstimator poseEstimator;
+
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
-
-	private final IPoseEstimator poseEstimator;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
