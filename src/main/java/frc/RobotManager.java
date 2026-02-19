@@ -4,6 +4,7 @@
 
 package frc;
 
+import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -37,6 +38,7 @@ public class RobotManager extends LoggedRobot {
 	private static double teleopStartTimeSeconds = -1;
 
 	public RobotManager() {
+		StatusLogger.disableAutoLogging();
 		if (Robot.ROBOT_TYPE.isReplay()) {
 			setUseTiming(false);
 		}

@@ -25,6 +25,10 @@ public class VelocityPositionArm extends Arm {
 	public void setTargetPositionVelocity(Rotation2d targetPosition, Rotation2d targetVelocity) {
 		velocityPositionRequest.withSetPoint(targetPosition);
 		velocityPositionRequest.setVelocity(targetVelocity);
+
+		Logger.recordOutput(getLogPath() + "/PositionTarget", targetPosition);
+		Logger.recordOutput(getLogPath() + "/VelocityPositionArmTargetVelocity", targetVelocity);
+
 		motor.applyRequest(velocityPositionRequest);
 	}
 

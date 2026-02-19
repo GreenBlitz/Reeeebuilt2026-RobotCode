@@ -1,6 +1,8 @@
 package frc.robot.statemachine.funnelstatehandler;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
+import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
@@ -10,6 +12,9 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class FunnelStateHandler {
 
 	private final VelocityRoller train;
+
+	private final IDigitalInput ballSensor;
+	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
 
 	private final Roller belly;
 
@@ -21,13 +26,15 @@ public class FunnelStateHandler {
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath) {
+	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor) {
 		this.train = train;
 		this.belly = belly;
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
 		this.trainCalibrationVoltage = new LoggedNetworkNumber("Tunable/TrainVoltage", 0);
 		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyVoltage", 0);
+		this.ballSensor = ballSensor;
+		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 	}
 
@@ -68,6 +75,13 @@ public class FunnelStateHandler {
 			train.getCommandsBuilder().setVoltage(() -> trainCalibrationVoltage.get()),
 			belly.getCommandsBuilder().setVoltage(() -> bellyCalibrationVoltage.get())
 		);
+	}
+
+	public void periodic() {
+		ballSensor.updateInputs(sensorInputsAutoLogged);
+
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
+		Logger.processInputs(logPath, sensorInputsAutoLogged);
 	}
 
 }

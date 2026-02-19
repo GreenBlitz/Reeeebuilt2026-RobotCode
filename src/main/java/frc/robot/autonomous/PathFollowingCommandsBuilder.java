@@ -56,7 +56,6 @@ public class PathFollowingCommandsBuilder {
 		);
 	}
 
-
 	public static Command followPath(PathPlannerPath path) {
 		return AutoBuilder.followPath(path);
 	}

@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
@@ -56,7 +57,7 @@ class KrakenX60SteerBuilder {
 
 		steerConfig.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
-		steerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+		steerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 		steerConfig.CurrentLimits.StatorCurrentLimit = 30;
 		steerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
@@ -79,6 +80,7 @@ class KrakenX60SteerBuilder {
 			steerConfig.Slot0.kD = 0;
 		}
 		steerConfig.ClosedLoopGeneral.ContinuousWrap = true;
+		steerConfig.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 		return steerConfig;
 	}
