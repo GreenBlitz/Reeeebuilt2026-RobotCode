@@ -171,7 +171,7 @@ public class SwerveCommandsBuilder {
 		return swerve.asSubsystemCommand(
 			new DeferredCommand(
 				() -> new SequentialCommandGroup(
-					pathToPose(currentPose.get(), targetPose.get(), pathfindingConstraints, swerve.getLogPath()),
+					pathToPose(currentPose.get(), targetPose.get(), pathfindingConstraints),
 					moveToPoseByPID(currentPose, targetPose.get())
 				),
 				Set.of(swerve)
@@ -180,10 +180,10 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints, String logPath) {
+	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints) {
 		Command pathFollowingCommand;
 		if (PathPlannerUtil.isRobotInPathfindingDeadband(currentPose, targetPose)) {
-			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints, logPath);
+			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints, swerve.getLogPath());
 		} else {
 			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints, swerve.getLogPath());
 		}
