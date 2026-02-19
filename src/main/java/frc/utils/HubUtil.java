@@ -12,7 +12,7 @@ public class HubUtil {
 
 	private static Optional<DriverStation.Alliance> autoWinnerAlliance = getAutoWinningAlliance();
 	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
-	private static final LoggedNetworkBoolean isOurHubActive = new LoggedNetworkBoolean("/Tunable/isOurHubActive", false);
+	private static final LoggedNetworkBoolean isOurHubActiveTunable = new LoggedNetworkBoolean("/Tunable/isOurHubActive", false);
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		if (!DriverStationUtil.isTeleop()) {
@@ -86,7 +86,7 @@ public class HubUtil {
 
 	public static boolean isOurHubActive(double timeSinceTeleopInitSeconds) {
 		if (!DriverStation.isFMSAttached()) {
-			return isOurHubActive.get();
+			return isOurHubActiveTunable.get();
 		}
 		if (getActiveHub(timeSinceTeleopInitSeconds).isEmpty()) {
 			return false;

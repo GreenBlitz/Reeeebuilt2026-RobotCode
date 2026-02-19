@@ -78,7 +78,7 @@ public class ShootingChecks {
 		return isFlywheelAtVelocity;
 	}
 
-	private static boolean isHoodAtPositon(Rotation2d hoodPosition, Rotation2d targetHoodPosition, Rotation2d hoodTolerance, String logPath) {
+	private static boolean isHoodAtPosition(Rotation2d hoodPosition, Rotation2d targetHoodPosition, Rotation2d hoodTolerance, String logPath) {
 		boolean isHoodAtPosition = MathUtil.isNear(targetHoodPosition.getDegrees(), hoodPosition.getDegrees(), hoodTolerance.getDegrees());
 		Logger.recordOutput(logPath + "/IsHoodAtPosition", isHoodAtPosition);
 		return isHoodAtPosition;
@@ -110,16 +110,21 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(
+		boolean isHoodAtPosition = isHoodAtPosition(
 			robot.getHood().getPosition(),
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
 			hoodPositionTolerance,
 			logPath
 		);
 
-		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, targetTranslation, logPath);
+		boolean isTurretWithinDistance = isWithinDistance(
+			predictedTurretPosition,
+			maxShootingDistanceFromTargetMeters,
+			targetTranslation,
+			logPath
+		);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance
 		/* && isPoseReliable */;
 	}
 
@@ -149,15 +154,15 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(
+		boolean isHoodAtPosition = isHoodAtPosition(
 			robot.getHood().getPosition(),
 			ShootingCalculations.getShootingParams().targetHoodPosition(),
 			hoodPositionTolerance,
 			logPath
 		);
-		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
+		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance /* && isPoseReliable */;
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance /* && isPoseReliable */;
 	}
 
 	static boolean calibrationIsReadyToShoot(
@@ -175,7 +180,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(
+		boolean isHoodAtPosition = isHoodAtPosition(
 			robot.getHood().getPosition(),
 			ShooterConstants.hoodCalibrationAngle.get(),
 			hoodPositionTolerance,
@@ -200,7 +205,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isHoodAtPosition = isHoodAtPositon(
+		boolean isHoodAtPosition = isHoodAtPosition(
 			robot.getHood().getPosition(),
 			ShooterConstants.hoodCalibrationAngle.get(),
 			hoodPositionTolerance,
