@@ -2,6 +2,7 @@ package frc.robot.statemachine.funnelstatehandler;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
+import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
@@ -12,6 +13,7 @@ public class FunnelStateHandler {
 
 	private final VelocityRoller train;
 
+	private final IDigitalInput ballSensor;
 	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
 
 	private final Roller belly;
@@ -24,20 +26,21 @@ public class FunnelStateHandler {
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath) {
+	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor) {
 		this.train = train;
 		this.belly = belly;
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
 		this.trainCalibrationVoltage = new LoggedNetworkNumber("Tunable/TrainVoltage", 0);
 		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyVoltage", 0);
+		this.ballSensor = ballSensor;
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 	}
 
 	public Command setState(FunnelState state) {
 		Command command = switch (state) {
-			case NEUTRAL -> neutral();
+			case ROLL_UNTIL_SENSOR -> rollUntilSensor();
 			case SHOOT -> shoot();
 			case STOP -> stop();
 			case CALIBRATION -> calibration();
@@ -53,8 +56,14 @@ public class FunnelStateHandler {
 		return sensorInputsAutoLogged.debouncedValue;
 	}
 
-	private Command neutral() {
-		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
+	private Command rollUntilSensor() {
+		return new SequentialCommandGroup(
+			new ParallelCommandGroup(
+				train.getCommandsBuilder().setVelocity(FunnelState.ROLL_UNTIL_SENSOR.getTrainVelocity()),
+				belly.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getBellyVoltage())
+			).until(this::isBallAtSensor),
+			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
+		);
 	}
 
 	private Command shoot() {
@@ -79,6 +88,8 @@ public class FunnelStateHandler {
 	}
 
 	public void periodic() {
+		ballSensor.updateInputs(sensorInputsAutoLogged);
+
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
 		Logger.processInputs(logPath, sensorInputsAutoLogged);
 	}

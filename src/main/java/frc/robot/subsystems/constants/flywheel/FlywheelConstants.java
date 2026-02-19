@@ -1,25 +1,38 @@
 package frc.robot.subsystems.constants.flywheel;
 
 
+import com.ctre.phoenix6.signals.InvertedValue;
+import frc.robot.IDs;
+import frc.robot.subsystems.flywheel.FlyWheel;
+import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
+
 public class FlywheelConstants {
 
-	public final static double kP = 12;
-	public final static double kI = 2;
-	public final static double kD = 0;
-	public final static double kV = 0.0;
-	public final static double kS = 0.0;
-	public final static double kA = 0.0;
+	public static final double SENSOR_TO_MECHANISM_RATIO_MASTER = 40.0 / 36.0;
+	public static final double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 40.0 / 36.0;
 
-	public final static double kP_SIM = 0.4;
-	public final static double kI_SIM = 0;
-	public final static double kD_SIM = 0;
-	public final static double kS_SIM = 0.0;
-	public final static double kV_SIM = 0.1385;
-	public final static double kA_SIM = 0;
+	public static final InvertedValue IS_MASTER_INVERTED = InvertedValue.Clockwise_Positive;
+	public static final InvertedValue IS_FOLLOWER_INVERTED = InvertedValue.Clockwise_Positive;
 
-	public final static double SENSOR_TO_MECHANISM_RATIO_MASTER = 40.0 / 36.0;
-	public final static double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 40.0 / 36.0;
-	public final static double MOMENT_OF_INERTIA = 0.01;
-	public final static int CURRENT_LIMIT = 40;
+	public static final double kP = 12;
+	public static final double kI = 2;
+	public static final double kD = 0;
+	public static final double kV = 0.0;
+	public static final double kS = 0.0;
+	public static final double kA = 0.0;
+
+	public static final double kP_SIM = 0.4;
+	public static final double kI_SIM = 0;
+	public static final double kD_SIM = 0;
+	public static final double kS_SIM = 0.0;
+	public static final double kV_SIM = 0.1385;
+	public static final double kA_SIM = 0;
+
+	public static final double MOMENT_OF_INERTIA = 0.01;
+	public static final int CURRENT_LIMIT = 40;
+
+	public static FlyWheel createFlyWheel() {
+		return KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
+	}
 
 }
