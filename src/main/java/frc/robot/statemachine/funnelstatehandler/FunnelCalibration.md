@@ -1,14 +1,10 @@
 Funnel States Calibration
 ---------------------------------
 
-#### drive
-- [ ] Voltage for one circle
-
 #### shoot
-- [ ] Voltage for train
-- [ ] time for train to accelerate
-- #### shoot while intake
-- [ ] Voltage for train
+- [ ] Train velocity
+- [ ] Belly Voltage
 
-#### general calibration
-- [ ] put periodic in periodic
+#### move balls to sensor
+- [ ] belly voltage
+- [ ] train velocity

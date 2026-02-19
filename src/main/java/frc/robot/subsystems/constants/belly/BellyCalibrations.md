@@ -5,6 +5,6 @@ belly calibrations
 - [ ] Motor id
 
 #### Config
+- [ ] Is inverted
 - [ ] Gear ratio
 - [ ] Current limit
-- [ ] Is inverted

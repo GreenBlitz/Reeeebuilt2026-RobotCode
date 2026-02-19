@@ -5,20 +5,23 @@ FourBar calibrations
 - [ ] motor id
 - [ ] motor BusChain
 
-#### Limits
+#### Motor config
+- [ ] Is Inverted
+- [ ] Gear ratio
 - [ ] Current limit
-- [ ] Forward limit
-- [ ] Backwards limit
+
+#### Limits
 - [ ] Max position
 - [ ] Min position
+- [ ] Forward limit
+- [ ] Backwards limit
 
-#### Motor config
-- [ ] Sensor to mechanism ratio
-- [ ] Is Inverted
-
-#### General Constants
-- [ ] FourBar length
-- [ ] SysIdRoutineConfig
+#### FeedForward
+- [ ] kS
+- [ ] kG
+- [ ] kA
+- [ ] kV
+##### (SysId)
 
 #### PID
 - [ ] kP
@@ -30,17 +33,15 @@ FourBar calibrations
 - [ ] kI
 - [ ] kD
 
-#### FeedForward
-- [ ] kS
-- [ ] kG
-- [ ] kA
-- [ ] kV
-
 #### MotionMagic
-- [ ] Default max acceleration per meter square
-- [ ] Default max velocity per meter
-- 
+- [ ] Default max acceleration per second squared
+- [ ] Default max velocity per second
+
 #### Digital input
-- [ ] Reset check sensor channel
-- [ ] Is reset check sensor inverted
-- [ ] Debounce time for reset check sensor
+- [ ] Sensor channel
+- [ ] Is inverted
+- [ ] Debounce time
+- [ ] Reset voltage
+
+#### General Constants
+- [x] FourBar length
