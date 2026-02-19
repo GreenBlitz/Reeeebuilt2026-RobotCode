@@ -203,26 +203,29 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean calibrationIsReadyToScore() {
-		return ShootingChecks.calibrationIsReadyToScore(
+		return ShootingChecks.calibrationIsReadyToShoot(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
+			"Score"
 		);
 	}
 
 	private boolean calibrationIsReadyToPass() {
-		return ShootingChecks.calibrationIsReadyToPass(
+		return ShootingChecks.calibrationIsReadyToShoot(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
+			"Pass"
 		);
 	}
 
 	private boolean calibrationCanContinueScoring() {
-		return ShootingChecks.calibrationCanContinueScoring(
+		return ShootingChecks.calibrationCanContinueShooting(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
-			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
+			"Scoring"
 
 		);
 	}

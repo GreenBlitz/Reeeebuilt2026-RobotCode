@@ -162,7 +162,7 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance && isAtTurretAtTarget /* && isPoseReliable */;
 	}
 
-	private static boolean calibrationIsReadyToShoot(
+	static boolean calibrationIsReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -187,7 +187,7 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
-	private static boolean calibrationCanContinueShooting(
+	static boolean calibrationCanContinueShooting(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -307,22 +307,6 @@ public class ShootingChecks {
 			shootingChecksLogPath + "/CanContinuePassing"
 		);
 		return canContinuePassing && isInPositionForPassing;
-	}
-
-	public static boolean calibrationIsReadyToScore(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationIsReadyToShoot(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Score");
-	}
-
-	public static boolean calibrationIsReadyToPass(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationIsReadyToShoot(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Pass");
-	}
-
-	public static boolean calibrationCanContinueScoring(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationCanContinueShooting(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Scoring");
-	}
-
-	public static boolean calibrationCanContinuePassing(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
-		return calibrationCanContinueShooting(robot, flywheelVelocityToleranceRPS, hoodPositionTolerance, "Passing");
 	}
 
 	public static boolean isOurHubReadyToStartShooting(double distanceFromHubMeters) {
