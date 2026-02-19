@@ -11,15 +11,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
-import frc.robot.autonomous.AutonomousConstants;
-import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
-import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -40,16 +37,12 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
-import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
-import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -72,17 +65,18 @@ public class Robot {
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
-	private final RobotCommander robotCommander;
+	public final RobotCommander robotCommander;
 
-	private AutonomousChooser autonomousChooser;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 
+	private PathPlannerAutoWrapper autonomousCommand;
+
+
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
-		this.autonomousChooser = new AutonomousChooser("autonomousChooser", List.of());
 
 		this.turret = TurretConstants.createTurret();
 		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
@@ -141,8 +135,6 @@ public class Robot {
 
 		new Trigger(() -> DriverStation.isTeleopEnabled())
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-
-		configureAuto();
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -192,9 +184,6 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	public AutonomousChooser getAutonomousChooser() {
-		return autonomousChooser;
-	}
 
 	public Roller getIntakeRoller() {
 		return intakeRoller;
@@ -248,6 +237,11 @@ public class Robot {
 		return swerve;
 	}
 
+	public PathPlannerAutoWrapper getaAutonomousCommand() {
+		return autonomousCommand;
+	}
+
+
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -256,30 +250,5 @@ public class Robot {
 		return simulationManager;
 	}
 
-	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return autonomousChooser.getChosenValue();
-	}
-
-	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
-
-		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
-
-		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
-
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
-
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				this,
-				autonomousResetSubsystemsCommand,
-				autonomousIntakeCommand,
-				autonomousScoringSequenceCommand,
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
-			)
-		);
-	}
 
 }
