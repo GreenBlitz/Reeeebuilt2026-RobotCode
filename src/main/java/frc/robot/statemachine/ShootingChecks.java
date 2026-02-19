@@ -96,8 +96,6 @@ public class ShootingChecks {
 		Translation2d predictedTurretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/IsReadyTo" + actionLogPath;
 
-		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, targetTranslation, logPath);
-
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
@@ -119,7 +117,9 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isAtTurretAtTarget && isWithinDistance
+		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, targetTranslation, logPath);
+
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance
 		/* && isPoseReliable */;
 	}
 
@@ -135,8 +135,6 @@ public class ShootingChecks {
 		Translation2d predictedTurretPosition = ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands();
 		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
 
-		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
-
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
@@ -157,8 +155,9 @@ public class ShootingChecks {
 			hoodPositionTolerance,
 			logPath
 		);
+		boolean isWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isAtTurretAtTarget && isWithinDistance /* && isPoseReliable */;
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isWithinDistance /* && isPoseReliable */;
 	}
 
 	static boolean calibrationIsReadyToShoot(
@@ -274,11 +273,14 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Scoring"
 		);
-		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
+
 		boolean isOurHubReadyToStartShooting = isOurHubReadyToStartShooting(
 			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
 		);
-		return canContinueShooting && isInAllianceZone && isOurHubReadyToStartShooting;
+
+		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
+
+		return canContinueShooting && isOurHubReadyToStartShooting && isInAllianceZone;
 	}
 
 	public static boolean canContinuePassing(
