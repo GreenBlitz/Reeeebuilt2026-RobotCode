@@ -75,10 +75,10 @@ public class ShootingCalculations {
 		Rotation2d staticTurretTarget = targetTranslation.minus(fieldRelativeTurretTranslation).getAngle();
 		staticTurretTarget = staticTurretTarget.minus(robotPose.getRotation());
 		if (
-				!ShootingChecks.isTurretPredictedNotTooFarFromStaticTarget(
+				!ShootingChecks.isTurretPredictedInRangeFromStaticTarget(
 						turretTargetPosition,
 						staticTurretTarget,
-						StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,
+						StateMachineConstants.RANGE_FROM_STATIC_TARGET_TO_SHOOT,
 						targetTranslation.equals(Field.getHubMiddle()) ? "Score" : "Pass"
 				)
 		) {

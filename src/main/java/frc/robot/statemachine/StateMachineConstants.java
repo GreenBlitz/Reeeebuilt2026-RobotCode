@@ -19,7 +19,7 @@ public class StateMachineConstants {
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING = Rotation2d.fromRotations(1);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_PASSING = Rotation2d.fromDegrees(5);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING = Rotation2d.fromDegrees(5);
-	public static final Rotation2d GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT = Rotation2d.fromDegrees(120);
+	public static final Rotation2d RANGE_FROM_STATIC_TARGET_TO_SHOOT = Rotation2d.fromDegrees(120);
 	public static final double MAX_DISTANCE_TO_SCORE_METERS = 6;
 	public static final double MAX_DISTANCE_TO_PASS_METERS = 6;
 	public static final double TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS = 0.05;
