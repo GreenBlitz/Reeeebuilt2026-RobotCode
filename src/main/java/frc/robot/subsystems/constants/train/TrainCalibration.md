@@ -10,13 +10,13 @@ Train calibrations
 - [ ] Current limit
 
 #### Feed forward
-- [ ] kS
-- [ ] kV
+- [x] kS
+- [x] kV
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Digital input
 - [ ] Sensor channel
