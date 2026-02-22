@@ -23,8 +23,8 @@ public class AutosBuilder {
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(
 			Robot robot,
-			Supplier<Command> intake,
 			Supplier<Command> resetSubsystems,
+			Supplier<Command> intake,
 			Supplier<Command> scoreSequence,
 			PathConstraints pathfindingConstraints,
 			Pose2d isNearEndOfPathTolerance

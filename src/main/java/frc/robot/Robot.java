@@ -211,8 +211,8 @@ public class Robot {
 			"Autonomous Chooser",
 			AutosBuilder.getAutoList(
 				this,
+				() -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS),
 				() -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
-				() -> robotCommander.resetSubsystems(),
 				() -> robotCommander.scoreSequence(),
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
