@@ -316,7 +316,7 @@ public class ShootingChecks {
 		boolean isOurHubReadyToStartShooting = HubUtil.isOurHubActive(
 			TimeUtil.getTimeSinceTeleopInitSeconds()
 				+ ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
-				+ GamePeriodUtils.GAME_DURATION_SECONDS
+				+ GamePeriodUtils.ROBOT_TIMER_DELAY
 		);
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
 		return isOurHubReadyToStartShooting;
