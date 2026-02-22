@@ -139,7 +139,7 @@ public class ShootingChecks {
 
 		boolean isPredictedNotGoingThrewHub = isTurretPredictedNotTooFarFromStaticTarget(
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
-			ShootingCalculations.getShootingParams().staticTurretPosition(),
+			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			goodRangeFromStaticTargetForTurret,
 			logPath
 		);
@@ -198,7 +198,7 @@ public class ShootingChecks {
 
 		boolean isPredictedNotGoingThrewHub = isTurretPredictedNotTooFarFromStaticTarget(
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
-			ShootingCalculations.getShootingParams().staticTurretPosition(),
+			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			goodRangeFromStaticTargetForTurret,
 			logPath
 		);

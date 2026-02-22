@@ -38,7 +38,8 @@ State machine Calibrations
 - [ ] Max distance from target
 - [ ] Turret tolerance
 - [ ] Hood tolerance
-- [ ] Flywheel Tolerance
+- [ ] Flywheel tolerance
+- [ ] Good range from static target for turret to shoot
 
 #### Passing Position Constants
 - [ ] Max/Min Y value you cant pass straight from
