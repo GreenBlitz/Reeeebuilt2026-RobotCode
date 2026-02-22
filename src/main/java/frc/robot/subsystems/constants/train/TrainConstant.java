@@ -17,7 +17,7 @@ public class TrainConstant {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Train";
 
-	public static final boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 	public static final int CURRENT_LIMIT = 60;
 
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
