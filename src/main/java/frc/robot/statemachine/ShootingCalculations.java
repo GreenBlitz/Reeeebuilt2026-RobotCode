@@ -74,7 +74,14 @@ public class ShootingCalculations {
 
 		Rotation2d staticTurretTarget = targetTranslation.minus(fieldRelativeTurretTranslation).getAngle();
 		staticTurretTarget = staticTurretTarget.minus(robotPose.getRotation());
-		if (!ShootingChecks.isTurretPredictedNotTooFarFromStaticTarget(turretTargetPosition,staticTurretTarget,StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,targetTranslation.equals(Field.getHubMiddle()) ? "Shoot" : "Pass"))
+		if (
+			!ShootingChecks.isTurretPredictedNotTooFarFromStaticTarget(
+				turretTargetPosition,
+				staticTurretTarget,
+				StateMachineConstants.GOOD_RANGE_FROM_STATIC_TARGET_TO_SHOOT,
+				targetTranslation.equals(Field.getHubMiddle()) ? "Shoot" : "Pass"
+			)
+		)
 			turretTargetPosition = staticTurretTarget;
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
