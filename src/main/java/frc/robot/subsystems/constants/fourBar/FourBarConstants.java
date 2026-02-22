@@ -53,14 +53,11 @@ public class FourBarConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(97.46);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(30);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80.15);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(20.85);
 
 	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
-
-	public static final Rotation2d MAX_ACCELERATION_RPS_SQUARE = Rotation2d.fromRotations(3);
-	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);
 
 	public final static double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;

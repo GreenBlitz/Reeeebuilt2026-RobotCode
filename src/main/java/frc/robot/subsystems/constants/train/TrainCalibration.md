@@ -2,12 +2,11 @@ Train calibrations
 ---------------------
 
 #### Motor
-- [ ] Motor id
-- [ ] Motor bus chain
+- [x] Motor id
+- [x] Motor bus chain
 
 #### Config
-- [ ] Is inverted
-- [ ] Gear ratio
+- [x] Is inverted
 - [ ] Current limit
 
 #### Feed forward
