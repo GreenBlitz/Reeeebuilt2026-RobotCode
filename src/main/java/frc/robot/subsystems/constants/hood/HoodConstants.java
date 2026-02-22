@@ -3,6 +3,7 @@ package frc.robot.subsystems.constants.hood;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -29,16 +30,17 @@ public class HoodConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 30.0 / 1.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 30.0;
 
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 100;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
+		REAL_SLOT.kS = 0.3;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;

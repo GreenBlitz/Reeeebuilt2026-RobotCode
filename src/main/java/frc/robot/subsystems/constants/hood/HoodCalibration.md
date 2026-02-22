@@ -2,36 +2,36 @@ Hood calibrations
 ---------------------
 
 #### IDs
-- [ ] Motor id
-- [ ] Motor bus chain
+- [x] Motor id
+- [x] Motor bus chain
 
 #### Motor config
-- [ ] Is Inverted
-- [ ] Gear ratio
+- [x] Is Inverted
+- [x] Gear ratio
 - [ ] Current limit
 
 #### Limits
-- [ ] Max position
-- [ ] Min position
-- [ ] Forward limit
-- [ ] Backwards limit
+- [x] Max position
+- [x] Min position
+- [x] Forward limit
+- [x] Backwards limit
 
 #### FeedForward
-- [ ] kS
-- [ ] kG
+- [x] kS
+- [x] kG
 - [ ] kV
 ##### (SysId)
 
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Sim PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Reset Sensor
 - [ ] Sensor channel
