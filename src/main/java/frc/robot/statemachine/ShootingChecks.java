@@ -9,6 +9,7 @@ import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.math.FieldMath;
+import frc.utils.math.ToleranceMath;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -85,20 +86,15 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
-	public static boolean isTurretPredictedInRangeFromStaticTarget(
+	public static boolean isTurretPredictedTargetInRangeFromStaticTarget(
 		Rotation2d targetTurretPosition,
 		Rotation2d staticTurretTarget,
 		Rotation2d rangeFromStaticTarget,
 		String logPath
 	) {
-		boolean isTurretPredictedInRangeFromStaticTarget = !(TurretCalculations
-			.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + rangeFromStaticTarget.getDegrees()))
-			.getDegrees()
-			<= targetTurretPosition.getDegrees()
-			&& TurretCalculations
-				.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - rangeFromStaticTarget.getDegrees()))
-				.getDegrees()
-				>= targetTurretPosition.getDegrees());
+		boolean isTurretPredictedInRangeFromStaticTarget = !ToleranceMath.isInRange(targetTurretPosition.getDegrees(),TurretCalculations
+				.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - rangeFromStaticTarget.getDegrees())).getDegrees(),TurretCalculations
+				.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + rangeFromStaticTarget.getDegrees())).getDegrees());
 		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 		return isTurretPredictedInRangeFromStaticTarget;
 	}
@@ -137,7 +133,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedInRangeFromStaticTarget(
+		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedTargetInRangeFromStaticTarget(
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
 			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			rangeFromStaticTargetForTurret,
@@ -196,7 +192,7 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedInRangeFromStaticTarget(
+		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedTargetInRangeFromStaticTarget(
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
 			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			rangeFromStaticTargetForTurret,

@@ -75,7 +75,7 @@ public class ShootingCalculations {
 		Rotation2d staticTurretTarget = targetTranslation.minus(fieldRelativeTurretTranslation).getAngle();
 		staticTurretTarget = staticTurretTarget.minus(robotPose.getRotation());
 		if (
-			!ShootingChecks.isTurretPredictedInRangeFromStaticTarget(
+			!ShootingChecks.isTurretPredictedTargetInRangeFromStaticTarget(
 				turretTargetPosition,
 				staticTurretTarget,
 				StateMachineConstants.RANGE_FROM_STATIC_TARGET_TO_SHOOT,
