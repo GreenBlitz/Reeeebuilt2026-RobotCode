@@ -26,7 +26,7 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 40;
+	public static final int CURRENT_LIMIT = 80;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
