@@ -12,7 +12,7 @@ public class HubUtil {
 
 	private static Optional<DriverStation.Alliance> autoWinnerAlliance = getAutoWinningAlliance();
 	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
-	private static final LoggedNetworkBoolean isOurHubActiveTunable = new LoggedNetworkBoolean("/Tunable/isOurHubActive", false);
+	private static final LoggedNetworkBoolean isOurHubActiveTunable = new LoggedNetworkBoolean("Tunable/isOurHubActive", false);
 
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		if (!DriverStationUtil.isTeleop()) {

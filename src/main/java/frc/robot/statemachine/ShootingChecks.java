@@ -229,7 +229,7 @@ public class ShootingChecks {
 			turretTolerance,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
-			"Shoot"
+			"Score"
 		);
 		boolean isOurHubReadyToStartShooting = isOurHubReadyToStartShooting(
 			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
