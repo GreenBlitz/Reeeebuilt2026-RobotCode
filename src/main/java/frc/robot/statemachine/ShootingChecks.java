@@ -137,7 +137,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isPredictedNotGoingThrewHub = isTurretPredictedNotTooFarFromStaticTarget(
+		boolean isTurretPredictedNotTooFarFromStaticTarget = isTurretPredictedNotTooFarFromStaticTarget(
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
 			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			goodRangeFromStaticTargetForTurret,
@@ -155,7 +155,7 @@ public class ShootingChecks {
 			&& isFlywheelReadyToShoot
 			&& isHoodAtPosition
 			&& isTurretWithinDistance
-			&& isPredictedNotGoingThrewHub
+			&& isTurretPredictedNotTooFarFromStaticTarget
 		/* && isPoseReliable */;
 		Logger.recordOutput(logPath + "/IsReadyToShoot", isReadyToShoot);
 		return isReadyToShoot;
@@ -196,7 +196,7 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		boolean isPredictedNotGoingThrewHub = isTurretPredictedNotTooFarFromStaticTarget(
+		boolean isTurretPredictedNotTooFarFromStaticTarget = isTurretPredictedNotTooFarFromStaticTarget(
 			ShootingCalculations.getShootingParams().targetTurretPosition(),
 			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			goodRangeFromStaticTargetForTurret,
@@ -207,7 +207,7 @@ public class ShootingChecks {
 			&& isFlywheelReadyToShoot
 			&& isHoodAtPosition
 			&& isTurretWithinDistance
-			&& isPredictedNotGoingThrewHub/* && isPoseReliable */;
+			&& isTurretPredictedNotTooFarFromStaticTarget /* && isPoseReliable */;
 		Logger.recordOutput(logPath + "/canContinueShooting", canContinueShooting);
 		return canContinueShooting;
 	}
