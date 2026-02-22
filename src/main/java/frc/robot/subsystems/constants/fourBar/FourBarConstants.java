@@ -34,15 +34,15 @@ public class FourBarConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 20.0 / 1.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 20.0;
 
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 0;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
+		REAL_SLOT.kS = 0;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 
 		SIMULATION_SLOT.kP = 50;
@@ -56,8 +56,8 @@ public class FourBarConstants {
 	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(97.46);
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(30);
 
-	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(95.46);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(32);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
 	public static final Rotation2d MAX_ACCELERATION_RPS_SQUARE = Rotation2d.fromRotations(3);
 	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);
@@ -80,7 +80,7 @@ public class FourBarConstants {
 			MOMENT_OF_INERTIA,
 			FOUR_BAR_LENGTH
 		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			LOG_PATH,
 			IDs.TalonFXIDs.FOUR_BAR,
 			IS_INVERTED,
@@ -95,9 +95,7 @@ public class FourBarConstants {
 			ARBITRARY_FEED_FORWARD,
 			FORWARD_SOFTWARE_LIMITS,
 			BACKWARD_SOFTWARE_LIMITS,
-			fourBarSimConstant,
-			MAX_ACCELERATION_RPS_SQUARE,
-			MAX_VELOCITY_RPS
+			fourBarSimConstant
 		);
 	}
 

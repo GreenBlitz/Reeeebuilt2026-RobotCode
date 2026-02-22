@@ -160,11 +160,11 @@ public class ShooterStateHandler {
 	}
 
 	public boolean hasTurretBeenReset() {
-		return hasTurretBeenReset;
+		return hasTurretBeenReset && false;
 	}
 
 	public boolean hasHoodBeenReset() {
-		return hasHoodBeenReset;
+		return hasHoodBeenReset && false;
 	}
 
 	public boolean hasBeenFullyReset() {
