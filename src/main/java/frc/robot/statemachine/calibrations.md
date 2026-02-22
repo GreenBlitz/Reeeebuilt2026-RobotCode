@@ -21,18 +21,21 @@ State machine Calibrations
 - [ ] Turret tolerance
 - [ ] Hood tolerance
 - [ ] Flywheel Tolerance
+- [ ] Good range from static target for turret to shoot
 
 #### Can continue to score
 - [ ] Max distance from hub
 - [ ] Turret tolerance
 - [ ] Hood tolerance
 - [ ] Flywheel Tolerance
+- [ ] Good range from static target for turret to shoot
 
 #### Is ready to pass
 - [ ] Max distance from target
 - [ ] Turret tolerance
 - [ ] Hood tolerance
 - [ ] Flywheel Tolerance
+- [ ] Good range from static target for turret to shoot
 
 #### Can continue to pass
 - [ ] Max distance from target
