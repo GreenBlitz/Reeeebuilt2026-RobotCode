@@ -8,8 +8,8 @@ import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 
 public class FlywheelConstants {
 
-	public static final double SENSOR_TO_MECHANISM_RATIO_MASTER = 40.0 / 36.0;
-	public static final double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 40.0 / 36.0;
+	public static final double SENSOR_TO_MECHANISM_RATIO_MASTER = 0.6428 / 1.0;
+	public static final double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 0.6428 / 1.0;
 
 	public static final InvertedValue IS_MASTER_INVERTED = InvertedValue.Clockwise_Positive;
 	public static final InvertedValue IS_FOLLOWER_INVERTED = InvertedValue.Clockwise_Positive;

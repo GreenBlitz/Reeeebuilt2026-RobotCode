@@ -29,7 +29,7 @@ public class HoodConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 30.0 / 1.0;
 
 		REAL_SLOT.kP = 28;
 		REAL_SLOT.kI = 0;
@@ -48,8 +48,8 @@ public class HoodConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(55);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(27.5);
 
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 0.1);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 0.1);
