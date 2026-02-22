@@ -78,6 +78,7 @@ public class RobotManager extends LoggedRobot {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}
 		CommandScheduler.getInstance().schedule(autonomousCommand);
+		robot.getLimelight().enableRewind();
 	}
 
 	@Override

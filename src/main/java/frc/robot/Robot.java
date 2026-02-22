@@ -109,7 +109,7 @@ public class Robot {
 		);
 
 		this.limelight = new Limelight(
-			"limelight-new",
+			"limelight-left",
 			"Vision",
 			new Pose3d(
 				new Translation3d(-0.017, 0.357, 0.287),
@@ -150,7 +150,6 @@ public class Robot {
 		// (new ParallelCommandGroup(
 		// robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS)).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		// );
-		limelight.enableRewind();
 
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 	}
