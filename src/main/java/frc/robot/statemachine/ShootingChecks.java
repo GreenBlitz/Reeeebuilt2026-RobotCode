@@ -119,14 +119,10 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
-	public static boolean isPredictedNotGoingThrewHub(Rotation2d targetTurretPosition, Rotation2d staticTurretTarget, Rotation2d goodRangeFromStaticTarget, String logPath) {
-		boolean isPredictedNotGoingThrewHub = !(TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + goodRangeFromStaticTarget.getDegrees())).getDegrees() <= targetTurretPosition.getDegrees() && TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - goodRangeFromStaticTarget.getDegrees())).getDegrees() >= targetTurretPosition.getDegrees());
-		Logger.recordOutput(logPath + "/isPredictedNotGoingThrewHub", isPredictedNotGoingThrewHub);
-		Logger.recordOutput(logPath + "/notWrapped1", staticTurretTarget.getDegrees() + goodRangeFromStaticTarget.getDegrees());
-		Logger.recordOutput(logPath + "/Wrapped1", TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + goodRangeFromStaticTarget.getDegrees())));
-		Logger.recordOutput(logPath + "/notWrapped2", staticTurretTarget.getDegrees() - goodRangeFromStaticTarget.getDegrees());
-		Logger.recordOutput(logPath + "/Wrapped2", TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - goodRangeFromStaticTarget.getDegrees())));
-		return isPredictedNotGoingThrewHub;
+	public static boolean isTurretPredictedNotTooFarFromStaticTarget(Rotation2d targetTurretPosition, Rotation2d staticTurretTarget, Rotation2d goodRangeFromStaticTarget, String logPath) {
+		boolean isTurretPredictedNotTooFarFromStaticTarget = !(TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + goodRangeFromStaticTarget.getDegrees())).getDegrees() <= targetTurretPosition.getDegrees() && TurretCalculations.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - goodRangeFromStaticTarget.getDegrees())).getDegrees() >= targetTurretPosition.getDegrees());
+		Logger.recordOutput(logPath + "/isTurretPredictedNotTooFarFromStaticTarget", isTurretPredictedNotTooFarFromStaticTarget);
+		return isTurretPredictedNotTooFarFromStaticTarget;
 	}
 
 	private static boolean isReadyToShoot(
@@ -173,7 +169,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isPredictedNotGoingThrewHub = isPredictedNotGoingThrewHub(ShootingCalculations.getShootingParams().targetTurretPosition(),ShootingCalculations.getShootingParams().staticTurretPosition(), goodRangeFromStaticTargetForTurret,logPath);
+		boolean isPredictedNotGoingThrewHub = isTurretPredictedNotTooFarFromStaticTarget(ShootingCalculations.getShootingParams().targetTurretPosition(),ShootingCalculations.getShootingParams().staticTurretPosition(), goodRangeFromStaticTargetForTurret,logPath);
 
 		boolean isReadyToShoot = isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget && isPredictedNotGoingThrewHub;
 		Logger.recordOutput(logPath + "/IsReadyToShoot",isReadyToShoot);
@@ -223,7 +219,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isPredictedNotGoingThrewHub = isPredictedNotGoingThrewHub(ShootingCalculations.getShootingParams().targetTurretPosition(),ShootingCalculations.getShootingParams().staticTurretPosition(), goodRangeFromStaticTargetForTurret,logPath);
+		boolean isPredictedNotGoingThrewHub = isTurretPredictedNotTooFarFromStaticTarget(ShootingCalculations.getShootingParams().targetTurretPosition(),ShootingCalculations.getShootingParams().staticTurretPosition(), goodRangeFromStaticTargetForTurret,logPath);
 
 		boolean canContinueShooting = isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget && isPredictedNotGoingThrewHub;
 		Logger.recordOutput(logPath + "/canContinueShooting",canContinueShooting);
