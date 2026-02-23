@@ -15,6 +15,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +24,8 @@ import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.subsystems.GBSubsystem;
 import frc.utils.alerts.Alert;
+import frc.utils.math.AngleTransform;
+import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
@@ -104,6 +107,16 @@ public class PathPlannerUtil {
 
 	public static Pose2d getLastPathPose(PathPlannerPath path) {
 		return new Pose2d(path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation(), path.getGoalEndState().rotation());
+	}
+
+	public static Rotation2d getEndPointHeading(PathPlannerPath path){
+		Translation2d prevControl = path.getWaypoints().get(path.getWaypoints().size() - 1).prevControl();
+		return FieldMath.getRelativeTranslation(getLastPathPose(path), prevControl).getAngle();
+	}
+
+	public static ChassisSpeeds getAllianceRelativeGoalEndSpeeds(PathPlannerPath path) {
+		Translation2d speeds = new Translation2d(path.getGoalEndState().velocityMPS(), FieldMath.transformAngle(getEndPointHeading(path), AngleTransform.INVERT));
+		return new ChassisSpeeds(speeds.getX(), speeds.getY(), 0);
 	}
 
 	public static Command createPathDuringRuntime(Pose2d currentPose, Pose2d targetPose, PathConstraints constraints) {
