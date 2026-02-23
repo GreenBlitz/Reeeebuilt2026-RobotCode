@@ -19,8 +19,6 @@ public class IDs {
 		public static final Phoenix6DeviceID FLYWHEEL = new Phoenix6DeviceID(10, BusChain.ROBORIO);
 		public static final Phoenix6DeviceID FLYWHEEL_FOLLOWER = new Phoenix6DeviceID(11, BusChain.ROBORIO);
 
-		public static final Phoenix6DeviceID FOUR_BAR = new Phoenix6DeviceID(12, BusChain.CHASSIS);
-
 		public static final Phoenix6DeviceID HOOD = new Phoenix6DeviceID(20, BusChain.ROBORIO);
 
 		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.ROBORIO);
@@ -28,6 +26,7 @@ public class IDs {
 		public static final Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40, BusChain.ROBORIO);
 
 		public static final Phoenix6DeviceID INTAKE_ROLLERS = new Phoenix6DeviceID(50, BusChain.CHASSIS);
+		public static final Phoenix6DeviceID FOUR_BAR = new Phoenix6DeviceID(51, BusChain.CHASSIS);
 
 		public static final Phoenix6DeviceID BELLY = new Phoenix6DeviceID(60, BusChain.ROBORIO);
 
