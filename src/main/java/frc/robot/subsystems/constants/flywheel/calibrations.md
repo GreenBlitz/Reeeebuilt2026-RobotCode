@@ -22,3 +22,6 @@
 - [x] kP
 - [x] kI
 - [x] kD
+
+### Max Acceleration
+- [x]
