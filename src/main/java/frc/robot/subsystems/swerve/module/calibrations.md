@@ -1,6 +1,6 @@
 Modules:
 -----------------------
-- [ ] Enter modules in the order specified in ModuleUtils.ModulePosition
+- [x] Enter modules in the order specified in ModuleUtils.ModulePosition
 
 ModuleConstants: (real and simulation)
 -----------------------
@@ -11,23 +11,24 @@ ModuleConstants: (real and simulation)
 
 Encoder:
 ----------------------
-- [ ] Encoder ID
-- [ ] Sensor Range (should be PlusMinusHalf)
-- [ ] Sensor Direction (should be CounterClockwise in default sds module)
+- [x] Encoder ID
+- [x] Encoder BusChain
+- [x] Sensor Range (should be PlusMinusHalf)
+- [x] Sensor Direction (should be CounterClockwise in default sds module) //It was Clockwise for us
 
 Steer:
 -----------------------
-- [ ] Motor ID
-- [ ] Inverted
-- [ ] Neutral Mode
+- [x] Motor ID
+- [x] Inverted
+- [x] Neutral Mode
 - [ ] Current Limit
-- [ ] Gear Ratio (should use RotorToSensorRatio)
-- [ ] Encoder Usage and ID (should use fuse)
+- [x] Gear Ratio (should use RotorToSensorRatio)
+- [x] Encoder Usage and ID (should use fuse)
 - [ ] FF (ks, kv, ka)
 - [ ] PID
-- [ ] Use ContinuousWrap
+- [x] Use ContinuousWrap
 - [ ] Control mode (motion magic, voltage, torque)
-- [ ] Enable/Disable FOC (only talonfx)
+- [x] Enable/Disable FOC (only talonfx)
 
 SteerSimulation:
 -----------------------
@@ -36,15 +37,15 @@ SteerSimulation:
 
 Drive:
 -----------------------
-- [ ] Motor ID
-- [ ] Inverted
+- [x] Motor ID
+- [x] Inverted
 - [ ] Neutral Mode
 - [ ] Current Limit
-- [ ] Gear Ratio (should use RotorToSensorRatio)
+- [x] Gear Ratio (should use RotorToSensorRatio)
 - [ ] FF (ks, kv, ka)
 - [ ] PID
 - [ ] Control mode (motion magic, voltage, torque)
-- [ ] Enable/Disable FOC (only talonfx)
+- [x] Enable/Disable FOC (only talonfx)
 
 DriveSimulation:
 -----------------------
