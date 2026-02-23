@@ -137,6 +137,10 @@ public class PathFollowingCommandsBuilder {
 				() -> ToleranceMath
 					.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), isNearEndOfPathTolerance)
 			)
-				.andThen(swerve.getCommandsBuilder().setChassisSpeeds(PathPlannerUtil.getAllianceRelativeGoalEndSpeeds(path), SwerveState.DEFAULT_PATH_PLANNER));	}
+			.andThen(
+				swerve.getCommandsBuilder()
+					.setChassisSpeeds(PathPlannerUtil.getAllianceRelativeGoalEndSpeeds(path), SwerveState.DEFAULT_PATH_PLANNER)
+			);
+	}
 
 }

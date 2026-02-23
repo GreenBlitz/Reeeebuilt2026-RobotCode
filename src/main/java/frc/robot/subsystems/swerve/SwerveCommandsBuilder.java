@@ -152,13 +152,10 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command setChassisSpeeds(ChassisSpeeds chassisSpeeds, SwerveState state) {
-		return swerve.asSubsystemCommand(
-				new InstantCommand(() -> {
-					swerve.resetPIDControllers();
-					swerve.driveByState(chassisSpeeds, state);
-				}),
-				"Drive with state"
-		);
+		return swerve.asSubsystemCommand(new InstantCommand(() -> {
+			swerve.resetPIDControllers();
+			swerve.driveByState(chassisSpeeds, state);
+		}), "Drive with state");
 	}
 
 	public Command driveByDriversInputs(Supplier<SwerveState> state) {
