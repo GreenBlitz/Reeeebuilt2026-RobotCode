@@ -18,7 +18,8 @@ public class HubUtil {
 		if (!DriverStationUtil.isTeleop()) {
 			return Optional.empty();
 		}
-		String gameData = DriverStation.getGameSpecificMessage();
+//		String gameData = DriverStation.getGameSpecificMessage();
+		String gameData = "R";
 		if (gameData.isEmpty()) {
 			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
 			return Optional.empty();
