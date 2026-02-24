@@ -72,15 +72,18 @@ public class PathFollowingCommandsBuilder {
 	}
 
 	public static Command followPath(PathPlannerPath path, String logPath) {
-		return AutoBuilder.followPath(path).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "followPath : " + path.name)));
+		return AutoBuilder.followPath(path)
+			.alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "followPath : " + path.name)));
 	}
 
 	public static Command pathfindToPose(Pose2d targetPose, PathConstraints pathfindingConstraints, String logPath) {
-		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose:" + targetPose)));
+		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints)
+			.alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose:" + targetPose)));
 	}
 
 	public static Command pathfindThenFollowPath(PathPlannerPath path, PathConstraints pathfindingConstraints, String logPath) {
-		return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath: " + path.name)));
+		return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints)
+			.alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath: " + path.name)));
 	}
 
 	public static Command pathfindThenFollowPath(
@@ -94,7 +97,8 @@ public class PathFollowingCommandsBuilder {
 				Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)),
 				pathfindingConstraints,
 				velocityBetweenPathfindingToPathFollowingMetersPerSecond
-			).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath: " + path.name)))
+			)
+			.alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath: " + path.name)))
 			.andThen(followPath(path, logPath));
 	}
 
