@@ -98,8 +98,8 @@ public class IntakeStateHandler {
 	public void periodic() {
 		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
 
-		if (!hasFourBarBeenReset()) {
-			hasFourBarBeenReset = isFourBarAtSensor();
+		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+			hasFourBarBeenReset = true;
 		}
 
 		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians() && !hasFourBarBeenReset()) {

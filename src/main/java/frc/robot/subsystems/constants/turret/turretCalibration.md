@@ -30,9 +30,7 @@ Turret Calibration
 - [ ] Amount of degrees for the look at hub not to move
 - [ ] Offset from robot middle
 
-#### Reset Sensor
-- [ ] Sensor channel
-- [ ] Is inverted
-- [ ] Debounce time
+#### Reset
 - [ ] Reset voltage
+- [ ] Current threshold to reset
 
