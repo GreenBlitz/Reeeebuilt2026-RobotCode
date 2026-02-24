@@ -121,9 +121,7 @@ public class JoysticksBindings {
 					PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
-				),
-				PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
-					.deadlineFor(robot.getRobotCommander().scoreSequence())
+				)
 			)
 		);
 
