@@ -76,7 +76,7 @@ public class PathFollowingCommandsBuilder {
 	}
 
 	public static Command followPath(PathPlannerPath path, String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "followPath " + path.name);
+		Logger.recordOutput(logPath + "/CurrentCommand", "followPath : " + path.name);
 		return AutoBuilder.followPath(path);
 	}
 
@@ -86,7 +86,7 @@ public class PathFollowingCommandsBuilder {
 	}
 
 	public static Command pathfindThenFollowPath(PathPlannerPath path, PathConstraints pathfindingConstraints, String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath " + path.name);
+		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath: " + path.name);
 		return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints);
 	}
 
@@ -96,7 +96,7 @@ public class PathFollowingCommandsBuilder {
 		double velocityBetweenPathfindingToPathFollowingMetersPerSecond,
 		String logPath
 	) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath " + path.name);
+		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath: " + path.name);
 		return AutoBuilder
 			.pathfindToPose(
 				Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)),

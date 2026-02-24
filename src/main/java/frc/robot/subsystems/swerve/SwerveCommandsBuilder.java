@@ -156,7 +156,14 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command driveByDriversInputs(SwerveState state) {
-		return new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state), swerve);
+		return new ConditionalCommand(
+			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state), swerve),
+			swerve.asSubsystemCommand(
+				new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
+				"Drive by drivers inputs with state and aim assist: " + state.getAimAssist().name()
+			),
+			() -> state == SwerveState.DEFAULT_PATH_PLANNER
+		);
 	}
 
 	public Command resetTargetSpeeds() {
@@ -197,10 +204,7 @@ public class SwerveCommandsBuilder {
 	public Command driveToPath(Supplier<Pose2d> currentPose, PathPlannerPath path, Pose2d targetPose, PathConstraints pathfindingConstraints) {
 		return new DeferredCommand(
 			() -> new SequentialCommandGroup(
-				swerve.asSubsystemCommand(
-					PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints, swerve.getLogPath()),
-					"driveToPath"
-				),
+				PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints, swerve.getLogPath()),
 				moveToPoseByPID(currentPose, Field.getAllianceRelative(targetPose))
 			),
 			Set.of(swerve)
