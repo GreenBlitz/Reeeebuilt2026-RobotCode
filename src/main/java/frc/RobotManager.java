@@ -88,6 +88,7 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand == null) {
 			this.autonomousCommand = getAutonomousChooser().getChosenValue();
 		}
+
 		CommandScheduler.getInstance().schedule(autonomousCommand);
 	}
 
