@@ -11,7 +11,9 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
@@ -207,8 +209,8 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-//		new Trigger(() -> DriverStation.isTeleopEnabled())
-//			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+		new Trigger(() -> DriverStation.isTeleopEnabled())
+			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
 		configureAuto();
 	}

@@ -88,14 +88,11 @@ public class JoysticksBindings {
 	private static void fifthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FIFTH_JOYSTICK;
 		// bindings...
-		robot.getTurret().applyCalibrationBindings(usedJoystick, 0.1);
-		usedJoystick.A.onTrue(new InstantCommand(() -> robot.getTurret().setPosition(Rotation2d.fromDegrees(0))));
 	}
 
 	private static void sixthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SIXTH_JOYSTICK;
 		// bindings...
-		robot.getFlyWheel().applyCalibrationsBindings(usedJoystick);
 	}
 
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
