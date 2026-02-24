@@ -65,13 +65,13 @@ public class FourBarConstants {
 	public final static double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
+	public static final double CONSTANT_VOLTAGE_WHEN_OPEN = 0.5;
+
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
-
-	public static final double CONSTANT_VOLTAGE_WHEN_OPEN = 0.5
 
 	public static Arm createFourBar() {
 		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(

@@ -70,7 +70,7 @@ public class IntakeStateHandler {
 
 	public Command intake() {
 		return new ParallelCommandGroup(
-			new SequentialCommandGroup(fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),fourBar.getCommandsBuilder().setVoltage()),
+			new SequentialCommandGroup(fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),fourBar.getCommandsBuilder().setVoltage(FourBarConstants.CONSTANT_VOLTAGE_WHEN_OPEN)),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
 	}
