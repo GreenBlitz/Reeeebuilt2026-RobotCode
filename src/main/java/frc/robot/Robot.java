@@ -209,7 +209,6 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 		new Trigger(() -> DriverStation.isTeleopEnabled())
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
