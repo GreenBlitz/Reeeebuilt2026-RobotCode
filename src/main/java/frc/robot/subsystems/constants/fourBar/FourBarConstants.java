@@ -66,6 +66,7 @@ public class FourBarConstants {
 	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
 	public static final double CONSTANT_VOLTAGE_WHEN_OPEN = 0.5;
+	public static final Rotation2d POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;

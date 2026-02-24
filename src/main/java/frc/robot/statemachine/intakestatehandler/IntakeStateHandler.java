@@ -71,7 +71,9 @@ public class IntakeStateHandler {
 	public Command intake() {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
-				fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
+				fourBar.getCommandsBuilder()
+					.setTargetPosition(IntakeState.INTAKE.getFourBarPosition())
+					.until(() -> fourBar.isAtPosition(IntakeState.INTAKE.getFourBarPosition(), FourBarConstants.POSITION_TOLERANCE)),
 				fourBar.getCommandsBuilder().setVoltage(FourBarConstants.CONSTANT_VOLTAGE_WHEN_OPEN)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
