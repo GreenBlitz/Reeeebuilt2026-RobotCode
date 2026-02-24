@@ -67,7 +67,6 @@ public class FourBarConstants {
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
 	public static final double CONSTANT_VOLTAGE_WHEN_OPEN = 0.5;
 
-
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
