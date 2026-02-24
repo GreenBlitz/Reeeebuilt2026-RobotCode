@@ -7,8 +7,6 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
@@ -67,6 +65,8 @@ public class RobotManager extends LoggedRobot {
 		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
+
+		autonomousChooserChange();
 	}
 
 	@Override
@@ -124,20 +124,14 @@ public class RobotManager extends LoggedRobot {
 		AlertManager.reportAlerts();
 	}
 
-	private void createAutoReadyForConstructionChooser() {
-		SendableChooser<Boolean> autoReadyForConstructionSendableChooser = new SendableChooser<>();
-		autoReadyForConstructionSendableChooser.setDefaultOption("false", false);
-		autoReadyForConstructionSendableChooser.addOption("true", true);
-		autoReadyForConstructionSendableChooser.onChange(isReady -> {
-			if (isReady) {
-				BrakeStateManager.brake();
-			} else {
-				BrakeStateManager.coast();
+	private void autonomousChooserChange() {
+		autonomousChooser.getChooser().onChange((autonomousCommand) -> {
+			this.autonomousCommand = autonomousCommand.get();
+			if (isAutonomous()) {
+				robot.getSwerve().setIsRunningIndependently(true);
+				CommandScheduler.getInstance().schedule(this.autonomousCommand);
 			}
-			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
 		});
-		this.autonomousCommand = robot.getaAutonomousCommand();
-		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);
 	}
 
 	private void updateTimeRelatedData() {
