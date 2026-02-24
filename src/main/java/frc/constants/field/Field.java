@@ -40,6 +40,8 @@ public class Field {
 	public static final double MAX_HUB_Y_VALUE = getHubMiddle().getY() + HUB_SIDE_LENGTH_METERS / 2;
 	public static final double MIN_HUB_Y_VALUE = getHubMiddle().getY() - HUB_SIDE_LENGTH_METERS / 2;
 
+	public static final double ALLIANCE_START_LINE_X_VALUE = 4.025;
+
 	public static Translation2d getHubMiddle() {
 		return getAllianceRelative(HUB_MIDDLE);
 	}
