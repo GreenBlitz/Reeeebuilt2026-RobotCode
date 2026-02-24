@@ -36,7 +36,7 @@ class RealModuleConstants {
 		BACK_RIGHT_TRANSLATION2D,};
 
 	static ModuleSpecificConstants getModuleSpecificConstants(String logPath, ModuleUtil.ModulePosition modulePosition) {
-		double couplingRatio = switch (modulePosition){
+		double couplingRatio = switch (modulePosition) {
 			case FRONT_LEFT, FRONT_RIGHT -> FRONT_MODULES_COUPLING_RATIO;
 			case BACK_LEFT, BACK_RIGHT -> BACK_MODULES_COUPLING_RATIO;
 		};
