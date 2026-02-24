@@ -86,7 +86,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
-			this.autonomousCommand = robot.getaAutonomousCommand();
+			this.autonomousCommand = getAutonomousChooser().getChosenValue();
 		}
 		CommandScheduler.getInstance().schedule(autonomousCommand);
 	}
@@ -143,11 +143,11 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	public void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> robot.robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousIntakeCommand = () -> robot.getRobotCommanderr().getIntakeStateHandler().setState(IntakeState.INTAKE);
 
-		Supplier<Command> autonomousScoringSequenceCommand = () -> robot.robotCommander.scoreSequence();
+		Supplier<Command> autonomousScoringSequenceCommand = () -> robot.getRobotCommanderr().scoreSequence();
 
-		Supplier<Command> autonomousResetSubsystemsCommand = () -> robot.robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
+		Supplier<Command> autonomousResetSubsystemsCommand = () -> robot.getRobotCommanderr().setState(RobotState.RESET_SUBSYSTEMS);
 
 		robot.getSwerve().configPathPlanner(() -> robot.getPoseEstimator().getEstimatedPose(), (pose) -> {}, robot.getRobotConfig());
 
