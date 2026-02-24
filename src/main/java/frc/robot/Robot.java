@@ -12,8 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
@@ -45,9 +44,9 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
-import frc.utils.auto.AutonomousChooser;
 import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
@@ -209,10 +208,6 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
-
-		new Trigger(() -> DriverStation.isEnabled())
-			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-		;
 
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 		new Trigger(() -> DriverStation.isTeleopEnabled())
