@@ -67,16 +67,13 @@ public class Robot {
 
 	public final RobotCommander robotCommander;
 
-
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
 
 	private PathPlannerAutoWrapper autonomousCommand;
 
-
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
-
 
 		this.turret = TurretConstants.createTurret();
 		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
@@ -184,7 +181,6 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-
 	public Roller getIntakeRoller() {
 		return intakeRoller;
 	}
@@ -241,7 +237,6 @@ public class Robot {
 		return autonomousCommand;
 	}
 
-
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -249,6 +244,5 @@ public class Robot {
 	public SimulationManager getSimulationManager() {
 		return simulationManager;
 	}
-
 
 }
