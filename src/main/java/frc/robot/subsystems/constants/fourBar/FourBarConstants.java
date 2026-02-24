@@ -73,6 +73,7 @@ public class FourBarConstants {
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
+
 	public static Arm createFourBar() {
 		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
 			MAXIMUM_POSITION,
