@@ -4,11 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.constants.field.Field;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.utils.auto.PathPlannerUtil;
@@ -76,18 +72,15 @@ public class PathFollowingCommandsBuilder {
 	}
 
 	public static Command followPath(PathPlannerPath path, String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "followPath : " + path.name);
-		return AutoBuilder.followPath(path);
+		return AutoBuilder.followPath(path).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "followPath : " + path.name)));
 	}
 
 	public static Command pathfindToPose(Pose2d targetPose, PathConstraints pathfindingConstraints, String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose:" + targetPose);
-		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints);
+		return AutoBuilder.pathfindToPose(targetPose, pathfindingConstraints).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindToPose:" + targetPose)));
 	}
 
 	public static Command pathfindThenFollowPath(PathPlannerPath path, PathConstraints pathfindingConstraints, String logPath) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath: " + path.name);
-		return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints);
+		return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindThenFollowPath: " + path.name)));
 	}
 
 	public static Command pathfindThenFollowPath(
@@ -96,13 +89,12 @@ public class PathFollowingCommandsBuilder {
 		double velocityBetweenPathfindingToPathFollowingMetersPerSecond,
 		String logPath
 	) {
-		Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath: " + path.name);
 		return AutoBuilder
 			.pathfindToPose(
 				Field.getAllianceRelative(PathPlannerUtil.getPathStartingPose(path)),
 				pathfindingConstraints,
 				velocityBetweenPathfindingToPathFollowingMetersPerSecond
-			)
+			).alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath: " + path.name)))
 			.andThen(followPath(path, logPath));
 	}
 
