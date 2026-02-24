@@ -54,7 +54,7 @@ public class FourBarConstants {
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
-	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
+	public static final double RESISTANCE_THRESHOLD_TO_RESET_POSITION = 10;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;

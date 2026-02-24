@@ -63,7 +63,7 @@ public class TurretConstants {
 	public static final Rotation2d SCREW_MIN_RANGE_EDGE = TurretCalculations.getRangeEdge(MIN_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE);
 
 	public static final double RESET_TURRET_VOLTAGE = 1;
-	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
+	public static final double RESISTANCE_THRESHOLD_TO_RESET_POSITION = 10;
 
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double TURRET_RADIUS = 0.0;

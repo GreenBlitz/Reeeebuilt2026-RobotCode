@@ -93,7 +93,7 @@ public class IntakeStateHandler {
 	}
 
 	public void periodic() {
-		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasFourBarBeenReset() && fourBar.getVoltage() / fourBar.getCurrent() > FourBarConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
 		}
 
@@ -110,7 +110,7 @@ public class IntakeStateHandler {
 	}
 
 	public boolean hasFourBarBeenReset() {
-		return hasFourBarBeenReset;
+		return hasFourBarBeenReset && true;
 	}
 
 	public IntakeState getCurrentState() {
