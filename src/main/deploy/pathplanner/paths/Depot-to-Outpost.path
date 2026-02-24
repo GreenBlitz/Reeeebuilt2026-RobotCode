@@ -49,6 +49,6 @@
   "idealStartingState": {
     "velocity": 0,
     "rotation": -128.65980825409014
-        },
+  },
   "useDefaultConstraints": true
 }
