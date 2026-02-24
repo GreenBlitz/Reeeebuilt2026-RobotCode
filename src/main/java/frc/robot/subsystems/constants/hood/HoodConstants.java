@@ -3,6 +3,7 @@ package frc.robot.subsystems.constants.hood;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
@@ -23,16 +24,17 @@ public class HoodConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 30.0;
 
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 100;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
+		REAL_SLOT.kS = 0.3;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;
@@ -42,8 +44,8 @@ public class HoodConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(55);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(27.5);
 
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 0.1);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 0.1);

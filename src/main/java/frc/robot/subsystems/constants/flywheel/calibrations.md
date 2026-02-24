@@ -2,23 +2,26 @@
 --------------------------------
 
 #### General
-- [ ] Bus chain
-- [ ] Motor id
-- [ ] Follower id
+- [x] Bus chain
+- [x] Motor id
+- [x] Follower id
 
 #### Motor config
-- [ ] Master is inverted
-- [ ] Follower is inverted
-- [ ] master gear ratio
-- [ ] Follower gear ratio
+- [x] Master is inverted
+- [x] Follower is inverted
+- [x] Master gear ratio
+- [x] Follower gear ratio
 - [ ] Current limit
 
 #### Feed forward
-- [ ] kS
-- [ ] kV
-- [ ] kA
+- [x] kS
+- [x] kV
+- [x] kA
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
+
+### Max Acceleration
+- [x]
