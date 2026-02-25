@@ -7,7 +7,7 @@ public class GamePeriodUtils {
 
 	public static final int TRANSITION_SHIFT_DURATION_SECONDS = 10;
 	public static final int ALLIANCE_SHIFT_DURATION_SECONDS = 25;
-	public static final int ENDGAME_START_TIME_SECONDS = 110;
+	public static final int ENDGAME_START_TIME_SECONDS = 140;
 	public static final int ENDGAME_DURATION_SECONDS = 30;
 	public static final int GAME_DURATION_SECONDS = ENDGAME_START_TIME_SECONDS + ENDGAME_DURATION_SECONDS;
 	public static final int SECONDS_TO_SCORE_AFTER_GAME_ENDS = 3;
