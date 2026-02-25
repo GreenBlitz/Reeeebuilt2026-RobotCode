@@ -32,20 +32,13 @@ public class RobotCommander extends GBSubsystem {
 
 		this.logPath = logPath;
 
-		this.intakeStateHandler = new IntakeStateHandler(
-			robot.getFourBar(),
-			robot.getIntakeRoller(),
-			robot.getFourBarResetCheckSensor(),
-			logPath
-		);
+		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath, robot.getTrainBallSensor());
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
 			robot.getFlyWheel(),
 			ShootingCalculations::getShootingParams,
-			robot.getTurretResetCheckSensor(),
-			robot.getHoodResetCheckSensor(),
 			logPath
 		);
 
