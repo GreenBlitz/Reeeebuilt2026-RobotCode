@@ -82,7 +82,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
-	
+
 	private final Swerve swerve;
 
 	private final IPoseEstimator poseEstimator;
@@ -201,7 +201,7 @@ public class Robot {
 		);
 
 		robotCommander = new RobotCommander("StateMachine", this);
-		
+
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
@@ -211,7 +211,7 @@ public class Robot {
 
 		new Trigger(() -> DriverStation.isTeleopEnabled())
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-		
+
 		configureAuto();
 	}
 
