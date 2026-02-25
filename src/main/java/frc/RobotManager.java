@@ -111,9 +111,6 @@ public class RobotManager extends LoggedRobot {
 	private void detectAutonomousChange() {
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
-			if (isAutonomous()) {
-				CommandScheduler.getInstance().schedule(this.autonomousCommand);
-			}
 		});
 	}
 
