@@ -51,7 +51,6 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.AutonomousChooser;
-import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
@@ -334,7 +333,7 @@ public class Robot {
 	public SimulationManager getSimulationManager() {
 		return simulationManager;
 	}
-	
+
 	public AutonomousChooser getAutonomousChooser() {
 		return autonomousChooser;
 	}
