@@ -49,7 +49,9 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		detectAutonomousChange();
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+			this.autonomousCommand = autonomousCommand.get();
+		});
 	}
 
 	@Override
@@ -106,12 +108,6 @@ public class RobotManager extends LoggedRobot {
 		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
-	}
-
-	private void detectAutonomousChange() {
-		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
-			this.autonomousCommand = autonomousCommand.get();
-		});
 	}
 
 	private void updateTimeRelatedData() {
