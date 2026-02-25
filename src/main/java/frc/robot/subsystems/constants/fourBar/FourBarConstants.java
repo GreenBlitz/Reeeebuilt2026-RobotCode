@@ -3,16 +3,10 @@ package frc.robot.subsystems.constants.fourBar;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
-import frc.robot.Robot;
 import frc.robot.RobotConstants;
-import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
-import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -62,9 +56,8 @@ public class FourBarConstants {
 	public static final Rotation2d MAX_ACCELERATION_RPS_SQUARE = Rotation2d.fromRotations(3);
 	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);
 
-	public final static double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
-	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
@@ -99,16 +92,6 @@ public class FourBarConstants {
 			MAX_ACCELERATION_RPS_SQUARE,
 			MAX_VELOCITY_RPS
 		);
-	}
-
-	public static IDigitalInput createFourBarSensorResetCheck() {
-		return Robot.ROBOT_TYPE.isReal()
-			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.FOUR_BAR_RESET_SENSOR),
-				new Debouncer(RESET_CHECK_SENSOR_DEBOUNCE_TIME),
-				IS_RESET_CHECK_SENSOR_INVERTED
-			)
-			: new ChooserDigitalInput("intakeResetCheck");
 	}
 
 }

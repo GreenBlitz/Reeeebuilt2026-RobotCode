@@ -37,11 +37,9 @@ FourBar calibrations
 - [ ] Default max acceleration per second squared
 - [ ] Default max velocity per second
 
-#### Digital input
-- [ ] Sensor channel
-- [ ] Is inverted
-- [ ] Debounce time
+#### Reset
 - [ ] Reset voltage
+- [ ] Current threshold to reset
 
 #### General Constants
 - [x] FourBar length

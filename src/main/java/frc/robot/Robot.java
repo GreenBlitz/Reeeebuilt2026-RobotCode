@@ -71,9 +71,6 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final IDigitalInput turretResetCheckSensor;
-	private final IDigitalInput fourBarResetCheckSensor;
-	private final IDigitalInput hoodResetCheckSensor;
 	private final VelocityRoller train;
 	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
@@ -95,19 +92,16 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = TurretConstants.createTurret();
-		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
 		turret.setPosition(TurretConstants.MIN_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
 		this.flyWheel = FlywheelConstants.createFlyWheel();
 
 		this.fourBar = FourBarConstants.createFourBar();
-		this.fourBarResetCheckSensor = FourBarConstants.createFourBarSensorResetCheck();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
 		this.hood = HoodConstants.createHood();
-		this.hoodResetCheckSensor = HoodConstants.createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
@@ -301,18 +295,6 @@ public class Robot {
 
 	public Arm getHood() {
 		return hood;
-	}
-
-	public IDigitalInput getTurretResetCheckSensor() {
-		return turretResetCheckSensor;
-	}
-
-	public IDigitalInput getHoodResetCheckSensor() {
-		return hoodResetCheckSensor;
-	}
-
-	public IDigitalInput getFourBarResetCheckSensor() {
-		return fourBarResetCheckSensor;
 	}
 
 	public IDigitalInput getTrainBallSensor() {
