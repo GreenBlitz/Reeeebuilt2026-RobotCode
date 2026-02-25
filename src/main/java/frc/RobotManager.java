@@ -95,10 +95,8 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	@Override
-	public void teleopExit(Limelight limelight1, Limelight limelight2, Limelight limelight3) {
-		limelight1.captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20);
-		limelight2.captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20);
-		limelight3.captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20);
+	public void teleopExit() {
+        robot.getLimelight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20); // placeholder
 	}
 
 	public static double getTeleopStartTimeSeconds() {
