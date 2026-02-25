@@ -58,6 +58,9 @@ public class IDs {
 	}
 
 	public static class DigitalInputsIDs {
+
+		public static final int TRAIN_BALL_SENSOR = 9;
+
 	}
 
 }

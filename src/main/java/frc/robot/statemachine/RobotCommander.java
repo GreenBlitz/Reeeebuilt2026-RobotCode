@@ -39,7 +39,6 @@ public class RobotCommander extends GBSubsystem {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			ShootingCalculations::getShootingParams,
-
 			logPath
 		);
 
