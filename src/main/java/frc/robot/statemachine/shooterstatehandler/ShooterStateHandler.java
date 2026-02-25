@@ -115,10 +115,10 @@ public class ShooterStateHandler {
 	}
 
 	public void periodic() {
-		if (!hasHoodBeenReset && hood.getVoltage() / hood.getCurrent() > HoodConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasHoodBeenReset && hood.getCurrent() != 0 && hood.getVoltage() / hood.getCurrent() > HoodConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
 			hasHoodBeenReset = true;
 		}
-		if (!hasTurretBeenReset && turret.getVoltage() / turret.getCurrent() > TurretConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasTurretBeenReset && turret.getCurrent() != 0 && turret.getVoltage() / turret.getCurrent() > TurretConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
 			hasTurretBeenReset = true;
 		}
 
@@ -128,7 +128,13 @@ public class ShooterStateHandler {
 		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians() && !hasTurretBeenReset) {
 			turret.setPosition(TurretConstants.MIN_POSITION);
 		}
-
+		
+		if (hood.getCurrent() != 0) {
+			Logger.recordOutput(logPath + "/HoodResistance", hood.getVoltage() / hood.getCurrent());
+		}
+		if (turret.getCurrent() != 0) {
+			Logger.recordOutput(logPath + "/TurretResistance", turret.getVoltage() / turret.getCurrent());
+		}
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
