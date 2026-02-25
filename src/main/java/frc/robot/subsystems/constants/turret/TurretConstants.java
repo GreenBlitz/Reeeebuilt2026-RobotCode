@@ -2,17 +2,11 @@ package frc.robot.subsystems.constants.turret;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
-import frc.robot.Robot;
 import frc.robot.RobotConstants;
-import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
-import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -68,9 +62,8 @@ public class TurretConstants {
 		.getRangeEdge(MAX_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE.times(-1));
 	public static final Rotation2d SCREW_MIN_RANGE_EDGE = TurretCalculations.getRangeEdge(MIN_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE);
 
-	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
-	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public static final double RESET_TURRET_VOLTAGE = 1;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
 
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double TURRET_RADIUS = 0.0;
@@ -101,16 +94,6 @@ public class TurretConstants {
 			BACKWARDS_SOFTWARE_LIMIT,
 			turretSimulationConstants
 		);
-	}
-
-	public static IDigitalInput createTurretResetCheckSensor() {
-		return Robot.ROBOT_TYPE.isReal()
-			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.TURRET_RESET_SENSOR),
-				new Debouncer(RESET_CHECK_SENSOR_DEBOUNCE_TIME),
-				IS_RESET_CHECK_SENSOR_INVERTED
-			)
-			: new ChooserDigitalInput("turretResetCheck");
 	}
 
 }

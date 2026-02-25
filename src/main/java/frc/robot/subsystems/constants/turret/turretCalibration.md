@@ -27,5 +27,15 @@ Turret Calibration
 - [x] kD
 
 #### General
+<<<<<<< HEAD
 - [x] Amount of degrees for the look at hub not to move
 - [x] Offset from robot middle
+=======
+- [ ] Amount of degrees for the look at hub not to move
+- [ ] Offset from robot middle
+
+#### Reset
+- [x] Reset voltage
+- [x] Current threshold to reset
+
+>>>>>>> master

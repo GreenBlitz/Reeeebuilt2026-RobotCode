@@ -6,14 +6,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
-import frc.robot.Robot;
 import frc.robot.RobotConstants;
-import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
-import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -56,10 +51,8 @@ public class HoodConstants {
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 0.1);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 0.1);
 	public static final double CURRENT_LIMIT = 40;
-
-	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
-	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public static final double RESET_HOOD_VOLTAGE = -0.7;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
 
 	public static final double HOOD_LENGTH_METERS = 0.3;
 	public static final double ARBITRARY_FEEDFORWARD = 0;
@@ -91,16 +84,6 @@ public class HoodConstants {
 			BACKWARD_SOFTWARE_LIMIT,
 			hoodSimulationConstants
 		);
-	}
-
-	public static IDigitalInput createHoodResetCheckSensor() {
-		return Robot.ROBOT_TYPE.isReal()
-			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENSOR),
-				new Debouncer(RESET_CHECK_SENSOR_DEBOUNCE_TIME),
-				IS_RESET_CHECK_SENSOR_INVERTED
-			)
-			: new ChooserDigitalInput("hoodResetCheck");
 	}
 
 }
