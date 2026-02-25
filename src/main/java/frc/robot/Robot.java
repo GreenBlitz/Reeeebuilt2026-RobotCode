@@ -71,7 +71,7 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final VelocityRoller train;
+	private final Roller train;
 	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -203,8 +203,8 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isTeleopEnabled())
-			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+//		new Trigger(() -> DriverStation.isTeleopEnabled())
+//			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
 		configureAuto();
 	}
@@ -285,7 +285,7 @@ public class Robot {
 		return fourBar;
 	}
 
-	public VelocityRoller getTrain() {
+	public Roller getTrain() {
 		return train;
 	}
 

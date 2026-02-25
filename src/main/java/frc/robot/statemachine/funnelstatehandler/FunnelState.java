@@ -5,25 +5,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public enum FunnelState {
 
 	STOP,
-	SHOOT(Rotation2d.fromRotations(18), 8),
-	ROLL_UNTIL_SENSOR(Rotation2d.fromRotations(1), 4),
+	SHOOT(10, 8),
+	ROLL_UNTIL_SENSOR(0.1, 4),
 	CALIBRATION;
 
-	private final Rotation2d trainVelocity;
+	private final double trainVoltage;
 	private final double bellyVoltage;
 
-	FunnelState(Rotation2d trainVelocity, double bellyVoltage) {
-		this.trainVelocity = trainVelocity;
+	FunnelState(double trainVoltage, double bellyVoltage) {
+		this.trainVoltage = trainVoltage;
 		this.bellyVoltage = bellyVoltage;
 	}
 
 	FunnelState() {
-		this.trainVelocity = Rotation2d.kZero;
+		this.trainVoltage = 0;
 		this.bellyVoltage = 0;
 	}
 
-	public Rotation2d getTrainVelocity() {
-		return trainVelocity;
+	public double getTrainVoltage() {
+		return trainVoltage;
 	}
 
 	public double getBellyVoltage() {

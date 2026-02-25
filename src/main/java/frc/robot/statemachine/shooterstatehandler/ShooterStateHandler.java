@@ -85,15 +85,15 @@ public class ShooterStateHandler {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(
-				new TurretSafeMoveToPosition(
-					turret,
-					() -> shootingParamsSupplier.get().targetTurretPosition(),
-					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
-					logPath
-				),
-				"Safe move to position"
-			),
+//			turret.asSubsystemCommand(
+//				new TurretSafeMoveToPosition(
+//					turret,
+//					() -> shootingParamsSupplier.get().targetTurretPosition(),
+//					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
+//					logPath
+//				),
+//				"Safe move to position"
+//			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 		);
@@ -115,10 +115,10 @@ public class ShooterStateHandler {
 	}
 
 	public void periodic() {
-		if (!hasHoodBeenReset && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasHoodBeenReset() && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasHoodBeenReset = true;
 		}
-		if (!hasTurretBeenReset && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasTurretBeenReset() && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasTurretBeenReset = true;
 		}
 

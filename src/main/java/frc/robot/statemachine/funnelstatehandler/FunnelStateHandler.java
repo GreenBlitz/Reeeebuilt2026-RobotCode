@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class FunnelStateHandler {
 
-	private final VelocityRoller train;
+	private final Roller train;
 
 	private final IDigitalInput ballSensor;
 	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
@@ -26,7 +26,7 @@ public class FunnelStateHandler {
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor) {
+	public FunnelStateHandler(Roller train, Roller belly, String logPath, IDigitalInput ballSensor) {
 		this.train = train;
 		this.belly = belly;
 		this.logPath = logPath + "/FunnelStateHandler";
@@ -59,7 +59,7 @@ public class FunnelStateHandler {
 	private Command rollUntilSensor() {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
-				train.getCommandsBuilder().setVelocity(FunnelState.ROLL_UNTIL_SENSOR.getTrainVelocity()),
+				train.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getTrainVoltage()),
 				belly.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getBellyVoltage())
 			).until(this::isBallAtSensor),
 			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
@@ -68,7 +68,7 @@ public class FunnelStateHandler {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
+			train.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getTrainVoltage()),
 			new SequentialCommandGroup(
 				new WaitCommand(StateMachineConstants.TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS),
 				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())

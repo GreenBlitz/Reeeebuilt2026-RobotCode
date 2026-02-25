@@ -4,8 +4,10 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
@@ -14,10 +16,12 @@ import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
+import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
@@ -50,10 +54,10 @@ public class JoysticksBindings {
 			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
 			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
-		} else if (THIRD_JOYSTICK.isConnected()) {
-			chassisDriverInputs.xPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
-			chassisDriverInputs.yPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_X);
-			chassisDriverInputs.rotationalPower = THIRD_JOYSTICK.getAxisValue(Axis.RIGHT_X);
+		} else if (FOURTH_JOYSTICK.isConnected()) {
+			chassisDriverInputs.xPower = FOURTH_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.yPower = FOURTH_JOYSTICK.getAxisValue(Axis.LEFT_X);
+			chassisDriverInputs.rotationalPower = FOURTH_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else {
 			chassisDriverInputs.xPower = 0;
 			chassisDriverInputs.yPower = 0;
@@ -64,9 +68,23 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
+//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+//		usedJoystick.X.onTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_RIGHT).setTargetState(new SwerveModuleState(0, Rotation2d.kCCW_90deg), true)));
+//		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+//		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
+		SwerveModuleState state = new SwerveModuleState();
+		state.angle = Rotation2d.fromDegrees(45);
+		usedJoystick.B.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state, true)));
+		SwerveModuleState state2 = new SwerveModuleState();
+		state2.angle = Rotation2d.fromDegrees(-45);
+		usedJoystick.Y.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state2, true)));
+		SwerveModuleState state3 = new SwerveModuleState();
+		state3.angle = Rotation2d.fromDegrees(0);
+		usedJoystick.X.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state3, true)));
+		SwerveModuleState state4 = new SwerveModuleState();
+		state4.angle = Rotation2d.fromDegrees(90);
+		usedJoystick.A.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state4, true)));
+		
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -84,6 +102,9 @@ public class JoysticksBindings {
 	private static void fourthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FOURTH_JOYSTICK;
 		// bindings...
+		applyIntakeRollerCalibrationsBindings(usedJoystick, robot);
+		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.SCORE));
+		usedJoystick.A.onTrue(robot.getRobotCommander().getShooterStateHandler().setState(ShooterState.SHOOT));
 	}
 
 	private static void fifthJoystickButtons(Robot robot) {
@@ -197,7 +218,7 @@ public class JoysticksBindings {
 	}
 
 	public static void applyIntakeRollerCalibrationsBindings(SmartJoystick joystick, Robot robot) {
-		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(6));
+		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(9));
 		joystick.POV_DOWN.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(-6));
 	}
 
