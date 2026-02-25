@@ -5,9 +5,9 @@ Modules:
 ModuleConstants: (real and simulation)
 -----------------------
 - [ ] Wheel Diameter
-- [ ] Coupling Ratio
+- [x] Coupling Ratio
 - [ ] Velocity At 12 Volts
-- [ ] Modules locations (in meters)
+- [x] Modules locations (in meters)
 
 Encoder:
 ----------------------
