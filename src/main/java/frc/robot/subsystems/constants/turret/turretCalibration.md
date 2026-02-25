@@ -11,11 +11,11 @@ Turret Calibration
 - [ ] Current limit
 
 #### Limits
-- [ ] Max position
-- [ ] Min position
+- [x] Max position
+- [x] Min position
 ##### (Must complete each other to 360 degrees)
-- [ ] Forward limit
-- [ ] Backwards limit
+- [x] Forward limit
+- [x] Backwards limit
 
 #### Feed forward
 - [x] kS
@@ -27,12 +27,5 @@ Turret Calibration
 - [x] kD
 
 #### General
-- [ ] Amount of degrees for the look at hub not to move
+- [x] Amount of degrees for the look at hub not to move
 - [x] Offset from robot middle
-
-#### Reset Sensor
-- [ ] Sensor channel
-- [ ] Is inverted
-- [ ] Debounce time
-- [ ] Reset voltage
-

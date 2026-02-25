@@ -57,7 +57,7 @@ public class TurretConstants {
 
 	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(239.8);
 	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-120.2);
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(146.94 - 2);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(168 - 2);
 	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MIN_POSITION.getDegrees() + 2);
 
 	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.220, -0.1385, 0.45);
