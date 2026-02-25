@@ -15,6 +15,7 @@ import frc.robot.hardware.interfaces.IMotionMagicRequest;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.hardware.mechanisms.MechanismSimulation;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6Device;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.motors.simulation.TalonFXSimulation;
@@ -37,6 +38,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 	private final TalonFXFollowerConfig followerConfig;
 	private final Optional<TalonFXSimulation> talonFXSimulationOptional;
 	private final SysIdCalibrator.SysIdConfigInfo sysidConfigInfo;
+	private final BusChain busChain;
 
 	public TalonFXMotor(
 		String logPath,
@@ -52,7 +54,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 		this.followerConfig = followerConfig;
 		this.talonFXSimulationOptional = createSimulation(simulation);
 		this.sysidConfigInfo = new SysIdCalibrator.SysIdConfigInfo(sysidConfig, true);
-
+		this.busChain = deviceID.busChain();
 		for (TalonFXWrapper follower : followers) {
 			applyConfiguration(follower, followerConfig.motorConfig);
 		}
@@ -128,6 +130,10 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 	@Override
 	public TalonFXWrapper getDevice() {
 		return motor;
+	}
+
+	public BusChain getBusChain() {
+		return busChain;
 	}
 
 	@Override
