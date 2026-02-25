@@ -18,7 +18,7 @@ public class BellyConstants {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 	}
 
-	public final static int CURRENT_LIMIT = 40;
+	public final static int CURRENT_LIMIT = 60;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
 
 	public static Roller createBelly() {

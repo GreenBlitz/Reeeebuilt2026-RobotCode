@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.VelocityPositionRequest;
@@ -30,6 +31,10 @@ public class VelocityPositionArm extends Arm {
 		Logger.recordOutput(getLogPath() + "/VelocityPositionArmTargetVelocity", targetVelocity);
 
 		motor.applyRequest(velocityPositionRequest);
+	}
+
+	public void setPosition(Rotation2d position) {
+		motor.resetPosition(position);
 	}
 
 	@Override
