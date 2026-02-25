@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve.factories.imu;
 
 import frc.robot.Robot;
 import frc.robot.hardware.interfaces.IIMU;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.imu.Pigeon2IMU;
 import frc.robot.subsystems.swerve.IMUSignals;
 
@@ -15,9 +16,9 @@ public class IMUFactory {
 		};
 	}
 
-	public static IMUSignals createSignals(IIMU gyro) {
+	public static IMUSignals createSignals(IIMU gyro, BusChain busChain) {
 		return switch (Robot.ROBOT_TYPE) {
-			case REAL, REPLAY -> Pigeon2IMUBuilder.buildSignals((Pigeon2IMU) gyro);
+			case REAL, REPLAY -> Pigeon2IMUBuilder.buildSignals((Pigeon2IMU) gyro, busChain);
 			case SIMULATION -> SimulationIMUBuilder.buildSignals();
 		};
 	}

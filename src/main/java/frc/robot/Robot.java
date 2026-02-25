@@ -124,9 +124,9 @@ public class Robot {
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
 			SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
-			ModulesFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
+			ModulesFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve", IDs.TalonFXIDs.SWERVE_FRONT_LEFT_DRIVE.busChain()),
 			imu,
-			IMUFactory.createSignals(imu)
+			IMUFactory.createSignals(imu, IDs.Pigeon2IDs.SWERVE.busChain())
 		);
 		BrakeStateManager.add(() -> swerve.getModules().setBrake(true), () -> swerve.getModules().setBrake(false));
 

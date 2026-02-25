@@ -49,10 +49,10 @@ class CANCoderEncoderBuilder {
 		return new CANCoderEncoder(logPath, cancoder);
 	}
 
-	static EncoderSignals buildSignals(CANCoderEncoder encoder) {
+	static EncoderSignals buildSignals(CANCoderEncoder encoder, BusChain busChain) {
 		return new EncoderSignals(
 			Phoenix6SignalBuilder
-				.build(encoder.getDevice().getPosition(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, BusChain.ROBORIO)
+				.build(encoder.getDevice().getPosition(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, busChain)
 		);
 	}
 

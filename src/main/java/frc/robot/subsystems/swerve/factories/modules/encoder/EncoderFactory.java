@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve.factories.modules.encoder;
 import frc.robot.IDs;
 import frc.robot.Robot;
 import frc.robot.hardware.interfaces.IAngleEncoder;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.angleencoder.CANCoderEncoder;
 import frc.robot.subsystems.swerve.module.ModuleConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -23,9 +24,9 @@ public class EncoderFactory {
 		};
 	}
 
-	public static EncoderSignals createSignals(IAngleEncoder angleEncoder) {
+	public static EncoderSignals createSignals(IAngleEncoder angleEncoder, BusChain busChain) {
 		return switch (Robot.ROBOT_TYPE) {
-			case REAL -> CANCoderEncoderBuilder.buildSignals((CANCoderEncoder) angleEncoder);
+			case REAL -> CANCoderEncoderBuilder.buildSignals((CANCoderEncoder) angleEncoder, busChain);
 			case SIMULATION, REPLAY -> SimulationEncoderBuilder.buildSignals();
 		};
 	}

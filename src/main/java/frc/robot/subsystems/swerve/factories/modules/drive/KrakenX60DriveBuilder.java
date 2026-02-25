@@ -117,19 +117,19 @@ public class KrakenX60DriveBuilder {
 		);
 	}
 
-	static DriveSignals buildSignals(TalonFXMotor drive) {
+	static DriveSignals buildSignals(TalonFXMotor drive, BusChain busChain) {
 		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
-			.build(drive.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, BusChain.ROBORIO);
+			.build(drive.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, busChain);
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
-			.build(drive.getDevice().getTorqueCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, BusChain.ROBORIO);
+			.build(drive.getDevice().getTorqueCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, busChain);
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
-			.build(drive.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, BusChain.ROBORIO);
+			.build(drive.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, busChain);
 		Phoenix6LatencySignal positionSignal = Phoenix6SignalBuilder.build(
 			drive.getDevice().getPosition(),
 			velocitySignal,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			AngleUnit.ROTATIONS,
-			BusChain.ROBORIO
+			busChain
 		);
 
 		return new DriveSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);

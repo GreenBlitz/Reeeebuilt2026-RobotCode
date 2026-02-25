@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve.factories.modules.drive;
 
 import frc.robot.IDs;
 import frc.robot.hardware.interfaces.ControllableMotor;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.subsystems.swerve.module.ModuleConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -24,8 +25,8 @@ public class DriveFactory {
 		return KrakenX60DriveBuilder.buildRequests();
 	}
 
-	public static DriveSignals createSignals(ControllableMotor drive) {
-		return KrakenX60DriveBuilder.buildSignals((TalonFXMotor) drive);
+	public static DriveSignals createSignals(ControllableMotor drive, BusChain busChain) {
+		return KrakenX60DriveBuilder.buildSignals((TalonFXMotor) drive, busChain);
 	}
 
 }
