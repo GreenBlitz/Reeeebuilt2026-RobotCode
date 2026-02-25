@@ -51,6 +51,7 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.AutonomousChooser;
+import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
@@ -78,10 +79,10 @@ public class Robot {
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
-	private AutonomousChooser autonomousChooser;
-
 	private final RobotCommander robotCommander;
-
+	
+	private AutonomousChooser autonomousChooser;
+	
 	private final Swerve swerve;
 
 	private final IPoseEstimator poseEstimator;
@@ -333,13 +334,12 @@ public class Robot {
 	public SimulationManager getSimulationManager() {
 		return simulationManager;
 	}
-
-
+	
 	public AutonomousChooser getAutonomousChooser() {
 		return autonomousChooser;
 	}
 
-	public void configureAuto() {
+	private void configureAuto() {
 		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
