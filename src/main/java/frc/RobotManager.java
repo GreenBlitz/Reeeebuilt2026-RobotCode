@@ -49,7 +49,7 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		autonomousChooserChange();
+		detectAutonomousChange();
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class RobotManager extends LoggedRobot {
 		AlertManager.reportAlerts();
 	}
 
-	private void autonomousChooserChange() {
+	private void detectAutonomousChange() {
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
 			if (isAutonomous()) {
