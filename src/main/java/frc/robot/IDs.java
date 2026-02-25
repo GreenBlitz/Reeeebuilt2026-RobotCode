@@ -55,16 +55,9 @@ public class IDs {
 	}
 
 	public static class SparkMAXIDs {
-
 	}
 
 	public static class DigitalInputsIDs {
-
-		public static final int FOUR_BAR_RESET_SENSOR = 11;
-
-		public static final int TURRET_RESET_SENSOR = 12;
-
-		public static final int HOOD_RESET_SENSOR = 7;
 
 		public static final int TRAIN_BALL_SENSOR = 9;
 

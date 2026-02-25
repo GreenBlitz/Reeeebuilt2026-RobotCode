@@ -33,11 +33,9 @@ Hood calibrations
 - [ ] kI
 - [ ] kD
 
-#### Reset Sensor
-- [ ] Sensor channel
-- [ ] Is inverted
-- [ ] Debounce time
-- [ ] Reset voltage
+#### Reset
+- [x] Reset voltage
+- [x] Current threshold to reset
 
 #### General Constants
 - [x] Arm length
