@@ -339,6 +339,18 @@ public class Robot {
 		return autonomousChooser.getChosenValue();
 	}
 
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
+	}
+
 	private void configureAuto() {
 		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
 

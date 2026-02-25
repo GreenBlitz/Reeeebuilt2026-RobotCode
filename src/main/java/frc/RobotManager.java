@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
-import frc.robot.vision.cameras.limelight.Limelight;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.driverstation.DriverStationUtil;
@@ -96,7 +95,9 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void teleopExit() {
-        robot.getLimelight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20); // placeholder
+		robot.getLimelightFront().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20);
+		robot.getLimelightLeft().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20);
+		robot.getLimelightRight().captureGivenTime(GamePeriodUtils.GAME_DURATION_SECONDS + 20);
 	}
 
 	public static double getTeleopStartTimeSeconds() {
