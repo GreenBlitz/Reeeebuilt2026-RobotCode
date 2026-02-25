@@ -7,15 +7,9 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
-import frc.robot.autonomous.AutonomousConstants;
-import frc.robot.autonomous.AutosBuilder;
-import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.utils.HubUtil;
-import frc.utils.auto.AutonomousChooser;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -26,8 +20,6 @@ import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -41,11 +33,8 @@ public class RobotManager extends LoggedRobot {
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
 
-	private AutonomousChooser autonomousChooser;
-
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
-		this.autonomousChooser = new AutonomousChooser("autonomousChooser", List.of());
 
 		if (Robot.ROBOT_TYPE.isReplay()) {
 			setUseTiming(false);
@@ -57,8 +46,6 @@ public class RobotManager extends LoggedRobot {
 
 		this.roborioCycles = 0;
 		this.robot = new Robot();
-
-		configureAuto();
 
 		JoysticksBindings.configureBindings(robot);
 
@@ -86,7 +73,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
-			this.autonomousCommand = getAutonomousChooser().getChosenValue();
+			this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
 		}
 
 		CommandScheduler.getInstance().schedule(autonomousCommand);
@@ -124,10 +111,9 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void autonomousChooserChange() {
-		autonomousChooser.getChooser().onChange((autonomousCommand) -> {
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
 			if (isAutonomous()) {
-				robot.getSwerve().setIsRunningIndependently(true);
 				CommandScheduler.getInstance().schedule(this.autonomousCommand);
 			}
 		});
@@ -137,33 +123,6 @@ public class RobotManager extends LoggedRobot {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
-	}
-
-	public AutonomousChooser getAutonomousChooser() {
-		return autonomousChooser;
-	}
-
-	public void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> robot.getRobotCommanderr().getIntakeStateHandler().setState(IntakeState.INTAKE);
-
-		Supplier<Command> autonomousScoringSequenceCommand = () -> robot.getRobotCommanderr().scoreSequence();
-
-		Supplier<Command> autonomousResetSubsystemsCommand = () -> robot.getRobotCommanderr().setState(RobotState.RESET_SUBSYSTEMS);
-
-		robot.getSwerve().configPathPlanner(() -> robot.getPoseEstimator().getEstimatedPose(), (pose) -> {}, robot.getRobotConfig());
-
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				robot,
-				autonomousResetSubsystemsCommand,
-				autonomousIntakeCommand,
-				autonomousScoringSequenceCommand,
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
-			)
-		);
-		autonomousChooser.getChooser().onChange(pathPlannerAutoWrapperSupplier -> autonomousCommand = autonomousChooser.getChosenValue());
 	}
 
 }

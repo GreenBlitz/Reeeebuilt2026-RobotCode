@@ -15,12 +15,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
+import frc.robot.autonomous.AutonomousConstants;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -47,9 +50,12 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -71,6 +77,8 @@ public class Robot {
 	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
+
+	private AutonomousChooser autonomousChooser;
 
 	private final RobotCommander robotCommander;
 
@@ -193,6 +201,8 @@ public class Robot {
 
 		robotCommander = new RobotCommander("StateMachine", this);
 
+		configureAuto();
+
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
@@ -234,10 +244,6 @@ public class Robot {
 
 	public boolean isTurretMoveLegal() {
 		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
-	}
-
-	public RobotCommander getRobotCommanderr() {
-		return robotCommander;
 	}
 
 	public void periodic() {
@@ -326,6 +332,33 @@ public class Robot {
 
 	public SimulationManager getSimulationManager() {
 		return simulationManager;
+	}
+
+
+	public AutonomousChooser getAutonomousChooser() {
+		return autonomousChooser;
+	}
+
+	public void configureAuto() {
+		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+
+		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
+
+		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
+
+		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
+
+		this.autonomousChooser = new AutonomousChooser(
+			"Autonomous Chooser",
+			AutosBuilder.getAutoList(
+				this,
+				autonomousResetSubsystemsCommand,
+				autonomousIntakeCommand,
+				autonomousScoringSequenceCommand,
+				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+			)
+		);
 	}
 
 }
