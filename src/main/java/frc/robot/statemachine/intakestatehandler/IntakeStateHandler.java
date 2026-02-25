@@ -3,7 +3,6 @@ package frc.robot.statemachine.intakestatehandler;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.roller.Roller;
@@ -17,7 +16,6 @@ public class IntakeStateHandler {
 	private final Arm fourBar;
 	private final Roller rollers;
 	private boolean hasFourBarBeenReset;
-	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
 	private final String logPath;
 	private final LoggedNetworkNumber rollersCalibrationPower = new LoggedNetworkNumber("Tunable/IntakeRollerPower");
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
@@ -27,7 +25,6 @@ public class IntakeStateHandler {
 	public IntakeStateHandler(Arm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
-		this.fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
@@ -101,12 +98,7 @@ public class IntakeStateHandler {
 			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		}
 
-		Logger.processInputs(logPath + "/fourBarResetSensor", fourBarResetCheckInput);
 		Logger.recordOutput(logPath + "/HasFourBarBeenReset", hasFourBarBeenReset());
-	}
-
-	public boolean isFourBarAtSensor() {
-		return fourBarResetCheckInput.debouncedValue;
 	}
 
 	public boolean hasFourBarBeenReset() {
