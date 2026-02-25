@@ -82,7 +82,7 @@ public class RobotCommander extends GBSubsystem {
 			|| robot.getHood().isRunningIndependently()
 			|| robot.getTrain().isRunningIndependently()
 			|| robot.getBelly().isRunningIndependently()
-			|| robot.getTurret().isRunningIndependently();
+			|| robot.getTurret().isRunningIndependently() || true;
 	}
 
 	public void update() {

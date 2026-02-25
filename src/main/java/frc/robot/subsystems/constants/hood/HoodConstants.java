@@ -51,7 +51,7 @@ public class HoodConstants {
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 0.1);
 	public static final double CURRENT_LIMIT = 40;
 	public static final double RESET_HOOD_VOLTAGE = -0.7;
-	public static final double RESISTANCE_THRESHOLD_TO_RESET_POSITION = 10;
+	public static final double RESISTANCE_THRESHOLD_TO_RESET_POSITION = 20;
 
 	public static final double HOOD_LENGTH_METERS = 0.3;
 	public static final double ARBITRARY_FEEDFORWARD = 0;

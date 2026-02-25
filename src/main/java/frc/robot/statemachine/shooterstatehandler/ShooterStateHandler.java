@@ -115,10 +115,10 @@ public class ShooterStateHandler {
 	}
 
 	public void periodic() {
-		if (!hasHoodBeenReset && hood.getCurrent() != 0 && hood.getVoltage() / hood.getCurrent() > HoodConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasHoodBeenReset && hood.getCurrent() != 0 && Math.abs(hood.getCurrent()) > HoodConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
 			hasHoodBeenReset = true;
 		}
-		if (!hasTurretBeenReset && turret.getCurrent() != 0 && turret.getVoltage() / turret.getCurrent() > TurretConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasTurretBeenReset && turret.getCurrent() != 0 && Math.abs(turret.getCurrent()) > TurretConstants.RESISTANCE_THRESHOLD_TO_RESET_POSITION) {
 			hasTurretBeenReset = true;
 		}
 
