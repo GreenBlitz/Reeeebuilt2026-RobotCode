@@ -3,10 +3,11 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
+import frc.utils.HubUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
@@ -33,6 +35,10 @@ public class JoysticksBindings {
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
+
+	public static final double RUMBLE_SECONDS_TOLERANCE = 1;
+	public static final double WANTED_RUMBLE_SECONDS = 5 - RUMBLE_SECONDS_TOLERANCE;
+	public static final double RUMBLE_POWER = 0.5;
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
@@ -65,8 +71,13 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+		usedJoystick.X.onTrue(new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 1))	2);
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
+
+		new Trigger(() -> isSecondsRemainingInShift(WANTED_RUMBLE_SECONDS, RUMBLE_SECONDS_TOLERANCE)).onTrue(
+				new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, RUMBLE_POWER))
+		);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -208,6 +219,17 @@ public class JoysticksBindings {
 	private static void applyBellyCalibrationBindings(Roller belly, SmartJoystick joystick, double maxCalibrationPower) {
 		joystick.X.onTrue(belly.getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
 		joystick.Y.onTrue(belly.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
+	}
+
+	public static boolean isSecondsRemainingInShift(double wantedSeconds, double secondsTolerance) {
+        return MathUtil.isNear(wantedSeconds, HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()), secondsTolerance);
+    }
+
+	private static Command applyRumble(SmartJoystick usedJoystick ,double wantedSeconds, double secondsTolerance, double wantedRumblePower) {
+		if (isSecondsRemainingInShift(wantedSeconds, secondsTolerance)) {
+			return new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, wantedRumblePower));
+		}
+		return Commands.none();
 	}
 
 }
