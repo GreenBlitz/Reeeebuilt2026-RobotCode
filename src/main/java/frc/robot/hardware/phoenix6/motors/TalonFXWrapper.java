@@ -3,19 +3,22 @@ package frc.robot.hardware.phoenix6.motors;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.Phoenix6Util;
 
 public class TalonFXWrapper extends TalonFX {
 
 	private static final int DEFAULT_CONFIG_NUMBER_OF_TRIES = 1;
+	private final BusChain busChain;
 
 	public TalonFXWrapper(int deviceId) {
-		this(new Phoenix6DeviceID(deviceId));
+		this(new Phoenix6DeviceID(deviceId, BusChain.ROBORIO));
 	}
 
 	public TalonFXWrapper(Phoenix6DeviceID ctreDeviceID) {
 		super(ctreDeviceID.id(), ctreDeviceID.busChain().getCANBus());
+		this.busChain = ctreDeviceID.busChain();
 	}
 
 	public StatusCode applyConfiguration(TalonFXConfiguration configuration, int numberOfTries) {
@@ -24,6 +27,10 @@ public class TalonFXWrapper extends TalonFX {
 
 	public StatusCode applyConfiguration(TalonFXConfiguration configuration) {
 		return applyConfiguration(configuration, DEFAULT_CONFIG_NUMBER_OF_TRIES);
+	}
+
+	public BusChain getBusChain() {
+		return busChain;
 	}
 
 }

@@ -21,13 +21,13 @@ public class ModulesFactory {
 		return new Module(
 			ModuleSpecificConstantsFactory.create(logPath, modulePosition),
 			angleEncoder,
-			EncoderFactory.createSignals(angleEncoder, busChain),
+			EncoderFactory.createSignals(angleEncoder),
 			steer,
 			SteerFactory.createRequests(),
-			SteerFactory.createSignals(steer, busChain),
+			SteerFactory.createSignals(steer),
 			drive,
 			DriveFactory.createRequests(),
-			DriveFactory.createSignals(drive, busChain)
+			DriveFactory.createSignals(drive)
 		);
 	}
 
