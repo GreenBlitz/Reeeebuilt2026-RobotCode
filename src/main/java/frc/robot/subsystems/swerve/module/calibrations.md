@@ -6,7 +6,7 @@ ModuleConstants: (real and simulation)
 -----------------------
 - [x] Wheel Diameter
 - [x] Coupling Ratio
-- [ ] Velocity At 12 Volts
+- [x] Velocity At 12 Volts
 - [x] Modules locations (in meters)
 
 Encoder:
@@ -39,11 +39,11 @@ Drive:
 -----------------------
 - [x] Motor ID
 - [x] Inverted
-- [ ] Neutral Mode
+- [x] Neutral Mode
 - [ ] Current Limit
 - [x] Gear Ratio (should use RotorToSensorRatio)
-- [ ] FF (ks, kv, ka)
-- [ ] PID
+- [x] FF (ks, kv, ka)
+- [x] PID
 - [ ] Control mode (motion magic, voltage, torque)
 - [x] Enable/Disable FOC (only talonfx)
 

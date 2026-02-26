@@ -117,6 +117,7 @@ public class JoysticksBindings {
 	private static void fifthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FIFTH_JOYSTICK;
 		// bindings...
+		usedJoystick.A.whileTrue(robot.getSwerve().getCommandsBuilder().pointWheels(new Rotation2d(), false));
 	}
 
 	private static void sixthJoystickButtons(Robot robot) {
