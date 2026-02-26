@@ -287,6 +287,26 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public Command calibrationScore() {
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.CALIBRATION),
+			new SequentialCommandGroup(
+				new ParallelCommandGroup(
+					asSubsystemCommand(
+						funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::calibrationIsReadyToScore),
+						RobotState.CALIBRATION_PRE_SCORE
+					)
+				),
+				new ParallelCommandGroup(
+					asSubsystemCommand(
+						funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !calibrationCanContinueScoring()).withTimeout(0.2),
+						RobotState.CALIBRATION_SCORE
+					)
+				)
+			)
+		);
+	}
+
 	private Command asSubsystemCommand(Command command, RobotState state) {
 		return new ParallelCommandGroup(
 			asSubsystemCommand(command, state.name()),
