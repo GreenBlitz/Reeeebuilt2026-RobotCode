@@ -402,7 +402,7 @@ public class Swerve extends GBSubsystem {
 			powers.xPower = kSCalibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
 			return powers;
 		}), Set.of(this)));
-		
+
 		joystick.BACK.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.rotationalPower = 1;
