@@ -1,9 +1,7 @@
 package frc.robot.subsystems.swerve.factories.modules;
 
-import frc.robot.IDs;
 import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IAngleEncoder;
-import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.subsystems.swerve.factories.modules.constants.ModuleSpecificConstantsFactory;
 import frc.robot.subsystems.swerve.factories.modules.drive.DriveFactory;
 import frc.robot.subsystems.swerve.factories.modules.encoder.EncoderFactory;
