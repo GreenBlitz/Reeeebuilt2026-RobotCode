@@ -73,12 +73,24 @@ class KrakenX60SteerBuilder {
 		steerConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 		
 		if (Robot.ROBOT_TYPE.isReal()) {
-			steerConfig.Slot0.kS = 0.35;
-			steerConfig.Slot0.kV = 0;
-			steerConfig.Slot0.kA = 0;
-			steerConfig.Slot0.kP = 105;
-			steerConfig.Slot0.kI = 0;
-			steerConfig.Slot0.kD = 1;
+			switch (position){
+				case BACK_LEFT, FRONT_LEFT -> {
+					steerConfig.Slot0.kS = 0.44;
+					steerConfig.Slot0.kV = 0;
+					steerConfig.Slot0.kA = 0;
+					steerConfig.Slot0.kP = 105;
+					steerConfig.Slot0.kI = 0;
+					steerConfig.Slot0.kD = 1;
+				}
+				case BACK_RIGHT, FRONT_RIGHT -> {
+					steerConfig.Slot0.kS = 0.4;
+					steerConfig.Slot0.kV = 0;
+					steerConfig.Slot0.kA = 0;
+					steerConfig.Slot0.kP = 105;
+					steerConfig.Slot0.kI = 0;
+					steerConfig.Slot0.kD = 1;
+				}
+			}
 		} else {
 			steerConfig.Slot0.kS = 0;
 			steerConfig.Slot0.kV = 0;

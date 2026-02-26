@@ -29,7 +29,7 @@ public class TrainConstant {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 1;
 
-		REAL_SLOTS_CONFIG.kP = 10;
+		REAL_SLOTS_CONFIG.kP = 0.1;
 		REAL_SLOTS_CONFIG.kI = 0;
 		REAL_SLOTS_CONFIG.kD = 0;
 		REAL_SLOTS_CONFIG.kG = 0;
