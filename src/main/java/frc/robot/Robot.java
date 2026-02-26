@@ -49,7 +49,6 @@ import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.function.Supplier;
 
@@ -253,22 +252,7 @@ public class Robot {
 		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
-	static LoggedNetworkNumber tagDistance = new LoggedNetworkNumber("tunable/tagDistance", 0.4);
-	static LoggedNetworkNumber factors = new LoggedNetworkNumber("tunable/factors", 0.05);
-	static LoggedNetworkNumber exponents = new LoggedNetworkNumber("tunable/exponents", 0.7);
-	static LoggedNetworkNumber additions = new LoggedNetworkNumber("tunable/additions", -0.02);
-
 	public void periodic() {
-		limelightFront.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightFront,
-				new StandardDeviations2D(tagDistance.get()),
-				new StandardDeviations2D(factors.get()),
-				new StandardDeviations2D(exponents.get()),
-				new StandardDeviations2D(additions.get())
-			)
-		);
-
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		robotCommander.update();
