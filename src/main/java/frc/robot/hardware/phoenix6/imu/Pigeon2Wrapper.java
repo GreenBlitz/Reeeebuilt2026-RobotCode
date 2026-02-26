@@ -95,7 +95,7 @@ public class Pigeon2Wrapper extends Pigeon2 {
     //@formatter:on
 
 	private static final int DEFAULT_CONFIG_NUMBER_OF_TRIES = 1;
-	
+
 	private final BusChain busChain;
 
 	private double rollOffSetDegrees;
@@ -216,8 +216,8 @@ public class Pigeon2Wrapper extends Pigeon2 {
 	private Rotation2d rangeAngle(Rotation2d angle) {
 		return Rotation2d.fromRadians(MathUtil.angleModulus(angle.getRadians()));
 	}
-	
-	public BusChain getBusChain(){
+
+	public BusChain getBusChain() {
 		return busChain;
 	}
 
