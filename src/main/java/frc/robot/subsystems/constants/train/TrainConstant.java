@@ -10,8 +10,8 @@ import frc.robot.RobotConstants;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
-import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.TalonFXRollerBuilder;
+import frc.robot.subsystems.roller.VelocityRoller;
 
 public class TrainConstant {
 
@@ -50,8 +50,17 @@ public class TrainConstant {
 
 	public static final double MOMENT_OF_INERTIA = 0.001;
 
-	public static Roller createTrain() {
-		return TalonFXRollerBuilder.build(LOG_PATH, IDs.TalonFXIDs.TRAIN, IS_INVERTED, FEEDBACK_CONFIGS, CURRENT_LIMIT, MOMENT_OF_INERTIA);
+	public static VelocityRoller createTrain() {
+		return TalonFXRollerBuilder.buildVelocityRoller(
+			LOG_PATH,
+			IDs.TalonFXIDs.TRAIN,
+			REAL_SLOTS_CONFIG,
+			SIMULATION_SLOTS_CONFIG,
+			CURRENT_LIMIT,
+			FEEDBACK_CONFIGS,
+			MOMENT_OF_INERTIA,
+			IS_INVERTED
+		);
 	}
 
 	public static IDigitalInput createTrainBallSensor() {

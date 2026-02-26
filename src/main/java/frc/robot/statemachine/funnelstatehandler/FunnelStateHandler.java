@@ -5,12 +5,13 @@ import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.VelocityRoller;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class FunnelStateHandler {
 
-	private final Roller train;
+	private final VelocityRoller train;
 
 	private final IDigitalInput ballSensor;
 	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
@@ -25,7 +26,7 @@ public class FunnelStateHandler {
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(Roller train, Roller belly, String logPath, IDigitalInput ballSensor) {
+	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor) {
 		this.train = train;
 		this.belly = belly;
 		this.logPath = logPath + "/FunnelStateHandler";
@@ -58,7 +59,7 @@ public class FunnelStateHandler {
 	private Command rollUntilSensor() {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
-				train.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getTrainVoltage()),
+				train.getCommandsBuilder().setVelocity(FunnelState.ROLL_UNTIL_SENSOR.getTrainVelocity()),
 				belly.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getBellyVoltage())
 			).until(this::isBallAtSensor),
 			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
@@ -67,7 +68,7 @@ public class FunnelStateHandler {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			train.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getTrainVoltage()),
+			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
 			new SequentialCommandGroup(
 				new WaitCommand(StateMachineConstants.TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS),
 				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
