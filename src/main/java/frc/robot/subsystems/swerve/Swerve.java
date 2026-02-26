@@ -49,7 +49,7 @@ public class Swerve extends GBSubsystem {
 	private final HeadingStabilizer headingStabilizer;
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
-	private final LoggedNetworkNumber kSCalibrationVoltageTunable;
+	private final LoggedNetworkNumber calibrationVoltageTunable;
 
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
@@ -72,7 +72,7 @@ public class Swerve extends GBSubsystem {
 		this.stateHandler = new SwerveStateHandler(this);
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
-		this.kSCalibrationVoltageTunable = new LoggedNetworkNumber("kSCalibrationVoltage", 0);
+		this.calibrationVoltageTunable = new LoggedNetworkNumber("calibrationVoltage", 0);
 		update();
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
 	}
@@ -170,7 +170,7 @@ public class Swerve extends GBSubsystem {
 		modules.updateInputs();
 
 		currentState.log(constants.stateLogPath());
-		kSCalibrationVoltageTunable.periodic();
+		calibrationVoltageTunable.periodic();
 
 		ChassisSpeeds allianceRelativeSpeeds = getAllianceRelativeVelocity();
 		Logger.recordOutput(constants.velocityLogPath() + "/Rotation", allianceRelativeSpeeds.omegaRadiansPerSecond);
@@ -397,10 +397,11 @@ public class Swerve extends GBSubsystem {
 				)
 			);
 
-		// kS calibration and can be used for max velocity at 12 volts calibration
+		// max velocity at 12 volts (put a really high value in max vel and max rot vel for it to work)
+		// after calibrating max vel at 12 volts use this to calibrate kS
 		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
-			powers.xPower = kSCalibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
+			powers.xPower = calibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
 			return powers;
 		}), Set.of(this)));
 

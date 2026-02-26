@@ -14,7 +14,6 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
 
-
 public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;

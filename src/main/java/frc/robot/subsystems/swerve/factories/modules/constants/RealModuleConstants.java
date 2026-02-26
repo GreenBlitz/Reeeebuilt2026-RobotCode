@@ -8,8 +8,7 @@ import frc.robot.subsystems.swerve.module.records.ModuleSpecificConstants;
 class RealModuleConstants {
 
 	private static final double WHEEL_DIAMETER_METERS = 0.04860556094516433 * 2;
-	private static final double FRONT_MODULES_COUPLING_RATIO = 0.438231;
-	private static final double BACK_MODULES_COUPLING_RATIO = 0.438231;
+	private static final double COUPLING_RATIO = 0.438231;
 
 	private static final double MODULE_X_DISTANCE_FROM_CENTER = 0.24683;
 	private static final double MODULE_Y_DISTANCE_FROM_CENTER = 0.30833;
@@ -36,15 +35,11 @@ class RealModuleConstants {
 		BACK_RIGHT_TRANSLATION2D,};
 
 	static ModuleSpecificConstants getModuleSpecificConstants(String logPath, ModuleUtil.ModulePosition modulePosition) {
-		double couplingRatio = switch (modulePosition) {
-			case FRONT_LEFT, FRONT_RIGHT -> FRONT_MODULES_COUPLING_RATIO;
-			case BACK_LEFT, BACK_RIGHT -> BACK_MODULES_COUPLING_RATIO;
-		};
 		return new ModuleSpecificConstants(
 			modulePosition,
 			logPath,
 			WHEEL_DIAMETER_METERS,
-			couplingRatio,
+			COUPLING_RATIO,
 			RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
 			LOCATIONS[modulePosition.getIndex()]
 		);
