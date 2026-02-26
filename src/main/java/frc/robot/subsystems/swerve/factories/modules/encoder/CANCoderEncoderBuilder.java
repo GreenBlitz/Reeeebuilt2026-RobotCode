@@ -45,7 +45,7 @@ class CANCoderEncoderBuilder {
 			new Alert(Alert.AlertType.ERROR, logPath + "ConfigurationFailAt").report();
 		}
 
-		return new CANCoderEncoder(logPath, cancoder, encoderDeviceID);
+		return new CANCoderEncoder(logPath, cancoder, encoderDeviceID.busChain());
 	}
 
 	static EncoderSignals buildSignals(CANCoderEncoder encoder) {
