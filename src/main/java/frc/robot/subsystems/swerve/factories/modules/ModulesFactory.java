@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve.factories.modules;
 
+import frc.robot.IDs;
 import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IAngleEncoder;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -31,13 +32,13 @@ public class ModulesFactory {
 		);
 	}
 
-	public static Modules create(String logPath, BusChain busChain) {
+	public static Modules create(String logPath) {
 		return new Modules(
 			logPath,
-			createModule(logPath, ModuleUtil.ModulePosition.FRONT_LEFT, busChain),
-			createModule(logPath, ModuleUtil.ModulePosition.FRONT_RIGHT, busChain),
-			createModule(logPath, ModuleUtil.ModulePosition.BACK_LEFT, busChain),
-			createModule(logPath, ModuleUtil.ModulePosition.BACK_RIGHT, busChain)
+			createModule(logPath, ModuleUtil.ModulePosition.FRONT_LEFT, IDs.TalonFXIDs.SWERVE_FRONT_LEFT_STEER.busChain()),
+			createModule(logPath, ModuleUtil.ModulePosition.FRONT_RIGHT, IDs.TalonFXIDs.SWERVE_FRONT_RIGHT_STEER.busChain()),
+			createModule(logPath, ModuleUtil.ModulePosition.BACK_LEFT, IDs.TalonFXIDs.SWERVE_BACK_LEFT_STEER.busChain()),
+			createModule(logPath, ModuleUtil.ModulePosition.BACK_RIGHT, IDs.TalonFXIDs.SWERVE_BACK_RIGHT_STEER.busChain())
 		);
 	}
 
