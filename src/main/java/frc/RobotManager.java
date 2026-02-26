@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -90,6 +91,13 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+	}
+
+	@Override
+	public void teleopExit() {
+		robot.getLimelightFront().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
+		robot.getLimelightLeft().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
+		robot.getLimelightRight().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
 	}
 
 	public static double getTeleopStartTimeSeconds() {
