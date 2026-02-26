@@ -31,8 +31,8 @@ public class CANdleWrapper extends GBSubsystem {
 		this.ledLength = ledLength;
 	}
 
-	public void setColor(int r, int g, int b) {
-		RGBWColor rgbwColor = new RGBWColor(r, g, b, 0);
+	public void setColor(int r, int g, int b, int w) {
+		RGBWColor rgbwColor = new RGBWColor(r, g, b, w);
 		SolidColor color = new SolidColor(0, ledLength).withColor(rgbwColor);
 		led.setControl(color);
 	}
