@@ -15,7 +15,6 @@ import frc.robot.hardware.interfaces.IMotionMagicRequest;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.hardware.mechanisms.MechanismSimulation;
-import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6Device;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.motors.simulation.TalonFXSimulation;
@@ -46,7 +45,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 		SysIdRoutine.Config sysidConfig,
 		MechanismSimulation simulation
 	) {
-		super(logPath,deviceID.busChain());
+		super(logPath, deviceID.busChain());
 		this.motor = new TalonFXWrapper(deviceID);
 		this.followers = initializeFollowers(motor, followerConfig);
 		this.followerInputs = initializeFollowerInputs(getLogPath(), followerConfig, followers.length);

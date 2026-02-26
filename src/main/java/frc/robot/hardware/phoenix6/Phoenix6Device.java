@@ -18,7 +18,7 @@ public abstract class Phoenix6Device implements IDevice {
 	private final BusChain busChain;
 	private final String logPath;
 
-	public Phoenix6Device(String logPath,BusChain busChain) {
+	public Phoenix6Device(String logPath, BusChain busChain) {
 		this.logPath = logPath;
 		this.busChain = busChain;
 		this.connectedInput = new ConnectedInputAutoLogged();
@@ -77,7 +77,7 @@ public abstract class Phoenix6Device implements IDevice {
 
 	public abstract ParentDevice getDevice();
 
-	public BusChain getBusChain(){
+	public BusChain getBusChain() {
 		return busChain;
 	}
 

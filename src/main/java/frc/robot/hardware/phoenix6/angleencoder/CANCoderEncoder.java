@@ -11,7 +11,7 @@ public class CANCoderEncoder extends Phoenix6Device implements IAngleEncoder {
 	private final CANcoder encoder;
 
 	public CANCoderEncoder(String logPath, CANcoder encoder, Phoenix6DeviceID deviceID) {
-		super(logPath,deviceID.busChain());
+		super(logPath, deviceID.busChain());
 		this.encoder = encoder;
 		encoder.optimizeBusUtilization();
 	}
