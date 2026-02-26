@@ -205,6 +205,10 @@ public class ShootingCalculations {
 		Interpolator.forDouble()
 	);
 
+	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
+		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+	}
+
 	static {
 		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(30));
 		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
