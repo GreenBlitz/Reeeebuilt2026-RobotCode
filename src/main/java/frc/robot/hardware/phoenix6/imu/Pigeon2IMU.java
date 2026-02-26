@@ -2,6 +2,7 @@ package frc.robot.hardware.phoenix6.imu;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.hardware.interfaces.IIMU;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6Device;
 
 public class Pigeon2IMU extends Phoenix6Device implements IIMU {
@@ -22,6 +23,11 @@ public class Pigeon2IMU extends Phoenix6Device implements IIMU {
 	@Override
 	public Pigeon2Wrapper getDevice() {
 		return imu;
+	}
+
+	@Override
+	public BusChain getBusChain() {
+		return imu.getBusChain();
 	}
 
 }

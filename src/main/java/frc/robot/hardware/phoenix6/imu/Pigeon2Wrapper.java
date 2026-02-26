@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.Phoenix6Util;
 
@@ -95,17 +96,19 @@ public class Pigeon2Wrapper extends Pigeon2 {
 
 	private static final int DEFAULT_CONFIG_NUMBER_OF_TRIES = 1;
 
+	private final BusChain busChain;
 
 	private double rollOffSetDegrees;
 
 	private double pitchOffSetDegrees;
 
 	public Pigeon2Wrapper(int id) {
-		this(new Phoenix6DeviceID(id));
+		this(new Phoenix6DeviceID(id, BusChain.ROBORIO));
 	}
 
 	public Pigeon2Wrapper(Phoenix6DeviceID deviceID) {
 		super(deviceID.id(), deviceID.busChain().getCANBus());
+		this.busChain = deviceID.busChain();
 		this.rollOffSetDegrees = 0;
 		this.pitchOffSetDegrees = 0;
 	}
@@ -197,6 +200,10 @@ public class Pigeon2Wrapper extends Pigeon2 {
 	 */
 	public Rotation2d getAdjustedRangedPitch() {
 		return rangeAngle(getAdjustedPitch());
+	}
+
+	public BusChain getBusChain() {
+		return busChain;
 	}
 
 	/**
