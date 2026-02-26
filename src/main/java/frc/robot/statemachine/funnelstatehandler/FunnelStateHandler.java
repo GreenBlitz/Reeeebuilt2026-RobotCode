@@ -57,13 +57,7 @@ public class FunnelStateHandler {
 	}
 
 	private Command rollUntilSensor() {
-		return new SequentialCommandGroup(
-			new ParallelCommandGroup(
-//				train.getCommandsBuilder().setVelocity(FunnelState.ROLL_UNTIL_SENSOR.getTrainVelocity()),
-				belly.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getBellyVoltage())
-			),
-			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
-		);
+		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
 	}
 
 	private Command shoot() {
