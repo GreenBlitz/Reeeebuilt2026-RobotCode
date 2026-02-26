@@ -326,6 +326,8 @@ public class Robot {
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
 
+		Supplier<Command> autonomousPassingSequenceCommand = () -> robotCommander.passSequence();
+
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
 
 		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
@@ -337,6 +339,7 @@ public class Robot {
 				autonomousResetSubsystemsCommand,
 				autonomousIntakeCommand,
 				autonomousScoringSequenceCommand,
+				autonomousPassingSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
