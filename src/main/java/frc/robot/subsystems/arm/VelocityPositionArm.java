@@ -31,7 +31,7 @@ public class VelocityPositionArm extends Arm {
 
 		motor.applyRequest(velocityPositionRequest);
 	}
-	
+
 	@Override
 	public void setTargetPosition(Rotation2d targetPosition) {
 		setTargetPositionVelocity(targetPosition, Rotation2d.kZero);
