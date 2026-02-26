@@ -287,7 +287,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command calibrationScore() {
+	public Command singleCalibrationScoreSequence() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
 			new SequentialCommandGroup(

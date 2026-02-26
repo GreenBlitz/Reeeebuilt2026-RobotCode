@@ -150,7 +150,7 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
-		joystick.POV_RIGHT.onTrue(robot.getRobotCommander().calibrationScore());
+		joystick.POV_RIGHT.onTrue(robot.getRobotCommander().singleCalibrationScoreSequence());
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
