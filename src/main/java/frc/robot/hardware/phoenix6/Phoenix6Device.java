@@ -76,4 +76,6 @@ public abstract class Phoenix6Device implements IDevice {
 
 	public abstract ParentDevice getDevice();
 
+	public abstract BusChain getBusChain();
+
 }

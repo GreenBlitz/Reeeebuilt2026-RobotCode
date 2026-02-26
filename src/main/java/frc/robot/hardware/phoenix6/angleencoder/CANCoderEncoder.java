@@ -29,6 +29,7 @@ public class CANCoderEncoder extends Phoenix6Device implements IAngleEncoder {
 		return encoder;
 	}
 
+	@Override
 	public BusChain getBusChain() {
 		return deviceID.busChain();
 	}
