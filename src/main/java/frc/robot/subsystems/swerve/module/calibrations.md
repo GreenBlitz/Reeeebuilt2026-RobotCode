@@ -4,7 +4,7 @@ Modules:
 
 ModuleConstants: (real and simulation)
 -----------------------
-- [ ] Wheel Diameter
+- [x] Wheel Diameter
 - [x] Coupling Ratio
 - [ ] Velocity At 12 Volts
 - [x] Modules locations (in meters)
@@ -24,8 +24,8 @@ Steer:
 - [ ] Current Limit
 - [x] Gear Ratio (should use RotorToSensorRatio)
 - [x] Encoder Usage and ID (should use fuse)
-- [ ] FF (ks, kv, ka)
-- [ ] PID
+- [x] FF (ks, kv, ka)
+- [x] PID
 - [x] Use ContinuousWrap
 - [ ] Control mode (motion magic, voltage, torque)
 - [x] Enable/Disable FOC (only talonfx)
