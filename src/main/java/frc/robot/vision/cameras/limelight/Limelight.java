@@ -23,6 +23,9 @@ import java.util.function.Supplier;
 
 public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, OrientationRequiringRobotPoseSupplier {
 
+	public static final int ENABLED_TEMPERATURE_REGULATION_SKIPPED_FRAMES = 0;
+	public static final int DISABLED_TEMPERATURE_REGULATION_SKIPPED_FRAMES = 0;
+
 	private final String name;
 	private final String logPath;
 	private final Pose3d robotRelativeCameraPose;
@@ -268,6 +271,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void setMT2StdDevsCalculation(Supplier<StandardDeviations2D> calculateMT2StdDevs) {
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
+	}
+
+	public void enabledTemperatureControl() {
+		LimelightHelpers.SetThrottle(name, ENABLED_TEMPERATURE_REGULATION_SKIPPED_FRAMES);
+	}
+
+	public void disabledTemperatueControl() {
+		LimelightHelpers.SetThrottle(name, DISABLED_TEMPERATURE_REGULATION_SKIPPED_FRAMES);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {

@@ -308,6 +308,18 @@ public class Robot {
 		return swerve;
 	}
 
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
