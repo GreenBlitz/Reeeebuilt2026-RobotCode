@@ -85,15 +85,15 @@ public class ShooterStateHandler {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			turret.asSubsystemCommand(
-				new TurretSafeMoveToPosition(
-					turret,
-					() -> shootingParamsSupplier.get().targetTurretPosition(),
-					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
-					logPath
-				),
-				"Safe move to position"
-			),
+//			turret.asSubsystemCommand(
+//				new TurretSafeMoveToPosition(
+//					turret,
+//					() -> shootingParamsSupplier.get().targetTurretPosition(),
+//					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
+//					logPath
+//				),
+//				"Safe move to position"
+//			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 		);

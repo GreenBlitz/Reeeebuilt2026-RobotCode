@@ -84,6 +84,7 @@ public class JoysticksBindings {
 	private static void fourthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = FOURTH_JOYSTICK;
 		// bindings...
+		usedJoystick.A.onTrue(robot.getRobotCommander().setState(RobotState.SCORE));
 	}
 
 	private static void fifthJoystickButtons(Robot robot) {
