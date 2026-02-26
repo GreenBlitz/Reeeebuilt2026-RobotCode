@@ -71,7 +71,7 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.X.onTrue(new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 1))	2);
+		usedJoystick.X.onTrue(new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 1)));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 
