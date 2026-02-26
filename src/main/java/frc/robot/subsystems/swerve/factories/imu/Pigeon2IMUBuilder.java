@@ -37,7 +37,7 @@ public class Pigeon2IMUBuilder {
 			new Alert(Alert.AlertType.ERROR, logPath + "ConfigurationFailAt").report();
 		}
 
-		return new Pigeon2IMU(logPath, pigeon2Wrapper, IDs.Pigeon2IDs.SWERVE.busChain());
+		return new Pigeon2IMU(logPath, pigeon2Wrapper);
 	}
 
 	private static Phoenix6AngleSignal buildAnglePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
