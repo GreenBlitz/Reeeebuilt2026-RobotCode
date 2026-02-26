@@ -33,7 +33,7 @@ public abstract class Phoenix6Device implements IDevice {
 	public boolean isConnected() {
 		return connectedInput.connected;
 	}
-	
+
 	private boolean isValid(InputSignal<?> signal) {
 		return signal instanceof SignalGetter;
 	}

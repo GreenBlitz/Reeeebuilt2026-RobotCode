@@ -95,7 +95,7 @@ public class Pigeon2Wrapper extends Pigeon2 {
     //@formatter:on
 
 	private static final int DEFAULT_CONFIG_NUMBER_OF_TRIES = 1;
-	
+
 	private double rollOffSetDegrees;
 
 	private double pitchOffSetDegrees;

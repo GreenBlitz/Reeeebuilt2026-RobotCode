@@ -26,5 +26,5 @@ public class TalonFXWrapper extends TalonFX {
 	public StatusCode applyConfiguration(TalonFXConfiguration configuration) {
 		return applyConfiguration(configuration, DEFAULT_CONFIG_NUMBER_OF_TRIES);
 	}
-	
+
 }

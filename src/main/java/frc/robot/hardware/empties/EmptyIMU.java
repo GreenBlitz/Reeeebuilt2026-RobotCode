@@ -12,5 +12,5 @@ public class EmptyIMU extends EmptyDevice implements IIMU {
 
 	@Override
 	public void setYaw(Rotation2d yaw) {}
-	
+
 }
