@@ -74,7 +74,7 @@ public class Swerve extends GBSubsystem {
 
 		this.kSCalibrationVoltageTunable = new LoggedNetworkNumber("kSCalibrationVoltage", 0);
 		update();
-		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE)));
+		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
 	}
 
 	public String getLogPath() {
@@ -397,12 +397,14 @@ public class Swerve extends GBSubsystem {
 				)
 			);
 
+		// kS calibration and can be used for max velocity at 12 volts calibration
 		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.xPower = kSCalibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
 			return powers;
 		}), Set.of(this)));
 
+		// max rotational velocity calbration
 		joystick.BACK.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.rotationalPower = 1;

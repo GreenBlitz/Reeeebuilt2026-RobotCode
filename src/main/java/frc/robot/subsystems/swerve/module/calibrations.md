@@ -14,7 +14,7 @@ Encoder:
 - [x] Encoder ID
 - [x] Encoder BusChain
 - [x] Sensor Range (should be PlusMinusHalf)
-- [x] Sensor Direction (should be CounterClockwise in default sds module) //It was Clockwise for us
+- [x] Sensor Direction (should be CounterClockwise in default sds module)
 
 Steer:
 -----------------------
