@@ -115,10 +115,10 @@ public class ShooterStateHandler {
 	}
 
 	public void periodic() {
-		if (!hasHoodBeenReset() && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasHoodBeenReset && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasHoodBeenReset = true;
 		}
-		if (!hasTurretBeenReset() && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+		if (!hasTurretBeenReset && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasTurretBeenReset = true;
 		}
 

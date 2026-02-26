@@ -28,7 +28,7 @@ public class FourBarConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 35;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 140;
 
 		REAL_SLOT.kP = 0;
 		REAL_SLOT.kI = 0;
