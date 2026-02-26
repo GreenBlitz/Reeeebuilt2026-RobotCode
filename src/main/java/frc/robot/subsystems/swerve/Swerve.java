@@ -28,7 +28,9 @@ import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
+import frc.utils.battery.BatteryUtil;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.Optional;
 import java.util.Set;
@@ -47,6 +49,7 @@ public class Swerve extends GBSubsystem {
 	private final HeadingStabilizer headingStabilizer;
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
+	private final LoggedNetworkNumber kSCalibrationVoltageTunable;
 
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
@@ -69,6 +72,7 @@ public class Swerve extends GBSubsystem {
 		this.stateHandler = new SwerveStateHandler(this);
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
+		this.kSCalibrationVoltageTunable = new LoggedNetworkNumber("kSCalibrationVoltage", 0);
 		update();
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE)));
 	}
@@ -166,6 +170,7 @@ public class Swerve extends GBSubsystem {
 		modules.updateInputs();
 
 		currentState.log(constants.stateLogPath());
+		kSCalibrationVoltageTunable.periodic();
 
 		ChassisSpeeds allianceRelativeSpeeds = getAllianceRelativeVelocity();
 		Logger.recordOutput(constants.velocityLogPath() + "/Rotation", allianceRelativeSpeeds.omegaRadiansPerSecond);
@@ -391,6 +396,17 @@ public class Swerve extends GBSubsystem {
 					Set.of(this)
 				)
 			);
+
+		joystick.R3.whileTrue(new DeferredCommand(
+				() -> getCommandsBuilder().drive(
+					() -> {
+						ChassisPowers powers = new ChassisPowers();
+						powers.xPower = kSCalibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
+						return powers;
+					}
+				),
+				Set.of(this)
+		));
 	}
 
 }
