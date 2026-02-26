@@ -5,12 +5,15 @@ import edu.wpi.first.wpilibj.util.Color;
 
 public enum LedState {
 
-	STAY_IN_PLACE(new RGBWColor(Color.kWhite)),
-	NEUTRAL(new RGBWColor(Color.kLimeGreen)),
+	NEUTRAL(new RGBWColor(Color.kRoyalBlue)),
 	PRE_SCORE(new RGBWColor(Color.kSkyBlue)),
 	SCORE(new RGBWColor(Color.kRoyalBlue)),
 	PRE_PASS(new RGBWColor(Color.kLightPink)),
-	PASS(new RGBWColor(Color.kIndianRed));
+	PASS(new RGBWColor(Color.kIndianRed)),
+	STAY_IN_PLACE(new RGBWColor(Color.kLightYellow)),
+	RESET_SUBSYSTEMS(new RGBWColor(Color.kDarkSlateBlue)),
+	CALIBRATION_PRE_SCORE(new RGBWColor(Color.kBrown)),
+	CALIBRATION_SCORE(new RGBWColor(Color.kBlueViolet));
 
 	public final RGBWColor color;
 

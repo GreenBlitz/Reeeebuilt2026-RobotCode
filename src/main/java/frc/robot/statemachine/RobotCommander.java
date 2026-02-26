@@ -5,6 +5,8 @@ import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
+import frc.robot.statemachine.ledstatehandler.LedState;
+import frc.robot.statemachine.ledstatehandler.LedStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
@@ -17,6 +19,7 @@ public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;
 	private final Swerve swerve;
+	private final LedStateHandler ledStateHandler;
 	private final IntakeStateHandler intakeStateHandler;
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
@@ -37,6 +40,7 @@ public class RobotCommander extends GBSubsystem {
 			robot.getFourBarResetCheckSensor(),
 			logPath
 		);
+		this.ledStateHandler = new LedStateHandler(logPath);
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
@@ -98,7 +102,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command setState(RobotState robotState) {
-		return asSubsystemCommand(switch (robotState) {
+		return new ParallelCommandGroup(asSubsystemCommand(switch (robotState) {
 			case STAY_IN_PLACE -> stayInPlace();
 			case NEUTRAL -> neutral();
 			case PRE_SCORE, PRE_PASS -> preShoot();
@@ -106,6 +110,19 @@ public class RobotCommander extends GBSubsystem {
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
 			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
+		}, robotState), new RunCommand(() -> setLedState(currentState)));
+	}
+
+	private void setLedState(RobotState robotState) {
+		asSubsystemCommand(switch (robotState) {
+			case STAY_IN_PLACE -> ledStateHandler.setState(LedState.STAY_IN_PLACE);
+			case NEUTRAL -> ledStateHandler.setState(LedState.NEUTRAL);
+			case PRE_SCORE -> ledStateHandler.setState(LedState.PRE_SCORE);
+			case PRE_PASS -> ledStateHandler.setState(LedState.PRE_PASS);
+			case SCORE, PASS -> ledStateHandler.setState(LedState.SCORE);
+			case CALIBRATION_PRE_SCORE -> ledStateHandler.setState(LedState.CALIBRATION_PRE_SCORE);
+			case RESET_SUBSYSTEMS -> ledStateHandler.setState(LedState.RESET_SUBSYSTEMS);
+			case CALIBRATION_SCORE -> ledStateHandler.setState(LedState.CALIBRATION_SCORE);
 		}, robotState);
 	}
 

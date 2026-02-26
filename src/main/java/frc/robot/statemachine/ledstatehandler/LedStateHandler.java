@@ -21,7 +21,8 @@ public class LedStateHandler {
 
 	public Command setState(LedState ledStateHandler) {
 		Command command = switch (ledStateHandler) {
-			case NEUTRAL, PRE_SCORE, PASS, SCORE, PRE_PASS, STAY_IN_PLACE -> setRBG();
+			case NEUTRAL, PRE_SCORE, PASS, SCORE, PRE_PASS, STAY_IN_PLACE, RESET_SUBSYSTEMS, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE ->
+				setRBG();
 		};
 		return new ParallelCommandGroup(
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", ledStateHandler.name())),
