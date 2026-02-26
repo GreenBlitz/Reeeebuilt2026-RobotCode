@@ -95,9 +95,7 @@ public class Pigeon2Wrapper extends Pigeon2 {
     //@formatter:on
 
 	private static final int DEFAULT_CONFIG_NUMBER_OF_TRIES = 1;
-
-	private final BusChain busChain;
-
+	
 	private double rollOffSetDegrees;
 
 	private double pitchOffSetDegrees;
@@ -108,7 +106,6 @@ public class Pigeon2Wrapper extends Pigeon2 {
 
 	public Pigeon2Wrapper(Phoenix6DeviceID deviceID) {
 		super(deviceID.id(), deviceID.busChain().getCANBus());
-		this.busChain = deviceID.busChain();
 		this.rollOffSetDegrees = 0;
 		this.pitchOffSetDegrees = 0;
 	}
@@ -200,10 +197,6 @@ public class Pigeon2Wrapper extends Pigeon2 {
 	 */
 	public Rotation2d getAdjustedRangedPitch() {
 		return rangeAngle(getAdjustedPitch());
-	}
-
-	public BusChain getBusChain() {
-		return busChain;
 	}
 
 	/**

@@ -46,7 +46,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 		SysIdRoutine.Config sysidConfig,
 		MechanismSimulation simulation
 	) {
-		super(logPath);
+		super(logPath,deviceID.busChain());
 		this.motor = new TalonFXWrapper(deviceID);
 		this.followers = initializeFollowers(motor, followerConfig);
 		this.followerInputs = initializeFollowerInputs(getLogPath(), followerConfig, followers.length);
@@ -129,11 +129,6 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 	@Override
 	public TalonFXWrapper getDevice() {
 		return motor;
-	}
-
-	@Override
-	public BusChain getBusChain() {
-		return motor.getBusChain();
 	}
 
 	@Override

@@ -6,7 +6,5 @@ import frc.robot.hardware.phoenix6.BusChain;
 public interface IIMU extends IDevice {
 
 	void setYaw(Rotation2d yaw);
-
-	BusChain getBusChain();
-
+	
 }
