@@ -101,11 +101,11 @@ public class Pigeon2Wrapper extends Pigeon2 {
 	private double rollOffSetDegrees;
 
 	private double pitchOffSetDegrees;
-	
+
 	public Pigeon2Wrapper(int id) {
 		this(new Phoenix6DeviceID(id));
 	}
-	
+
 	public Pigeon2Wrapper(Phoenix6DeviceID deviceID) {
 		super(deviceID.id(), deviceID.busChain().getCANBus());
 		this.rollOffSetDegrees = 0;
