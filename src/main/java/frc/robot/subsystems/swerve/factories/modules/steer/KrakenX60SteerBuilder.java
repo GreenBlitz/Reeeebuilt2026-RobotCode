@@ -34,7 +34,7 @@ class KrakenX60SteerBuilder {
 
 	private static final double GEAR_RATIO_FRONT = 12.8;
 	private static final double GEAR_RATIO_BACK = 18.75;
-	
+
 	private static final double MOMENT_OF_INERTIA_METERS_SQUARED = 0.00001;
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
@@ -64,16 +64,15 @@ class KrakenX60SteerBuilder {
 		steerConfig.CurrentLimits.StatorCurrentLimit = 30;
 		steerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-		if (position == ModuleUtil.ModulePosition.BACK_RIGHT || position == ModuleUtil.ModulePosition.BACK_LEFT){
+		if (position == ModuleUtil.ModulePosition.BACK_RIGHT || position == ModuleUtil.ModulePosition.BACK_LEFT) {
 			steerConfig.Feedback.RotorToSensorRatio = GEAR_RATIO_BACK;
-		}
-		else {
+		} else {
 			steerConfig.Feedback.RotorToSensorRatio = GEAR_RATIO_FRONT;
 		}
 		steerConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-		
+
 		if (Robot.ROBOT_TYPE.isReal()) {
-			switch (position){
+			switch (position) {
 				case BACK_LEFT -> {
 					steerConfig.Slot0.kS = 0.25;
 					steerConfig.Slot0.kV = 0;
@@ -121,7 +120,13 @@ class KrakenX60SteerBuilder {
 		return steerConfig;
 	}
 
-	static ControllableMotor buildSteer(String logPath, Phoenix6DeviceID deviceID, Phoenix6DeviceID encoderID, boolean inverted, ModuleUtil.ModulePosition modulePosition) {
+	static ControllableMotor buildSteer(
+		String logPath,
+		Phoenix6DeviceID deviceID,
+		Phoenix6DeviceID encoderID,
+		boolean inverted,
+		ModuleUtil.ModulePosition modulePosition
+	) {
 		TalonFXConfiguration configuration = buildMotorConfig(inverted, modulePosition);
 		configuration.Feedback.FeedbackRemoteSensorID = encoderID.id();
 

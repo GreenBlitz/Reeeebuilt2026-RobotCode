@@ -5,7 +5,6 @@ import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
-import frc.robot.subsystems.roller.VelocityRoller;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 

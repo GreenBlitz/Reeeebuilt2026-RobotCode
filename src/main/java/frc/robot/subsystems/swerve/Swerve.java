@@ -397,16 +397,11 @@ public class Swerve extends GBSubsystem {
 				)
 			);
 
-		joystick.R3.whileTrue(new DeferredCommand(
-				() -> getCommandsBuilder().drive(
-					() -> {
-						ChassisPowers powers = new ChassisPowers();
-						powers.xPower = kSCalibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
-						return powers;
-					}
-				),
-				Set.of(this)
-		));
+		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
+			ChassisPowers powers = new ChassisPowers();
+			powers.xPower = kSCalibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
+			return powers;
+		}), Set.of(this)));
 	}
 
 }

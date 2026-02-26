@@ -1,6 +1,5 @@
 package frc.robot.statemachine.funnelstatehandler;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 
 public enum FunnelState {
 

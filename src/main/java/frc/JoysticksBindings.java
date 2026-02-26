@@ -74,17 +74,24 @@ public class JoysticksBindings {
 //		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 		SwerveModuleState state = new SwerveModuleState();
 		state.angle = Rotation2d.fromDegrees(45);
-		usedJoystick.B.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state, true)));
+		usedJoystick.B.whileTrue(
+			new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state, true))
+		);
 		SwerveModuleState state2 = new SwerveModuleState();
 		state2.angle = Rotation2d.fromDegrees(-45);
-		usedJoystick.Y.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state2, true)));
+		usedJoystick.Y.whileTrue(
+			new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state2, true))
+		);
 		SwerveModuleState state3 = new SwerveModuleState();
 		state3.angle = Rotation2d.fromDegrees(0);
-		usedJoystick.X.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state3, true)));
+		usedJoystick.X.whileTrue(
+			new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state3, true))
+		);
 		SwerveModuleState state4 = new SwerveModuleState();
 		state4.angle = Rotation2d.fromDegrees(90);
-		usedJoystick.A.whileTrue(new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state4, true)));
-		
+		usedJoystick.A.whileTrue(
+			new RunCommand(() -> robot.getSwerve().getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).setTargetState(state4, true))
+		);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

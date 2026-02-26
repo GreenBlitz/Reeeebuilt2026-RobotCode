@@ -23,10 +23,10 @@ class CANCoderEncoderBuilder {
 		CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
 
 		encoderConfig.MagnetSensor.MagnetOffset = getCANCoderOffset(id);
-	
+
 //		encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
 //		if (id == 1 || id == 3) {
-			encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+		encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 //		}
 		encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = MathConstants.HALF_CIRCLE.getRotations();
 

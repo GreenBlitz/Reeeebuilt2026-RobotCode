@@ -15,7 +15,6 @@ import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.hardware.mechanisms.wpilib.SimpleMotorSimulation;
-import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
