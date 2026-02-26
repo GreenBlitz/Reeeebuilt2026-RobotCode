@@ -100,7 +100,7 @@ public class JoysticksBindings {
 		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
 
 		new EventTrigger("pre_shoot")
-			.onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.ROLL_UNTIL_SENSOR).asProxy());
+			.onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.STOP).asProxy());
 		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");

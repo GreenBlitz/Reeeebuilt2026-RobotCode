@@ -119,14 +119,14 @@ public class RobotCommander extends GBSubsystem {
 	private Command neutral() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.NEUTRAL),
-			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
+			funnelStateHandler.setState(FunnelState.STOP)
 		);
 	}
 
 	private Command preShoot() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.SHOOT),
-			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
+			funnelStateHandler.setState(FunnelState.STOP)
 		);
 	}
 
@@ -140,14 +140,14 @@ public class RobotCommander extends GBSubsystem {
 				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
 				intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
 			),
-			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
+			funnelStateHandler.setState(FunnelState.STOP)
 		);
 	}
 
 	private Command calibrationPreShoot() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.CALIBRATION),
-			funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR)
+			funnelStateHandler.setState(FunnelState.STOP)
 		);
 	}
 
@@ -229,7 +229,7 @@ public class RobotCommander extends GBSubsystem {
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					asSubsystemCommand(
-						funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::isReadyToScore),
+						funnelStateHandler.setState(FunnelState.STOP).until(this::isReadyToScore),
 						RobotState.PRE_SCORE
 					),
 					asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
@@ -245,7 +245,7 @@ public class RobotCommander extends GBSubsystem {
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
 						asSubsystemCommand(
-							funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::isReadyToPass),
+							funnelStateHandler.setState(FunnelState.STOP).until(this::isReadyToPass),
 							RobotState.PRE_PASS
 						)
 					),
@@ -264,7 +264,7 @@ public class RobotCommander extends GBSubsystem {
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
 						asSubsystemCommand(
-							funnelStateHandler.setState(FunnelState.ROLL_UNTIL_SENSOR).until(this::calibrationIsReadyToScore),
+							funnelStateHandler.setState(FunnelState.STOP).until(this::calibrationIsReadyToScore),
 							RobotState.CALIBRATION_PRE_SCORE
 						)
 					),

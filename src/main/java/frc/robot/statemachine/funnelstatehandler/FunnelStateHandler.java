@@ -40,7 +40,7 @@ public class FunnelStateHandler {
 
 	public Command setState(FunnelState state) {
 		Command command = switch (state) {
-			case ROLL_UNTIL_SENSOR -> rollUntilSensor();
+			case STOP -> rollUntilSensor();
 			case SHOOT -> shoot();
 			case STOP -> stop();
 			case CALIBRATION -> calibration();
@@ -57,7 +57,13 @@ public class FunnelStateHandler {
 	}
 
 	private Command rollUntilSensor() {
-		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
+		return new SequentialCommandGroup(
+			new ParallelCommandGroup(
+					train.getCommandsBuilder().setVelocity(FunnelState.STOP.getTrainVelocity()),
+					belly.getCommandsBuilder().setVoltage(FunnelState.STOP.getBellyVoltage())
+			).until(this::isBallAtSensor),
+			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
+		);
 	}
 
 	private Command shoot() {
