@@ -6,6 +6,6 @@ public interface VelocityPositionRequest extends IFeedForwardRequest {
 
 	VelocityPositionRequest setVelocity(Rotation2d targetVelocityRPS);
 
-	Rotation2d getVelocityRPS();
+	Rotation2d getTargetVelocityRPS();
 
 }
