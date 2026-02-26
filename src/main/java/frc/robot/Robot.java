@@ -51,7 +51,6 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
-import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
@@ -71,9 +70,6 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final IDigitalInput turretResetCheckSensor;
-	private final IDigitalInput fourBarResetCheckSensor;
-	private final IDigitalInput hoodResetCheckSensor;
 	private final VelocityRoller train;
 	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
@@ -95,19 +91,16 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = TurretConstants.createTurret();
-		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
 		turret.setPosition(TurretConstants.MIN_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
 		this.flyWheel = FlywheelConstants.createFlyWheel();
 
 		this.fourBar = FourBarConstants.createFourBar();
-		this.fourBarResetCheckSensor = FourBarConstants.createFourBarSensorResetCheck();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
 		this.hood = HoodConstants.createHood();
-		this.hoodResetCheckSensor = HoodConstants.createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
@@ -303,18 +296,6 @@ public class Robot {
 		return hood;
 	}
 
-	public IDigitalInput getTurretResetCheckSensor() {
-		return turretResetCheckSensor;
-	}
-
-	public IDigitalInput getHoodResetCheckSensor() {
-		return hoodResetCheckSensor;
-	}
-
-	public IDigitalInput getFourBarResetCheckSensor() {
-		return fourBarResetCheckSensor;
-	}
-
 	public IDigitalInput getTrainBallSensor() {
 		return trainBallSensor;
 	}
@@ -335,18 +316,30 @@ public class Robot {
 		return simulationManager;
 	}
 
-	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return autonomousChooser.getChosenValue();
+	public AutonomousChooser getAutonomousChooser() {
+		return autonomousChooser;
+	}
+
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 
-		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
+		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 
-		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
+		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
+		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.autonomousChooser = new AutonomousChooser(
 			"Autonomous Chooser",
