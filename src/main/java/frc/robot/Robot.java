@@ -49,6 +49,7 @@ import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.function.Supplier;
 
@@ -137,13 +138,14 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
+
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
-				new StandardDeviations2D(0.4),
+				new StandardDeviations2D(0.35),
 				new StandardDeviations2D(0.05),
 				new StandardDeviations2D(0.7),
-				new StandardDeviations2D(-0.02)
+				new StandardDeviations2D(0.011)
 			)
 		);
 		limelightFront.setMT1PoseFilter(
@@ -151,8 +153,8 @@ public class Robot {
 				limelightFront,
 				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(),
-				Rotation2d.fromDegrees(0)
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
 			)
 		);
 
@@ -168,10 +170,10 @@ public class Robot {
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightRight,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
+				new StandardDeviations2D(0.35),
+				new StandardDeviations2D(0.05),
+				new StandardDeviations2D(0.7),
+				new StandardDeviations2D(0.011)
 			)
 		);
 		limelightRight.setMT1PoseFilter(
@@ -179,8 +181,8 @@ public class Robot {
 				limelightRight,
 				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(),
-				Rotation2d.fromDegrees(0)
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
 			)
 		);
 
@@ -188,10 +190,10 @@ public class Robot {
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
+				new StandardDeviations2D(0.35),
+				new StandardDeviations2D(0.05),
+				new StandardDeviations2D(0.7),
+				new StandardDeviations2D(0.011)
 			)
 		);
 		limelightLeft.setMT1PoseFilter(
@@ -199,8 +201,8 @@ public class Robot {
 				limelightLeft,
 				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(),
-				Rotation2d.fromDegrees(0)
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
 			)
 		);
 
@@ -251,7 +253,22 @@ public class Robot {
 		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
+	static LoggedNetworkNumber tagDistance = new LoggedNetworkNumber("tunable/tagDistance", 0.4);
+	static LoggedNetworkNumber factors = new LoggedNetworkNumber("tunable/factors", 0.05);
+	static LoggedNetworkNumber exponents = new LoggedNetworkNumber("tunable/exponents", 0.7);
+	static LoggedNetworkNumber additions = new LoggedNetworkNumber("tunable/additions", -0.02);
+
 	public void periodic() {
+		limelightFront.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelightFront,
+				new StandardDeviations2D(tagDistance.get()),
+				new StandardDeviations2D(factors.get()),
+				new StandardDeviations2D(exponents.get()),
+				new StandardDeviations2D(additions.get())
+			)
+		);
+
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		robotCommander.update();
