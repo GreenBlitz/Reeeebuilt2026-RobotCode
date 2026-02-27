@@ -92,9 +92,10 @@ public class Phoenix6RequestBuilder {
 		return new Phoenix6Request<>(torqueCurrentFOC.Output, torqueCurrentFOC, torqueCurrentFOC::withOutput);
 	}
 
-	public static Phoenix6Request<Rotation2d> buildBangBangRequest(Supplier<Rotation2d> currentVelocity) {
+	public static Phoenix6Request<Rotation2d> buildBangBangRequest(Supplier<Rotation2d> currentVelocity, boolean enableFOC) {
 		BangBangController bangBangController = new BangBangController();
 		DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
+		dutyCycleOut.withEnableFOC(enableFOC);
 		return new Phoenix6Request<>(
 			Rotation2d.kZero,
 			dutyCycleOut,

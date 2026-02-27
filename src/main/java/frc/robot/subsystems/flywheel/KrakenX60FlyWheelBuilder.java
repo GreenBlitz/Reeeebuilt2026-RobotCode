@@ -4,7 +4,6 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -54,8 +53,6 @@ public class KrakenX60FlyWheelBuilder {
 		);
 
 		TalonFXMotor motor = new TalonFXMotor(logPath, motorID, followerConfig, buildSysidConfig(logPath), simulationMotor);
-
-		BangBangController bangBangController = new BangBangController();
 
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
 			.build(motor.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, motorID.busChain());

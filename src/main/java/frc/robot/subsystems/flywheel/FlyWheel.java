@@ -63,8 +63,10 @@ public class FlyWheel extends GBSubsystem {
 			Math.abs(velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees())
 				> FlywheelConstants.MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS.getDegrees()
 		) {
+			Logger.recordOutput(getLogPath() + "/velocityControl", "BangBang");
 			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));
 		} else {
+			Logger.recordOutput(getLogPath() + "/velocityControl", "VelocityVoltage");
 			motor.applyRequest(velocityVoltageRequest.withSetPoint(velocity));
 		}
 	}
