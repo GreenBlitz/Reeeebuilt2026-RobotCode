@@ -86,7 +86,8 @@ public class HubUtil {
 
 	public static boolean isOurHubActive(double timeSinceTeleopInitSeconds) {
 		if (!DriverStation.isFMSAttached()) {
-			return isOurHubActiveTunable.get();
+			return true;
+//			return isOurHubActiveTunable.get();
 		}
 		if (getActiveHub(timeSinceTeleopInitSeconds).isEmpty()) {
 			return false;

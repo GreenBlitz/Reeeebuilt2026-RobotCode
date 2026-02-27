@@ -28,7 +28,9 @@ import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
+import frc.utils.battery.BatteryUtil;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.Optional;
 import java.util.Set;
@@ -47,6 +49,7 @@ public class Swerve extends GBSubsystem {
 	private final HeadingStabilizer headingStabilizer;
 	private final SwerveCommandsBuilder commandsBuilder;
 	private final SwerveStateHandler stateHandler;
+	private final LoggedNetworkNumber calibrationVoltageTunable;
 
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
@@ -69,6 +72,7 @@ public class Swerve extends GBSubsystem {
 		this.stateHandler = new SwerveStateHandler(this);
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
+		this.calibrationVoltageTunable = new LoggedNetworkNumber("calibrationVoltage", 0);
 		update();
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
 	}
@@ -166,6 +170,7 @@ public class Swerve extends GBSubsystem {
 		modules.updateInputs();
 
 		currentState.log(constants.stateLogPath());
+		calibrationVoltageTunable.periodic();
 
 		ChassisSpeeds allianceRelativeSpeeds = getAllianceRelativeVelocity();
 		Logger.recordOutput(constants.velocityLogPath() + "/Rotation", allianceRelativeSpeeds.omegaRadiansPerSecond);
@@ -358,6 +363,9 @@ public class Swerve extends GBSubsystem {
 		// Use phoenix tuner x to extract the position, velocity, motorVoltage, state signals into wpilog.
 		// Then enter the wpilog into wpilib sysid app and make sure you enter all info in the correct places.
 		// (see wpilib sysid in google)
+
+		joystick.START.onTrue(new InstantCommand(SignalLogger::start));
+
 		joystick.Y.whileTrue(getCommandsBuilder().driveCalibration(true, SysIdRoutine.Direction.kForward));
 		joystick.A.whileTrue(getCommandsBuilder().driveCalibration(true, SysIdRoutine.Direction.kReverse));
 		joystick.X.whileTrue(getCommandsBuilder().driveCalibration(false, SysIdRoutine.Direction.kForward));
@@ -388,6 +396,21 @@ public class Swerve extends GBSubsystem {
 					Set.of(this)
 				)
 			);
+
+		// max velocity at 12 volts (put a really high value in max vel and max rot vel for it to work)
+		// after calibrating max vel at 12 volts use this to calibrate kS
+		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
+			ChassisPowers powers = new ChassisPowers();
+			powers.xPower = calibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
+			return powers;
+		}), Set.of(this)));
+
+		// max rotational velocity calbration
+		joystick.BACK.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
+			ChassisPowers powers = new ChassisPowers();
+			powers.rotationalPower = 1;
+			return powers;
+		}), Set.of(this)));
 	}
 
 }

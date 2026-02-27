@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class FlyWheel extends GBSubsystem {
 
-	private final IRequest<Rotation2d> velocityVoltageRequest;
+	private final IRequest<Rotation2d> velocityMotionMagicRequest;
 	private final IRequest<Rotation2d> velocityBangBangRequest;
 	private final IRequest<Double> voltageRequest;
 
@@ -31,7 +31,7 @@ public class FlyWheel extends GBSubsystem {
 
 	public FlyWheel(
 		String logPath,
-		IRequest<Rotation2d> velocityVoltageRequest,
+		IRequest<Rotation2d> velocityMotionMagicRequest,
 		IRequest<Rotation2d> velocityBangBangRequest,
 		IRequest<Double> voltageRequest,
 		InputSignal<Rotation2d> velocitySignal,
@@ -40,7 +40,7 @@ public class FlyWheel extends GBSubsystem {
 		ControllableMotor motor
 	) {
 		super(logPath);
-		this.velocityVoltageRequest = velocityVoltageRequest;
+		this.velocityMotionMagicRequest = velocityMotionMagicRequest;
 		this.velocityBangBangRequest = velocityBangBangRequest;
 		this.voltageRequest = voltageRequest;
 		this.velocitySignal = velocitySignal;
@@ -65,7 +65,7 @@ public class FlyWheel extends GBSubsystem {
 		) {
 			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));
 		} else {
-			motor.applyRequest(velocityVoltageRequest.withSetPoint(velocity));
+			motor.applyRequest(velocityMotionMagicRequest.withSetPoint(velocity));
 		}
 	}
 
