@@ -77,7 +77,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyInterpolationCalibrationBindings(usedJoystick,robot);
+		applyInterpolationCalibrationBindings(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
