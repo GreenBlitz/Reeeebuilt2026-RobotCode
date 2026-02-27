@@ -115,18 +115,18 @@ public class ShooterStateHandler {
 	}
 
 	public void periodic() {
-		if (!hasHoodBeenReset && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
-			hasHoodBeenReset = true;
-		}
-		if (!hasTurretBeenReset && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
-			hasTurretBeenReset = true;
-		}
-
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians() && !hasHoodBeenReset) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		}
 		if (TurretConstants.MAX_POSITION.getRadians() < turret.getPosition().getRadians() && !hasTurretBeenReset) {
 			turret.setPosition(TurretConstants.MAX_POSITION);
+		}
+
+		if (!hasHoodBeenReset && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+			hasHoodBeenReset = true;
+		}
+		if (!hasTurretBeenReset && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+			hasTurretBeenReset = true;
 		}
 
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
