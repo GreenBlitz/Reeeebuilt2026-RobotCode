@@ -124,7 +124,7 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition /*&& isTurretWithinDistance*/
 		/* && isPoseReliable */;
 	}
 
@@ -162,7 +162,8 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance /* && isPoseReliable */;
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition;
+				//&& isTurretWithinDistance /* && isPoseReliable */;
 	}
 
 	static boolean calibrationIsReadyToShoot(
@@ -236,7 +237,7 @@ public class ShootingChecks {
 		);
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		return isReadyToShoot && isOurHubReadyToStartShooting && isInAllianceZone;
+		return isReadyToShoot /*&& isOurHubReadyToStartShooting && isInAllianceZone*/;
 	}
 
 	public static boolean isReadyToPass(
@@ -285,7 +286,8 @@ public class ShootingChecks {
 
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		return canContinueShooting && isOurHubReadyToStartShooting && isInAllianceZone;
+		return canContinueShooting;
+				//&& isOurHubReadyToStartShooting && isInAllianceZone;
 	}
 
 	public static boolean canContinuePassing(

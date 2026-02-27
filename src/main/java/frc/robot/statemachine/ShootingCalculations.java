@@ -185,15 +185,15 @@ public class ShootingCalculations {
 	}
 
 	static {
-		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(30));
-		HOOD_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
-		HOOD_SCORING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(45));
-		HOOD_SCORING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(45));
-		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(47));
+		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.7));
+		HOOD_SCORING_INTERPOLATION_MAP.put(1.8, Rotation2d.fromDegrees(29));
+		HOOD_SCORING_INTERPOLATION_MAP.put(6.1, Rotation2d.fromDegrees(47));
+		HOOD_SCORING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(54));
 
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(14082));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(16700));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26300));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(16000));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.8, Rotation2d.fromDegrees(18000));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(6.1, Rotation2d.fromDegrees(25500));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(29900));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(30));
 		HOOD_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(30));
@@ -205,18 +205,21 @@ public class ShootingCalculations {
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(16700));
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26300));
 
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 0.0);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.0, 0.9);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.0, 1.16);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(5.85, 1.31);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 0.875);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.5, 0.884);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.0, 0.907);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.8, 0.96);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.2, 1.12);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(6.1, 1.17);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(8.5, 1.24);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+//		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-		} else {
-			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-		}
+//		} else {
+//			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+//		}
 	}
 
 }
