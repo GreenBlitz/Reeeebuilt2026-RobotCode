@@ -60,7 +60,7 @@ public class FlyWheel extends GBSubsystem {
 	public void setTargetVelocity(Rotation2d velocity) {
 		targetVelocity = velocity;
 		if (
-			velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees()
+			Math.abs(velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees())
 				> FlywheelConstants.MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS.getDegrees()
 		) {
 			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));

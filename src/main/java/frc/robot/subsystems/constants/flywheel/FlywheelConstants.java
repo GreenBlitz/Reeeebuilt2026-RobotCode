@@ -32,7 +32,7 @@ public class FlywheelConstants {
 	public static final double MOMENT_OF_INERTIA = 0.01;
 	public static final int CURRENT_LIMIT = 40;
 
-	public static final Rotation2d MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS = Rotation2d.fromRotations(5);
+	public static final Rotation2d MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS = Rotation2d.fromRotations(3);
 
 	public static FlyWheel createFlyWheel() {
 		return KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
