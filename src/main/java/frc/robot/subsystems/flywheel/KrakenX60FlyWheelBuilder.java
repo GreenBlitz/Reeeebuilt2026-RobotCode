@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -54,6 +55,8 @@ public class KrakenX60FlyWheelBuilder {
 
 		TalonFXMotor motor = new TalonFXMotor(logPath, motorID, followerConfig, buildSysidConfig(logPath), simulationMotor);
 
+		BangBangController bangBangController = new BangBangController();
+
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
 			.build(motor.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, motorID.busChain());
 		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
@@ -61,12 +64,22 @@ public class KrakenX60FlyWheelBuilder {
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
 			.build(motor.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
 
-		Phoenix6Request<Rotation2d> velocityRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
+		Phoenix6Request<Rotation2d> velocityVoltageRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
+		Phoenix6Request<Rotation2d> velocityBangBangRequest = Phoenix6RequestBuilder.buildBangBangRequest(velocitySignal::getLatestValue);
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
 		motor.applyConfiguration(buildConfig());
 
-		return new FlyWheel(logPath, velocityRequest, voltageRequest, velocitySignal, voltageSignal, currentSignal, motor);
+		return new FlyWheel(
+			logPath,
+			velocityVoltageRequest,
+			velocityBangBangRequest,
+			voltageRequest,
+			velocitySignal,
+			voltageSignal,
+			currentSignal,
+			motor
+		);
 	}
 
 	public static TalonFXConfiguration buildConfig() {
