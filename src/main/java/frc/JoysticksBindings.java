@@ -64,37 +64,9 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-//		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-//		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
-
-//		usedJoystick.A.onTrue(new CameraPoseCalibration(
-//				"CamPoseCalib",
-//				"limelight-left",
-//				1000,
-//				0,
-//				1.125,
-//				AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded).getTagPose(10).get(),
-//				Rotation2d.fromDegrees(-90)
-//		));
-//		usedJoystick.B.onTrue(new CameraPoseCalibration(
-//				"CamPoseCalib",
-//				"limelight-front",
-//				1000,
-//				-1.2925,
-//				1.125,
-//				AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded).getTagPose(10).get(),
-//				Rotation2d.fromDegrees(0)
-//		));
-//		usedJoystick.Y.onTrue(new CameraPoseCalibration(
-//				"CamPoseCalib",
-//				"limelight-right",
-//				1000,
-//				-1.285,
-//				1.125,
-//				AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded).getTagPose(10).get(),
-//				Rotation2d.fromDegrees(90)
-//		));
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
