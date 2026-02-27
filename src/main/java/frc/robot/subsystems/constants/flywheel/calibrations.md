@@ -25,3 +25,6 @@
 
 ### Max Acceleration
 - [x]
+
+### Error to apply bang-bang
+- [x]
