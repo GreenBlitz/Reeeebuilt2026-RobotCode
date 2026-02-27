@@ -8,12 +8,13 @@ import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.calibration.sysid.SysIdCalibrator;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 
 public class FlyWheel extends GBSubsystem {
 
-	private final IRequest<Rotation2d> velocityMotionMagicRequest;
+	private final IRequest<Rotation2d> velocityVoltageRequest;
 	private final IRequest<Rotation2d> velocityBangBangRequest;
 	private final IRequest<Double> voltageRequest;
 
@@ -31,7 +32,7 @@ public class FlyWheel extends GBSubsystem {
 
 	public FlyWheel(
 		String logPath,
-		IRequest<Rotation2d> velocityMotionMagicRequest,
+		IRequest<Rotation2d> velocityVoltageRequest,
 		IRequest<Rotation2d> velocityBangBangRequest,
 		IRequest<Double> voltageRequest,
 		InputSignal<Rotation2d> velocitySignal,
@@ -40,7 +41,7 @@ public class FlyWheel extends GBSubsystem {
 		ControllableMotor motor
 	) {
 		super(logPath);
-		this.velocityMotionMagicRequest = velocityMotionMagicRequest;
+		this.velocityVoltageRequest = velocityVoltageRequest;
 		this.velocityBangBangRequest = velocityBangBangRequest;
 		this.voltageRequest = voltageRequest;
 		this.velocitySignal = velocitySignal;
@@ -60,12 +61,12 @@ public class FlyWheel extends GBSubsystem {
 	public void setTargetVelocity(Rotation2d velocity) {
 		targetVelocity = velocity;
 		if (
-			velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees()
+			Math.abs(velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees())
 				> FlywheelConstants.MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS.getDegrees()
 		) {
 			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));
 		} else {
-			motor.applyRequest(velocityMotionMagicRequest.withSetPoint(velocity));
+			motor.applyRequest(velocityVoltageRequest.withSetPoint(velocity));
 		}
 	}
 
