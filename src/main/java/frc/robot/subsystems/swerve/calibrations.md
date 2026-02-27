@@ -4,18 +4,18 @@ States:
 
 SwerveConstants:
 -----------------------
-- [ ] Velocity at 12 volts (meters per second)
-- [ ] Max rotational velocity (angle per second)
+- [x] Velocity at 12 volts (meters per second)
+- [x] Max rotational velocity (angle per second)
 - [ ] Translation PID (for x,y PID controllers)
 - [ ] Rotational degrees PID 
-- [ ] Drive radius meters
+- [x] Drive radius meters
 - [ ] PathPlanner RealTimeConstraints (in AutonomousConstants)
 
 Gyro:
 -----------------------
-- [ ] ID
-- [ ] Mount pose
+- [x] ID
+- [x] Mount pose
 
 Modules:
 -----------------------
-- [ ] [See module calibrations file](module/calibrations.md)
+- [x] [See module calibrations file](module/calibrations.md)

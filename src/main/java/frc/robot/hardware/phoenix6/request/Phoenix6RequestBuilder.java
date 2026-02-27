@@ -30,6 +30,20 @@ public class Phoenix6RequestBuilder {
 		);
 	}
 
+	public static Phoenix6FeedForwardRequest build(
+		MotionMagicVelocityVoltage velocityVoltage,
+		double defaultArbitraryFeedForward,
+		boolean enableFOC
+	) {
+		return new Phoenix6FeedForwardRequest(
+			Rotation2d.fromRotations(velocityVoltage.Velocity),
+			velocityVoltage.withEnableFOC(enableFOC),
+			setPoint -> velocityVoltage.withVelocity(setPoint.getRotations()),
+			velocityVoltage::withFeedForward,
+			defaultArbitraryFeedForward
+		);
+	}
+
 	public static Phoenix6FeedForwardRequest build(VelocityTorqueCurrentFOC velocityTorqueCurrentFOC, double defaultArbitraryFeedForward) {
 		return new Phoenix6FeedForwardRequest(
 			Rotation2d.fromRotations(velocityTorqueCurrentFOC.Velocity),
