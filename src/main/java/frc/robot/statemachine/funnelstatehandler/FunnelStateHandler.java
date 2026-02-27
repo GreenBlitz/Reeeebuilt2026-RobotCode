@@ -3,7 +3,6 @@ package frc.robot.statemachine.funnelstatehandler;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
 import org.littletonrobotics.junction.Logger;
@@ -69,10 +68,7 @@ public class FunnelStateHandler {
 	private Command shoot() {
 		return new ParallelCommandGroup(
 			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
-			new SequentialCommandGroup(
-				new WaitCommand(StateMachineConstants.TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS),
-				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
-			)
+			belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
 		);
 	}
 
