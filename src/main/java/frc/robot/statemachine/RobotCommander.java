@@ -131,8 +131,9 @@ public class RobotCommander extends GBSubsystem {
 	private Command resetSubsystems() {
 		return new ParallelDeadlineGroup(
 			new ParallelCommandGroup(
-				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
-				intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
+				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS)
+//					,
+//				intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
 			),
 			funnelStateHandler.setState(FunnelState.STOP)
 		);

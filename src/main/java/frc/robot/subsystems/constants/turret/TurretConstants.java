@@ -17,7 +17,7 @@ public class TurretConstants {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Turret";
 
-	public static final boolean IS_INVERTED = true;
+	public static final boolean IS_INVERTED = false;
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
 	public static final double CURRENT_LIMIT = 40;
@@ -30,7 +30,7 @@ public class TurretConstants {
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
 	static {
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 63.0 / 1.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 63.0;
 
 		REAL_SLOTS_CONFIG.kP = 300;
 		REAL_SLOTS_CONFIG.kI = 0;
@@ -49,13 +49,13 @@ public class TurretConstants {
 		SIMULATION_SLOTS_CONFIG.kA = 0;
 	}
 
-	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(239.8);
-	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-120.2);
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(168 - 2);
-	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MIN_POSITION.getDegrees() + 2);
+	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(120.2);
+	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-239.8);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(118);
+	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-170);
 
 	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.220, -0.1385, 0.45);
-	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE = Rotation2d.fromDegrees(7);
+	public static final Rotation2d MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE = Rotation2d.fromDegrees(3);
 
 	public static final Rotation2d RANGE_MIDDLE = Rotation2d.fromDegrees((MAX_POSITION.getDegrees() + MIN_POSITION.getDegrees()) / 2);
 	public static final Rotation2d SCREW_MAX_RANGE_EDGE = TurretCalculations
