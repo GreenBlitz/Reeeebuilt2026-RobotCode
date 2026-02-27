@@ -8,7 +8,7 @@ FourBar calibrations
 #### Motor config
 - [x] Is Inverted
 - [x] Gear ratio
-- [x] Current limit
+- [ ] Current limit
 
 #### Limits
 - [x] Max position
