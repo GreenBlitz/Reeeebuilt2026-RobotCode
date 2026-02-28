@@ -13,22 +13,27 @@ public class StateMachineConstants {
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING = Rotation2d.fromRotations(12);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(5);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(5);
+
 	public static final Rotation2d TURRET_TOLERANCE_TO_START_PASSING = Rotation2d.fromDegrees(3);
 	public static final Rotation2d TURRET_TOLERANCE_TO_CONTINUE_PASSING = Rotation2d.fromDegrees(3);
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING = Rotation2d.fromRotations(1);
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING = Rotation2d.fromRotations(1);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_PASSING = Rotation2d.fromDegrees(5);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING = Rotation2d.fromDegrees(5);
+
 	public static final Rotation2d MAX_ANGLE_FROM_GOAL_CENTER = Rotation2d.fromDegrees(70);
 	public static final double MAX_DISTANCE_TO_SCORE_METERS = 6;
 	public static final double MAX_DISTANCE_TO_PASS_METERS = 6;
-	public static final double TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS = 0.05;
+
 	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
+
 	private static final double MIN_X_VALUE_FOR_BEHIND_HUB_PASSING = 6;
 	private static final double TARGET_X_VALUE_FOR_PASSING = Field.getAllianceRelative(Field.getHubMiddle()).getX() - 1;
-
 	private static final Translation2d OUTPOST_PRESET_PASSING_TARGET = new Translation2d(1, 1);
 	private static final Translation2d DEPOT_PRESET_PASSING_TARGET = FieldMath.mirror(OUTPOST_PRESET_PASSING_TARGET, false, true);
+
+	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 5;
+	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.07;
 
 	public static double getTargetXValueForPassing() {
 		if (!Field.isFieldConventionAlliance()) {
