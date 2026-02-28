@@ -214,6 +214,17 @@ public class Robot {
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
+		this.autonomousChooser = new AutonomousChooser(
+			"Autonomous Chooser",
+			AutosBuilder.getAutoList(
+				this,
+				() -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS),
+				() -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
+				() -> robotCommander.scoreSequence(),
+				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+			)
+		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
 		new Trigger(DriverStation::isTeleopEnabled)
