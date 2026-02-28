@@ -11,6 +11,7 @@ public class GamePeriodUtils {
 	public static final int ENDGAME_DURATION_SECONDS = 30;
 	public static final int TELEOP_DURATION_SECONDS = ENDGAME_START_TIME_SECONDS + ENDGAME_DURATION_SECONDS;
 	public static final int SECONDS_TO_SCORE_AFTER_GAME_ENDS = 3;
+	public static final double ROBOT_TIMER_DELAY = 0;
 	public static final int ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS = TELEOP_DURATION_SECONDS + SECONDS_TO_SCORE_AFTER_GAME_ENDS;
 	public static final int AUTONOMOUS_DURATION_SECONDS = 20;
 	public static final int TELEOP_AUTONOMOUS_TRANSITION_DURATION_SECONDS = 10;
