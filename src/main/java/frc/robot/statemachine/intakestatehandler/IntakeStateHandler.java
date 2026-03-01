@@ -68,6 +68,13 @@ public class IntakeStateHandler {
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
 	}
+	
+	public Command outtake() {
+		return new ParallelCommandGroup(
+				fourBar.getCommandsBuilder().setTargetPosition(IntakeState.OUTTAKE.getFourBarPosition()),
+				rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
+		);
+	}
 
 	public Command close() {
 		return new ParallelCommandGroup(
@@ -81,6 +88,7 @@ public class IntakeStateHandler {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case INTAKE -> intake();
+			case OUTTAKE -> outtake();
 			case RESET_FOUR_BAR -> resetFourBar();
 			case CLOSED -> close();
 		},
