@@ -3,16 +3,11 @@ package frc.robot.subsystems.constants.hood;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import edu.wpi.first.math.filter.Debouncer;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
-import frc.robot.Robot;
 import frc.robot.RobotConstants;
-import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
-import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -29,16 +24,17 @@ public class HoodConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 30.0;
 
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 100;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
+		REAL_SLOT.kS = 0.3;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 		SIMULATION_SLOT.kP = 150;
 		SIMULATION_SLOT.kI = 0;
@@ -48,16 +44,14 @@ public class HoodConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(55);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(27.5);
 
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 0.1);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 0.1);
 	public static final double CURRENT_LIMIT = 40;
-
-	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = true;
-	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public static final double RESET_HOOD_VOLTAGE = -0.7;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 20;
 
 	public static final double HOOD_LENGTH_METERS = 0.3;
 	public static final double ARBITRARY_FEEDFORWARD = 0;
@@ -89,16 +83,6 @@ public class HoodConstants {
 			BACKWARD_SOFTWARE_LIMIT,
 			hoodSimulationConstants
 		);
-	}
-
-	public static IDigitalInput createHoodResetCheckSensor() {
-		return Robot.ROBOT_TYPE.isReal()
-			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENSOR),
-				new Debouncer(RESET_CHECK_SENSOR_DEBOUNCE_TIME),
-				IS_RESET_CHECK_SENSOR_INVERTED
-			)
-			: new ChooserDigitalInput("hoodResetCheck");
 	}
 
 }

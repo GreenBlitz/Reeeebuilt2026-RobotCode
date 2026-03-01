@@ -2,19 +2,19 @@ FourBar calibrations
 --------------------
 
 #### IDs
-- [ ] motor id
-- [ ] motor BusChain
+- [x] motor id
+- [x] motor BusChain
 
 #### Motor config
-- [ ] Is Inverted
-- [ ] Gear ratio
+- [x] Is Inverted
+- [x] Gear ratio
 - [ ] Current limit
 
 #### Limits
-- [ ] Max position
-- [ ] Min position
-- [ ] Forward limit
-- [ ] Backwards limit
+- [x] Max position
+- [x] Min position
+- [x] Forward limit
+- [x] Backwards limit
 
 #### FeedForward
 - [ ] kS
@@ -29,19 +29,17 @@ FourBar calibrations
 - [ ] kD
 
 #### Sim PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### MotionMagic
 - [ ] Default max acceleration per second squared
 - [ ] Default max velocity per second
 
-#### Digital input
-- [ ] Sensor channel
-- [ ] Is inverted
-- [ ] Debounce time
+#### Reset
 - [ ] Reset voltage
+- [ ] Current threshold to reset
 
 #### General Constants
 - [x] FourBar length

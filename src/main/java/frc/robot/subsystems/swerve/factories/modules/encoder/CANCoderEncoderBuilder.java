@@ -6,7 +6,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.constants.MathConstants;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.interfaces.IAngleEncoder;
-import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.Phoenix6Util;
 import frc.robot.hardware.phoenix6.angleencoder.CANCoderEncoder;
@@ -31,10 +30,10 @@ class CANCoderEncoderBuilder {
 
 	static double getCANCoderOffset(int id) {
 		return switch (id) {
-			case 0 -> -0.235107421875;
-			case 1 -> 0.40673828125;
-			case 2 -> -0.177978515625;
-			case 3 -> 0.00634765625;
+			case 0 -> -0.285400390625;
+			case 1 -> 0.074462890625;
+			case 2 -> -0.2646484375;
+			case 3 -> -0.259033203125;
 			default -> 0;
 		};
 	}
@@ -46,13 +45,17 @@ class CANCoderEncoderBuilder {
 			new Alert(Alert.AlertType.ERROR, logPath + "ConfigurationFailAt").report();
 		}
 
-		return new CANCoderEncoder(logPath, cancoder);
+		return new CANCoderEncoder(logPath, cancoder, encoderDeviceID.busChain());
 	}
 
 	static EncoderSignals buildSignals(CANCoderEncoder encoder) {
 		return new EncoderSignals(
-			Phoenix6SignalBuilder
-				.build(encoder.getDevice().getPosition(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, BusChain.ROBORIO)
+			Phoenix6SignalBuilder.build(
+				encoder.getDevice().getPosition(),
+				RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+				AngleUnit.ROTATIONS,
+				encoder.getBusChain()
+			)
 		);
 	}
 

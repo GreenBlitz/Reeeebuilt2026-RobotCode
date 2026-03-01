@@ -77,7 +77,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyShootOnMoveBinds(usedJoystick, robot);
+		applyInterpolationCalibrationBindings(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -99,8 +99,7 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
 
-		new EventTrigger("pre_shoot")
-			.onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.ROLL_UNTIL_SENSOR).asProxy());
+		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.STOP).asProxy());
 		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
 
 		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
@@ -150,6 +149,7 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
+		joystick.POV_RIGHT.whileTrue(robot.getRobotCommander().calibrationScoreSequence());
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
@@ -196,7 +196,7 @@ public class JoysticksBindings {
 	}
 
 	public static void applyIntakeRollerCalibrationsBindings(SmartJoystick joystick, Robot robot) {
-		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(6));
+		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(9));
 		joystick.POV_DOWN.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(-6));
 	}
 

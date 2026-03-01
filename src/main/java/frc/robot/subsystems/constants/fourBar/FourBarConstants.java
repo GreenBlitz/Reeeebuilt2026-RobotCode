@@ -3,16 +3,10 @@ package frc.robot.subsystems.constants.fourBar;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
-import frc.robot.Robot;
 import frc.robot.RobotConstants;
-import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
-import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.CurrentControlArm;
@@ -26,7 +20,7 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 40;
+	public static final int CURRENT_LIMIT = 80;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -34,15 +28,15 @@ public class FourBarConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 140;
 
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 0;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
+		REAL_SLOT.kS = 0;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 
 		SIMULATION_SLOT.kP = 50;
@@ -53,20 +47,17 @@ public class FourBarConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(100);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80.15);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(20.85);
 
-	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(91);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(10);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
-	public static final Rotation2d MAX_ACCELERATION_RPS_SQUARE = Rotation2d.fromRotations(3);
-	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);
-
-	public final static double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
-	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
-	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
 	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 10;
 	public static final Rotation2d POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
+
+	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
@@ -99,16 +90,6 @@ public class FourBarConstants {
 			BACKWARD_SOFTWARE_LIMITS,
 			fourBarSimConstant
 		);
-	}
-
-	public static IDigitalInput createFourBarSensorResetCheck() {
-		return Robot.ROBOT_TYPE.isReal()
-			? new ChanneledDigitalInput(
-				new DigitalInput(IDs.DigitalInputsIDs.FOUR_BAR_RESET_SENSOR),
-				new Debouncer(RESET_CHECK_SENSOR_DEBOUNCE_TIME),
-				IS_RESET_CHECK_SENSOR_INVERTED
-			)
-			: new ChooserDigitalInput("intakeResetCheck");
 	}
 
 }
