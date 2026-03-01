@@ -43,7 +43,7 @@ public class FunnelStateHandler {
 			case ROLL_UNTIL_SENSOR -> rollUntilSensor();
 			case SHOOT -> shoot();
 			case STOP -> stop();
-			case ONLY_TRAIN -> onlyTrain();
+			case PRE_SHOOT -> onlyTrain();
 			case CALIBRATION -> calibration();
 		};
 		return new ParallelCommandGroup(
@@ -69,8 +69,8 @@ public class FunnelStateHandler {
 
 	private Command onlyTrain() {
 		return new ParallelCommandGroup(
-			train.getCommandsBuilder().setVelocity(FunnelState.ONLY_TRAIN.getTrainVelocity()),
-			belly.getCommandsBuilder().setVoltage(FunnelState.ONLY_TRAIN.getBellyVoltage())
+			train.getCommandsBuilder().setVelocity(FunnelState.PRE_SHOOT.getTrainVelocity()),
+			belly.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getBellyVoltage())
 		);
 	}
 
