@@ -54,18 +54,17 @@ public class SwerveStateHandler {
 			return speeds;
 		}
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
-			return handleLookAtTargetAimAssist(speeds);
-//			if (isTurretMoveLegalSupplier.isEmpty()) {
-//				reportMissingSupplier("is turret move legal");
-//				return speeds;
-//			}
-//			if (turretAngleSupplier.isEmpty()) {
-//				reportMissingSupplier("turret angle");
-//				return speeds;
-//			}
-//			if (isTurretMoveLegalSupplier.get().get() == false) {
-//				return handleLookAtTargetAimAssist(speeds);
-//			}
+			if (isTurretMoveLegalSupplier.isEmpty()) {
+				reportMissingSupplier("is turret move legal");
+				return speeds;
+			}
+			if (turretAngleSupplier.isEmpty()) {
+				reportMissingSupplier("turret angle");
+				return speeds;
+			}
+			if (isTurretMoveLegalSupplier.get().get() == false) {
+				return handleLookAtTargetAimAssist(speeds);
+			}
 		}
 		return speeds;
 	}
@@ -100,7 +99,7 @@ public class SwerveStateHandler {
 
 		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
 		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
-		return AimAssistMath.getRotationAssistedSpeeds(speeds, robotPose.getRotation(), ShootingCalculations.getShootingParams().targetTurretPosition(), swerveConstants);
+		return finalSpeeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {

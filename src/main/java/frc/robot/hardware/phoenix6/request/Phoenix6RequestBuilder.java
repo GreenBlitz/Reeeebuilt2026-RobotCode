@@ -98,8 +98,9 @@ public class Phoenix6RequestBuilder {
 		return new Phoenix6Request<>(
 			Rotation2d.kZero,
 			dutyCycleOut,
-			(Rotation2d targetVelocity) -> dutyCycleOut
-				.withOutput(bangBangController.calculate(currentVelocity.get().getRotations(), targetVelocity.getRotations()) == 0 ? -0.65 : 0.65)
+			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
+				bangBangController.calculate(currentVelocity.get().getRotations(), targetVelocity.getRotations()) == 0 ? -0.65 : 0.65
+			)
 		);
 	}
 

@@ -66,7 +66,8 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER).onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
+			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
 	}

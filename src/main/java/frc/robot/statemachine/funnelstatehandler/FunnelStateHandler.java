@@ -43,7 +43,9 @@ public class FunnelStateHandler {
 			case ROLL_UNTIL_SENSOR -> rollUntilSensor();
 			case SHOOT -> shoot();
 			case STOP -> stop();
-			case OUTTAKE -> {yield belly.getCommandsBuilder().setPower(-0.8);}
+			case OUTTAKE -> {
+				yield belly.getCommandsBuilder().setPower(-0.8);
+			}
 			case PRE_SHOOT -> onlyTrain();
 			case CALIBRATION -> calibration();
 		};
