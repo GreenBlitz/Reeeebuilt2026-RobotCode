@@ -280,8 +280,6 @@ public class Robot {
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
-
-		robotCommander.canContinueScoring();
 	}
 
 	public Roller getIntakeRoller() {

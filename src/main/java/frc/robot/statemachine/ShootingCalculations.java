@@ -243,11 +243,11 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-//		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-//		} else {
-//			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-//		}
+		} else {
+			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		}
 	}
 
 }

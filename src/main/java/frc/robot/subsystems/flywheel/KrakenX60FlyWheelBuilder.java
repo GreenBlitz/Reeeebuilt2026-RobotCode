@@ -73,7 +73,7 @@ public class KrakenX60FlyWheelBuilder {
 
 		return new FlyWheel(
 			logPath,
-				velocityVoltageRequest,
+			velocityVoltageRequest,
 			velocityBangBangRequest,
 			voltageRequest,
 			velocitySignal,
