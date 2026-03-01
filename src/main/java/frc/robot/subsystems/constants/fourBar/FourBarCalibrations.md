@@ -43,3 +43,7 @@ FourBar calibrations
 
 #### General Constants
 - [x] FourBar length
+
+#### Open State Constants
+- [ ] Position tolerance
+- [ ] Hold Current

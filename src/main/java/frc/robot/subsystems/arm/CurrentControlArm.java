@@ -34,10 +34,4 @@ public class CurrentControlArm extends Arm {
 		motor.applyRequest(currentRequest.withSetPoint(current));
 	}
 
-	@Override
-	public void log() {
-		super.log();
-		Logger.recordOutput(getLogPath() + "/TargetCurrent", currentRequest.getSetPoint());
-	}
-
 }

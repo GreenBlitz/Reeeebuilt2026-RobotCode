@@ -53,8 +53,8 @@ public class FourBarConstants {
 	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
-	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 10;
-	public static final Rotation2d POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
+	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 3;
+	public static final Rotation2d POSITION_TOLERANCE_FOR_OPEN = Rotation2d.fromDegrees(2);
 
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;

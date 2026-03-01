@@ -15,11 +15,11 @@ public class CurrentControlArmCommandsBuilder extends ArmCommandBuilder {
 	}
 
 	public Command setCurrent(double current) {
-		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current), arm), "Set current to: " + current);
+		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current)), "Set current to: " + current);
 	}
 
 	public Command setCurrent(Supplier<Double> current) {
-		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current.get()), arm), "Set current by supplier");
+		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current.get())), "Set current by supplier");
 	}
 
 }
