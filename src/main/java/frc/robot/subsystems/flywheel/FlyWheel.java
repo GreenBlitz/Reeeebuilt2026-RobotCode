@@ -10,7 +10,6 @@ import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.calibration.sysid.SysIdCalibrator;
 import org.littletonrobotics.junction.Logger;
 
-
 public class FlyWheel extends GBSubsystem {
 
 	private final IRequest<Rotation2d> velocityVoltageRequest;
