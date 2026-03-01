@@ -42,7 +42,7 @@ Drive:
 - [x] Neutral Mode
 - [ ] Current Limit
 - [x] Gear Ratio (should use RotorToSensorRatio)
-- [x] FF (ks, kv, ka) (velocity at 12 volts required)
+- [x] FF (ks, kv, ka)
 - [x] PID
 - [ ] Control mode (motion magic, voltage, torque)
 - [x] Enable/Disable FOC (only talonfx)
