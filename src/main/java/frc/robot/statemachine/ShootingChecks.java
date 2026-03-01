@@ -124,8 +124,8 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance;
-		/* && isPoseReliable */
+		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance
+		/* && isPoseReliable */;
 	}
 
 	private static boolean canContinueShooting(
