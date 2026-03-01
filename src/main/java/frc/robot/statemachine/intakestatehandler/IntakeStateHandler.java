@@ -54,7 +54,7 @@ public class IntakeStateHandler {
 						() -> new ConditionalCommand(
 							setState(IntakeState.INTAKE),
 							setState(IntakeState.CLOSED),
-							() -> currentState == IntakeState.CLOSED
+							() -> currentState != IntakeState.INTAKE
 						),
 						Set.of(fourBar, rollers)
 					)
