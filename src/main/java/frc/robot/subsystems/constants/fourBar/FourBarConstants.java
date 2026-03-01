@@ -14,8 +14,8 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
 
 public class FourBarConstants {
@@ -65,7 +65,7 @@ public class FourBarConstants {
 	public final static double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public final static boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
-	public static final double CONSTANT_VOLTAGE_WHEN_OPEN = 0.5;
+	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 10;
 	public static final Rotation2d POSITION_TOLERANCE = Rotation2d.fromDegrees(2);
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
@@ -74,7 +74,7 @@ public class FourBarConstants {
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
 
-	public static Arm createFourBar() {
+	public static CurrentControlArm createFourBar() {
 		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
 			MAXIMUM_POSITION,
 			MINIMUM_POSITION,
@@ -82,7 +82,7 @@ public class FourBarConstants {
 			MOMENT_OF_INERTIA,
 			FOUR_BAR_LENGTH
 		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+		return TalonFXArmBuilder.buildCurrentControlArm(
 			LOG_PATH,
 			IDs.TalonFXIDs.FOUR_BAR,
 			IS_INVERTED,
@@ -97,9 +97,7 @@ public class FourBarConstants {
 			ARBITRARY_FEED_FORWARD,
 			FORWARD_SOFTWARE_LIMITS,
 			BACKWARD_SOFTWARE_LIMITS,
-			fourBarSimConstant,
-			MAX_ACCELERATION_RPS_SQUARE,
-			MAX_VELOCITY_RPS
+			fourBarSimConstant
 		);
 	}
 

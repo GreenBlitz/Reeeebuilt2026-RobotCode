@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class IntakeStateHandler {
 
-	private final Arm fourBar;
+	private final CurrentControlArm fourBar;
 	private final Roller rollers;
 	private boolean hasFourBarBeenReset;
 	private final IDigitalInput fourBarResetCheckSensor;
@@ -26,7 +26,7 @@ public class IntakeStateHandler {
 
 	private IntakeState currentState;
 
-	public IntakeStateHandler(Arm fourBar, Roller rollers, IDigitalInput fourBarResetCheckSensor, String logPath) {
+	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, IDigitalInput fourBarResetCheckSensor, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
 		this.fourBarResetCheckSensor = fourBarResetCheckSensor;
@@ -74,7 +74,7 @@ public class IntakeStateHandler {
 				fourBar.getCommandsBuilder()
 					.setTargetPosition(IntakeState.INTAKE.getFourBarPosition())
 					.until(() -> fourBar.isAtPosition(IntakeState.INTAKE.getFourBarPosition(), FourBarConstants.POSITION_TOLERANCE)),
-				fourBar.getCommandsBuilder().setVoltage(FourBarConstants.CONSTANT_VOLTAGE_WHEN_OPEN)
+				fourBar.getCommandsBuilder().setCurrent(FourBarConstants.CONSTANT_CURRENT_WHEN_OPEN_AMP)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
