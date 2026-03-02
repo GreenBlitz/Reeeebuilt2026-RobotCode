@@ -34,8 +34,8 @@ Hood calibrations
 - [x] kD
 
 #### Reset
-- [ ] Reset voltage
-- [ ] Current threshold to reset
+- [x] Reset voltage
+- [x] Current threshold to reset
 
 #### General Constants
 - [x] Arm length

@@ -31,5 +31,5 @@ Turret Calibration
 - [x] Offset from robot middle
 
 #### Reset
-- [ ] Reset voltage
-- [ ] Current threshold to reset
+- [x] Reset voltage
+- [x] Current threshold to reset
