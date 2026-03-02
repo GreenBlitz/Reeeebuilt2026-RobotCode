@@ -137,13 +137,10 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command outtake() {
-		return asSubsystemCommand(
-			new ParallelCommandGroup(
-				shooterStateHandler.setState(ShooterState.NEUTRAL),
-				funnelStateHandler.setState(FunnelState.OUTTAKE),
-				intakeStateHandler.setState(IntakeState.OUTTAKE)
-			),
-			"outtake"
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.NEUTRAL),
+			funnelStateHandler.setState(FunnelState.OUTTAKE),
+			intakeStateHandler.setState(IntakeState.OUTTAKE)
 		);
 	}
 

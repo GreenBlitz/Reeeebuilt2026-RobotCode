@@ -65,11 +65,12 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		
+
 		// Shoot & Pass...
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER).onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
-		
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
+			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+
 		// Intake binds...
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
