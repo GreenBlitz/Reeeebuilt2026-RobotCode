@@ -63,7 +63,7 @@ public class KrakenX60FlyWheelBuilder {
 
 		Phoenix6Request<Rotation2d> velocityVoltageRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
 		Phoenix6Request<Rotation2d> velocityBangBangRequest = Phoenix6RequestBuilder
-			.buildBangBangRequest(velocitySignal::getLatestValue, 0.65, true);
+			.buildBangBangRequest(velocitySignal::getLatestValue, FlywheelConstants.MAX_BANG_BANG_POWER, true);
 
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
