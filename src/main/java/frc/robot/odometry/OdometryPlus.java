@@ -45,7 +45,8 @@ public class OdometryPlus<T> extends Odometry<T> {
 			return rawPose;
 
 		Rotation3d angles = robotAnglesSupplier.get();
-		double scale = Math.max(0, Math.cos(angles.rotateBy(new Rotation3d(0, 0, -angles.getZ())).getY()));
+		// did it for case robot is above 90 , i think the pose wont matter when the robo flip -_-
+        double scale = Math.max(0, Math.cos(angles.rotateBy(new Rotation3d(0, 0, -angles.getZ())).getY()));
 
 		Pose2d corrected = new Pose2d(lastPose.interpolate(rawPose, scale).getTranslation(), rawPose.getRotation());
 
