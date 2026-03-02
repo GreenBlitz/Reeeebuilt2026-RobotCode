@@ -70,7 +70,7 @@ public class FunnelStateHandler {
 
 	private Command outtake() {
 		return new ParallelCommandGroup(
-			train.getCommandsBuilder().setVelocity(FunnelState.OUTTAKE.getTrainVelocity()),
+			train.getCommandsBuilder().stop(),
 			belly.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getBellyVoltage())
 		);
 	}
