@@ -3,6 +3,7 @@ package frc.robot.odometry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.Odometry;
 
@@ -45,10 +46,12 @@ public class OdometryPlus<T> extends Odometry<T> {
 			return rawPose;
 
 		Rotation3d angles = robotAnglesSupplier.get();
-		// did it for case robot is above 90 , i think the pose wont matter when the robo flip -_-
-        double scale = Math.max(0, Math.cos(angles.rotateBy(new Rotation3d(0, 0, -angles.getZ())).getY()));
+		// in case angle above 90 so wont minus , i dont think pose is relevant when robot flips
+		double scale = Math.max(0, Math.cos(angles.rotateBy(new Rotation3d(0, 0, -angles.getZ())).getY()));
 
-		Pose2d corrected = new Pose2d(lastPose.interpolate(rawPose, scale).getTranslation(), rawPose.getRotation());
+		Transform2d delta = new Transform2d(lastPose, rawPose);
+
+		Pose2d corrected = lastPose.plus(new Transform2d(delta.getTranslation().times(scale), delta.getRotation()));
 
 		resetTranslation(corrected.getTranslation());
 
