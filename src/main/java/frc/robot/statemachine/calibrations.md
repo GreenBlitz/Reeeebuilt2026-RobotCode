@@ -6,6 +6,7 @@ State machine Calibrations
 - [x] RobotCommander current state in constructor
 - [x] Swerve setting in RobotCommander constructor
 - [ ] degrees of overshoot for aim at hub assist
+- [ ] swerve speed at scoring
 
 #### Interpolations
 - [ ] Hood interpolation for scoring

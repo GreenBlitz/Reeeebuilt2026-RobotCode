@@ -86,8 +86,6 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
 		applyInterpolationCalibrationBindings(usedJoystick, robot);
-		usedJoystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(9));
-		usedJoystick.POV_DOWN.onTrue(robot.getIntakeRoller().getCommandsBuilder().stop());
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -160,6 +158,9 @@ public class JoysticksBindings {
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
 		joystick.POV_RIGHT.whileTrue(robot.getRobotCommander().calibrationScoreSequence());
+
+		joystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().close());
+		joystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().intake());
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
