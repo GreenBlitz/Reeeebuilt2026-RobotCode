@@ -54,7 +54,7 @@ public class IntakeStateHandler {
 						() -> new ConditionalCommand(
 							setState(IntakeState.INTAKE),
 							setState(IntakeState.CLOSED),
-							() -> currentState == IntakeState.CLOSED
+							() -> currentState != IntakeState.INTAKE
 						),
 						Set.of(fourBar, rollers)
 					)
@@ -66,6 +66,13 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+		);
+	}
+
+	public Command outtake() {
+		return new ParallelCommandGroup(
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.OUTTAKE.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
 		);
 	}
 
@@ -81,6 +88,7 @@ public class IntakeStateHandler {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case INTAKE -> intake();
+			case OUTTAKE -> outtake();
 			case RESET_FOUR_BAR -> resetFourBar();
 			case CLOSED -> close();
 		},
