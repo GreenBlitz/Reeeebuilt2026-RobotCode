@@ -16,15 +16,14 @@ public class OdometryPlus<T> extends Odometry<T> {
 	/**
 	 * Constructs a 2d odometry object that takes into consideration the robot's 3d orientation.
 	 *
-	 * @param kinematics        The kinematics of the drivebase.
-	 * @param gyroAngle         The angle reported by the gyroscope.
-	 * @param wheelPositions    The current encoder readings.
+	 * @param kinematics        The kinematics of the chassis.
+	 * @param gyroAngle         The given robot's yaw.
+	 * @param wheelPositions    The current wheel positions.
 	 * @param initialPoseMeters The starting position of the robot on the field.
 	 */
 	public OdometryPlus(Kinematics<?, T> kinematics, Rotation2d gyroAngle, T wheelPositions, Pose2d initialPoseMeters) {
-		super(kinematics, gyroAngle, wheelPositions, initialPoseMeters);
-		robotOrientationSupplier = null;
-	}
+        this(kinematics, gyroAngle, wheelPositions, initialPoseMeters, null);
+    }
 
 	public OdometryPlus(
 		Kinematics<?, T> kinematics,
