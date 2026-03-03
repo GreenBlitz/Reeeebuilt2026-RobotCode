@@ -147,6 +147,7 @@ public class ShootingCalculations {
 				Math.abs(newBallFlightTime - ballFlightTime)
 					<= StateMachineConstants.MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS
 			) {
+				Logger.recordOutput(LOG_PATH + "/estimatedBallFlightTime", ballFlightTime);
 				return predictedTurretPose;
 			}
 			ballFlightTime = newBallFlightTime;
