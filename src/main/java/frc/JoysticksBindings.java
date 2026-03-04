@@ -71,13 +71,11 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.X.onTrue(new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 1)));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 
-		new Trigger(() -> isSecondsRemainingInShift(WANTED_RUMBLE_SECONDS, RUMBLE_SECONDS_TOLERANCE)).onTrue(
-				new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, RUMBLE_POWER))
-		);
+		new Trigger(() -> isSecondsRemainingInShift(WANTED_RUMBLE_SECONDS, RUMBLE_SECONDS_TOLERANCE))
+			.onTrue(new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, RUMBLE_POWER)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -222,10 +220,10 @@ public class JoysticksBindings {
 	}
 
 	public static boolean isSecondsRemainingInShift(double wantedSeconds, double secondsTolerance) {
-        return MathUtil.isNear(wantedSeconds, HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()), secondsTolerance);
-    }
+		return MathUtil.isNear(wantedSeconds, HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()), secondsTolerance);
+	}
 
-	private static Command applyRumble(SmartJoystick usedJoystick ,double wantedSeconds, double secondsTolerance, double wantedRumblePower) {
+	private static Command applyRumble(SmartJoystick usedJoystick, double wantedSeconds, double secondsTolerance, double wantedRumblePower) {
 		if (isSecondsRemainingInShift(wantedSeconds, secondsTolerance)) {
 			return new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, wantedRumblePower));
 		}

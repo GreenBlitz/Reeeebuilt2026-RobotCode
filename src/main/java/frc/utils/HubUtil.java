@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.Alert;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 import java.util.Optional;
