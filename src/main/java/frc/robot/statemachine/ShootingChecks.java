@@ -120,7 +120,7 @@ public class ShootingChecks {
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.getShootingParams().finalTurretTarget(),
 			turretTolerance,
 			logPath
 		);
@@ -140,7 +140,7 @@ public class ShootingChecks {
 		);
 
 		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedTargetInRangeFromStaticTarget(
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.getShootingParams().unCheckedTurretPosition(),
 			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			rangeFromStaticTargetForTurret,
 			logPath
@@ -178,7 +178,7 @@ public class ShootingChecks {
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.getShootingParams().finalTurretTarget(),
 			turretTolerance,
 			logPath
 		);
@@ -199,7 +199,7 @@ public class ShootingChecks {
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
 		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedTargetInRangeFromStaticTarget(
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.getShootingParams().unCheckedTurretPosition(),
 			ShootingCalculations.getShootingParams().staticTurretTarget(),
 			rangeFromStaticTargetForTurret,
 			logPath
