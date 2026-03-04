@@ -14,8 +14,7 @@ public enum IntakeState {
 	private final double intakePower;
 
 	IntakeState() {
-		this.fourBarPosition = Rotation2d.fromRotations(Double.NaN);
-		this.intakePower = Double.NaN;
+		this(Rotation2d.fromRotations(Double.NaN), Double.NaN);
 	}
 
 	IntakeState(Rotation2d fourBarPosition, double intakePower) {
