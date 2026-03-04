@@ -19,7 +19,10 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class ShootingCalculations {
 
 	private static final LoggedNetworkBoolean useTurretTesting = new LoggedNetworkBoolean("Tunable/UseTurretTesting", false);
-	private static final LoggedNetworkNumber TurretTestingSpeedCoefficient = new LoggedNetworkNumber("Tunable/TurretTestingSpeedCoefficient", 1.0);
+	private static final LoggedNetworkNumber TurretTestingSpeedCoefficient = new LoggedNetworkNumber(
+		"Tunable/TurretTestingSpeedCoefficient",
+		1.0
+	);
 	private static final LoggedNetworkNumber TurretTestingExponent = new LoggedNetworkNumber("Tunable/TurretTestingExponent", 1.0);
 
 	private static final String LOG_PATH = "ShootingCalculations";
