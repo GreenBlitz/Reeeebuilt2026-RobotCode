@@ -2,35 +2,34 @@ Turret Calibration
 ------------------------
 
 #### ID
-- [ ] Motor ID
-- [ ] Bus chain
+- [x] Motor ID
+- [x] Bus chain
 
 #### Configs
-- [ ] Is inverted
-- [ ] Gear ratio
+- [x] Is inverted
+- [x] Gear ratio
 - [ ] Current limit
 
 #### Limits
-- [ ] Max position
-- [ ] Min position
+- [x] Max position
+- [x] Min position
 ##### (Must complete each other to 360 degrees)
-- [ ] Forward limit
-- [ ] Backwards limit
+- [x] Forward limit
+- [x] Backwards limit
 
 #### Feed forward
-- [ ] kS
-- [ ] kV
+- [x] kS
+- [x] kV
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### General
-- [ ] Amount of degrees for the look at hub not to move
-- [ ] Offset from robot middle
+- [x] Amount of degrees for the look at hub not to move
+- [x] Offset from robot middle
 
 #### Reset
 - [x] Reset voltage
 - [x] Current threshold to reset
-

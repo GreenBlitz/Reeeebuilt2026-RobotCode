@@ -20,7 +20,7 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 40;
+	public static final int CURRENT_LIMIT = 80;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -28,15 +28,15 @@ public class FourBarConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 140;
 
-		REAL_SLOT.kP = 28;
+		REAL_SLOT.kP = 0;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0.065;
-		REAL_SLOT.kG = 0.37;
-		REAL_SLOT.kV = 9.0000095367432;
-		REAL_SLOT.kA = 0.5209;
+		REAL_SLOT.kS = 0;
+		REAL_SLOT.kG = 0;
+		REAL_SLOT.kV = 0;
+		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 
 		SIMULATION_SLOT.kP = 50;
@@ -47,14 +47,11 @@ public class FourBarConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(100);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80.15);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(20.85);
 
-	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(91);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = Rotation2d.fromDegrees(10);
-
-	public static final Rotation2d MAX_ACCELERATION_RPS_SQUARE = Rotation2d.fromRotations(3);
-	public static final Rotation2d MAX_VELOCITY_RPS = Rotation2d.fromRotations(3);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
 	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
@@ -73,7 +70,7 @@ public class FourBarConstants {
 			MOMENT_OF_INERTIA,
 			FOUR_BAR_LENGTH
 		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+		return TalonFXArmBuilder.buildVelocityPositionArm(
 			LOG_PATH,
 			IDs.TalonFXIDs.FOUR_BAR,
 			IS_INVERTED,
@@ -88,9 +85,7 @@ public class FourBarConstants {
 			ARBITRARY_FEED_FORWARD,
 			FORWARD_SOFTWARE_LIMITS,
 			BACKWARD_SOFTWARE_LIMITS,
-			fourBarSimConstant,
-			MAX_ACCELERATION_RPS_SQUARE,
-			MAX_VELOCITY_RPS
+			fourBarSimConstant
 		);
 	}
 

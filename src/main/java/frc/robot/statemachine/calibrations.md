@@ -6,6 +6,7 @@ State machine Calibrations
 - [x] RobotCommander current state in constructor
 - [x] Swerve setting in RobotCommander constructor
 - [ ] degrees of overshoot for aim at hub assist
+- [ ] swerve speed at scoring
 
 #### Interpolations
 - [ ] Hood interpolation for scoring
@@ -45,3 +46,7 @@ State machine Calibrations
 - [ ] Preset Points for side passing
 - [ ] Target X value for passing
 - [ ] Min X value to pass behind hub
+
+#### Advanced flight time calculation
+- [ ] Maximum amount of times to recalculate flight time
+- [ ] Minimum difference between flight times to stop recalculations
