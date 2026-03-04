@@ -223,11 +223,4 @@ public class JoysticksBindings {
 		return MathUtil.isNear(wantedSeconds, HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()), secondsTolerance);
 	}
 
-	private static Command applyRumble(SmartJoystick usedJoystick, double wantedSeconds, double secondsTolerance, double wantedRumblePower) {
-		if (isSecondsRemainingInShift(wantedSeconds, secondsTolerance)) {
-			return new RunCommand(() -> usedJoystick.setRumble(GenericHID.RumbleType.kBothRumble, wantedRumblePower));
-		}
-		return Commands.none();
-	}
-
 }
