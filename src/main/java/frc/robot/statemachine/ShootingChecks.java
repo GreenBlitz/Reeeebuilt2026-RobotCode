@@ -92,14 +92,9 @@ public class ShootingChecks {
 		Rotation2d rangeFromStaticTarget,
 		String logPath
 	) {
-		boolean isTurretPredictedInRangeFromStaticTarget = !ToleranceMath.isInRange(
+		boolean isTurretPredictedInRangeFromStaticTarget = ToleranceMath.isInRange(
 			targetTurretPosition.getDegrees(),
-			TurretCalculations
-				.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() - rangeFromStaticTarget.getDegrees()))
-				.getDegrees(),
-			TurretCalculations
-				.getWrappedTurretPosition(Rotation2d.fromDegrees(staticTurretTarget.getDegrees() + rangeFromStaticTarget.getDegrees()))
-				.getDegrees()
+			staticTurretTarget.getDegrees(),staticTurretTarget.getDegrees(),rangeFromStaticTarget.getDegrees()
 		);
 		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 		return isTurretPredictedInRangeFromStaticTarget;
