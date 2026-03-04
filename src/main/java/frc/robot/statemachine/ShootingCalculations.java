@@ -18,9 +18,9 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class ShootingCalculations {
 
-	private static final LoggedNetworkBoolean enableTurretTracking = new LoggedNetworkBoolean("Tunable/TurretTrackingEnable", false);
-	private static final LoggedNetworkNumber turretTrackingSpeedFactor = new LoggedNetworkNumber("Tunable/TurretTrackingSpeedFactor", 1.0);
-	private static final LoggedNetworkNumber turretTrackingExponent = new LoggedNetworkNumber("Tunable/TurretTrackingExponent", 1.0);
+	private static final LoggedNetworkBoolean useTurretTesting = new LoggedNetworkBoolean("Tunable/UseTurretTesting", false);
+	private static final LoggedNetworkNumber turretTestingSpeedFactor = new LoggedNetworkNumber("Tunable/TurretTestingSpeedFactor", 1.0);
+	private static final LoggedNetworkNumber turretTestingExponent = new LoggedNetworkNumber("Tunable/TurretTestingExponent", 1.0);
 
 	private static final String LOG_PATH = "ShootingCalculations";
 	private static ShootingParams shootingParams = new ShootingParams(
@@ -78,10 +78,10 @@ public class ShootingCalculations {
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
 
-		if (enableTurretTracking.get()) {
+		if (useTurretTesting.get()) {
 			double time = TimeUtil.getTimeSinceTeleopInitSeconds();
-			double speedFactor = turretTrackingSpeedFactor.get();
-			double exponent = turretTrackingExponent.get();
+			double speedFactor = turretTestingSpeedFactor.get();
+			double exponent = turretTestingExponent.get();
 
 			double degrees = Math.pow(time % 360, exponent) * speedFactor;
 			turretTargetPosition = Rotation2d.fromDegrees(degrees);
