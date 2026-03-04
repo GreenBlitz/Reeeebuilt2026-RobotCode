@@ -98,7 +98,7 @@ public class PathFollowingCommandsBuilder {
 				pathfindingConstraints,
 				velocityBetweenPathfindingToPathFollowingMetersPerSecond
 			)
-			.alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindBeforeFollowPath: " + path.name)))
+			.alongWith(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentCommand", "pathfindWithVelocityBeforeFollowPath: " + path.name)))
 			.andThen(followPath(path, logPath));
 	}
 

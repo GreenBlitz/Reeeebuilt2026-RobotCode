@@ -156,14 +156,9 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command driveByDriversInputs(SwerveState state) {
-		return new ConditionalCommand(
-			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state), swerve),
-			swerve.asSubsystemCommand(
-				new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
-				"Drive by drivers inputs with state and aim assist: " + state.getAimAssist().name()
-			),
-			() -> state == SwerveState.DEFAULT_PATH_PLANNER
-		);
+        return swerve.asSubsystemCommand(
+                new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
+                "Drive by drivers inputs with state");
 	}
 
 	public Command resetTargetSpeeds() {
