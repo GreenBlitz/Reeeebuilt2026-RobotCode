@@ -7,7 +7,6 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
-import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
 import frc.utils.time.TimeUtil;
@@ -94,7 +93,9 @@ public class ShootingChecks {
 	) {
 		boolean isTurretPredictedInRangeFromStaticTarget = ToleranceMath.isInRange(
 			targetTurretPosition.getDegrees(),
-			staticTurretTarget.getDegrees(),staticTurretTarget.getDegrees(),rangeFromStaticTarget.getDegrees()
+			staticTurretTarget.getDegrees(),
+			staticTurretTarget.getDegrees(),
+			rangeFromStaticTarget.getDegrees()
 		);
 		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 		return isTurretPredictedInRangeFromStaticTarget;
