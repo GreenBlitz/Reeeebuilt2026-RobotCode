@@ -11,9 +11,16 @@ import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class ShootingCalculations {
+
+	private static final LoggedNetworkBoolean enableTurretTracking = new LoggedNetworkBoolean("Tunable/TurretTrackingEnable", false);
+	private static final LoggedNetworkNumber turretTrackingSpeedFactor = new LoggedNetworkNumber("Tunable/TurretTrackingSpeedFactor", 1.0);
+	private static final LoggedNetworkNumber turretTrackingExponent = new LoggedNetworkNumber("Tunable/TurretTrackingExponent", 1.0);
 
 	private static final String LOG_PATH = "ShootingCalculations";
 	private static ShootingParams shootingParams = new ShootingParams(
@@ -70,6 +77,16 @@ public class ShootingCalculations {
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
+
+		if (enableTurretTracking.get()) {
+			double time = TimeUtil.getTimeSinceTeleopInitSeconds();
+			double speedFactor = turretTrackingSpeedFactor.get();
+			double exponent = turretTrackingExponent.get();
+
+			double degrees = Math.pow(time % 360, exponent) * speedFactor;
+			turretTargetPosition = Rotation2d.fromDegrees(degrees);
+		}
+
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
