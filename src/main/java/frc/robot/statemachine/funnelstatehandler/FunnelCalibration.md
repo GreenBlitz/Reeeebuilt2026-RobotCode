@@ -2,7 +2,7 @@ Funnel States Calibration
 ---------------------------------
 
 #### shoot
-- [ ] Train velocity
+- [x] Train velocity
 - [ ] Belly Voltage
 
 #### move balls to sensor

@@ -2,10 +2,9 @@ Intake rollers calibrations
 --------------------------------
 
 #### Motor
-- [ ] Motor id
-- [ ] Motor bus chain
+- [x] Motor id
+- [x] Motor bus chain
 
 #### Motor config
-- [ ] Is inverted
-- [ ] Gear ratio
+- [x] Is inverted
 - [ ] Current limit
