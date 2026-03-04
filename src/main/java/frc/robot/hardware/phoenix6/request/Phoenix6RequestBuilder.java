@@ -105,8 +105,7 @@ public class Phoenix6RequestBuilder {
 			Rotation2d.kZero,
 			dutyCycleOut,
 			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
-				Objects
-					.requireNonNullElse(errorToOutputRangeMap.get(targetVelocity.getRotations() - currentVelocity.get().getRotations()), 0.0)
+				Objects.requireNonNullElse(errorToOutputRangeMap.get(targetVelocity.getRotations() - currentVelocity.get().getRotations()), 0.0)
 			)
 		);
 	}
@@ -121,8 +120,7 @@ public class Phoenix6RequestBuilder {
 			Rotation2d.kZero,
 			dutyCycleOut,
 			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
-				Objects
-					.requireNonNullElse(errorToOutputRangeMap.get(targetVelocity.getRotations() - currentVelocity.get().getRotations()), 0.0)
+				Objects.requireNonNullElse(errorToOutputRangeMap.get(targetVelocity.getRotations() - currentVelocity.get().getRotations()), 0.0)
 			)
 		);
 	}
