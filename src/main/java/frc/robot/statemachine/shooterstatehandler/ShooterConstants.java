@@ -5,7 +5,6 @@ import frc.utils.LoggedNetworkRotation2d;
 
 public class ShooterConstants {
 
-
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
 
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d(
