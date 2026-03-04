@@ -12,24 +12,24 @@ public enum FunnelState {
 	CALIBRATION;
 
 	private final Rotation2d trainVelocity;
-	private final double bellyVoltage;
+	private final double conveyorVoltage;
 
-	FunnelState(Rotation2d trainVelocity, double bellyVoltage) {
+	FunnelState(Rotation2d trainVelocity, double conveyorVoltage) {
 		this.trainVelocity = trainVelocity;
-		this.bellyVoltage = bellyVoltage;
+		this.conveyorVoltage = conveyorVoltage;
 	}
 
 	FunnelState() {
 		this.trainVelocity = Rotation2d.kZero;
-		this.bellyVoltage = 0;
+		this.conveyorVoltage = 0;
 	}
 
 	public Rotation2d getTrainVelocity() {
 		return trainVelocity;
 	}
 
-	public double getBellyVoltage() {
-		return bellyVoltage;
+	public double getConveyorVoltage() {
+		return conveyorVoltage;
 	}
 
 }

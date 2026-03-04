@@ -216,9 +216,9 @@ public class JoysticksBindings {
 		joystick.Y.onTrue(train.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
 	}
 
-	private static void applyBellyCalibrationBindings(Roller belly, SmartJoystick joystick, double maxCalibrationPower) {
-		joystick.X.onTrue(belly.getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
-		joystick.Y.onTrue(belly.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
+	private static void applyConveyorCalibrationBindings(Roller conveyor, SmartJoystick joystick, double maxCalibrationPower) {
+		joystick.X.onTrue(conveyor.getCommandsBuilder().setPower(0.5 * maxCalibrationPower));
+		joystick.Y.onTrue(conveyor.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
 	}
 
 }

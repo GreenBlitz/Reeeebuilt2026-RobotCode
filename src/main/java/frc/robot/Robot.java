@@ -26,7 +26,7 @@ import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.constants.belly.BellyConstants;
+import frc.robot.subsystems.constants.conveyor.ConveyorConstants;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
@@ -70,7 +70,7 @@ public class Robot {
 	private final VelocityRoller train;
 	private final IDigitalInput trainBallSensor;
 	private final SimulationManager simulationManager;
-	private final Roller belly;
+	private final Roller conveyor;
 
 	private final RobotCommander robotCommander;
 
@@ -108,8 +108,8 @@ public class Robot {
 		this.trainBallSensor = TrainConstant.createTrainBallSensor();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
-		this.belly = BellyConstants.createBelly();
-		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
+		this.conveyor = ConveyorConstants.createConveyor();
+		BrakeStateManager.add(() -> conveyor.setBrake(true), () -> conveyor.setBrake(false));
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -243,7 +243,7 @@ public class Robot {
 		swerve.update();
 		fourBar.update();
 		intakeRoller.update();
-		belly.update();
+		conveyor.update();
 		train.update();
 		turret.update();
 		hood.update();
@@ -302,8 +302,8 @@ public class Robot {
 		return train;
 	}
 
-	public Roller getBelly() {
-		return belly;
+	public Roller getConveyor() {
+		return conveyor;
 	}
 
 	public Arm getHood() {

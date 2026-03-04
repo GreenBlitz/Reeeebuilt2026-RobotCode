@@ -16,23 +16,23 @@ public class FunnelStateHandler {
 	private final IDigitalInput ballSensor;
 	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
 
-	private final Roller belly;
+	private final Roller conveyor;
 
 	private final String logPath;
 
 	private final LoggedNetworkNumber trainCalibrationVoltage;
 
-	private final LoggedNetworkNumber bellyCalibrationVoltage;
+	private final LoggedNetworkNumber conveyorCalibrationVoltage;
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller train, Roller belly, String logPath, IDigitalInput ballSensor) {
+	public FunnelStateHandler(VelocityRoller train, Roller conveyor, String logPath, IDigitalInput ballSensor) {
 		this.train = train;
-		this.belly = belly;
+		this.conveyor = conveyor;
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
 		this.trainCalibrationVoltage = new LoggedNetworkNumber("Tunable/TrainVoltage", 0);
-		this.bellyCalibrationVoltage = new LoggedNetworkNumber("Tunable/BellyVoltage", 0);
+		this.conveyorCalibrationVoltage = new LoggedNetworkNumber("Tunable/ConveyorVoltage", 0);
 		this.ballSensor = ballSensor;
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
@@ -62,23 +62,23 @@ public class FunnelStateHandler {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
 				train.getCommandsBuilder().setVelocity(FunnelState.ROLL_UNTIL_SENSOR.getTrainVelocity()),
-				belly.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getBellyVoltage())
+				conveyor.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getConveyorVoltage())
 			).until(this::isBallAtSensor),
-			new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
+			new ParallelCommandGroup(train.getCommandsBuilder().stop(), conveyor.getCommandsBuilder().stop())
 		);
 	}
 
 	private Command outtake() {
 		return new ParallelCommandGroup(
 			train.getCommandsBuilder().stop(),
-			belly.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getBellyVoltage())
+			conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getConveyorVoltage())
 		);
 	}
 
 	private Command preShoot() {
 		return new ParallelCommandGroup(
 			train.getCommandsBuilder().setVelocity(FunnelState.PRE_SHOOT.getTrainVelocity()),
-			belly.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getBellyVoltage())
+			conveyor.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage())
 		);
 	}
 
@@ -87,19 +87,19 @@ public class FunnelStateHandler {
 			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
 			new SequentialCommandGroup(
 				new WaitCommand(StateMachineConstants.TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS),
-				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
+				conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage())
 			)
 		);
 	}
 
 	private Command stop() {
-		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
+		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), conveyor.getCommandsBuilder().stop());
 	}
 
 	private Command calibration() {
 		return new ParallelCommandGroup(
 			train.getCommandsBuilder().setVoltage(() -> trainCalibrationVoltage.get()),
-			belly.getCommandsBuilder().setVoltage(() -> bellyCalibrationVoltage.get())
+			conveyor.getCommandsBuilder().setVoltage(() -> conveyorCalibrationVoltage.get())
 		);
 	}
 
