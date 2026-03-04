@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.constants.field.Field;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.math.ToleranceMath;
 
@@ -136,7 +137,10 @@ public class PathFollowingCommandsBuilder {
 				() -> ToleranceMath
 					.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), isNearEndOfPathTolerance)
 			)
-			.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
+			.andThen(
+				swerve.getCommandsBuilder()
+					.setChassisSpeeds(PathPlannerUtil.getAllianceRelativeGoalEndSpeeds(path), SwerveState.DEFAULT_PATH_PLANNER)
+			);
 	}
 
 }

@@ -143,7 +143,7 @@ public class Robot {
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
-				new StandardDeviations2D(0.35),
+				new StandardDeviations2D(0.4),
 				new StandardDeviations2D(0.07),
 				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
@@ -171,7 +171,7 @@ public class Robot {
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightRight,
-				new StandardDeviations2D(0.35),
+				new StandardDeviations2D(0.4),
 				new StandardDeviations2D(0.07),
 				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
@@ -191,7 +191,7 @@ public class Robot {
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
-				new StandardDeviations2D(0.35),
+				new StandardDeviations2D(0.4),
 				new StandardDeviations2D(0.07),
 				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
@@ -214,6 +214,17 @@ public class Robot {
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
+		this.autonomousChooser = new AutonomousChooser(
+			"Autonomous Chooser",
+			AutosBuilder.getAutoList(
+				this,
+				() -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS),
+				() -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE),
+				() -> robotCommander.scoreSequence(),
+				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+			)
+		);
 		simulationManager = new SimulationManager("SimulationManager", this);
 
 		new Trigger(DriverStation::isTeleopEnabled)
