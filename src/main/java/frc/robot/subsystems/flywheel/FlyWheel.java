@@ -6,13 +6,14 @@ import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.subsystems.GBSubsystem;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.calibration.sysid.SysIdCalibrator;
 import org.littletonrobotics.junction.Logger;
 
-
 public class FlyWheel extends GBSubsystem {
 
-	private final IRequest<Rotation2d> velocityRequest;
+	private final IRequest<Rotation2d> velocityVoltageRequest;
+	private final IRequest<Rotation2d> velocityBangBangRequest;
 	private final IRequest<Double> voltageRequest;
 
 	private final InputSignal<Rotation2d> velocitySignal;
@@ -25,9 +26,12 @@ public class FlyWheel extends GBSubsystem {
 
 	private final SysIdCalibrator sysIdCalibrator;
 
+	private Rotation2d targetVelocity;
+
 	public FlyWheel(
 		String logPath,
-		IRequest<Rotation2d> velocityRequest,
+		IRequest<Rotation2d> velocityVoltageRequest,
+		IRequest<Rotation2d> velocityBangBangRequest,
 		IRequest<Double> voltageRequest,
 		InputSignal<Rotation2d> velocitySignal,
 		InputSignal<Double> voltageSignal,
@@ -35,7 +39,8 @@ public class FlyWheel extends GBSubsystem {
 		ControllableMotor motor
 	) {
 		super(logPath);
-		this.velocityRequest = velocityRequest;
+		this.velocityVoltageRequest = velocityVoltageRequest;
+		this.velocityBangBangRequest = velocityBangBangRequest;
 		this.voltageRequest = voltageRequest;
 		this.velocitySignal = velocitySignal;
 		this.voltageSignal = voltageSignal;
@@ -43,6 +48,7 @@ public class FlyWheel extends GBSubsystem {
 		this.motor = motor;
 		this.flyWheelCommandBuilder = new FlyWheelCommandBuilder(this);
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, this::setVoltage);
+		this.targetVelocity = Rotation2d.kZero;
 		setDefaultCommand(getCommandBuilder().stop());
 	}
 
@@ -51,7 +57,17 @@ public class FlyWheel extends GBSubsystem {
 	}
 
 	public void setTargetVelocity(Rotation2d velocity) {
-		motor.applyRequest(velocityRequest.withSetPoint(velocity));
+		targetVelocity = velocity;
+		if (
+			Math.abs(velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees())
+				> FlywheelConstants.MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS.getDegrees()
+		) {
+			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));
+			Logger.recordOutput(getLogPath() + "/usedControl", "Bang Bang");
+		} else {
+			motor.applyRequest(velocityVoltageRequest.withSetPoint(velocity));
+			Logger.recordOutput(getLogPath() + "/usedControl", "PID");
+		}
 	}
 
 	public void setVoltage(double voltage) {
@@ -85,7 +101,7 @@ public class FlyWheel extends GBSubsystem {
 	public void update() {
 		motor.updateSimulation();
 		motor.updateInputs(velocitySignal, voltageSignal, currentSignal);
-		Logger.recordOutput(getLogPath() + "/targetVelocity", velocityRequest.getSetPoint());
+		Logger.recordOutput(getLogPath() + "/targetVelocity", targetVelocity);
 	}
 
 	public void applyCalibrationsBindings(SmartJoystick joystick) {

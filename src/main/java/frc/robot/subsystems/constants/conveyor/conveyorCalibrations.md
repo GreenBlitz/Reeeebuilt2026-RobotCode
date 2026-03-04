@@ -1,10 +1,10 @@
-belly calibrations
+conveyor calibrations
 --------------------------------
 
 #### IDs
-- [ ] Motor id
+- [x] Motor id
+- [x] Bus Chain
 
 #### Config
-- [ ] Is inverted
-- [ ] Gear ratio
+- [x] Is inverted
 - [ ] Current limit
