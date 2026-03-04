@@ -24,7 +24,7 @@ public class StateMachineConstants {
 	public static final double MAX_DISTANCE_TO_SCORE_METERS = 8.5;
 	public static final double MAX_DISTANCE_TO_PASS_METERS = 15;
 
-	public static final double TIME_FOR_TRAIN_TO_ACCELERATE_SECONDS = 0.05;
+	public static final double TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS = 0.05;
 
 	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
 

@@ -23,7 +23,7 @@ public class IDs {
 
 		public static final Phoenix6DeviceID TURRET = new Phoenix6DeviceID(30, BusChain.CHASSIS);
 
-		public static final Phoenix6DeviceID TRAIN = new Phoenix6DeviceID(40, BusChain.ROBORIO);
+		public static final Phoenix6DeviceID MAGAZINE = new Phoenix6DeviceID(40, BusChain.ROBORIO);
 
 		public static final Phoenix6DeviceID INTAKE_ROLLERS = new Phoenix6DeviceID(50, BusChain.CHASSIS);
 		public static final Phoenix6DeviceID FOUR_BAR = new Phoenix6DeviceID(51, BusChain.CHASSIS);
@@ -58,7 +58,7 @@ public class IDs {
 
 	public static class DigitalInputsIDs {
 
-		public static final int TRAIN_BALL_SENSOR = 9;
+		public static final int MAGAZINE_BALL_SENSOR = 9;
 
 	}
 

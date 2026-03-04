@@ -31,7 +31,7 @@ import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
-import frc.robot.subsystems.constants.train.TrainConstant;
+import frc.robot.subsystems.constants.magazine.MagazineConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.roller.Roller;
@@ -67,8 +67,8 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final VelocityRoller train;
-	private final IDigitalInput trainBallSensor;
+	private final VelocityRoller magazine;
+	private final IDigitalInput magazineBallSensor;
 	private final SimulationManager simulationManager;
 	private final Roller conveyor;
 
@@ -104,9 +104,9 @@ public class Robot {
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		this.train = TrainConstant.createTrain();
-		this.trainBallSensor = TrainConstant.createTrainBallSensor();
-		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
+		this.magazine = MagazineConstant.createMagazine();
+		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
+		BrakeStateManager.add(() -> magazine.setBrake(true), () -> magazine.setBrake(false));
 
 		this.conveyor = ConveyorConstants.createConveyor();
 		BrakeStateManager.add(() -> conveyor.setBrake(true), () -> conveyor.setBrake(false));
@@ -244,7 +244,7 @@ public class Robot {
 		fourBar.update();
 		intakeRoller.update();
 		conveyor.update();
-		train.update();
+		magazine.update();
 		turret.update();
 		hood.update();
 		flyWheel.update();
@@ -298,8 +298,8 @@ public class Robot {
 		return fourBar;
 	}
 
-	public VelocityRoller getTrain() {
-		return train;
+	public VelocityRoller getMagazine() {
+		return magazine;
 	}
 
 	public Roller getConveyor() {
@@ -310,8 +310,8 @@ public class Robot {
 		return hood;
 	}
 
-	public IDigitalInput getTrainBallSensor() {
-		return trainBallSensor;
+	public IDigitalInput getMagazineBallSensor() {
+		return magazineBallSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {

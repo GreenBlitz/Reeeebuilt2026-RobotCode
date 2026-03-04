@@ -2,9 +2,9 @@ Funnel States Calibration
 ---------------------------------
 
 #### shoot
-- [x] Train velocity
-- [ ] Conveyor Voltage
+- [x] magazine velocity
+- [ ] conveyor Voltage
 
 #### move balls to sensor
 - [ ] conveyor voltage
-- [ ] train velocity
+- [ ] magazine velocity
