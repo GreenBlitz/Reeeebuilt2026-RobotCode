@@ -19,8 +19,8 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class ShootingCalculations {
 
 	private static final LoggedNetworkBoolean useTurretTesting = new LoggedNetworkBoolean("Tunable/UseTurretTesting", false);
-	private static final LoggedNetworkNumber turretTestingSpeedFactor = new LoggedNetworkNumber("Tunable/TurretTestingSpeedFactor", 1.0);
-	private static final LoggedNetworkNumber turretTestingExponent = new LoggedNetworkNumber("Tunable/TurretTestingExponent", 1.0);
+	private static final LoggedNetworkNumber TurretTestingSpeedCoefficient = new LoggedNetworkNumber("Tunable/TurretTestingSpeedCoefficient", 1.0);
+	private static final LoggedNetworkNumber TurretTestingExponent = new LoggedNetworkNumber("Tunable/TurretTestingExponent", 1.0);
 
 	private static final String LOG_PATH = "ShootingCalculations";
 	private static ShootingParams shootingParams = new ShootingParams(
@@ -80,10 +80,10 @@ public class ShootingCalculations {
 
 		if (useTurretTesting.get()) {
 			double time = TimeUtil.getTimeSinceTeleopInitSeconds();
-			double speedFactor = turretTestingSpeedFactor.get();
-			double exponent = turretTestingExponent.get();
+			double speedCoefficient = TurretTestingSpeedCoefficient.get();
+			double exponent = TurretTestingExponent.get();
 
-			double degrees = Math.pow(time % 360, exponent) * speedFactor;
+			double degrees = Math.pow(exponent, time % 360) * speedCoefficient;
 			turretTargetPosition = Rotation2d.fromDegrees(degrees);
 		}
 
