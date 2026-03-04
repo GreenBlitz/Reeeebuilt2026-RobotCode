@@ -14,6 +14,7 @@ import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
@@ -63,10 +64,17 @@ public class JoysticksBindings {
 
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
-		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
-		usedJoystick.B.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
+
+		// Shoot & Pass...
+		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
+			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+
+		// Intake binds...
+		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
+		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
+		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -77,7 +85,7 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyShootOnMoveBinds(usedJoystick, robot);
+		applyInterpolationCalibrationBindings(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -149,6 +157,10 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
+		joystick.POV_RIGHT.whileTrue(robot.getRobotCommander().calibrationScoreSequence());
+
+		joystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().close());
+		joystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().intake());
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
@@ -195,7 +207,7 @@ public class JoysticksBindings {
 	}
 
 	public static void applyIntakeRollerCalibrationsBindings(SmartJoystick joystick, Robot robot) {
-		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(6));
+		joystick.POV_UP.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(9));
 		joystick.POV_DOWN.onTrue(robot.getIntakeRoller().getCommandsBuilder().setVoltage(-6));
 	}
 

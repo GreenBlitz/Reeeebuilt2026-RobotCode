@@ -67,10 +67,10 @@ public class KrakenX60DriveBuilder {
 
 		if (Robot.ROBOT_TYPE.isReal()) {
 			// Velocity Voltage
-			driveConfig.Slot0.kS = 0.15916;
-			driveConfig.Slot0.kV = 0.90548;
-			driveConfig.Slot0.kA = 0.079923;
-			driveConfig.Slot0.kP = 3;
+			driveConfig.Slot0.kS = 0.35;
+			driveConfig.Slot0.kV = 0.834924;
+			driveConfig.Slot0.kA = 0;
+			driveConfig.Slot0.kP = 30;
 			driveConfig.Slot0.kI = 0;
 			driveConfig.Slot0.kD = 0;
 

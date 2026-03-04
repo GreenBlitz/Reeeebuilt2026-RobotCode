@@ -2,22 +2,21 @@ Train calibrations
 ---------------------
 
 #### Motor
-- [ ] Motor id
-- [ ] Motor bus chain
+- [x] Motor id
+- [x] Motor bus chain
 
 #### Config
-- [ ] Is inverted
-- [ ] Gear ratio
+- [x] Is inverted
 - [ ] Current limit
 
 #### Feed forward
-- [ ] kS
-- [ ] kV
+- [x] kS
+- [x] kV
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Digital input
 - [ ] Sensor channel
