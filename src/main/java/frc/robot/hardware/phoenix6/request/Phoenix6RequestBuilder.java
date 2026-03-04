@@ -6,6 +6,7 @@ import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 import edu.wpi.first.math.geometry.Rotation2d;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Phoenix6RequestBuilder {
@@ -104,7 +105,7 @@ public class Phoenix6RequestBuilder {
 			Rotation2d.kZero,
 			dutyCycleOut,
 			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
-				java.util.Objects
+				Objects
 					.requireNonNullElse(errorToOutputRangeMap.get(targetVelocity.getRotations() - currentVelocity.get().getRotations()), 0.0)
 			)
 		);
@@ -120,7 +121,7 @@ public class Phoenix6RequestBuilder {
 			Rotation2d.kZero,
 			dutyCycleOut,
 			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
-				java.util.Objects
+				Objects
 					.requireNonNullElse(errorToOutputRangeMap.get(targetVelocity.getRotations() - currentVelocity.get().getRotations()), 0.0)
 			)
 		);
