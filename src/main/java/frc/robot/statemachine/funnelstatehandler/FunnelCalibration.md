@@ -6,5 +6,5 @@ Funnel States Calibration
 - [ ] conveyor Voltage
 
 #### move balls to sensor
-- [ ] conveyor voltage
-- [ ] magazine velocity
+- [ ] Conveyor voltage
+- [ ] Magazine velocity
