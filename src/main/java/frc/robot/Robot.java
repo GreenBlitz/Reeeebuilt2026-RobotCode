@@ -17,9 +17,7 @@ import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
-import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.*;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
@@ -51,6 +49,7 @@ import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
 
@@ -277,6 +276,8 @@ public class Robot {
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
+		ShootingChecks.isTurretAtTargetPosition(turret.getPosition(), ShootingCalculations.getShootingParams().targetTurretPosition(), StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING, "TURRET");
+		ShootingChecks.isHoodAtPosition(hood.getPosition(), ShootingCalculations.getShootingParams().targetHoodPosition(), StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING, "HOOD");
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last

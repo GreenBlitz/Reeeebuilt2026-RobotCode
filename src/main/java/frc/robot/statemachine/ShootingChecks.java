@@ -51,7 +51,7 @@ public class ShootingChecks {
 		return isWithinDistance;
 	}
 
-	private static boolean isTurretAtTargetPosition(
+	public static boolean isTurretAtTargetPosition(
 		Rotation2d turretPosition,
 		Rotation2d targetTurretPosition,
 		Rotation2d turretTolerance,
@@ -78,7 +78,7 @@ public class ShootingChecks {
 		return isFlywheelAtVelocity;
 	}
 
-	private static boolean isHoodAtPosition(Rotation2d hoodPosition, Rotation2d targetHoodPosition, Rotation2d hoodTolerance, String logPath) {
+	public static boolean isHoodAtPosition(Rotation2d hoodPosition, Rotation2d targetHoodPosition, Rotation2d hoodTolerance, String logPath) {
 		boolean isHoodAtPosition = MathUtil.isNear(targetHoodPosition.getDegrees(), hoodPosition.getDegrees(), hoodTolerance.getDegrees());
 		Logger.recordOutput(logPath + "/IsHoodAtPosition", isHoodAtPosition);
 		return isHoodAtPosition;
