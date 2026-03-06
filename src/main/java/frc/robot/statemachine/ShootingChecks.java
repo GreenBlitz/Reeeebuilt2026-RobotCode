@@ -285,7 +285,7 @@ public class ShootingChecks {
 
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		return canContinueShooting /*&& isOurHubReadyToStartShooting && isInAllianceZone*/;
+		return canContinueShooting && isOurHubReadyToStartShooting && isInAllianceZone;
 	}
 
 	public static boolean canContinuePassing(
