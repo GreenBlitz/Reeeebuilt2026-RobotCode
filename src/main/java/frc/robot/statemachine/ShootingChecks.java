@@ -210,7 +210,7 @@ public class ShootingChecks {
 		return canContinueShooting;
 	}
 
-	static boolean calibrationIsReadyToShoot(
+	public static boolean calibrationIsReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -235,7 +235,7 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
-	static boolean calibrationCanContinueShooting(
+	public static boolean calibrationCanContinueShooting(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
