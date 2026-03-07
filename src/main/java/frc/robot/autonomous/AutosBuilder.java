@@ -30,7 +30,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getLeftStartingToOutpostTroughNeutralZoneAuto(
+			getLeftStartingToNeutralZoneToDepotAuto(
 				robot,
 				intake,
 				scoreSequence,
@@ -38,7 +38,7 @@ public class AutosBuilder {
 				pathfindingConstraints,
 				isNearEndOfPathTolerance
 			),
-			getRightStartingToDepotTroughNeutralZoneAuto(
+			getRightStartingToNeutralZoneToOutpostAuto(
 				robot,
 				intake,
 				scoreSequence,
@@ -67,7 +67,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getRightStartingToDepotTroughNeutralZoneAuto(
+	private static Supplier<PathPlannerAutoWrapper> getRightStartingToNeutralZoneToOutpostAuto(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
@@ -77,51 +77,33 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToNeutralZoneCenter(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, false),
-				neutralZoneMiddleToStartingLine(
-					robot,
-					intake,
-					resetSubsystems,
-					scoreSequence,
-					pathfindingConstraints,
-					isNearEndOfPathTolerance,
-					true
-				),
+				startingLineToNeutralToStartingLineZoneCenter(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, false),
+				rightStartingLineToOutpost(robot, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+			),
+			new Pose2d(),
+			"R starting - Neutral zone - Outpost"
+		);
+	}
+
+	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToNeutralZoneToDepotAuto(
+		Robot robot,
+		Supplier<Command> intake,
+		Supplier<Command> scoreSequence,
+		Supplier<Command> resetSubsystems,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			new SequentialCommandGroup(
+				startingLineToNeutralToStartingLineZoneCenter(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, true),
 				leftStartingLineToDepot(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
 			),
 			new Pose2d(),
-			"R starting - Neutral Zone - Depot finish"
+			"L starting - Neutral zone - Depot"
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToOutpostTroughNeutralZoneAuto(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> scoreSequence,
-		Supplier<Command> resetSubsystems,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
-	) {
-		return () -> new PathPlannerAutoWrapper(
-			new SequentialCommandGroup(
-				startingLineToNeutralZoneCenter(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, true),
-				neutralZoneMiddleToStartingLine(
-					robot,
-					intake,
-					resetSubsystems,
-					scoreSequence,
-					pathfindingConstraints,
-					isNearEndOfPathTolerance,
-					false
-				),
-				rightStartingLineToOutpost(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-			),
-			new Pose2d(),
-			"L starting - Neutral Zone - Outpost finish"
-		);
-	}
-
-	private static Command startingLineToNeutralZoneCenter(
+	private static Command startingLineToNeutralToStartingLineZoneCenter(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
@@ -133,8 +115,8 @@ public class AutosBuilder {
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			isLeft
-				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center").mirrorPath()
-				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center"),
+				? PathHelper.PATH_PLANNER_PATHS.get("R starting -  R mid - R starting").mirrorPath()
+				: PathHelper.PATH_PLANNER_PATHS.get("R starting -  R mid - R starting"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
 			isNearEndOfPathTolerance
@@ -143,7 +125,7 @@ public class AutosBuilder {
 
 	private static Command leftStartingLineToDepot(
 		Robot robot,
-		Supplier<Command> intake,
+		Supplier<Command> Intake,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
@@ -154,14 +136,13 @@ public class AutosBuilder {
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
 			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(), scoreSequence.get())),
+			() -> resetSubsystems.get().andThen(scoreSequence.get()),
 			isNearEndOfPathTolerance
 		);
 	}
 
 	private static Command rightStartingLineToOutpost(
 		Robot robot,
-		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
@@ -172,28 +153,7 @@ public class AutosBuilder {
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost"),
 			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(), scoreSequence.get())),
-			isNearEndOfPathTolerance
-		);
-	}
-
-	private static Command neutralZoneMiddleToStartingLine(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		boolean isLeft
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			isLeft
-				? PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line")
-				: PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line").mirrorPath(),
-			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(), scoreSequence.get())),
+			() -> resetSubsystems.get().andThen(scoreSequence.get()),
 			isNearEndOfPathTolerance
 		);
 	}
