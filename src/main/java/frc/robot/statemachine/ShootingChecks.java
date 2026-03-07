@@ -172,7 +172,7 @@ public class ShootingChecks {
 		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance /* && isPoseReliable */;
 	}
 
-	static boolean calibrationIsReadyToShoot(
+	public static boolean calibrationIsReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
@@ -197,7 +197,7 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition;
 	}
 
-	static boolean calibrationCanContinueShooting(
+	public static boolean calibrationCanContinueShooting(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
