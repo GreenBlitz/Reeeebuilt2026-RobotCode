@@ -1,4 +1,4 @@
-package frc.robot.subsystems.constants.belly;
+package frc.robot.subsystems.constants.conveyor;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import frc.robot.IDs;
@@ -6,9 +6,9 @@ import frc.robot.RobotConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 
-public class BellyConstants {
+public class ConveyorConstants {
 
-	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Belly";
+	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Conveyor";
 
 	public final static boolean IS_INVERTED = true;
 	public final static FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
@@ -21,8 +21,8 @@ public class BellyConstants {
 	public final static int CURRENT_LIMIT = 60;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
 
-	public static Roller createBelly() {
-		return TalonFXRollerBuilder.build(LOG_PATH, IDs.TalonFXIDs.BELLY, IS_INVERTED, FEEDBACK_CONFIGS, CURRENT_LIMIT, MOMENT_OF_INERTIA);
+	public static Roller createConveyor() {
+		return TalonFXRollerBuilder.build(LOG_PATH, IDs.TalonFXIDs.CONVEYOR, IS_INVERTED, FEEDBACK_CONFIGS, CURRENT_LIMIT, MOMENT_OF_INERTIA);
 	}
 
 }

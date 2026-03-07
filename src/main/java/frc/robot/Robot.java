@@ -26,12 +26,12 @@ import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.constants.belly.BellyConstants;
+import frc.robot.subsystems.constants.conveyor.ConveyorConstants;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
-import frc.robot.subsystems.constants.train.TrainConstant;
+import frc.robot.subsystems.constants.magazine.MagazineConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.roller.Roller;
@@ -67,10 +67,10 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final VelocityRoller train;
-	private final IDigitalInput trainBallSensor;
+	private final VelocityRoller magazine;
+	private final IDigitalInput magazineBallSensor;
 	private final SimulationManager simulationManager;
-	private final Roller belly;
+	private final Roller conveyor;
 
 	private final RobotCommander robotCommander;
 
@@ -104,12 +104,12 @@ public class Robot {
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		this.train = TrainConstant.createTrain();
-		this.trainBallSensor = TrainConstant.createTrainBallSensor();
-		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
+		this.magazine = MagazineConstant.createMagazine();
+		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
+		BrakeStateManager.add(() -> magazine.setBrake(true), () -> magazine.setBrake(false));
 
-		this.belly = BellyConstants.createBelly();
-		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
+		this.conveyor = ConveyorConstants.createConveyor();
+		BrakeStateManager.add(() -> conveyor.setBrake(true), () -> conveyor.setBrake(false));
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -254,8 +254,8 @@ public class Robot {
 		swerve.update();
 		fourBar.update();
 		intakeRoller.update();
-		belly.update();
-		train.update();
+		conveyor.update();
+		magazine.update();
 		turret.update();
 		hood.update();
 		flyWheel.update();
@@ -309,20 +309,20 @@ public class Robot {
 		return fourBar;
 	}
 
-	public VelocityRoller getTrain() {
-		return train;
+	public VelocityRoller getMagazine() {
+		return magazine;
 	}
 
-	public Roller getBelly() {
-		return belly;
+	public Roller getConveyor() {
+		return conveyor;
 	}
 
 	public Arm getHood() {
 		return hood;
 	}
 
-	public IDigitalInput getTrainBallSensor() {
-		return trainBallSensor;
+	public IDigitalInput getMagazineBallSensor() {
+		return magazineBallSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {
