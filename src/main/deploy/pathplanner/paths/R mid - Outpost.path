@@ -20,37 +20,71 @@
         "y": 2.5
       },
       "prevControl": {
-        "x": 5.783595818063775,
-        "y": 2.429195566312178
+        "x": 5.793475834912709,
+        "y": 2.5133382971537577
       },
       "nextControl": {
-        "x": 4.458532763532764,
-        "y": 2.820498575498576
+        "x": 4.4967257264351534,
+        "y": 2.4440538625088584
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8486467236467239,
-        "y": 2.148646723646724
+        "x": 3.532515946137491,
+        "y": 2.206215450035436
       },
       "prevControl": {
-        "x": 2.428488095238096,
-        "y": 2.253392857142858
+        "x": 3.956768961997415,
+        "y": 2.3816779369926704
+      },
+      "nextControl": {
+        "x": 2.9880198002432046,
+        "y": 1.9810228307122892
+      },
+      "isLocked": false,
+      "linkedName": "Outpost"
+    },
+    {
+      "anchor": {
+        "x": 0.736307583274274,
+        "y": 0.682763997165132
+      },
+      "prevControl": {
+        "x": 0.9764931283283447,
+        "y": 0.7521246772878001
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
       "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 2.644067796610181,
+      "rotationDegrees": 42.31606230649742
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.82,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -63,7 +97,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

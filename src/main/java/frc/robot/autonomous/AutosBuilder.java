@@ -204,7 +204,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		AllianceSide startingSide
 	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
+		return PathFollowingCommandsBuilder.commandDuringPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			startingSide == AllianceSide.OUTPOST
