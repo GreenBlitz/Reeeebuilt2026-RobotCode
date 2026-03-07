@@ -7,7 +7,6 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
-import frc.utils.math.FieldMath;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,14 +26,18 @@ public class ShootingChecks {
 		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
 	}
 
+	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
+		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
+		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.getMinXValueForBehindOurHubPassing();
+		boolean isFarEnoughBehindOpponentHub = allianceRelativeTurretTranslation.getX()
+			> StateMachineConstants.getMinXValueForBehindOpponentHubPassing();
+		return isFarEnoughBehindOurHub || isFarEnoughBehindOpponentHub;
+	}
+
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
-		boolean isFarEnoughBehindHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.getMinXValueForBehindHubPassing();
-		if (!Field.isFieldConventionAlliance()) {
-			isFarEnoughBehindHub = allianceRelativeTurretTranslation.getX()
-				> FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
-		}
+		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
 		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
 		return !isBehindHub || isFarEnoughBehindHub;

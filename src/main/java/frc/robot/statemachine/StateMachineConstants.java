@@ -28,7 +28,8 @@ public class StateMachineConstants {
 
 	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
 
-	private static final double MIN_X_VALUE_FOR_BEHIND_HUB_PASSING = 6;
+	private static final double MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 6;
+	private static final double MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING = 14;
 	private static final double TARGET_X_VALUE_FOR_PASSING = Field.getAllianceRelative(Field.getHubMiddle()).getX() - 1;
 	private static final Translation2d OUTPOST_PRESET_PASSING_TARGET = new Translation2d(1, 1);
 	private static final Translation2d DEPOT_PRESET_PASSING_TARGET = FieldMath.mirror(OUTPOST_PRESET_PASSING_TARGET, false, true);
@@ -51,11 +52,18 @@ public class StateMachineConstants {
 		return Field.getAllianceRelative(DEPOT_PRESET_PASSING_TARGET);
 	}
 
-	public static double getMinXValueForBehindHubPassing() {
+	public static double getMinXValueForBehindOurHubPassing() {
 		if (!Field.isFieldConventionAlliance()) {
-			return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_HUB_PASSING);
+			return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING);
 		}
-		return MIN_X_VALUE_FOR_BEHIND_HUB_PASSING;
+		return MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING;
+	}
+
+	public static double getMinXValueForBehindOpponentHubPassing() {
+		if (!Field.isFieldConventionAlliance()) {
+			return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING);
+		}
+		return MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING;
 	}
 
 }
