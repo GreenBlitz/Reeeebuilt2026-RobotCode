@@ -30,7 +30,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-            getStartingLineToFieldMiddleBackToSameSideAuto(
+                getQuarterAuto(
 				robot,
 				resetSubsystems,
 				intake,
@@ -39,7 +39,7 @@ public class AutosBuilder {
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-            getStartingLineToFieldMiddleBackToSameSideAuto(
+                getQuarterAuto(
 				robot,
 				resetSubsystems,
 				intake,
@@ -51,7 +51,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getStartingLineToFieldMiddleBackToSameSideAuto(
+	private static Supplier<PathPlannerAutoWrapper> getQuarterAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> intake,
