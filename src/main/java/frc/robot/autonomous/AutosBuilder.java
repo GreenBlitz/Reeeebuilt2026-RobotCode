@@ -30,7 +30,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-                getQuarterAuto(
+			getQuarterAuto(
 				robot,
 				resetSubsystems,
 				intake,
@@ -39,15 +39,7 @@ public class AutosBuilder {
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-                getQuarterAuto(
-				robot,
-				resetSubsystems,
-				intake,
-				scoreSequence,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance,
-				AllianceSide.DEPOT
-			)
+			getQuarterAuto(robot, resetSubsystems, intake, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT)
 		);
 	}
 
