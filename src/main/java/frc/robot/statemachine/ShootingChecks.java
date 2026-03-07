@@ -28,9 +28,13 @@ public class ShootingChecks {
 
 	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
-		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.getMinXValueForBehindOurHubPassing();
+		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING
+			&& allianceRelativeTurretTranslation.getX() < StateMachineConstants.MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING;
 		boolean isFarEnoughBehindOpponentHub = allianceRelativeTurretTranslation.getX()
-			> StateMachineConstants.getMinXValueForBehindOpponentHubPassing();
+			> StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING;
+
+		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOurHub", isFarEnoughBehindOurHub);
+		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOpponentHub", isFarEnoughBehindOpponentHub);
 		return isFarEnoughBehindOurHub || isFarEnoughBehindOpponentHub;
 	}
 
