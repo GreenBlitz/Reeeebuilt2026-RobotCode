@@ -157,7 +157,6 @@ public class JoysticksBindings {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 		joystick.Y.onTrue(robot.getRobotCommander().scoreSequence());
 		joystick.POV_LEFT.onTrue(robot.getRobotCommander().calibrationScoreSequence());
-		joystick.POV_RIGHT.whileTrue(robot.getRobotCommander().calibrationScoreSequence());
 
 		joystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().close());
 		joystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().intake());
