@@ -125,7 +125,7 @@ public class AutosBuilder {
 			?PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost")
 			:PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
 			pathfindingConstraints,
-				allianceSide == AllianceSide.OUTPOST
+                allianceSide == AllianceSide.OUTPOST
 				?() -> resetSubsystems.get().andThen(scoreSequence.get())
 				:() -> resetSubsystems.get().andThen(new ParallelCommandGroup(scoreSequence.get(),intake.get())),
 			isNearEndOfPathTolerance,

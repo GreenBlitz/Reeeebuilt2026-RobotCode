@@ -27,7 +27,7 @@ public class PathFollowingCommandsBuilder {
 	) {
 		return new ParallelCommandGroup(
 			commandSupplier.get(),
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath)
+				followAdjustedPathWithTargetEndState(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath)
 		);
 	}
 
@@ -52,7 +52,7 @@ public class PathFollowingCommandsBuilder {
 		String logPath
 	) {
 		return new ParallelDeadlineGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
+				followAdjustedPathWithTargetEndState(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
 			commandSupplier.get()
 		);
 	}
@@ -67,7 +67,7 @@ public class PathFollowingCommandsBuilder {
 		String logPath
 	) {
 		return new SequentialCommandGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
+				followAdjustedPathWithTargetEndState(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
 			commandSupplier.get()
 		);
 	}
@@ -134,7 +134,7 @@ public class PathFollowingCommandsBuilder {
 		);
 	}
 
-	public static Command followAdjustedPathThenStop(
+	public static Command followAdjustedPathWithTargetEndState(
 		Swerve swerve,
 		Supplier<Pose2d> currentPose,
 		PathPlannerPath path,
