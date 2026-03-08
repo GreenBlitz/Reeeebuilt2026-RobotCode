@@ -48,7 +48,7 @@ public class AutosBuilder {
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-			getStartingLineToMiddleToAllianceSideAuto(
+			getQuarterAuto(
 				robot,
 				resetSubsystems,
 				intake,
@@ -57,15 +57,7 @@ public class AutosBuilder {
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-			getStartingLineToMiddleToAllianceSideAuto(
-				robot,
-				resetSubsystems,
-				intake,
-				scoreSequence,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance,
-				AllianceSide.DEPOT
-			)
+			getQuarterAuto(robot, resetSubsystems, intake, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT)
 		);
 	}
 
@@ -114,8 +106,9 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting -  R mid - R starting"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
-			isNearEndOfPathTolerance
-		);
+			isNearEndOfPathTolerance, 
+			robot.getSwerve().getLogPath()		
+			);
 	}
 
 	private static Command leftStartingLineToDepot(
@@ -132,7 +125,8 @@ public class AutosBuilder {
 			PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(scoreSequence.get()),
-			isNearEndOfPathTolerance
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
 		);
 	}
 
@@ -149,11 +143,12 @@ public class AutosBuilder {
 			PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(scoreSequence.get()),
-			isNearEndOfPathTolerance
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getStartingLineToMiddleToAllianceSideAuto(
+	private static Supplier<PathPlannerAutoWrapper> getQuarterAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> intake,
@@ -188,7 +183,8 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
-			isNearEndOfPathTolerance
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
 		);
 	}
 
@@ -207,7 +203,8 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
 			pathfindingConstraints,
 			scoreSequence,
-			isNearEndOfPathTolerance
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
 		);
 	}
 
