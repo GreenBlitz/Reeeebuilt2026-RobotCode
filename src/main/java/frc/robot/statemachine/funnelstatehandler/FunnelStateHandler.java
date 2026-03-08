@@ -14,7 +14,7 @@ public class FunnelStateHandler {
 	private final VelocityRoller magazine;
 
 	private final IDigitalInput ballSensor;
-	private final DigitalInputInputsAutoLogged sensorInputsAutoLogged;
+	private final DigitalInputInputsAutoLogged ballSensorInputs;
 
 	private final Roller conveyor;
 
@@ -34,7 +34,7 @@ public class FunnelStateHandler {
 		this.magazineCalibrationVoltage = new LoggedNetworkNumber("Tunable/MagazineVoltage", 0);
 		this.conveyorCalibrationVoltage = new LoggedNetworkNumber("Tunable/ConveyorVoltage", 0);
 		this.ballSensor = ballSensor;
-		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
+		this.ballSensorInputs = new DigitalInputInputsAutoLogged();
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 	}
 
@@ -55,7 +55,7 @@ public class FunnelStateHandler {
 	}
 
 	public boolean isBallAtSensor() {
-		return sensorInputsAutoLogged.debouncedValue;
+		return ballSensorInputs.debouncedValue;
 	}
 
 	private Command rollUntilSensor() {
@@ -104,10 +104,10 @@ public class FunnelStateHandler {
 	}
 
 	public void periodic() {
-		ballSensor.updateInputs(sensorInputsAutoLogged);
+		ballSensor.updateInputs(ballSensorInputs);
 
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
-		Logger.processInputs(logPath, sensorInputsAutoLogged);
+		Logger.processInputs(logPath + "/BallSensor", ballSensorInputs);
 	}
 
 }
