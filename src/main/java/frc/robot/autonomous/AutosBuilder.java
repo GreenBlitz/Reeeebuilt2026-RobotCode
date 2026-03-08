@@ -72,7 +72,7 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToNeutralToStartingLineZoneCenterWithLoop(
+				startingLineToNeutralToStartingLineZoneCenterWithLoopCommand(
 					robot,
 					intake,
 					resetSubsystems,
@@ -81,8 +81,8 @@ public class AutosBuilder {
 					allianceSide
 				),
 				allianceSide == AllianceSide.OUTPOST
-					? rightStartingLineToOutpost(robot, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-					: leftStartingLineToDepot(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+					? rightStartingLineToOutpostCommand(robot, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+					: leftStartingLineToDepotCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
 			),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Right mid Loop - Outpost" : "L starting - L mid loop - Depot"
@@ -90,7 +90,7 @@ public class AutosBuilder {
 	}
 
 
-	private static Command startingLineToNeutralToStartingLineZoneCenterWithLoop(
+	private static Command startingLineToNeutralToStartingLineZoneCenterWithLoopCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
@@ -111,7 +111,7 @@ public class AutosBuilder {
 			);
 	}
 
-	private static Command leftStartingLineToDepot(
+	private static Command leftStartingLineToDepotCommand(
 		Robot robot,
 		Supplier<Command> Intake,
 		Supplier<Command> resetSubsystems,
@@ -130,7 +130,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command rightStartingLineToOutpost(
+	private static Command rightStartingLineToOutpostCommand(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> scoreSequence,
