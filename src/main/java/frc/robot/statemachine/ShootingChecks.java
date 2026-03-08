@@ -7,7 +7,6 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
-import frc.utils.math.FieldMath;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,14 +26,22 @@ public class ShootingChecks {
 		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
 	}
 
+	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
+		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
+		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING
+			&& allianceRelativeTurretTranslation.getX() < StateMachineConstants.MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING;
+		boolean isFarEnoughBehindOpponentHub = allianceRelativeTurretTranslation.getX()
+			> StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING;
+
+		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOurHub", isFarEnoughBehindOurHub);
+		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOpponentHub", isFarEnoughBehindOpponentHub);
+		return isFarEnoughBehindOurHub || isFarEnoughBehindOpponentHub;
+	}
+
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
-		boolean isFarEnoughBehindHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.getMinXValueForBehindHubPassing();
-		if (!Field.isFieldConventionAlliance()) {
-			isFarEnoughBehindHub = allianceRelativeTurretTranslation.getX()
-				> FieldMath.mirrorX(StateMachineConstants.getMinXValueForBehindHubPassing());
-		}
+		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
 		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
 		return !isBehindHub || isFarEnoughBehindHub;
