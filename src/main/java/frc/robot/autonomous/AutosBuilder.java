@@ -56,7 +56,14 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToNeutralZoneCenterCommand(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, allianceSide),
+				startingLineToNeutralZoneCenterCommand(
+					robot,
+					intake,
+					resetSubsystems,
+					pathfindingConstraints,
+					isNearEndOfPathTolerance,
+					allianceSide
+				),
 				neutralZoneMiddleToStartingLineCommand(
 					robot,
 					intake,
@@ -67,8 +74,22 @@ public class AutosBuilder {
 					allianceSide
 				),
 				allianceSide == AllianceSide.OUTPOST
-					? leftStartingLineToDepotCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-					: rightStartingLineToOutpostCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+					? leftStartingLineToDepotCommand(
+						robot,
+						intake,
+						resetSubsystems,
+						scoreSequence,
+						pathfindingConstraints,
+						isNearEndOfPathTolerance
+					)
+					: rightStartingLineToOutpostCommand(
+						robot,
+						intake,
+						resetSubsystems,
+						scoreSequence,
+						pathfindingConstraints,
+						isNearEndOfPathTolerance
+					)
 			),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Neutral zone - Depot" : "L starting - Neutral zone - Outpost"
