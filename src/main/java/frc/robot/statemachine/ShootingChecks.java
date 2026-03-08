@@ -91,11 +91,8 @@ public class ShootingChecks {
 		Rotation2d rangeFromStaticTarget,
 		String logPath
 	) {
-		boolean isTurretPredictedInRangeFromStaticTarget = ToleranceMath.isNearWrapped(
-			targetTurretPosition,
-			staticTurretTarget,
-			rangeFromStaticTarget
-		);
+		boolean isTurretPredictedInRangeFromStaticTarget = ToleranceMath
+			.isNearWrapped(targetTurretPosition, staticTurretTarget, rangeFromStaticTarget);
 		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 		return isTurretPredictedInRangeFromStaticTarget;
 	}
