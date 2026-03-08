@@ -109,18 +109,18 @@ public class PathPlannerUtil {
 		return new Pose2d(path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation(), path.getGoalEndState().rotation());
 	}
 
-    public static Rotation2d getEndPointHeading(PathPlannerPath path) {
-        Translation2d prevControl = path.getWaypoints().get(path.getWaypoints().size() - 1).prevControl();
-        return FieldMath.getRelativeTranslation(getLastPathPose(path), prevControl).getAngle();
-    }
+	public static Rotation2d getEndPointHeading(PathPlannerPath path) {
+		Translation2d prevControl = path.getWaypoints().get(path.getWaypoints().size() - 1).prevControl();
+		return FieldMath.getRelativeTranslation(getLastPathPose(path), prevControl).getAngle();
+	}
 
-    public static ChassisSpeeds getAllianceRelativeGoalEndSpeeds(PathPlannerPath path) {
-        Translation2d speeds = new Translation2d(
-                path.getGoalEndState().velocityMPS(),
-                FieldMath.transformAngle(getEndPointHeading(path), AngleTransform.INVERT)
-        );
-        return new ChassisSpeeds(speeds.getX(), speeds.getY(), 0);
-    }
+	public static ChassisSpeeds getAllianceRelativeGoalEndSpeeds(PathPlannerPath path) {
+		Translation2d speeds = new Translation2d(
+			path.getGoalEndState().velocityMPS(),
+			FieldMath.transformAngle(getEndPointHeading(path), AngleTransform.INVERT)
+		);
+		return new ChassisSpeeds(speeds.getX(), speeds.getY(), 0);
+	}
 
 	public static Command createPathDuringRuntime(Pose2d currentPose, Pose2d targetPose, PathConstraints constraints, String logPath) {
 		List<Waypoint> bezierPoints = PathPlannerPath.waypointsFromPoses(currentPose, targetPose);

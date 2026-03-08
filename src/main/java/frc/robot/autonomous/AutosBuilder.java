@@ -82,7 +82,14 @@ public class AutosBuilder {
 				),
 				allianceSide == AllianceSide.OUTPOST
 					? rightStartingLineToOutpostCommand(robot, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-					: leftStartingLineToDepotCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+					: leftStartingLineToDepotCommand(
+						robot,
+						intake,
+						resetSubsystems,
+						scoreSequence,
+						pathfindingConstraints,
+						isNearEndOfPathTolerance
+					)
 			),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Right mid Loop - Outpost" : "L starting - L mid loop - Depot"
@@ -106,9 +113,9 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting -  R mid - R starting"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
-			isNearEndOfPathTolerance, 
-			robot.getSwerve().getLogPath()		
-			);
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
+		);
 	}
 
 	private static Command leftStartingLineToDepotCommand(
