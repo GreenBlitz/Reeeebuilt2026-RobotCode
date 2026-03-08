@@ -156,9 +156,10 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command driveByDriversInputs(SwerveState state) {
-        return swerve.asSubsystemCommand(
-                new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
-                "Drive by drivers inputs with state");
+		return swerve.asSubsystemCommand(
+			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
+			"Drive by drivers inputs with state"
+		);
 	}
 
 	public Command resetTargetSpeeds() {
