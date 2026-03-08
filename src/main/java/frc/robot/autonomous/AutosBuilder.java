@@ -30,7 +30,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			startingLineToRightNeutralZoneWithLoopToAllianceZoneAuto(
+			halfAuto(
 				robot,
 				intake,
 				scoreSequence,
@@ -39,7 +39,7 @@ public class AutosBuilder {
 				isNearEndOfPathTolerance,
 				AllianceSide.DEPOT
 			),
-			startingLineToRightNeutralZoneWithLoopToAllianceZoneAuto(
+			halfAuto(
 				robot,
 				intake,
 				scoreSequence,
@@ -61,7 +61,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> startingLineToRightNeutralZoneWithLoopToAllianceZoneAuto(
+	private static Supplier<PathPlannerAutoWrapper> halfAuto(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
@@ -80,16 +80,7 @@ public class AutosBuilder {
 					isNearEndOfPathTolerance,
 					allianceSide
 				),
-				allianceSide == AllianceSide.OUTPOST
-					? rightStartingLineToOutpostCommand(robot, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-					: leftStartingLineToDepotCommand(
-						robot,
-						intake,
-						resetSubsystems,
-						scoreSequence,
-						pathfindingConstraints,
-						isNearEndOfPathTolerance
-					)
+				StartingLineToDepotOrOutpostCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, allianceSide)
 			),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Right mid Loop - Outpost" : "L starting - L mid loop - Depot"
@@ -118,38 +109,25 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command leftStartingLineToDepotCommand(
+	private static Command StartingLineToDepotOrOutpostCommand(
 		Robot robot,
-		Supplier<Command> Intake,
+		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
+		Pose2d isNearEndOfPathTolerance,
+		AllianceSide allianceSide
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
+			allianceSide == AllianceSide.OUTPOST
+			?PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost")
+			:PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
 			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(scoreSequence.get()),
-			isNearEndOfPathTolerance,
-			robot.getSwerve().getLogPath()
-		);
-	}
-
-	private static Command rightStartingLineToOutpostCommand(
-		Robot robot,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost"),
-			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(scoreSequence.get()),
+				allianceSide == AllianceSide.OUTPOST
+				?() -> resetSubsystems.get().andThen(scoreSequence.get())
+				:() -> resetSubsystems.get().andThen(new ParallelCommandGroup(scoreSequence.get(),intake.get())),
 			isNearEndOfPathTolerance,
 			robot.getSwerve().getLogPath()
 		);
