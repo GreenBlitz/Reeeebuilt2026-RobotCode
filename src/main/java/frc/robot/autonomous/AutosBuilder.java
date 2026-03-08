@@ -30,22 +30,8 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getLeftStartingToOutpostTroughNeutralZoneAuto(
-				robot,
-				intake,
-				scoreSequence,
-				resetSubsystems,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance
-			),
-			getRightStartingToDepotTroughNeutralZoneAuto(
-				robot,
-				intake,
-				scoreSequence,
-				resetSubsystems,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance
-			),
+			getUTurnAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.OUTPOST),
+			getUTurnAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT),
 			getStartingLineToMiddleToAllianceSideAuto(
 				robot,
 				resetSubsystems,
@@ -67,72 +53,48 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getRightStartingToDepotTroughNeutralZoneAuto(
+	private static Supplier<PathPlannerAutoWrapper> getUTurnAuto(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
+		Pose2d isNearEndOfPathTolerance,
+		AllianceSide allianceSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToNeutralZoneCenter(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, false),
-				neutralZoneMiddleToStartingLine(
+				startingLineToNeutralZoneCenterCommand(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, allianceSide),
+				neutralZoneMiddleToStartingLineCommand(
 					robot,
 					intake,
 					resetSubsystems,
 					scoreSequence,
 					pathfindingConstraints,
 					isNearEndOfPathTolerance,
-					true
+					allianceSide
 				),
-				leftStartingLineToDepot(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+				allianceSide == AllianceSide.OUTPOST
+					? leftStartingLineToDepotCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
+					: rightStartingLineToOutpostCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
 			),
 			new Pose2d(),
-			"R starting - Neutral Zone - Depot finish"
+			allianceSide == AllianceSide.OUTPOST ? "R starting - Neutral zone - Depot" : "L starting - Neutral zone - Outpost"
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getLeftStartingToOutpostTroughNeutralZoneAuto(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> scoreSequence,
-		Supplier<Command> resetSubsystems,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
-	) {
-		return () -> new PathPlannerAutoWrapper(
-			new SequentialCommandGroup(
-				startingLineToNeutralZoneCenter(robot, intake, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, true),
-				neutralZoneMiddleToStartingLine(
-					robot,
-					intake,
-					resetSubsystems,
-					scoreSequence,
-					pathfindingConstraints,
-					isNearEndOfPathTolerance,
-					false
-				),
-				rightStartingLineToOutpost(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance)
-			),
-			new Pose2d(),
-			"L starting - Neutral Zone - Outpost finish"
-		);
-	}
-
-	private static Command startingLineToNeutralZoneCenter(
+	private static Command startingLineToNeutralZoneCenterCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
-		boolean isLeft
+		AllianceSide allianceSide
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			isLeft
+			allianceSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center").mirrorPath()
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center"),
 			pathfindingConstraints,
@@ -141,7 +103,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command leftStartingLineToDepot(
+	private static Command leftStartingLineToDepotCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
@@ -159,7 +121,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command rightStartingLineToOutpost(
+	private static Command rightStartingLineToOutpostCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
@@ -177,19 +139,19 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command neutralZoneMiddleToStartingLine(
+	private static Command neutralZoneMiddleToStartingLineCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
-		boolean isLeft
+		AllianceSide allianceSide
 	) {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			isLeft
+			allianceSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line")
 				: PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line").mirrorPath(),
 			pathfindingConstraints,
