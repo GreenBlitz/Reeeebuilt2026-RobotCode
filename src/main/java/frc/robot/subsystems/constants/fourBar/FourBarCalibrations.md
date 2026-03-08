@@ -17,25 +17,21 @@ FourBar calibrations
 - [x] Backwards limit
 
 #### FeedForward
-- [ ] kS
-- [ ] kG
+- [x] kS
+- [x] kG
 - [ ] kA
 - [ ] kV
 ##### (SysId)
 
 #### PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Sim PID
 - [x] kP
 - [x] kI
 - [x] kD
-
-#### MotionMagic
-- [ ] Default max acceleration per second squared
-- [ ] Default max velocity per second
 
 #### Reset
 - [ ] Reset voltage
@@ -43,3 +39,7 @@ FourBar calibrations
 
 #### General Constants
 - [x] FourBar length
+
+#### Open State Constants
+- [ ] Position tolerance
+- [ ] Hold Current

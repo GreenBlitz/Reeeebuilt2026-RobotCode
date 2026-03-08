@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
 
 public class FourBarConstants {
@@ -58,13 +58,16 @@ public class FourBarConstants {
 	public static final double FOUR_BAR_RESET_VOLTAGE = 4;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 14;
 
+	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 3;
+	public static final Rotation2d POSITION_TOLERANCE_FOR_OPEN = Rotation2d.fromDegrees(8);
+
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
 
-	public static Arm createFourBar() {
+	public static CurrentControlArm createFourBar() {
 		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
 			MAXIMUM_POSITION,
 			MINIMUM_POSITION,
@@ -72,7 +75,7 @@ public class FourBarConstants {
 			MOMENT_OF_INERTIA,
 			FOUR_BAR_LENGTH
 		);
-		return TalonFXArmBuilder.buildVelocityPositionArm(
+		return TalonFXArmBuilder.buildCurrentControlArm(
 			LOG_PATH,
 			IDs.TalonFXIDs.FOUR_BAR,
 			IS_INVERTED,
