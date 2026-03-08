@@ -3,6 +3,7 @@ package frc.robot.subsystems.constants.fourBar;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
@@ -20,7 +21,7 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 80;
+	public static final int CURRENT_LIMIT = 15;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -30,14 +31,15 @@ public class FourBarConstants {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 140;
 
-		REAL_SLOT.kP = 0;
+		REAL_SLOT.kP = 70;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0;
+		REAL_SLOT.kS = 0.25;
 		REAL_SLOT.kG = 0;
 		REAL_SLOT.kV = 0;
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
+		REAL_SLOT.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
 		SIMULATION_SLOT.kP = 50;
 		SIMULATION_SLOT.kI = 0;
@@ -53,8 +55,8 @@ public class FourBarConstants {
 	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
-	public static final double FOUR_BAR_RESET_VOLTAGE = 3;
-	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 7;
+	public static final double FOUR_BAR_RESET_VOLTAGE = 4;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 14;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
