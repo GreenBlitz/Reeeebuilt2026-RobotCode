@@ -7,12 +7,12 @@ import frc.utils.math.FieldMath;
 
 public class StateMachineConstants {
 
-	public static final Rotation2d TURRET_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(5);
-	public static final Rotation2d TURRET_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(5);
+	public static final Rotation2d TURRET_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(6);
+	public static final Rotation2d TURRET_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(6);
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING = Rotation2d.fromRotations(3);
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING = Rotation2d.fromRotations(12);
-	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(3);
-	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(3);
+	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_SCORING = Rotation2d.fromDegrees(3.5);
+	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING = Rotation2d.fromDegrees(3.5);
 
 	public static final Rotation2d TURRET_TOLERANCE_TO_START_PASSING = Rotation2d.fromDegrees(10);
 	public static final Rotation2d TURRET_TOLERANCE_TO_CONTINUE_PASSING = Rotation2d.fromDegrees(10);
@@ -28,7 +28,9 @@ public class StateMachineConstants {
 
 	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
 
-	private static final double MIN_X_VALUE_FOR_BEHIND_HUB_PASSING = 6;
+	public static final double MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 6;
+	public static final double MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 11;
+	public static final double MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING = 14;
 	private static final double TARGET_X_VALUE_FOR_PASSING = Field.getAllianceRelative(Field.getHubMiddle()).getX() - 1;
 	private static final Translation2d OUTPOST_PRESET_PASSING_TARGET = new Translation2d(1, 1);
 	private static final Translation2d DEPOT_PRESET_PASSING_TARGET = FieldMath.mirror(OUTPOST_PRESET_PASSING_TARGET, false, true);
@@ -49,13 +51,6 @@ public class StateMachineConstants {
 
 	public static Translation2d getDepotPresetPassingTarget() {
 		return Field.getAllianceRelative(DEPOT_PRESET_PASSING_TARGET);
-	}
-
-	public static double getMinXValueForBehindHubPassing() {
-		if (!Field.isFieldConventionAlliance()) {
-			return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_HUB_PASSING);
-		}
-		return MIN_X_VALUE_FOR_BEHIND_HUB_PASSING;
 	}
 
 }
