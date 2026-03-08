@@ -1,4 +1,4 @@
-Train calibrations
+Magazine calibrations
 ---------------------
 
 #### Motor
