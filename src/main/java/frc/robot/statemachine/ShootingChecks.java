@@ -281,11 +281,9 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Score"
 		);
-
 		boolean isOurHubReadyToStartShooting = isOurHubReadyToStartShooting(
 			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
 		);
-
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
 		return isReadyToShoot && isOurHubReadyToStartShooting && isInAllianceZone;
