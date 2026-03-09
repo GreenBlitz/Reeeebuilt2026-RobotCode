@@ -20,7 +20,7 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 80;
+	public static final int CURRENT_LIMIT = 15;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -53,22 +53,18 @@ public class FourBarConstants {
 	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
-	public static final double CLOSE_VOLTAGE = 3.0;
-	public static final double CLOSE_STALL_CURRENT_AMP = 20.0;
+	public static final double CLOSE_VOLTAGE = 7;
+	public static final double CLOSE_STALL_CURRENT_AMP = 13;
 
-	public static final double INTAKE_OPEN_VOLTAGE = 3.0;
+	public static final double INTAKE_OPEN_VOLTAGE = -5.0;
 
-	public static final double RELAXED_CURRENT_AMP = 3.0;
-	public static final double HOLD_CURRENT_AMP = 5.0;
-	public static final double CURRENT_TO_HOLD_INTAKE_CLOSED = -3.0;
-	public static final Rotation2d POSITION_THRESHOLD_FOR_RELAXED_CURRENT = Rotation2d.fromDegrees(30);
+	public static final double RELAXED_CURRENT_AMP = -3.0;
+	public static final double HOLD_CURRENT_AMP = -4.0;
+	public static final double CURRENT_TO_HOLD_INTAKE_CLOSED = 3.0;
 	public static final double DEBOUNCE_TIME_FOR_HOLD = 0.06;
 
-	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 3;
-	public static final Rotation2d POSITION_TOLERANCE_FOR_OPEN = Rotation2d.fromDegrees(2);
-
-	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
-	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
+	public static final double FOUR_BAR_RESET_VOLTAGE = 2;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;

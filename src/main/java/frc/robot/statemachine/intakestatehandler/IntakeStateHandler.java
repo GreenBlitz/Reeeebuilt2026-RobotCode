@@ -80,7 +80,8 @@ public class IntakeStateHandler {
 				fourBar.getCommandsBuilder()
 					.setVoltageWithoutLimit(
 						FourBarConstants.INTAKE_OPEN_VOLTAGE,
-						() -> fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())
+						() -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP
+							&& fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder()
 					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
@@ -91,7 +92,16 @@ public class IntakeStateHandler {
 
 	public Command outtake() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.OUTTAKE.getFourBarPosition()),
+			new SequentialCommandGroup(
+				fourBar.getCommandsBuilder()
+					.setVoltageWithoutLimit(
+						FourBarConstants.INTAKE_OPEN_VOLTAGE,
+						() -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP
+							&& fourBar.isBehindPosition(IntakeState.OUTTAKE.getFourBarPosition())
+					),
+				fourBar.getCommandsBuilder()
+					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
+			),
 			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
 		);
 	}
@@ -103,6 +113,7 @@ public class IntakeStateHandler {
 					.setVoltageWithoutLimit(
 						FourBarConstants.CLOSE_VOLTAGE,
 						() -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP
+							&& fourBar.isPastPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder().setCurrent(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
 			),

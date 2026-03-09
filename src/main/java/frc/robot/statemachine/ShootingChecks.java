@@ -285,7 +285,6 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Scoring"
 		);
-
 		boolean isOurHubReadyToStartShooting = isOurHubReadyToStartShooting(
 			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
 		);
@@ -322,7 +321,7 @@ public class ShootingChecks {
 		boolean isOurHubReadyToStartShooting = HubUtil
 			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
-		return isOurHubReadyToStartShooting;
+		return true || isOurHubReadyToStartShooting;
 	}
 
 }
