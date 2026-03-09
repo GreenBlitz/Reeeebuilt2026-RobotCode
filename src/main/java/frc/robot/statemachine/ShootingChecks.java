@@ -325,7 +325,7 @@ public class ShootingChecks {
 		boolean isOurHubReadyToStartShooting = !(HubUtil.isOurHubActive(timeSinceTeleopWithFlightTime))
 			&& (HubUtil.isOurHubActive(timeSinceTeleopWithFlightTime - GamePeriodUtils.ROBOT_TIMER_DELAY));
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
-		return isOurHubReadyToStartShooting;
+		return true || isOurHubReadyToStartShooting; // todo...
 	}
 
 }
