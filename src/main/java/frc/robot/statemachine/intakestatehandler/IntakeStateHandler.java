@@ -78,10 +78,10 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
-					.setCurrent(FourBarConstants.INTAKE_OPEN_CURRENT)
-					.until(() -> fourBar.isBehindPosition(FourBarConstants.POSITION_THRESHOLD_FOR_WEAK_CURRENT)),
+					.setCurrent(FourBarConstants.INTAKE_OPEN_CURRENT_AMP)
+					.until(() -> fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())),
 				fourBar.getCommandsBuilder()
-					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.WEAK_CURRENT_AMP)
+					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
