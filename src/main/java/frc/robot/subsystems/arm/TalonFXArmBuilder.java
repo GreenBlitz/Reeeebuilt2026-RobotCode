@@ -80,7 +80,6 @@ public class TalonFXArmBuilder {
 			realSlotsConfig,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
-			true,
 			isInverted,
 			isContinuesWrap,
 			currentLimit
@@ -143,7 +142,6 @@ public class TalonFXArmBuilder {
 			realSlotsConfig,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
-			true,
 			isInverted,
 			isContinuesWrap,
 			currentLimit
@@ -196,7 +194,6 @@ public class TalonFXArmBuilder {
 			realSlotsConfig,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
-			true,
 			isInverted,
 			isContinuesWrap,
 			currentLimit
@@ -218,10 +215,8 @@ public class TalonFXArmBuilder {
 		Slot0Configs simulationSlotsConfig,
 		double currentLimit,
 		double signalsFrequency,
-		double arbitraryFeedForward,
 		Rotation2d forwardSoftwareLimit,
 		Rotation2d reverseSoftwareLimit,
-		boolean enableSoftwareLimits,
 		ArmSimulationConstants simulationConstants
 	) {
 		TalonFXMotor motor = new TalonFXMotor(
@@ -250,7 +245,6 @@ public class TalonFXArmBuilder {
 			realSlotsConfig,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
-			enableSoftwareLimits,
 			isInverted,
 			isContinuesWrap,
 			currentLimit
@@ -265,7 +259,6 @@ public class TalonFXArmBuilder {
 		Slot0Configs realConfigSlots,
 		Rotation2d forwardSoftwareLimit,
 		Rotation2d reverseSoftwareLimit,
-		boolean enableSoftwareLimits,
 		boolean isInverted,
 		boolean isContinuesWrap,
 		double currentLimit
@@ -286,8 +279,8 @@ public class TalonFXArmBuilder {
 
 		config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = reverseSoftwareLimit.getRotations();
 		config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = forwardSoftwareLimit.getRotations();
-		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = enableSoftwareLimits;
-		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = enableSoftwareLimits;
+		config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+		config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
 		config.CurrentLimits.StatorCurrentLimitEnable = true;
 		config.CurrentLimits.StatorCurrentLimit = currentLimit;

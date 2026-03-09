@@ -78,7 +78,9 @@ public class IntakeStateHandler {
 							&& fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder()
-					.setCurrent(() -> fourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
+					.setCurrentWithoutSoftwareLimits(
+						() -> fourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP
+					)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
@@ -94,7 +96,9 @@ public class IntakeStateHandler {
 							&& fourBar.isBehindPosition(IntakeState.OUTTAKE.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder()
-					.setCurrent(() -> fourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
+					.setCurrentWithoutSoftwareLimits(
+						() -> fourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP
+					)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
 		);
@@ -109,7 +113,7 @@ public class IntakeStateHandler {
 						() -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP
 							&& fourBar.isPastPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
-				fourBar.getCommandsBuilder().setCurrent(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
+				fourBar.getCommandsBuilder().setCurrentWithoutSoftwareLimits(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
