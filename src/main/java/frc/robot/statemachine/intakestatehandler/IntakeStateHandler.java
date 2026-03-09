@@ -10,6 +10,10 @@ import frc.utils.LoggedNetworkRotation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
+import edu.wpi.first.math.filter.Debouncer;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
+import frc.robot.hardware.digitalinput.supplied.SuppliedDigitalInput;
 
 public class IntakeStateHandler {
 
@@ -21,6 +25,9 @@ public class IntakeStateHandler {
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
+	private BooleanSupplier isIntakeButtonHeld = () -> false;
+	private SuppliedDigitalInput buttonDigitalInput;
+	private final DigitalInputInputsAutoLogged buttonInputs = new DigitalInputInputsAutoLogged();
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
@@ -28,8 +35,13 @@ public class IntakeStateHandler {
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
+		this.buttonDigitalInput = new SuppliedDigitalInput(isIntakeButtonHeld, new Debouncer(FourBarConstants.DEBOUNCE_TIME_FOR_HOLD));
 	}
 
+	public void setIntakeButtonSupplier(BooleanSupplier isIntakeButtonHeld) {
+		this.isIntakeButtonHeld = isIntakeButtonHeld;
+		this.buttonDigitalInput = new SuppliedDigitalInput(isIntakeButtonHeld, new Debouncer(FourBarConstants.DEBOUNCE_TIME_FOR_HOLD));
+	}
 
 	public Command calibration() {
 		return new ParallelCommandGroup(
@@ -66,9 +78,10 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
-					.setTargetPosition(IntakeState.INTAKE.getFourBarPosition())
-					.until(() -> fourBar.isAtPosition(IntakeState.INTAKE.getFourBarPosition(), FourBarConstants.POSITION_TOLERANCE_FOR_OPEN)),
-				fourBar.getCommandsBuilder().setCurrent(FourBarConstants.CONSTANT_CURRENT_WHEN_OPEN_AMP)
+					.setCurrent(FourBarConstants.INTAKE_OPEN_CURRENT)
+					.until(() -> fourBar.isBehindPosition(FourBarConstants.POSITION_THRESHOLD_FOR_WEAK_CURRENT)),
+				fourBar.getCommandsBuilder()
+					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.WEAK_CURRENT_AMP)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
@@ -83,7 +96,8 @@ public class IntakeStateHandler {
 
 	public Command close() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
+			fourBar.getCommandsBuilder()
+				.setVoltageWithoutLimit(FourBarConstants.CLOSE_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP),
 			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
 	}
@@ -103,6 +117,9 @@ public class IntakeStateHandler {
 	}
 
 	public void periodic() {
+		buttonDigitalInput.updateInputs(buttonInputs);
+		Logger.processInputs(logPath + "/IntakeButton", buttonInputs);
+
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
 		}
