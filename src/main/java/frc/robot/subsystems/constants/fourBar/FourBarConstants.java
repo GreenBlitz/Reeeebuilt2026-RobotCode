@@ -66,7 +66,6 @@ public class FourBarConstants {
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
-	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
 
@@ -90,10 +89,8 @@ public class FourBarConstants {
 			SIMULATION_SLOT,
 			CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			ARBITRARY_FEED_FORWARD,
 			FORWARD_SOFTWARE_LIMITS,
 			BACKWARD_SOFTWARE_LIMITS,
-			false,
 			fourBarSimConstant
 		);
 	}
