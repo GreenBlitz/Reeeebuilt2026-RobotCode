@@ -320,16 +320,10 @@ public class ShootingChecks {
 	}
 
 	public static boolean isOurHubReadyToStartShooting(double distanceFromHubMeters) {
-		boolean isOurHubReadyToStartShooting = HubUtil
-			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
-		boolean isOurHubReadyToStartShootingWithDelay = HubUtil.isOurHubActive(
-			TimeUtil.getTimeSinceTeleopInitSeconds()
-				+ ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters)
-				- GamePeriodUtils.ROBOT_TIMER_DELAY
-		);
-		if (!isOurHubReadyToStartShooting && isOurHubReadyToStartShootingWithDelay) {
-			isOurHubReadyToStartShooting = true;
-		}
+		double timeSinceTeleopWithFlightTime = TimeUtil.getTimeSinceTeleopInitSeconds()
+			+ ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters);
+		boolean isOurHubReadyToStartShooting = !(HubUtil.isOurHubActive(timeSinceTeleopWithFlightTime))
+			&& (HubUtil.isOurHubActive(timeSinceTeleopWithFlightTime - GamePeriodUtils.ROBOT_TIMER_DELAY));
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
 		return isOurHubReadyToStartShooting;
 	}
