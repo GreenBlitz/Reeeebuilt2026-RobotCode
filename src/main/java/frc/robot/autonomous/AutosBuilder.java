@@ -107,9 +107,9 @@ public class AutosBuilder {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			allianceSide == AllianceSide.DEPOT
-				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center").mirrorPath()
-				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center"),
+			allianceSide == AllianceSide.OUTPOST
+				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center")
+				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center").mirrorPath(),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
 			isNearEndOfPathTolerance,
@@ -167,7 +167,7 @@ public class AutosBuilder {
 		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
-			allianceSide == AllianceSide.DEPOT
+			allianceSide == AllianceSide.OUTPOST
 				? PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line")
 				: PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line").mirrorPath(),
 			pathfindingConstraints,
