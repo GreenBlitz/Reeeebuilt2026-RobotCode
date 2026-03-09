@@ -13,8 +13,6 @@ FourBar calibrations
 #### Limits
 - [x] Max position
 - [x] Min position
-- [x] Forward limit
-- [x] Backwards limit
 
 #### FeedForward
 - [ ] kS
@@ -45,5 +43,7 @@ FourBar calibrations
 - [x] FourBar length
 
 #### Open State Constants
-- [ ] Position tolerance
+- [ ] Position to switch to lower current
 - [ ] Hold Current
+- [ ] Relaxed Current
+- [ ] Current to hold intake closed

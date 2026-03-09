@@ -59,8 +59,9 @@ public class FourBarConstants {
 	public static final double INTAKE_OPEN_CURRENT_AMP = -15.0;
 	public static final double RELAXED_CURRENT_AMP = 3.0;
 	public static final double HOLD_CURRENT_AMP = 5.0;
+	public static final double CURRENT_TO_HOLD_INTAKE_CLOSED = -3.0;
 	public static final Rotation2d POSITION_THRESHOLD_FOR_RELAXED_CURRENT = Rotation2d.fromDegrees(30);
-	public static final double DEBOUNCE_TIME_FOR_HOLD = 0.3;
+	public static final double DEBOUNCE_TIME_FOR_HOLD = 0.06;
 
 	public static final double CONSTANT_CURRENT_WHEN_OPEN_AMP = 3;
 	public static final Rotation2d POSITION_TOLERANCE_FOR_OPEN = Rotation2d.fromDegrees(2);

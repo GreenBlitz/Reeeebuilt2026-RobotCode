@@ -96,8 +96,14 @@ public class IntakeStateHandler {
 
 	public Command close() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder()
-				.setVoltageWithoutLimit(FourBarConstants.CLOSE_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP),
+			new SequentialCommandGroup(
+				fourBar.getCommandsBuilder()
+					.setVoltageWithoutLimit(
+						FourBarConstants.CLOSE_VOLTAGE,
+						() -> fourBar.getCurrent() > FourBarConstants.CLOSE_STALL_CURRENT_AMP
+					),
+				fourBar.getCommandsBuilder().setCurrent(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
+			),
 			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
 	}
