@@ -30,24 +30,8 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			halfAuto(
-				robot,
-				intake,
-				scoreSequence,
-				resetSubsystems,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance,
-				AllianceSide.DEPOT
-			),
-			halfAuto(
-				robot,
-				intake,
-				scoreSequence,
-				resetSubsystems,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance,
-				AllianceSide.OUTPOST
-			),
+			halfAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT),
+			halfAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.OUTPOST),
 			getQuarterAuto(
 				robot,
 				resetSubsystems,
@@ -80,7 +64,15 @@ public class AutosBuilder {
 					isNearEndOfPathTolerance,
 					allianceSide
 				),
-				startingLineToDepotOrOutpostCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, allianceSide)
+				startingLineToDepotOrOutpostCommand(
+					robot,
+					intake,
+					resetSubsystems,
+					scoreSequence,
+					pathfindingConstraints,
+					isNearEndOfPathTolerance,
+					allianceSide
+				)
 			),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Right mid Loop - Outpost" : "L starting - L mid loop - Depot"
@@ -122,12 +114,12 @@ public class AutosBuilder {
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			allianceSide == AllianceSide.OUTPOST
-			?PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost")
-			:PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
+				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost")
+				: PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
 			pathfindingConstraints,
-                allianceSide == AllianceSide.OUTPOST
-				?() -> resetSubsystems.get().andThen(scoreSequence.get())
-				:() -> resetSubsystems.get().andThen(new ParallelCommandGroup(scoreSequence.get(),intake.get())),
+			allianceSide == AllianceSide.OUTPOST
+				? () -> resetSubsystems.get().andThen(scoreSequence.get())
+				: () -> resetSubsystems.get().andThen(new ParallelCommandGroup(scoreSequence.get(), intake.get())),
 			isNearEndOfPathTolerance,
 			robot.getSwerve().getLogPath()
 		);
