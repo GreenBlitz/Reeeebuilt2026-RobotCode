@@ -3,39 +3,39 @@ package frc.robot.statemachine.intakestatehandler;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
-import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 public class IntakeStateHandler {
 
-	private final Arm fourBar;
+	private final CurrentControlArm fourBar;
 	private final Roller rollers;
 	private boolean hasFourBarBeenReset;
-	private final IDigitalInput fourBarResetCheckSensor;
-	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
 	private final String logPath;
 	private final LoggedNetworkNumber rollersCalibrationPower = new LoggedNetworkNumber("Tunable/IntakeRollerPower");
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
+	private BooleanSupplier isFourBarLocked;
 
-	public IntakeStateHandler(Arm fourBar, Roller rollers, IDigitalInput fourBarResetCheckSensor, String logPath) {
+	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
-		this.fourBarResetCheckSensor = fourBarResetCheckSensor;
-		this.fourBarResetCheckInput = new DigitalInputInputsAutoLogged();
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
+		this.isFourBarLocked = () -> false;
 	}
 
+	public void setIntakeButtonSupplier(BooleanSupplier fourBarLocked) {
+		this.isFourBarLocked = fourBarLocked;
+	}
 
 	public Command calibration() {
 		return new ParallelCommandGroup(
@@ -60,7 +60,7 @@ public class IntakeStateHandler {
 						() -> new ConditionalCommand(
 							setState(IntakeState.INTAKE),
 							setState(IntakeState.CLOSED),
-							() -> currentState == IntakeState.CLOSED
+							() -> currentState != IntakeState.INTAKE
 						),
 						Set.of(fourBar, rollers)
 					)
@@ -69,15 +69,24 @@ public class IntakeStateHandler {
 	}
 
 	public Command intake() {
-		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
-			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
-		);
+		return new ParallelCommandGroup(openFourBar(), rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()));
+	}
+
+	public Command outtake() {
+		return new ParallelCommandGroup(openFourBar(), rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower()));
 	}
 
 	public Command close() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
+			new SequentialCommandGroup(
+				fourBar.getCommandsBuilder()
+					.setVoltageWithoutLimit(
+						FourBarConstants.CLOSE_VOLTAGE,
+						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
+							&& fourBar.isPastPosition(IntakeState.INTAKE.getFourBarPosition())
+					),
+				fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
+			),
 			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
 	}
@@ -87,6 +96,7 @@ public class IntakeStateHandler {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case INTAKE -> intake();
+			case OUTTAKE -> outtake();
 			case RESET_FOUR_BAR -> resetFourBar();
 			case CLOSED -> close();
 		},
@@ -95,23 +105,33 @@ public class IntakeStateHandler {
 		);
 	}
 
-	public void periodic() {
-		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
+	private Command openFourBar() {
+		return new SequentialCommandGroup(
+			fourBar.getCommandsBuilder()
+				.setVoltageWithoutLimit(
+					FourBarConstants.OPEN_VOLTAGE,
+					() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
+						&& fourBar.isBehindPosition(IntakeState.OUTTAKE.getFourBarPosition())
+				),
+			fourBar.getCommandsBuilder()
+				.setCurrentWithoutLimit(
+					() -> isFourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+				)
+		);
+	}
 
-		if (!hasFourBarBeenReset()) {
-			hasFourBarBeenReset = isFourBarAtSensor();
+	public void periodic() {
+		Logger.recordOutput(logPath + "/IsFourBarLocked", isFourBarLocked.getAsBoolean());
+
+		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+			hasFourBarBeenReset = true;
 		}
 
 		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians() && !hasFourBarBeenReset()) {
 			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		}
 
-		Logger.processInputs(logPath + "/fourBarResetSensor", fourBarResetCheckInput);
 		Logger.recordOutput(logPath + "/HasFourBarBeenReset", hasFourBarBeenReset());
-	}
-
-	public boolean isFourBarAtSensor() {
-		return fourBarResetCheckInput.debouncedValue;
 	}
 
 	public boolean hasFourBarBeenReset() {

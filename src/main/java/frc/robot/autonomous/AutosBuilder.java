@@ -31,7 +31,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getStartingLineToMiddleToAllianceSideAuto(
+			getQuarterAuto(
 				robot,
 				resetSubsystems,
 				intake,
@@ -40,15 +40,7 @@ public class AutosBuilder {
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-			getStartingLineToMiddleToAllianceSideAuto(
-				robot,
-				resetSubsystems,
-				intake,
-				scoreSequence,
-				pathfindingConstraints,
-				isNearEndOfPathTolerance,
-				AllianceSide.DEPOT
-			),
+			getQuarterAuto(robot, resetSubsystems, intake, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT),
 			getPassingAuto(robot, pathfindingConstraints, resetSubsystems, intake, passSequence, isNearEndOfPathTolerance)
 		);
 	}
@@ -68,14 +60,15 @@ public class AutosBuilder {
 				PathHelper.PATH_PLANNER_PATHS.get("R Bump - L close mid"),
 				pathfindingConstraints,
 				() -> resetSubsystems.get().andThen(intake.get().alongWith(passSequence.get())),
-				isNearEndOfPathTolerance
+				isNearEndOfPathTolerance,
+				robot.getSwerve().getLogPath()
 			),
 			new Pose2d(),
 			"R Bump - L close mid"
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getStartingLineToMiddleToAllianceSideAuto(
+	private static Supplier<PathPlannerAutoWrapper> getQuarterAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> intake,
@@ -110,7 +103,8 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(intake.get()),
-			isNearEndOfPathTolerance
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
 		);
 	}
 
@@ -121,7 +115,7 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance,
 		AllianceSide startingSide
 	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
+		return PathFollowingCommandsBuilder.commandDuringPath(
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			startingSide == AllianceSide.OUTPOST
@@ -129,7 +123,8 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
 			pathfindingConstraints,
 			scoreSequence,
-			isNearEndOfPathTolerance
+			isNearEndOfPathTolerance,
+			robot.getSwerve().getLogPath()
 		);
 	}
 

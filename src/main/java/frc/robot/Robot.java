@@ -6,10 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
@@ -24,17 +21,18 @@ import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.constants.belly.BellyConstants;
+import frc.robot.subsystems.constants.conveyor.ConveyorConstants;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
-import frc.robot.subsystems.constants.train.TrainConstant;
+import frc.robot.subsystems.constants.magazine.MagazineConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.roller.Roller;
@@ -51,7 +49,6 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
-import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
@@ -69,15 +66,12 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
-	private final Arm fourBar;
+	private final CurrentControlArm fourBar;
 	private final Arm hood;
-	private final IDigitalInput turretResetCheckSensor;
-	private final IDigitalInput fourBarResetCheckSensor;
-	private final IDigitalInput hoodResetCheckSensor;
-	private final VelocityRoller train;
-	private final IDigitalInput trainBallSensor;
+	private final VelocityRoller magazine;
+	private final IDigitalInput magazineBallSensor;
 	private final SimulationManager simulationManager;
-	private final Roller belly;
+	private final Roller conveyor;
 
 	private final RobotCommander robotCommander;
 
@@ -95,31 +89,28 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = TurretConstants.createTurret();
-		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
-		turret.setPosition(TurretConstants.MIN_POSITION);
+		turret.setPosition(TurretConstants.MAX_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
 		this.flyWheel = FlywheelConstants.createFlyWheel();
 
 		this.fourBar = FourBarConstants.createFourBar();
-		this.fourBarResetCheckSensor = FourBarConstants.createFourBarSensorResetCheck();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
 		this.hood = HoodConstants.createHood();
-		this.hoodResetCheckSensor = HoodConstants.createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		this.train = TrainConstant.createTrain();
-		this.trainBallSensor = TrainConstant.createTrainBallSensor();
-		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
+		this.magazine = MagazineConstant.createMagazine();
+		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
+		BrakeStateManager.add(() -> magazine.setBrake(true), () -> magazine.setBrake(false));
 
-		this.belly = BellyConstants.createBelly();
-		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
+		this.conveyor = ConveyorConstants.createConveyor();
+		BrakeStateManager.add(() -> conveyor.setBrake(true), () -> conveyor.setBrake(false));
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -140,14 +131,23 @@ public class Robot {
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
-		this.limelightFront = new Limelight("limelight-front", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
+		this.limelightFront = new Limelight(
+			"limelight-front",
+			"Vision",
+			new Pose3d(
+				new Translation3d(0.297, -0.143, 0.361),
+				new Rotation3d(Math.toRadians(-0.18), Math.toRadians(27.38), Math.toRadians(-0.35))
+			),
+			LimelightPipeline.APRIL_TAG
+		);
+
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
+				new StandardDeviations2D(0.4),
+				new StandardDeviations2D(0.07),
+				new StandardDeviations2D(0.7),
+				new StandardDeviations2D(0.011)
 			)
 		);
 		limelightFront.setMT1PoseFilter(
@@ -155,19 +155,27 @@ public class Robot {
 				limelightFront,
 				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(),
-				Rotation2d.fromDegrees(0)
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
 			)
 		);
 
-		this.limelightRight = new Limelight("limelight-right", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
+		this.limelightRight = new Limelight(
+			"limelight-right",
+			"Vision",
+			new Pose3d(
+				new Translation3d(-0.06, 0.367, 0.469),
+				new Rotation3d(Math.toRadians(-177.78), Math.toRadians(20.64), Math.toRadians(-90.7))
+			),
+			LimelightPipeline.APRIL_TAG
+		);
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightRight,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
+				new StandardDeviations2D(0.4),
+				new StandardDeviations2D(0.07),
+				new StandardDeviations2D(0.7),
+				new StandardDeviations2D(0.011)
 			)
 		);
 		limelightRight.setMT1PoseFilter(
@@ -175,8 +183,8 @@ public class Robot {
 				limelightRight,
 				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(),
-				Rotation2d.fromDegrees(0)
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
 			)
 		);
 
@@ -184,10 +192,10 @@ public class Robot {
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D(),
-				new StandardDeviations2D()
+				new StandardDeviations2D(0.4),
+				new StandardDeviations2D(0.07),
+				new StandardDeviations2D(0.7),
+				new StandardDeviations2D(0.011)
 			)
 		);
 		limelightLeft.setMT1PoseFilter(
@@ -195,8 +203,8 @@ public class Robot {
 				limelightLeft,
 				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(),
-				Rotation2d.fromDegrees(0)
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
 			)
 		);
 
@@ -209,7 +217,7 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isTeleopEnabled())
+		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
 		configureAuto();
@@ -236,8 +244,8 @@ public class Robot {
 		swerve.update();
 		fourBar.update();
 		intakeRoller.update();
-		belly.update();
-		train.update();
+		conveyor.update();
+		magazine.update();
 		turret.update();
 		hood.update();
 		flyWheel.update();
@@ -287,36 +295,24 @@ public class Robot {
 		return flyWheel;
 	}
 
-	public Arm getFourBar() {
+	public CurrentControlArm getFourBar() {
 		return fourBar;
 	}
 
-	public VelocityRoller getTrain() {
-		return train;
+	public VelocityRoller getMagazine() {
+		return magazine;
 	}
 
-	public Roller getBelly() {
-		return belly;
+	public Roller getConveyor() {
+		return conveyor;
 	}
 
 	public Arm getHood() {
 		return hood;
 	}
 
-	public IDigitalInput getTurretResetCheckSensor() {
-		return turretResetCheckSensor;
-	}
-
-	public IDigitalInput getHoodResetCheckSensor() {
-		return hoodResetCheckSensor;
-	}
-
-	public IDigitalInput getFourBarResetCheckSensor() {
-		return fourBarResetCheckSensor;
-	}
-
-	public IDigitalInput getTrainBallSensor() {
-		return trainBallSensor;
+	public IDigitalInput getMagazineBallSensor() {
+		return magazineBallSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {
@@ -335,20 +331,32 @@ public class Robot {
 		return simulationManager;
 	}
 
-	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return autonomousChooser.getChosenValue();
+	public AutonomousChooser getAutonomousChooser() {
+		return autonomousChooser;
+	}
+
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> robotCommander.getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 
-		Supplier<Command> autonomousScoringSequenceCommand = () -> robotCommander.scoreSequence();
+		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 
 		Supplier<Command> autonomousPassingSequenceCommand = () -> robotCommander.passSequence();
 
-		Supplier<Command> autonomousResetSubsystemsCommand = () -> robotCommander.setState(RobotState.RESET_SUBSYSTEMS);
+		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
-		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
+		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.autonomousChooser = new AutonomousChooser(
 			"Autonomous Chooser",
