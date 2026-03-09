@@ -259,43 +259,6 @@ public class TalonFXArmBuilder {
 		return new CurrentControlArm(logPath, motor, signals, voltageRequest, positionRequest, currentRequest, configuration.Slot0.kG);
 	}
 
-	public static CurrentControlArm buildCurrentControlArm(
-		String logPath,
-		Phoenix6DeviceID deviceID,
-		boolean isInverted,
-		boolean isContinuesWrap,
-		TalonFXFollowerConfig talonFXFollowerConfig,
-		SysIdRoutine.Config sysIdRoutineConfig,
-		FeedbackConfigs feedbackConfigs,
-		Slot0Configs realSlotsConfig,
-		Slot0Configs simulationSlotsConfig,
-		double currentLimit,
-		double signalsFrequency,
-		double arbitraryFeedForward,
-		Rotation2d forwardSoftwareLimit,
-		Rotation2d reverseSoftwareLimit,
-		ArmSimulationConstants simulationConstants
-	) {
-		return buildCurrentControlArm(
-			logPath,
-			deviceID,
-			isInverted,
-			isContinuesWrap,
-			talonFXFollowerConfig,
-			sysIdRoutineConfig,
-			feedbackConfigs,
-			realSlotsConfig,
-			simulationSlotsConfig,
-			currentLimit,
-			signalsFrequency,
-			arbitraryFeedForward,
-			forwardSoftwareLimit,
-			reverseSoftwareLimit,
-			true,
-			simulationConstants
-		);
-	}
-
 	private static TalonFXConfiguration buildConfiguration(
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs simulationConfigSlots,

@@ -118,7 +118,7 @@ public class IntakeStateHandler {
 
 	public void periodic() {
 		buttonDigitalInput.updateInputs(buttonInputs);
-		Logger.processInputs(logPath + "/IntakeButton", buttonInputs);
+		Logger.processInputs(logPath + "/IsIntakeButtonHeld", buttonInputs);
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
