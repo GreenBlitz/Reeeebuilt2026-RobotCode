@@ -22,7 +22,7 @@ public class IntakeStateHandler {
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
-	private BooleanSupplier fourBarLocked;
+	private BooleanSupplier isFourBarLocked;
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
@@ -30,11 +30,11 @@ public class IntakeStateHandler {
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-		this.fourBarLocked = () -> false;
+		this.isFourBarLocked = () -> false;
 	}
 
 	public void setIntakeButtonSupplier(BooleanSupplier fourBarLocked) {
-		this.fourBarLocked = fourBarLocked;
+		this.isFourBarLocked = fourBarLocked;
 	}
 
 	public Command calibration() {
@@ -115,13 +115,13 @@ public class IntakeStateHandler {
 				),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> fourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+					() -> isFourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
 				)
 		);
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsFourBarLocked", fourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsFourBarLocked", isFourBarLocked.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
