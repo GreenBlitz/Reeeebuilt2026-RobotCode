@@ -56,7 +56,8 @@ public class FourBarConstants {
 	public static final double CLOSE_VOLTAGE = 3.0;
 	public static final double CLOSE_STALL_CURRENT_AMP = 20.0;
 
-	public static final double INTAKE_OPEN_CURRENT_AMP = -15.0;
+	public static final double INTAKE_OPEN_VOLTAGE = 3.0;
+
 	public static final double RELAXED_CURRENT_AMP = 3.0;
 	public static final double HOLD_CURRENT_AMP = 5.0;
 	public static final double CURRENT_TO_HOLD_INTAKE_CLOSED = -3.0;

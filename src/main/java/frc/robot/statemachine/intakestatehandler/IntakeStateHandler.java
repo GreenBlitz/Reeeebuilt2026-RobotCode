@@ -78,8 +78,10 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
-					.setCurrent(FourBarConstants.INTAKE_OPEN_CURRENT_AMP)
-					.until(() -> fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())),
+					.setVoltageWithoutLimit(
+						FourBarConstants.INTAKE_OPEN_VOLTAGE,
+						() -> fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())
+					),
 				fourBar.getCommandsBuilder()
 					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
 			),
