@@ -285,6 +285,7 @@ public class ShootingChecks {
 			Field.getHubMiddle(),
 			"Scoring"
 		);
+
 		boolean isOurHubReadyToStartShooting = isOurHubReadyToStartShooting(
 			ShootingCalculations.getDistanceFromHub(ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands())
 		);
