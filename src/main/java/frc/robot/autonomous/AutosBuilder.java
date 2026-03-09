@@ -80,7 +80,7 @@ public class AutosBuilder {
 					isNearEndOfPathTolerance,
 					allianceSide
 				),
-				StartingLineToDepotOrOutpostCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, allianceSide)
+				startingLineToDepotOrOutpostCommand(robot, intake, resetSubsystems, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, allianceSide)
 			),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Right mid Loop - Outpost" : "L starting - L mid loop - Depot"
@@ -109,7 +109,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command StartingLineToDepotOrOutpostCommand(
+	private static Command startingLineToDepotOrOutpostCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
