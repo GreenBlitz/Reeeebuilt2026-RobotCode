@@ -11,9 +11,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import edu.wpi.first.math.filter.Debouncer;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
-import frc.robot.hardware.digitalinput.supplied.SuppliedDigitalInput;
 
 public class IntakeStateHandler {
 
@@ -25,9 +22,7 @@ public class IntakeStateHandler {
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
-	private BooleanSupplier isIntakeButtonHeld = () -> false;
-	private SuppliedDigitalInput buttonDigitalInput;
-	private final DigitalInputInputsAutoLogged buttonInputs = new DigitalInputInputsAutoLogged();
+	private BooleanSupplier fourBarLocked;
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
@@ -35,12 +30,11 @@ public class IntakeStateHandler {
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-		this.buttonDigitalInput = new SuppliedDigitalInput(isIntakeButtonHeld, new Debouncer(FourBarConstants.DEBOUNCE_TIME_FOR_HOLD));
+		this.fourBarLocked = () -> false;
 	}
 
-	public void setIntakeButtonSupplier(BooleanSupplier isIntakeButtonHeld) {
-		this.isIntakeButtonHeld = isIntakeButtonHeld;
-		this.buttonDigitalInput = new SuppliedDigitalInput(isIntakeButtonHeld, new Debouncer(FourBarConstants.DEBOUNCE_TIME_FOR_HOLD));
+	public void setIntakeButtonSupplier(BooleanSupplier fourBarLocked) {
+		this.fourBarLocked = fourBarLocked;
 	}
 
 	public Command calibration() {
@@ -84,7 +78,7 @@ public class IntakeStateHandler {
 							&& fourBar.isBehindPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder()
-					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
+					.setCurrent(() -> fourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
@@ -100,7 +94,7 @@ public class IntakeStateHandler {
 							&& fourBar.isBehindPosition(IntakeState.OUTTAKE.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder()
-					.setCurrent(() -> buttonInputs.debouncedValue ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
+					.setCurrent(() -> fourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_CURRENT_AMP : FourBarConstants.RELAXED_CURRENT_AMP)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
 		);
@@ -136,8 +130,7 @@ public class IntakeStateHandler {
 	}
 
 	public void periodic() {
-		buttonDigitalInput.updateInputs(buttonInputs);
-		Logger.processInputs(logPath + "/IsIntakeButtonHeld", buttonInputs);
+		Logger.recordOutput(logPath + "/fourBarLocked", fourBarLocked.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
