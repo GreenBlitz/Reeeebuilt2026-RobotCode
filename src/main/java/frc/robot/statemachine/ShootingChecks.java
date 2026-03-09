@@ -322,7 +322,7 @@ public class ShootingChecks {
 		boolean isOurHubReadyToStartShooting = HubUtil
 			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
-		return isOurHubReadyToStartShooting;
+		return true || isOurHubReadyToStartShooting; // todo...
 	}
 
 }
