@@ -54,12 +54,13 @@ public class FourBarConstants {
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
 	public static final double CLOSE_VOLTAGE = 7;
-	public static final double CLOSE_STALL_CURRENT_AMP = 13;
 	public static final double CURRENT_TO_HOLD_INTAKE_CLOSED = 3.0;
 
-	public static final double INTAKE_OPEN_VOLTAGE = -5.0;
-	public static final double RELAXED_CURRENT_AMP = -3.5;
-	public static final double HOLD_CURRENT_AMP = -6.0;
+	public static final double OPEN_VOLTAGE = -5.0;
+	public static final double OPEN_RELAXED_CURRENT_AMP = -3.5;
+	public static final double OPEN_LOCKED_CURRENT_AMP = -6.0;
+
+	public static final double COLLISION_STALL_CURRENT = 13;
 
 	public static final double FOUR_BAR_RESET_VOLTAGE = 2;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
