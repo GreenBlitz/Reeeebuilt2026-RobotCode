@@ -65,20 +65,23 @@ public class AutosBuilder {
 		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
-			new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.deadlineCommandWithPath(
-					robot.getSwerve(),
-					() -> robot.getPoseEstimator().getEstimatedPose(),
-					startingSide == AllianceSide.DEPOT
-						? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
-						: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-					pathfindingConstraints,
-					() -> resetSubsystems.get().andThen(openIntake.get()),
-					isNearEndOfPathTolerance,
-					robot.getSwerve().getLogPath()
-				),
-				scoreSequence.get().withTimeout(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_ARRIVING_AT_FEEDER_SECONDS),
-				new ParallelCommandGroup(scoreSequence.get(), closeIntake.get())
+			new ParallelCommandGroup(
+				scoreSequence.get(),
+				new SequentialCommandGroup(
+					PathFollowingCommandsBuilder.deadlineCommandWithPath(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						startingSide == AllianceSide.DEPOT
+							? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
+							: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
+						pathfindingConstraints,
+						() -> resetSubsystems.get().andThen(openIntake.get()),
+						isNearEndOfPathTolerance,
+						robot.getSwerve().getLogPath()
+					),
+					new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_ARRIVING_AT_FEEDER_SECONDS),
+					closeIntake.get()
+				)
 			),
 			new Pose2d(),
 			startingSide == AllianceSide.OUTPOST ? "R quarter" : "L quarter"
