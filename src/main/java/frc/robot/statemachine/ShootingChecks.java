@@ -17,7 +17,7 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position) {
-		boolean isPositionInAllianceZone = Field.getAllianceRelative(position).getX() <= Field.ALLIANCE_START_LINE_X_VALUE;
+		boolean isPositionInAllianceZone = Field.getAllianceRelative(position).getX() <= Field.getHubMiddle().getX();
 		Logger.recordOutput(shootingChecksLogPath + "/IsInAllianceZone", isPositionInAllianceZone);
 		return isPositionInAllianceZone;
 	}
@@ -42,9 +42,11 @@ public class ShootingChecks {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
 		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
+		boolean isInAllianceZone = isInAllianceZone(turretTranslation);
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
 		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
-		return !isBehindHub || isFarEnoughBehindHub;
+		Logger.recordOutput(logPath + "/IsInAllianceZone", isInAllianceZone);
+		return (!isBehindHub || isFarEnoughBehindHub) && !isInAllianceZone;
 	}
 
 	private static boolean isWithinDistance(
