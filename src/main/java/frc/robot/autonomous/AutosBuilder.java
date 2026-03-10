@@ -66,55 +66,24 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToMiddleCommand(robot, resetSubsystems, openIntake, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
-				middleToAllienceSideWithScoringCommand(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
+				PathFollowingCommandsBuilder.deadlineCommandWithPath(
+					robot.getSwerve(),
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					startingSide == AllianceSide.DEPOT
+						? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
+						: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
+					pathfindingConstraints,
+					() -> resetSubsystems.get().andThen(openIntake.get()),
+					isNearEndOfPathTolerance,
+					robot.getSwerve().getLogPath()
+				),
 				scoreSequence.get().withTimeout(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_ARRIVING_AT_FEEDER_SECONDS),
 				new ParallelCommandGroup(scoreSequence.get(), closeIntake.get())
 			),
 			new Pose2d(),
-			startingSide == AllianceSide.OUTPOST ? "R starting - R mid - Outpost" : "L starting - L mid - Depot"
+			startingSide == AllianceSide.OUTPOST ? "R quarter" : "L quarter"
 		);
 	}
 
-	private static Command startingLineToMiddleCommand(
-		Robot robot,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> intake,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		AllianceSide startingSide
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			startingSide == AllianceSide.DEPOT
-				? PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid").mirrorPath()
-				: PathHelper.PATH_PLANNER_PATHS.get("R starting - R mid"),
-			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(intake.get()),
-			isNearEndOfPathTolerance,
-			robot.getSwerve().getLogPath()
-		);
-	}
-
-	private static Command middleToAllienceSideWithScoringCommand(
-		Robot robot,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		AllianceSide startingSide
-	) {
-		return PathFollowingCommandsBuilder.commandDuringPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			startingSide == AllianceSide.OUTPOST
-				? PathHelper.PATH_PLANNER_PATHS.get("R mid - Outpost")
-				: PathHelper.PATH_PLANNER_PATHS.get("L mid - Depot"),
-			pathfindingConstraints,
-			scoreSequence,
-			isNearEndOfPathTolerance,
-			robot.getSwerve().getLogPath()
-		);
-	}
 
 }
