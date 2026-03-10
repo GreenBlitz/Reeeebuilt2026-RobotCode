@@ -43,11 +43,9 @@ public class ShootingChecks {
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		boolean isBehindHub = isBehindHub(turretTranslation);
 		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
-		boolean isInAllianceZone = isInAllianceZone(turretTranslation);
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
 		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
-		Logger.recordOutput(logPath + "/IsInAllianceZone", isInAllianceZone);
-		return (!isBehindHub || isFarEnoughBehindHub) && !isInAllianceZone;
+		return !isBehindHub || isFarEnoughBehindHub;
 	}
 
 	private static boolean isWithinDistance(
