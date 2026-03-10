@@ -190,7 +190,7 @@ public class ShootingCalculations {
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
-		if (!ShootingChecks.isBehindHub(turretTranslation)) {
+		if (!ShootingChecks.isBehindHubs(turretTranslation)) {
 			return new Translation2d(StateMachineConstants.getTargetXValueForPassing(), turretTranslation.getY());
 		}
 		if (Field.getAllianceRelative(turretTranslation).getY() > Field.WIDTH_METERS / 2) {
