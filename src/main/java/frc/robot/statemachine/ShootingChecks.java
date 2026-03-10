@@ -17,16 +17,16 @@ public class ShootingChecks {
 	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position) {
-		boolean isPositionInAllianceZone = Field.getAllianceRelative(position).getX() <= Field.ALLIANCE_START_LINE_X_VALUE;
+		boolean isPositionInAllianceZone = Field.getAllianceRelative(position).getX() <= Field.getHubMiddle().getX();
 		Logger.recordOutput(shootingChecksLogPath + "/IsInAllianceZone", isPositionInAllianceZone);
 		return isPositionInAllianceZone;
 	}
 
-	public static boolean isBehindHub(Translation2d turretTranslation) {
+	public static boolean isBehindHubs(Translation2d turretTranslation) {
 		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
 	}
 
-	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
+	public static boolean isFarEnoughBehindHubs(Translation2d turretTranslation) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING
 			&& allianceRelativeTurretTranslation.getX() < StateMachineConstants.MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING;
@@ -39,12 +39,13 @@ public class ShootingChecks {
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
-		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
-		boolean isBehindHub = isBehindHub(turretTranslation);
-		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
-		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
-		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
-		return !isBehindHub || isFarEnoughBehindHub;
+		boolean isBehindHubs = isBehindHubs(turretTranslation);
+		boolean isFarEnoughBehindHubs = isFarEnoughBehindHubs(turretTranslation);
+		boolean isInAllianceZone = isInAllianceZone(turretTranslation);
+		Logger.recordOutput(logPath + "/IsBehindHubs", isBehindHubs);
+		Logger.recordOutput(logPath + "/IsFarEnoughBehindHubs", isFarEnoughBehindHubs);
+		Logger.recordOutput(logPath + "/IsInAllianceZone", isInAllianceZone);
+		return (!isBehindHubs || isFarEnoughBehindHubs) && !isInAllianceZone;
 	}
 
 	private static boolean isWithinDistance(
