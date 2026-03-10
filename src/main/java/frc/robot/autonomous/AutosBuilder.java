@@ -73,7 +73,7 @@ public class AutosBuilder {
 					isNearEndOfPathTolerance,
 					allianceSide.getOtherSide()
 				),
-				startingLineToDepotOrOutpostCommand(
+				startingLineToAllianceSideCommand(
 						robot,
 						intake,
 						resetSubsystems,
@@ -109,7 +109,7 @@ public class AutosBuilder {
 		);
 	}
 	
-	private static Command startingLineToDepotOrOutpostCommand(
+	private static Command startingLineToAllianceSideCommand(
 			Robot robot,
 			Supplier<Command> intake,
 			Supplier<Command> resetSubsystems,
