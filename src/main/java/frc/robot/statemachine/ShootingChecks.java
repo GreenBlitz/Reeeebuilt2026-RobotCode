@@ -39,7 +39,6 @@ public class ShootingChecks {
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
-		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
 		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
 		boolean isInAllianceZone = isInAllianceZone(turretTranslation);
