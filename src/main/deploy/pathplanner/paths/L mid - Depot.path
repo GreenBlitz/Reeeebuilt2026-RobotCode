@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.538202380952382,
-        "y": 5.40629761904762
+        "x": 7.331966218171297,
+        "y": 3.7947998408564816
       },
       "isLocked": false,
       "linkedName": "L mid"
     },
     {
       "anchor": {
-        "x": 3.622215494791667,
-        "y": 5.477906828703704
+        "x": 6.490904803240741,
+        "y": 5.359282986111111
       },
       "prevControl": {
-        "x": 4.63768364228684,
-        "y": 5.116524823231479
+        "x": 7.059944950810185,
+        "y": 4.996325520833334
       },
       "nextControl": {
-        "x": 2.4891216001157415,
-        "y": 5.881149160879629
+        "x": 6.1916693478786184,
+        "y": 5.550147800946031
       },
       "isLocked": false,
       "linkedName": "Depot"
@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.38788214990138176,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -41.26325530946292
     },
     {
       "waypointRelativePos": 1.0998674802761355,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -40.169147629395056
     },
     {
       "waypointRelativePos": 1.8108512080867853,

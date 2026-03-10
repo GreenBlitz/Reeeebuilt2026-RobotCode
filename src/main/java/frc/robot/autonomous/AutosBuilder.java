@@ -24,7 +24,8 @@ public class AutosBuilder {
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
-		Supplier<Command> intake,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance
@@ -33,20 +34,31 @@ public class AutosBuilder {
 			getQuarterAuto(
 				robot,
 				resetSubsystems,
-				intake,
+				openIntake,
+				closeIntake,
 				scoreSequence,
 				pathfindingConstraints,
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
-			getQuarterAuto(robot, resetSubsystems, intake, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT)
+			getQuarterAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				isNearEndOfPathTolerance,
+				AllianceSide.DEPOT
+			)
 		);
 	}
 
 	private static Supplier<PathPlannerAutoWrapper> getQuarterAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
-		Supplier<Command> intake,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d isNearEndOfPathTolerance,
@@ -54,8 +66,10 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToMiddleCommand(robot, resetSubsystems, intake, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
-				middleToAllienceSideWithScoringCommand(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide)
+				startingLineToMiddleCommand(robot, resetSubsystems, openIntake, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
+				middleToAllienceSideWithScoringCommand(robot, scoreSequence, pathfindingConstraints, isNearEndOfPathTolerance, startingSide),
+				scoreSequence.get().withTimeout(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_ARRIVING_AT_FEEDER_SECONDS),
+				new ParallelCommandGroup(scoreSequence.get(), closeIntake.get())
 			),
 			new Pose2d(),
 			startingSide == AllianceSide.OUTPOST ? "R starting - R mid - Outpost" : "L starting - L mid - Depot"

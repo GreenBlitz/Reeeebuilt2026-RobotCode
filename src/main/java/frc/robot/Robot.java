@@ -348,7 +348,8 @@ public class Robot {
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 
@@ -361,7 +362,8 @@ public class Robot {
 			AutosBuilder.getAutoList(
 				this,
 				autonomousResetSubsystemsCommand,
-				autonomousIntakeCommand,
+				autonomousOpenIntakeCommand,
+				autonomousCloseIntakeCommand,
 				autonomousScoringSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
