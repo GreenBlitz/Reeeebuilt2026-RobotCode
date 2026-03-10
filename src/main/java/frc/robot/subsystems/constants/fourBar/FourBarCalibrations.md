@@ -8,13 +8,11 @@ FourBar calibrations
 #### Motor config
 - [x] Is Inverted
 - [x] Gear ratio
-- [ ] Current limit
+- [x] Current limit
 
 #### Limits
 - [x] Max position
 - [x] Min position
-- [x] Forward limit
-- [x] Backwards limit
 
 #### FeedForward
 - [ ] kS
@@ -38,8 +36,14 @@ FourBar calibrations
 - [ ] Default max velocity per second
 
 #### Reset
-- [ ] Reset voltage
-- [ ] Current threshold to reset
+- [x] Reset voltage
+- [x] Current threshold to reset
 
 #### General Constants
 - [x] FourBar length
+
+#### Open State Constants
+- [x] Position to switch to lower current
+- [x] Hold Current
+- [x] Relaxed Current
+- [x] Current to hold intake closed

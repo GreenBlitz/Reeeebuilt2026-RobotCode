@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
 
 public class FourBarConstants {
@@ -20,7 +20,7 @@ public class FourBarConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 80;
+	public static final int CURRENT_LIMIT = 15;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -53,16 +53,24 @@ public class FourBarConstants {
 	public static final Rotation2d FORWARD_SOFTWARE_LIMITS = MAXIMUM_POSITION.minus(Rotation2d.fromDegrees(1.5));
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMITS = MINIMUM_POSITION.plus(Rotation2d.fromDegrees(1.5));
 
-	public static final double FOUR_BAR_RESET_VOLTAGE = -1;
-	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 30;
+	public static final double CLOSE_VOLTAGE = 7;
+	public static final double CURRENT_TO_HOLD_INTAKE_CLOSED = 3.0;
+
+	public static final double OPEN_VOLTAGE = -5.0;
+	public static final double OPEN_RELAXED_CURRENT_AMP = -3.5;
+	public static final double OPEN_LOCKED_CURRENT_AMP = -6.0;
+
+	public static final double COLLISION_STALL_CURRENT = 13;
+
+	public static final double FOUR_BAR_RESET_VOLTAGE = 2;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
-	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
 
-	public static Arm createFourBar() {
+	public static CurrentControlArm createFourBar() {
 		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
 			MAXIMUM_POSITION,
 			MINIMUM_POSITION,
@@ -70,7 +78,7 @@ public class FourBarConstants {
 			MOMENT_OF_INERTIA,
 			FOUR_BAR_LENGTH
 		);
-		return TalonFXArmBuilder.buildVelocityPositionArm(
+		return TalonFXArmBuilder.buildCurrentControlArm(
 			LOG_PATH,
 			IDs.TalonFXIDs.FOUR_BAR,
 			IS_INVERTED,
@@ -82,7 +90,6 @@ public class FourBarConstants {
 			SIMULATION_SLOT,
 			CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			ARBITRARY_FEED_FORWARD,
 			FORWARD_SOFTWARE_LIMITS,
 			BACKWARD_SOFTWARE_LIMITS,
 			fourBarSimConstant
