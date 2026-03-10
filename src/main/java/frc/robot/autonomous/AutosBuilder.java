@@ -56,7 +56,7 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new SequentialCommandGroup(
-				startingLineToNeutralToStartingLineZoneCenterWithLoopCommand(
+				startingLineToNeutralZoneToStartingLineWithLoopCommand(
 					robot,
 					intake,
 					resetSubsystems,
@@ -64,7 +64,7 @@ public class AutosBuilder {
 					isNearEndOfPathTolerance,
 					allianceSide
 				),
-				startingLineToDepotOrOutpostCommand(
+				startingLineToAllianceSideCommand(
 					robot,
 					intake,
 					resetSubsystems,
@@ -80,7 +80,7 @@ public class AutosBuilder {
 	}
 
 
-	private static Command startingLineToNeutralToStartingLineZoneCenterWithLoopCommand(
+	private static Command startingLineToNeutralZoneToStartingLineWithLoopCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
@@ -101,7 +101,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command startingLineToDepotOrOutpostCommand(
+	private static Command startingLineToAllianceSideCommand(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> resetSubsystems,
