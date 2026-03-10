@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.395203052662038,
-        "y": 2.5
+        "y": 5.710000000000001
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.562700290337638,
-        "y": 2.514712735085521
+        "y": 5.724712735085522
       },
       "isLocked": false,
       "linkedName": "R starting"
@@ -20,7 +20,7 @@
         "y": 2.5
       },
       "prevControl": {
-        "x": 5.319684140380447,
+        "x": 5.319684140380445,
         "y": 2.5024264614921368
       },
       "nextControl": {
@@ -182,7 +182,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -135.0
   },
   "useDefaultConstraints": true
 }
