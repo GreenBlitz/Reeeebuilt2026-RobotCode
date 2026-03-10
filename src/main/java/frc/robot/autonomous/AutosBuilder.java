@@ -30,8 +30,8 @@ public class AutosBuilder {
 		Pose2d isNearEndOfPathTolerance
 	) {
 		return List.of(
-			getUTurnAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.OUTPOST),
-			getUTurnAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT),
+			getHorseshoeAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.OUTPOST),
+			getHorseshoeAuto(robot, intake, scoreSequence, resetSubsystems, pathfindingConstraints, isNearEndOfPathTolerance, AllianceSide.DEPOT),
 			getQuarterAuto(
 				robot,
 				resetSubsystems,
@@ -45,7 +45,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getUTurnAuto(
+	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
 		Robot robot,
 		Supplier<Command> intake,
 		Supplier<Command> scoreSequence,
@@ -71,28 +71,18 @@ public class AutosBuilder {
 					scoreSequence,
 					pathfindingConstraints,
 					isNearEndOfPathTolerance,
-					allianceSide
+					allianceSide.getOtherSide()
 				),
-				allianceSide == AllianceSide.OUTPOST
-				?startingLineToDepotOrOutpostCommand(
+				startingLineToDepotOrOutpostCommand(
 						robot,
 						intake,
 						resetSubsystems,
 						scoreSequence,
 						pathfindingConstraints,
 						isNearEndOfPathTolerance,
-						AllianceSide.DEPOT
+						allianceSide.getOtherSide()
 					)
-				:	startingLineToDepotOrOutpostCommand(
-						robot,
-						intake,
-						resetSubsystems,
-						scoreSequence,
-						pathfindingConstraints,
-						isNearEndOfPathTolerance,
-						AllianceSide.OUTPOST
-				)
-			),
+				),
 			new Pose2d(),
 			allianceSide == AllianceSide.OUTPOST ? "R starting - Neutral zone - Depot" : "L starting - Neutral zone - Outpost"
 		);
@@ -156,8 +146,8 @@ public class AutosBuilder {
 			robot.getSwerve(),
 			() -> robot.getPoseEstimator().getEstimatedPose(),
 			allianceSide == AllianceSide.OUTPOST
-				? PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line")
-				: PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line").mirrorPath(),
+				? PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line").mirrorPath()
+				: PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line"),
 			pathfindingConstraints,
 			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(), scoreSequence.get())),
 			isNearEndOfPathTolerance,
