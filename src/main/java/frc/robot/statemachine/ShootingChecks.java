@@ -26,7 +26,7 @@ public class ShootingChecks {
 		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
 	}
 
-	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
+	public static boolean isFarEnoughBehindHubs(Translation2d turretTranslation) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING
 			&& allianceRelativeTurretTranslation.getX() < StateMachineConstants.MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING;
@@ -40,12 +40,12 @@ public class ShootingChecks {
 
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		boolean isBehindHubs = isBehindHubs(turretTranslation);
-		boolean isFarEnoughBehindHub = isFarEnoughBehindHub(turretTranslation);
+		boolean isFarEnoughBehindHubs = isFarEnoughBehindHubs(turretTranslation);
 		boolean isInAllianceZone = isInAllianceZone(turretTranslation);
 		Logger.recordOutput(logPath + "/IsBehindHubs", isBehindHubs);
-		Logger.recordOutput(logPath + "/IsFarEnoughBehindHub", isFarEnoughBehindHub);
+		Logger.recordOutput(logPath + "/IsFarEnoughBehindHubs", isFarEnoughBehindHubs);
 		Logger.recordOutput(logPath + "/IsInAllianceZone", isInAllianceZone);
-		return (!isBehindHubs || isFarEnoughBehindHub) && !isInAllianceZone;
+		return (!isBehindHubs || isFarEnoughBehindHubs) && !isInAllianceZone;
 	}
 
 	private static boolean isWithinDistance(
