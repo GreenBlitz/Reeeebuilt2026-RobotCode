@@ -23,7 +23,9 @@ public class ShootingChecks {
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
-		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
+		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE
+			&& turretTranslation.getY() > Field.MIN_HUB_Y_VALUE
+			&& Field.getAllianceRelative(turretTranslation).getX() >= Field.getHubMiddle().getX();
 	}
 
 	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
