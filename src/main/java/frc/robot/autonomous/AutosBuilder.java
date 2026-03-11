@@ -21,6 +21,8 @@ public class AutosBuilder {
 		);
 	}
 
+	private static boolean hasPathEnded = false;
+
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
@@ -65,24 +67,25 @@ public class AutosBuilder {
 		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
-			new SequentialCommandGroup(
-				resetSubsystems.get(),
-				new ParallelCommandGroup(
-					scoreSequence.get(),
-					new SequentialCommandGroup(
-						PathFollowingCommandsBuilder.deadlineCommandWithPath(
-							robot.getSwerve(),
-							() -> robot.getPoseEstimator().getEstimatedPose(),
-							startingSide == AllianceSide.DEPOT
-								? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
-								: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-							pathfindingConstraints,
-							openIntake,
-							isNearEndOfPathTolerance,
-							robot.getSwerve().getLogPath()
-						),
-						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_ARRIVING_AT_FEEDER_SECONDS),
-						closeIntake.get()
+			new ParallelCommandGroup(
+				new ParallelDeadlineGroup(
+					PathFollowingCommandsBuilder.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						startingSide == AllianceSide.DEPOT
+							? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
+							: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
+						pathfindingConstraints,
+						isNearEndOfPathTolerance,
+						robot.getSwerve().getLogPath()
+					),
+					new InstantCommand(() -> hasPathEnded = false)
+				).andThen(new InstantCommand(() -> hasPathEnded = true)),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(2).andThen(scoreSequence.get()),
+						openIntake.get().until(() -> hasPathEnded).andThen(new WaitCommand(5).andThen(closeIntake.get()))
 					)
 				)
 			),
