@@ -84,8 +84,13 @@ public class AutosBuilder {
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
 					new ParallelCommandGroup(
-						new WaitCommand(2).andThen(scoreSequence.get()),
-						openIntake.get().until(() -> hasPathEnded).andThen(new WaitCommand(5).andThen(closeIntake.get()))
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_ARRIVING_AT_FEEDER_SECONDS)
+									.andThen(closeIntake.get())
+							)
 					)
 				)
 			),
