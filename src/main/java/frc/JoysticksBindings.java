@@ -3,6 +3,8 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -21,6 +23,7 @@ import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.calibration.camera.CameraPoseCalibration;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -80,7 +83,13 @@ public class JoysticksBindings {
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
-		// bindings...
+		usedJoystick.A.onTrue(new CameraPoseCalibration("CamPoseCalib", "limelight-left", 1000,
+//			0.68 + (0.75/2),
+			1.055,
+			1.125,
+			AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded).getTagPose(10).get(),
+			Rotation2d.fromDegrees(-90)
+		));
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
