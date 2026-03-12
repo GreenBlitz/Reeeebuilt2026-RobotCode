@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 
 public class AutosBuilder {
 
+	private static boolean hasPathEnded = false;
+
 	public static List<Supplier<PathPlannerAutoWrapper>> getAllTestAutos() {
 		return List.of(
 			() -> new PathPlannerAutoWrapper("Rotate"),
@@ -20,8 +22,6 @@ public class AutosBuilder {
 			() -> new PathPlannerAutoWrapper("Straight 2m")
 		);
 	}
-
-	private static boolean hasPathEnded = false;
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAutoList(
 		Robot robot,
@@ -68,8 +68,8 @@ public class AutosBuilder {
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
-				new ParallelDeadlineGroup(
-					PathFollowingCommandsBuilder.followAdjustedPathThenStop(
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
 						startingSide == AllianceSide.DEPOT
@@ -78,9 +78,9 @@ public class AutosBuilder {
 						pathfindingConstraints,
 						isNearEndOfPathTolerance,
 						robot.getSwerve().getLogPath()
-					),
-					new InstantCommand(() -> hasPathEnded = false)
-				).andThen(new InstantCommand(() -> hasPathEnded = true)),
+
+					)
+					.andThen(new InstantCommand(() -> hasPathEnded = true)),
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
 					new ParallelCommandGroup(
