@@ -360,6 +360,8 @@ public class Robot {
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 
+		Supplier<Command> autonomousPassingSequenceCommand = () -> robotCommander.passSequence();
+
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
@@ -371,6 +373,7 @@ public class Robot {
 				autonomousResetSubsystemsCommand,
 				autonomousIntakeCommand,
 				autonomousScoringSequenceCommand,
+				autonomousPassingSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
