@@ -95,8 +95,7 @@ public class ShooterStateHandler {
 				"Safe move to position"
 			),
 			hood.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetHoodPosition()),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS()),
-			new RunCommand(() -> Logger.recordOutput("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", shootingParamsSupplier.get().targetFlywheelVelocityRPS()))
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 		);
 	}
 
