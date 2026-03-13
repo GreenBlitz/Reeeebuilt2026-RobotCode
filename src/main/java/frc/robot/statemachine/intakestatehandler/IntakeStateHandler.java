@@ -86,7 +86,7 @@ public class IntakeStateHandler {
 					.setVoltageWithoutLimit(
 						FourBarConstants.CLOSE_VOLTAGE,
 						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-							&& fourBar.isPastPosition(IntakeState.INTAKE.getFourBarPosition())
+							&& fourBar.isPastPosition(IntakeState.CLOSED.getFourBarPosition())
 					),
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
