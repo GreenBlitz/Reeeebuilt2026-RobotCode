@@ -115,10 +115,7 @@ public class IntakeStateHandler {
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
 			fourBar.getCommandsBuilder()
-				.setVoltageWithoutLimit(
-					FourBarConstants.OPEN_VOLTAGE,
-					() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-				),
+				.setVoltageWithoutLimit(FourBarConstants.OPEN_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
 					() -> isOpenFourBarLocked.getAsBoolean()
