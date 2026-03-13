@@ -80,6 +80,8 @@ public class AutosBuilder {
 						robot.getSwerve().getLogPath()
 
 					)
+					.asProxy()
+					.alongWith(new InstantCommand(() -> hasPathEnded = false))
 					.andThen(new InstantCommand(() -> hasPathEnded = true)),
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
@@ -88,8 +90,17 @@ public class AutosBuilder {
 						openIntake.get()
 							.until(() -> hasPathEnded)
 							.andThen(
-								new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-									.andThen(closeIntake.get())
+								new ParallelCommandGroup(
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
+										.andThen(
+											robot.getSwerve()
+												.getCommandsBuilder()
+												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+										)
+										.asProxy(),
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+										.andThen(closeIntake.get())
+								)
 							)
 					)
 				)
