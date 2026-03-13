@@ -30,7 +30,7 @@ public class FlywheelConstants {
 	public static final double kA_SIM = 0;
 
 	public static final double MOMENT_OF_INERTIA = 0.01;
-	public static final int CURRENT_LIMIT = 80;
+	public static final int CURRENT_LIMIT = 40;
 
 	public static final Rotation2d MAX_ACCELERATION = Rotation2d.fromRotations(350);
 

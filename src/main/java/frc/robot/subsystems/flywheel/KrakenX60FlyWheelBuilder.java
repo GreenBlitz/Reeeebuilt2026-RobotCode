@@ -87,8 +87,6 @@ public class KrakenX60FlyWheelBuilder {
 		configuration.MotorOutput.Inverted = FlywheelConstants.IS_MASTER_INVERTED;
 		configuration.Feedback.SensorToMechanismRatio = FlywheelConstants.SENSOR_TO_MECHANISM_RATIO_MASTER;
 
-		configuration.CurrentLimits.StatorCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
-		configuration.CurrentLimits.StatorCurrentLimitEnable = true;
 		configuration.CurrentLimits.SupplyCurrentLimit = FlywheelConstants.CURRENT_LIMIT;
 		configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
 
