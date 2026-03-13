@@ -30,7 +30,9 @@ public class AutosBuilder {
 		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds
 	) {
 		return List.of(
 			getQuarterAuto(
@@ -40,7 +42,9 @@ public class AutosBuilder {
 				closeIntake,
 				scoreSequence,
 				pathfindingConstraints,
-				isNearEndOfPathTolerance,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				AllianceSide.OUTPOST
 			),
 			getQuarterAuto(
@@ -50,7 +54,9 @@ public class AutosBuilder {
 				closeIntake,
 				scoreSequence,
 				pathfindingConstraints,
-				isNearEndOfPathTolerance,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				AllianceSide.DEPOT
 			)
 		);
@@ -63,7 +69,9 @@ public class AutosBuilder {
 		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
 		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
 		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
@@ -76,7 +84,9 @@ public class AutosBuilder {
 							? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
 							: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
 						pathfindingConstraints,
-						isNearEndOfPathTolerance,
+						regularIsNearEndOfPathTolerance,
+						stuckIsNearEndOfPathTolerance,
+						stuckDebounceSeconds,
 						robot.getSwerve().getLogPath()
 
 					)
