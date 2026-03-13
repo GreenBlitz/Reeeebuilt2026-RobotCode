@@ -363,8 +363,10 @@ public class Robot {
 	}
 
 	private void configureBrakeChooser() {
-		if (brakeCoast.getAsBoolean()) {
+		if (brakeCoast.get()) {
 			BrakeStateManager.brake();
+		} else {
+			BrakeStateManager.coast();
 		}
 	}
 
