@@ -35,18 +35,20 @@ public class AutosBuilder {
 		return List.of(
 			getHorseshoeAuto(
 				robot,
-				openIntake,
-				scoreSequence,
 				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
 				pathfindingConstraints,
 				isNearEndOfPathTolerance,
 				AllianceSide.OUTPOST
 			),
 			getHorseshoeAuto(
 				robot,
-				openIntake,
-				scoreSequence,
 				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
 				pathfindingConstraints,
 				isNearEndOfPathTolerance,
 				AllianceSide.DEPOT
@@ -75,112 +77,45 @@ public class AutosBuilder {
 	}
 
 	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> scoreSequence,
-		Supplier<Command> resetSubsystems,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		AllianceSide allianceSide
+			Robot robot,
+			Supplier<Command> resetSubsystems,
+			Supplier<Command> openIntake,
+			Supplier<Command> closeIntake,
+			Supplier<Command> scoreSequence,
+			PathConstraints pathfindingConstraints,
+			Pose2d isNearEndOfPathTolerance,
+			AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
-			new SequentialCommandGroup(
-				startingLineToNeutralZoneCenterCommand(
-					robot,
-					intake,
-					resetSubsystems,
-					pathfindingConstraints,
-					isNearEndOfPathTolerance,
-					allianceSide
+				new ParallelCommandGroup(
+						PathFollowingCommandsBuilder
+								.followAdjustedPathThenStop(
+										robot.getSwerve(),
+										() -> robot.getPoseEstimator().getEstimatedPose(),
+										startingSide == AllianceSide.DEPOT
+												? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
+												: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
+										pathfindingConstraints,
+										isNearEndOfPathTolerance,
+										robot.getSwerve().getLogPath()
+
+								)
+								.andThen(new InstantCommand(() -> hasPathEnded = true)),
+						new SequentialCommandGroup(
+								resetSubsystems.get(),
+								new ParallelCommandGroup(
+										new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+										openIntake.get()
+												.until(() -> hasPathEnded)
+												.andThen(
+														new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+																.andThen(closeIntake.get())
+												)
+								)
+						)
 				),
-				neutralZoneMiddleToStartingLineCommand(
-					robot,
-					intake,
-					resetSubsystems,
-					scoreSequence,
-					pathfindingConstraints,
-					isNearEndOfPathTolerance,
-					allianceSide.getOtherSide()
-				),
-				startingLineToAllianceSideCommand(
-					robot,
-					intake,
-					resetSubsystems,
-					scoreSequence,
-					pathfindingConstraints,
-					isNearEndOfPathTolerance,
-					allianceSide.getOtherSide()
-				)
-			),
-			new Pose2d(),
-			allianceSide == AllianceSide.OUTPOST ? "R starting - Neutral zone - Depot" : "L starting - Neutral zone - Outpost"
-		);
-	}
-
-	private static Command startingLineToNeutralZoneCenterCommand(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> resetSubsystems,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		AllianceSide allianceSide
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			allianceSide == AllianceSide.OUTPOST
-				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center")
-				: PathHelper.PATH_PLANNER_PATHS.get("R starting - Neutral zone center").mirrorPath(),
-			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(intake.get()),
-			isNearEndOfPathTolerance,
-			robot.getSwerve().getLogPath()
-		);
-	}
-
-	private static Command startingLineToAllianceSideCommand(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		AllianceSide allianceSide
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			allianceSide == AllianceSide.OUTPOST
-				? PathHelper.PATH_PLANNER_PATHS.get("R starting - Outpost")
-				: PathHelper.PATH_PLANNER_PATHS.get("L starting - Depot"),
-			pathfindingConstraints,
-			allianceSide == AllianceSide.OUTPOST
-				? () -> resetSubsystems.get().andThen(scoreSequence.get())
-				: () -> resetSubsystems.get().andThen(new ParallelCommandGroup(scoreSequence.get(), intake.get())),
-			isNearEndOfPathTolerance,
-			robot.getSwerve().getLogPath()
-		);
-	}
-
-	private static Command neutralZoneMiddleToStartingLineCommand(
-		Robot robot,
-		Supplier<Command> intake,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
-		AllianceSide allianceSide
-	) {
-		return PathFollowingCommandsBuilder.deadlineCommandWithPath(
-			robot.getSwerve(),
-			() -> robot.getPoseEstimator().getEstimatedPose(),
-			allianceSide == AllianceSide.OUTPOST
-				? PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line").mirrorPath()
-				: PathHelper.PATH_PLANNER_PATHS.get("Neutral zone center - Left starting line"),
-			pathfindingConstraints,
-			() -> resetSubsystems.get().andThen(new ParallelCommandGroup(intake.get(), scoreSequence.get())),
-			isNearEndOfPathTolerance,
-			robot.getSwerve().getLogPath()
+				new Pose2d(),
+				startingSide == AllianceSide.OUTPOST ? "R horseshoe" : "L horseshoe"
 		);
 	}
 
