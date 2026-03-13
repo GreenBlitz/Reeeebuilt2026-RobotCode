@@ -22,7 +22,8 @@ public class IntakeStateHandler {
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
-	private BooleanSupplier isFourBarLocked;
+	private BooleanSupplier isOpenFourBarLocked;
+	private BooleanSupplier isClosedFourBarLocked;
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
@@ -30,11 +31,13 @@ public class IntakeStateHandler {
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-		this.isFourBarLocked = () -> false;
-	}
+		this.isOpenFourBarLocked = () -> false;
+        this.isClosedFourBarLocked = () -> false;
+    }
 
-	public void setIntakeButtonSupplier(BooleanSupplier fourBarLocked) {
-		this.isFourBarLocked = fourBarLocked;
+	public void setIntakeButtonSuppliers(BooleanSupplier openFourBarLocked,BooleanSupplier closedFourBarLocked) {
+		this.isOpenFourBarLocked = openFourBarLocked;
+		this.isClosedFourBarLocked = closedFourBarLocked;
 	}
 
 	public Command calibration() {
@@ -87,7 +90,7 @@ public class IntakeStateHandler {
 					),
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
-						() -> isFourBarLocked.getAsBoolean()
+						() -> isClosedFourBarLocked.getAsBoolean()
 							? FourBarConstants.CLOSED_LOCKED_CURRENT_AMP
 							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
 					)
@@ -120,13 +123,14 @@ public class IntakeStateHandler {
 				),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isFourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
 				)
 		);
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsFourBarLocked", isFourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsOpenFourBarLocked", isOpenFourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsClosedFourBarLocked", isClosedFourBarLocked.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
