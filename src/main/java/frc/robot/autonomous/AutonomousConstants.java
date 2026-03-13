@@ -24,5 +24,4 @@ public class AutonomousConstants {
 	public static final double TIME_BETWEEN_WIGGLES_AFTER_PATH_END_SECONDS = 0.3;
 	public static final Rotation2d WIGGLE_ANGLE_AFTER_PATH_END_SECONDS = Rotation2d.fromDegrees(5);
 
-
 }
