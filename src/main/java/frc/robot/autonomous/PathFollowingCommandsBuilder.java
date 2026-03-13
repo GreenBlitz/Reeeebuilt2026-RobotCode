@@ -183,20 +183,20 @@ public class PathFollowingCommandsBuilder {
 		Pose2d regularTolerance,
 		Pose2d stuckTolerance
 	) {
-		Debouncer stuckDebouncer = new Debouncer(2.0, DebounceType.kRising);
+		Debouncer stuckDebouncer = new Debouncer(AutonomousConstants.PATH_END_STUCK_DEBOUNCE_SECONDS, DebounceType.kRising);
 
 		return () -> {
 			Pose2d targetPose = Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path));
 			Pose2d current = currentPose.get();
 
-			boolean nearRegularTolerance = ToleranceMath.isNear(targetPose, current, regularTolerance);
-			boolean nearStuckTolerance = ToleranceMath.isNear(targetPose, current, stuckTolerance);
+			boolean isNearRegularTolerance = ToleranceMath.isNear(targetPose, current, regularTolerance);
+			boolean isNearStuckTolerance = ToleranceMath.isNear(targetPose, current, stuckTolerance);
 
-			if (nearRegularTolerance) {
+			if (isNearRegularTolerance) {
 				return true;
 			}
 
-			return stuckDebouncer.calculate(nearStuckTolerance);
+			return stuckDebouncer.calculate(isNearStuckTolerance);
 		};
 	}
 

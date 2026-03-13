@@ -375,7 +375,7 @@ public class Robot {
 				autonomousScoringSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.STUCK_IS_NEAR_END_OF_PATH_TOLERANCE
+				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
 		);
 	}
