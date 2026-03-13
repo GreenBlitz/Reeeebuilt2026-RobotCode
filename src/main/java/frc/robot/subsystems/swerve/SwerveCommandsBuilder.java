@@ -136,11 +136,11 @@ public class SwerveCommandsBuilder {
 
 	public Command turnToHeading(Supplier<Rotation2d> targetHeading, RotateAxis rotateAxis) {
 		return swerve.asSubsystemCommand(
-				new InitExecuteCommand(
-						swerve::resetPIDControllers,
-						() -> swerve.turnToHeading(targetHeading.get(), SwerveState.DEFAULT_DRIVE.withRotateAxis(rotateAxis))
-				),
-				"Rotate around " + rotateAxis.name() + " to " + targetHeading
+			new InitExecuteCommand(
+				swerve::resetPIDControllers,
+				() -> swerve.turnToHeading(targetHeading.get(), SwerveState.DEFAULT_DRIVE.withRotateAxis(rotateAxis))
+			),
+			"Rotate around " + rotateAxis.name() + " to " + targetHeading
 		);
 	}
 
@@ -230,17 +230,21 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command wiggle(Rotation2d wiggleAngle, double timeBetweenWiggles) {
-		return new DeferredCommand( ()-> new SequentialCommandGroup(
-			turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - wiggleAngle.getDegrees())).withTimeout(timeBetweenWiggles),
-			new RepeatCommand(
-				new SequentialCommandGroup(
-					turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() + 2 * wiggleAngle.getDegrees()))
-						.withTimeout(timeBetweenWiggles),
-					turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - 2 * wiggleAngle.getDegrees()))
-						.withTimeout(timeBetweenWiggles)
+		return new DeferredCommand(
+			() -> new SequentialCommandGroup(
+				turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - wiggleAngle.getDegrees()))
+					.withTimeout(timeBetweenWiggles),
+				new RepeatCommand(
+					new SequentialCommandGroup(
+						turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() + 2 * wiggleAngle.getDegrees()))
+							.withTimeout(timeBetweenWiggles),
+						turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - 2 * wiggleAngle.getDegrees()))
+							.withTimeout(timeBetweenWiggles)
+					)
 				)
-			)
-		), Set.of(swerve));
+			),
+			Set.of(swerve)
+		);
 	}
 
 }
