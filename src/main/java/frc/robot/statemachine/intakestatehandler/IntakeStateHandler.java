@@ -85,7 +85,12 @@ public class IntakeStateHandler {
 						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
 							&& fourBar.isPastPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
-				fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
+				fourBar.getCommandsBuilder()
+					.setCurrentWithoutLimit(
+						() -> isFourBarLocked.getAsBoolean()
+							? FourBarConstants.CLOSED_LOCKED_CURRENT_AMP
+							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
+					)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
