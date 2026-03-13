@@ -35,7 +35,7 @@ public class IntakeStateHandler {
 		this.isClosedFourBarLocked = () -> false;
 	}
 
-	public void setIntakeButtonSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closedFourBarLocked) {
+	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closedFourBarLocked) {
 		this.isOpenFourBarLocked = openFourBarLocked;
 		this.isClosedFourBarLocked = closedFourBarLocked;
 	}
