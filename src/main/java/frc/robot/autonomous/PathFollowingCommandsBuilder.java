@@ -10,7 +10,10 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class PathFollowingCommandsBuilder {
@@ -21,12 +24,21 @@ public class PathFollowingCommandsBuilder {
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
 		Supplier<Command> commandSupplier,
-		Pose2d isNearEndOfPathTolerance,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
 		String logPath
 	) {
 		return new ParallelCommandGroup(
 			commandSupplier.get(),
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath)
+			followAdjustedPathThenStop(
+				swerve,
+				currentPose,
+				path,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				logPath
+			)
 		);
 	}
 
@@ -47,11 +59,20 @@ public class PathFollowingCommandsBuilder {
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
 		Supplier<Command> commandSupplier,
-		Pose2d isNearEndOfPathTolerance,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
 		String logPath
 	) {
 		return new ParallelDeadlineGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
+			followAdjustedPathThenStop(
+				swerve,
+				currentPose,
+				path,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				logPath
+			),
 			commandSupplier.get()
 		);
 	}
@@ -62,11 +83,20 @@ public class PathFollowingCommandsBuilder {
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
 		Supplier<Command> commandSupplier,
-		Pose2d isNearEndOfPathTolerance,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
 		String logPath
 	) {
 		return new SequentialCommandGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
+			followAdjustedPathThenStop(
+				swerve,
+				currentPose,
+				path,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				logPath
+			),
 			commandSupplier.get()
 		);
 	}
@@ -138,15 +168,36 @@ public class PathFollowingCommandsBuilder {
 		Supplier<Pose2d> currentPose,
 		PathPlannerPath path,
 		PathConstraints pathfindingConstraints,
-		Pose2d isNearEndOfPathTolerance,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
 		String logPath
 	) {
 		return followAdjustedPath(swerve, currentPose, path, pathfindingConstraints, logPath)
-			.until(
-				() -> ToleranceMath
-					.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), isNearEndOfPathTolerance)
-			)
+			.until(isNearEndOfPath(path, currentPose, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance))
 			.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
+	}
+
+	private static BooleanSupplier isNearEndOfPath(
+		PathPlannerPath path,
+		Supplier<Pose2d> currentPose,
+		Pose2d regularTolerance,
+		Pose2d stuckTolerance
+	) {
+		Debouncer stuckDebouncer = new Debouncer(2.0, DebounceType.kRising);
+
+		return () -> {
+			Pose2d targetPose = Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path));
+			Pose2d current = currentPose.get();
+
+			boolean nearRegularTolerance = ToleranceMath.isNear(targetPose, current, regularTolerance);
+			boolean nearStuckTolerance = ToleranceMath.isNear(targetPose, current, stuckTolerance);
+
+			if (nearRegularTolerance) {
+				return true;
+			}
+
+			return stuckDebouncer.calculate(nearStuckTolerance);
+		};
 	}
 
 }
