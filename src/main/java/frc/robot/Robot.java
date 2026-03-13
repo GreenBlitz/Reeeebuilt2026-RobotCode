@@ -273,6 +273,8 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
+		brakeCoast.periodic();
+		configureBrakeChooser();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();

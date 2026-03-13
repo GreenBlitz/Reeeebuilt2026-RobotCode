@@ -10,6 +10,7 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.utils.brakestate.BrakeStateManager;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -96,6 +97,7 @@ public class RobotCommander extends GBSubsystem {
 		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
+		BrakeStateManager.log();
 	}
 
 	public Command setState(RobotState robotState) {
