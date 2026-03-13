@@ -94,7 +94,7 @@ public class AutosBuilder {
 										.wiggle(
 											AutonomousConstants.WIGGLE_ANGLE_AFTER_PATH_END_SECONDS,
 											AutonomousConstants.TIME_BETWEEN_WIGGLES_AFTER_PATH_END_SECONDS
-										),
+										).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)

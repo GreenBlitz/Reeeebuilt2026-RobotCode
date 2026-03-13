@@ -218,10 +218,10 @@ public class SwerveCommandsBuilder {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				swerve.getCommandsBuilder()
-					.turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() + wiggleAngle.getDegrees()))
+					.turnToHeading(Rotation2d.fromDegrees(swerve.getAllianceRelativeHeading().getDegrees() + wiggleAngle.getDegrees()))
 					.withTimeout(timeBetweenWiggles),
 				swerve.getCommandsBuilder()
-					.turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - wiggleAngle.getDegrees()))
+					.turnToHeading(Rotation2d.fromDegrees(swerve.getAllianceRelativeHeading().getDegrees() - wiggleAngle.getDegrees()))
 					.withTimeout(timeBetweenWiggles)
 			)
 		);
