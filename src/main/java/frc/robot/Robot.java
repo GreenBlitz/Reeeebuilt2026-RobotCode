@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -76,6 +77,8 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
+
+	private final DigitalInputInputsAutoLogged brakeCoast;
 
 	private final Swerve swerve;
 
@@ -228,6 +231,7 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+		this.brakeCoast = new DigitalInputInputsAutoLogged();
 		configureAuto();
 	}
 
@@ -355,6 +359,12 @@ public class Robot {
 		return limelightRight;
 	}
 
+	private void configureBrakeChooser() {
+		if (brakeCoast.debouncedValue) {
+			BrakeStateManager.brake();
+		}
+	}
+
 	private void configureAuto() {
 		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
@@ -377,6 +387,7 @@ public class Robot {
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
 		);
+		configureBrakeChooser();
 	}
 
 }
