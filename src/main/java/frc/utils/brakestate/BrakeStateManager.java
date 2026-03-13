@@ -1,6 +1,8 @@
 package frc.utils.brakestate;
 
 
+import org.littletonrobotics.junction.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,10 @@ public class BrakeStateManager {
 
 	public static void coast() {
 		setBrakeMode(BrakeMode.COAST, coastRunnables);
+	}
+
+	public static void log() {
+		Logger.recordOutput("/currentBrakeCoast", currentMode);
 	}
 
 }

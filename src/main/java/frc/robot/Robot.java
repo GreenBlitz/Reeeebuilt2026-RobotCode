@@ -52,6 +52,7 @@ import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 import java.util.function.Supplier;
 
@@ -76,6 +77,8 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
+
+	private final LoggedNetworkBoolean brakeCoast;
 
 	private final Swerve swerve;
 
@@ -228,6 +231,8 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+		this.brakeCoast = new LoggedNetworkBoolean("/brakeCoast", false);
+
 		configureAuto();
 	}
 
@@ -268,6 +273,8 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
+		brakeCoast.periodic();
+		configureBrakeChooser();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
@@ -355,6 +362,14 @@ public class Robot {
 		return limelightRight;
 	}
 
+	private void configureBrakeChooser() {
+		if (brakeCoast.get()) {
+			BrakeStateManager.brake();
+		} else {
+			BrakeStateManager.coast();
+		}
+	}
+
 	private void configureAuto() {
 		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
@@ -377,6 +392,7 @@ public class Robot {
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
 			)
 		);
+		configureBrakeChooser();
 	}
 
 }
