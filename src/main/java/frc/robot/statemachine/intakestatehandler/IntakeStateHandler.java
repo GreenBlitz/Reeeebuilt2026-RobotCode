@@ -35,9 +35,9 @@ public class IntakeStateHandler {
 		this.isClosingFourBarHarder = () -> false;
 	}
 
-	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closedFourBarLocked) {
+	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closingFourBarHarder) {
 		this.isOpenFourBarLocked = openFourBarLocked;
-		this.isClosingFourBarHarder = closedFourBarLocked;
+		this.isClosingFourBarHarder = closingFourBarHarder;
 	}
 
 	public Command calibration() {
@@ -91,7 +91,7 @@ public class IntakeStateHandler {
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
 						() -> isClosingFourBarHarder.getAsBoolean()
-							? FourBarConstants.CLOSED_LOCKED_CURRENT_AMP
+							? FourBarConstants.CLOSING_HARDER_CURRENT_AMP
 							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
 					)
 			),

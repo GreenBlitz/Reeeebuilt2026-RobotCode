@@ -55,7 +55,7 @@ public class FourBarConstants {
 
 	public static final double CLOSE_VOLTAGE = 7;
 	public static final double CLOSED_RELAXED_CURRENT_AMP = 3.5;
-	public static final double CLOSED_LOCKED_CURRENT_AMP = 6.0;
+	public static final double CLOSING_HARDER_CURRENT_AMP = 6.0;
 
 	public static final double OPEN_VOLTAGE = -5.0;
 	public static final double OPEN_RELAXED_CURRENT_AMP = -3.5;
