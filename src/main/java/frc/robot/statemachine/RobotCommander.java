@@ -169,6 +169,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING,
+			StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
@@ -179,6 +180,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING,
+			StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}
@@ -189,6 +191,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING,
+			StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_SCORE_METERS
 		);
 	}
@@ -199,6 +202,7 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING,
+			StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}

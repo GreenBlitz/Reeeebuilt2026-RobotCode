@@ -260,7 +260,7 @@ public class Robot {
 	}
 
 	public boolean isTurretMoveLegal() {
-		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
+		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().finalTurretTarget(), turret.getPosition());
 	}
 
 	public void periodic() {
