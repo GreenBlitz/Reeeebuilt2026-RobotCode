@@ -79,7 +79,7 @@ public class AutosBuilder {
 						isNearEndOfPathTolerance,
 						robot.getSwerve().getLogPath()
 
-					)
+					).asProxy()
 					.andThen(new InstantCommand(() -> hasPathEnded = true)),
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
