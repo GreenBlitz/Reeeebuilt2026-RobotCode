@@ -23,6 +23,6 @@ public class AutonomousConstants {
 	public static final Double TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS = 4.0;
 	public static final Double TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START = 2.0;
 
-	public static final Double PATH_END_STUCK_DEBOUNCE_SECONDS = 2.0;
+	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 
 }

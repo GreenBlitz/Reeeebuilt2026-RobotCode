@@ -26,6 +26,7 @@ public class PathFollowingCommandsBuilder {
 		Supplier<Command> commandSupplier,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
 		String logPath
 	) {
 		return new ParallelCommandGroup(
@@ -37,6 +38,7 @@ public class PathFollowingCommandsBuilder {
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				logPath
 			)
 		);
@@ -61,6 +63,7 @@ public class PathFollowingCommandsBuilder {
 		Supplier<Command> commandSupplier,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
 		String logPath
 	) {
 		return new ParallelDeadlineGroup(
@@ -71,6 +74,7 @@ public class PathFollowingCommandsBuilder {
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				logPath
 			),
 			commandSupplier.get()
@@ -85,6 +89,7 @@ public class PathFollowingCommandsBuilder {
 		Supplier<Command> commandSupplier,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
 		String logPath
 	) {
 		return new SequentialCommandGroup(
@@ -95,6 +100,7 @@ public class PathFollowingCommandsBuilder {
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				logPath
 			),
 			commandSupplier.get()
@@ -170,10 +176,11 @@ public class PathFollowingCommandsBuilder {
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
 		String logPath
 	) {
 		return followAdjustedPath(swerve, currentPose, path, pathfindingConstraints, logPath)
-			.until(isNearEndOfPath(path, currentPose, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance))
+			.until(isNearEndOfPath(path, currentPose, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance, stuckDebounceSeconds))
 			.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
 	}
 
@@ -181,9 +188,10 @@ public class PathFollowingCommandsBuilder {
 		PathPlannerPath path,
 		Supplier<Pose2d> currentPose,
 		Pose2d regularTolerance,
-		Pose2d stuckTolerance
+		Pose2d stuckTolerance,
+		double stuckDebounceSeconds
 	) {
-		Debouncer stuckDebouncer = new Debouncer(AutonomousConstants.PATH_END_STUCK_DEBOUNCE_SECONDS, DebounceType.kRising);
+		Debouncer stuckDebouncer = new Debouncer(stuckDebounceSeconds, DebounceType.kRising);
 
 		return () -> {
 			Pose2d targetPose = Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path));
