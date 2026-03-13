@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -53,6 +52,7 @@ import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 import java.util.function.Supplier;
 
@@ -78,7 +78,7 @@ public class Robot {
 
 	private AutonomousChooser autonomousChooser;
 
-	private final DigitalInputInputsAutoLogged brakeCoast;
+	private final LoggedNetworkBoolean brakeCoast;
 
 	private final Swerve swerve;
 
@@ -231,7 +231,8 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
-		this.brakeCoast = new DigitalInputInputsAutoLogged();
+		this.brakeCoast = new LoggedNetworkBoolean("/brakeCoast", false);
+
 		configureAuto();
 	}
 
@@ -360,7 +361,7 @@ public class Robot {
 	}
 
 	private void configureBrakeChooser() {
-		if (brakeCoast.debouncedValue) {
+		if (brakeCoast.getAsBoolean()) {
 			BrakeStateManager.brake();
 		}
 	}
