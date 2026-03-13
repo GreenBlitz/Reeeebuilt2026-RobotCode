@@ -23,7 +23,7 @@ public class IntakeStateHandler {
 
 	private IntakeState currentState;
 	private BooleanSupplier isOpenFourBarLocked;
-	private BooleanSupplier isClosedFourBarLocked;
+	private BooleanSupplier isClosingFourBarHarder;
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
@@ -32,12 +32,12 @@ public class IntakeStateHandler {
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 		this.isOpenFourBarLocked = () -> false;
-		this.isClosedFourBarLocked = () -> false;
+		this.isClosingFourBarHarder = () -> false;
 	}
 
 	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closedFourBarLocked) {
 		this.isOpenFourBarLocked = openFourBarLocked;
-		this.isClosedFourBarLocked = closedFourBarLocked;
+		this.isClosingFourBarHarder = closedFourBarLocked;
 	}
 
 	public Command calibration() {
@@ -90,7 +90,7 @@ public class IntakeStateHandler {
 					),
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
-						() -> isClosedFourBarLocked.getAsBoolean()
+						() -> isClosingFourBarHarder.getAsBoolean()
 							? FourBarConstants.CLOSED_LOCKED_CURRENT_AMP
 							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
 					)
@@ -132,7 +132,7 @@ public class IntakeStateHandler {
 
 	public void periodic() {
 		Logger.recordOutput(logPath + "/IsOpenFourBarLocked", isOpenFourBarLocked.getAsBoolean());
-		Logger.recordOutput(logPath + "/IsClosedFourBarLocked", isClosedFourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/isClosingFourBarHarder", isClosingFourBarHarder.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
