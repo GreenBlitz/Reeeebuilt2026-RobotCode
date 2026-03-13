@@ -117,11 +117,9 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-
 	public Command turnToHeading(Rotation2d targetHeading) {
 		return turnToHeading(targetHeading, RotateAxis.MIDDLE_OF_CHASSIS);
 	}
-
 
 	public Command turnToHeading(Rotation2d targetHeading, RotateAxis rotateAxis) {
 		return swerve.asSubsystemCommand(
@@ -132,7 +130,6 @@ public class SwerveCommandsBuilder {
 			"Rotate around " + rotateAxis.name() + " to " + targetHeading
 		);
 	}
-
 
 	public Command turnToHeading(Supplier<Rotation2d> targetHeading, RotateAxis rotateAxis) {
 		return swerve.asSubsystemCommand(
