@@ -214,4 +214,17 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
+	public Command wiggle(Rotation2d wiggleAngle, double timeBetweenWiggles) {
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				swerve.getCommandsBuilder()
+					.turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() + wiggleAngle.getDegrees()))
+					.withTimeout(timeBetweenWiggles),
+				swerve.getCommandsBuilder()
+					.turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - wiggleAngle.getDegrees()))
+					.withTimeout(timeBetweenWiggles)
+			)
+		);
+	}
+
 }
