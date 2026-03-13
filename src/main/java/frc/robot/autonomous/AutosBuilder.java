@@ -77,45 +77,45 @@ public class AutosBuilder {
 	}
 
 	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
-			Robot robot,
-			Supplier<Command> resetSubsystems,
-			Supplier<Command> openIntake,
-			Supplier<Command> closeIntake,
-			Supplier<Command> scoreSequence,
-			PathConstraints pathfindingConstraints,
-			Pose2d isNearEndOfPathTolerance,
-			AllianceSide startingSide
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d isNearEndOfPathTolerance,
+		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
-				new ParallelCommandGroup(
-						PathFollowingCommandsBuilder
-								.followAdjustedPathThenStop(
-										robot.getSwerve(),
-										() -> robot.getPoseEstimator().getEstimatedPose(),
-										startingSide == AllianceSide.DEPOT
-												? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
-												: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
-										pathfindingConstraints,
-										isNearEndOfPathTolerance,
-										robot.getSwerve().getLogPath()
+			new ParallelCommandGroup(
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						startingSide == AllianceSide.DEPOT
+							? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
+							: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
+						pathfindingConstraints,
+						isNearEndOfPathTolerance,
+						robot.getSwerve().getLogPath()
 
-								)
-								.andThen(new InstantCommand(() -> hasPathEnded = true)),
-						new SequentialCommandGroup(
-								resetSubsystems.get(),
-								new ParallelCommandGroup(
-										new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
-										openIntake.get()
-												.until(() -> hasPathEnded)
-												.andThen(
-														new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-																.andThen(closeIntake.get())
-												)
-								)
-						)
-				),
-				new Pose2d(),
-				startingSide == AllianceSide.OUTPOST ? "R horseshoe" : "L horseshoe"
+					)
+					.andThen(new InstantCommand(() -> hasPathEnded = true)),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+									.andThen(closeIntake.get())
+							)
+					)
+				)
+			),
+			new Pose2d(),
+			startingSide == AllianceSide.OUTPOST ? "R horseshoe" : "L horseshoe"
 		);
 	}
 
