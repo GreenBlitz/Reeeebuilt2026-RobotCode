@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.constants.field.Field;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
@@ -26,7 +27,7 @@ public class PathFollowingCommandsBuilder {
 	) {
 		return new ParallelCommandGroup(
 			commandSupplier.get(),
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath)
+			followAdjustedPathWithTargetEndState(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath)
 		);
 	}
 
@@ -51,7 +52,7 @@ public class PathFollowingCommandsBuilder {
 		String logPath
 	) {
 		return new ParallelDeadlineGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
+			followAdjustedPathWithTargetEndState(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
 			commandSupplier.get()
 		);
 	}
@@ -66,7 +67,7 @@ public class PathFollowingCommandsBuilder {
 		String logPath
 	) {
 		return new SequentialCommandGroup(
-			followAdjustedPathThenStop(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
+			followAdjustedPathWithTargetEndState(swerve, currentPose, path, pathfindingConstraints, isNearEndOfPathTolerance, logPath),
 			commandSupplier.get()
 		);
 	}
@@ -133,7 +134,7 @@ public class PathFollowingCommandsBuilder {
 		);
 	}
 
-	public static Command followAdjustedPathThenStop(
+	public static Command followAdjustedPathWithTargetEndState(
 		Swerve swerve,
 		Supplier<Pose2d> currentPose,
 		PathPlannerPath path,
@@ -146,7 +147,10 @@ public class PathFollowingCommandsBuilder {
 				() -> ToleranceMath
 					.isNear(Field.getAllianceRelative(PathPlannerUtil.getLastPathPose(path)), currentPose.get(), isNearEndOfPathTolerance)
 			)
-			.andThen(swerve.getCommandsBuilder().resetTargetSpeeds());
+			.andThen(
+				swerve.getCommandsBuilder()
+					.setChassisSpeeds(PathPlannerUtil.getAllianceRelativeGoalEndSpeeds(path), SwerveState.DEFAULT_PATH_PLANNER)
+			);
 	}
 
 }
