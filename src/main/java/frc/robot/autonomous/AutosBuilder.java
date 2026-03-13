@@ -95,7 +95,7 @@ public class AutosBuilder {
 										.andThen(
 											robot.getSwerve()
 												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.ANGLE_TO_WIGGLE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)

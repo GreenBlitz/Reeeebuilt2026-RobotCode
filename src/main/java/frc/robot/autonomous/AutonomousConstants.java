@@ -23,6 +23,6 @@ public class AutonomousConstants {
 	public static final double TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START = 2.0;
 	public static final double TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END = 2.0;
 	public static final double TIME_BETWEEN_WIGGLES_SECONDS = 0.3;
-	public static final Rotation2d ANGLE_TO_WIGGLE = Rotation2d.fromDegrees(5);
+	public static final Rotation2d WIGGLE_RANGE = Rotation2d.fromDegrees(5);
 
 }
