@@ -32,10 +32,10 @@ public class IntakeStateHandler {
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 		this.isOpenFourBarLocked = () -> false;
-        this.isClosedFourBarLocked = () -> false;
-    }
+		this.isClosedFourBarLocked = () -> false;
+	}
 
-	public void setIntakeButtonSuppliers(BooleanSupplier openFourBarLocked,BooleanSupplier closedFourBarLocked) {
+	public void setIntakeButtonSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closedFourBarLocked) {
 		this.isOpenFourBarLocked = openFourBarLocked;
 		this.isClosedFourBarLocked = closedFourBarLocked;
 	}
@@ -123,7 +123,9 @@ public class IntakeStateHandler {
 				),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+					() -> isOpenFourBarLocked.getAsBoolean()
+						? FourBarConstants.OPEN_LOCKED_CURRENT_AMP
+						: FourBarConstants.OPEN_RELAXED_CURRENT_AMP
 				)
 		);
 	}
