@@ -87,7 +87,7 @@ public class IntakeStateHandler {
 					),
 				fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
 			),
-			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
 	}
 
