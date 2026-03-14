@@ -363,6 +363,8 @@ public class Robot {
 
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
+		Supplier<Command> autonomousPassingSequenceCommand = () -> getRobotCommander().passSequence();
+
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.autonomousChooser = new AutonomousChooser(
@@ -373,6 +375,7 @@ public class Robot {
 				autonomousOpenIntakeCommand,
 				autonomousCloseIntakeCommand,
 				autonomousScoringSequenceCommand,
+				autonomousPassingSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
 				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
