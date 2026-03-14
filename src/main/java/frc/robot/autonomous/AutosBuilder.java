@@ -29,6 +29,7 @@ public class AutosBuilder {
 		Supplier<Command> openIntake,
 		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
+		Supplier<Command> passSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
@@ -51,14 +52,51 @@ public class AutosBuilder {
 				robot,
 				resetSubsystems,
 				openIntake,
-				closeIntake,
 				scoreSequence,
+				closeIntake,
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT
+			),
+			getPassingAuto(
+				robot,
+				pathfindingConstraints,
+				resetSubsystems,
+				openIntake,
+				passSequence,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds
 			)
+		);
+	}
+
+	private static Supplier<PathPlannerAutoWrapper> getPassingAuto(
+		Robot robot,
+		PathConstraints pathfindingConstraints,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> intake,
+		Supplier<Command> passSequence,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			PathFollowingCommandsBuilder.commandDuringPath(
+				robot.getSwerve(),
+				() -> robot.getPoseEstimator().getEstimatedPose(),
+				PathHelper.PATH_PLANNER_PATHS.get("R Bump - L close mid"),
+				pathfindingConstraints,
+				() -> resetSubsystems.get().andThen(intake.get().alongWith(passSequence.get())),
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				robot.getSwerve().getLogPath()
+			),
+			new Pose2d(),
+			"R Bump - L close mid"
 		);
 	}
 
