@@ -188,7 +188,15 @@ public class Robot {
 			)
 		);
 
-		this.limelightLeft = new Limelight("limelight-left", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
+		this.limelightLeft = new Limelight(
+			"limelight-left",
+			"Vision",
+			new Pose3d(
+				new Translation3d(-0.077, -0.345, 0.5),
+				new Rotation3d(Math.toRadians(-0.17), Math.toRadians(19.31), Math.toRadians(91.91))
+			),
+			LimelightPipeline.APRIL_TAG
+		);
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
@@ -348,7 +356,8 @@ public class Robot {
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 
@@ -363,11 +372,14 @@ public class Robot {
 			AutosBuilder.getAutoList(
 				this,
 				autonomousResetSubsystemsCommand,
-				autonomousIntakeCommand,
+				autonomousOpenIntakeCommand,
+				autonomousCloseIntakeCommand,
 				autonomousScoringSequenceCommand,
 				autonomousPassingSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
+				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
+				AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS
 			)
 		);
 	}

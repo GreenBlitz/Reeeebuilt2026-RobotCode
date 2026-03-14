@@ -22,7 +22,8 @@ public class IntakeStateHandler {
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
-	private BooleanSupplier isFourBarLocked;
+	private BooleanSupplier isOpenFourBarLocked;
+	private BooleanSupplier isCloseFourBarHarder;
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
@@ -30,11 +31,13 @@ public class IntakeStateHandler {
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-		this.isFourBarLocked = () -> false;
+		this.isOpenFourBarLocked = () -> false;
+		this.isCloseFourBarHarder = () -> false;
 	}
 
-	public void setIntakeButtonSupplier(BooleanSupplier fourBarLocked) {
-		this.isFourBarLocked = fourBarLocked;
+	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closeFourBarHarder) {
+		this.isOpenFourBarLocked = openFourBarLocked;
+		this.isCloseFourBarHarder = closeFourBarHarder;
 	}
 
 	public Command calibration() {
@@ -83,9 +86,13 @@ public class IntakeStateHandler {
 					.setVoltageWithoutLimit(
 						FourBarConstants.CLOSE_VOLTAGE,
 						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-							&& fourBar.isPastPosition(IntakeState.INTAKE.getFourBarPosition())
 					),
-				fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.CURRENT_TO_HOLD_INTAKE_CLOSED)
+				fourBar.getCommandsBuilder()
+					.setCurrentWithoutLimit(
+						() -> isCloseFourBarHarder.getAsBoolean()
+							? FourBarConstants.CLOSE_HARDER_CURRENT_AMP
+							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
+					)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 		);
@@ -108,20 +115,19 @@ public class IntakeStateHandler {
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
 			fourBar.getCommandsBuilder()
-				.setVoltageWithoutLimit(
-					FourBarConstants.OPEN_VOLTAGE,
-					() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-						&& fourBar.isBehindPosition(IntakeState.OUTTAKE.getFourBarPosition())
-				),
+				.setVoltageWithoutLimit(FourBarConstants.OPEN_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isFourBarLocked.getAsBoolean() ? FourBarConstants.OPEN_LOCKED_CURRENT_AMP : FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+					() -> isOpenFourBarLocked.getAsBoolean()
+						? FourBarConstants.OPEN_LOCKED_CURRENT_AMP
+						: FourBarConstants.OPEN_RELAXED_CURRENT_AMP
 				)
 		);
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsFourBarLocked", isFourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsOpenFourBarLocked", isOpenFourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/isCloseFourBarHarder", isCloseFourBarHarder.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasFourBarBeenReset = true;
