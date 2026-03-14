@@ -117,7 +117,6 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-
 	public Command turnToHeading(Rotation2d targetHeading) {
 		return turnToHeading(targetHeading, RotateAxis.MIDDLE_OF_CHASSIS);
 	}
@@ -131,7 +130,6 @@ public class SwerveCommandsBuilder {
 			"Rotate around " + rotateAxis.name() + " to " + targetHeading
 		);
 	}
-
 
 	public Command drive(Supplier<ChassisPowers> powersSupplier) {
 		return driveByState(powersSupplier, SwerveState.DEFAULT_DRIVE);
@@ -211,6 +209,24 @@ public class SwerveCommandsBuilder {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.moveToPoseByPID(currentPose.get(), targetPose)),
 			"PID to pose: " + targetPose
+		);
+	}
+
+	public Command wiggle(Rotation2d wiggleAngle, double timeBetweenWiggles) {
+		return new DeferredCommand(
+			() -> new SequentialCommandGroup(
+				turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - wiggleAngle.getDegrees()))
+					.withTimeout(timeBetweenWiggles),
+				new RepeatCommand(
+					new SequentialCommandGroup(
+						turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() + 2 * wiggleAngle.getDegrees()))
+							.withTimeout(timeBetweenWiggles),
+						turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - 2 * wiggleAngle.getDegrees()))
+							.withTimeout(timeBetweenWiggles)
+					)
+				)
+			),
+			Set.of(swerve)
 		);
 	}
 
