@@ -193,7 +193,7 @@ public class ShootingChecks {
 
 		boolean isTurretPredictedInRangeFromStaticTarget = ShootingCalculations.getShootingParams()
 			.isTurretPredictedTargetInRangeFromStaticTarget();
-		;
+
 		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 
 		boolean canContinueShooting = isAtTurretAtTarget
