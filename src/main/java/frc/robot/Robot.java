@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
+import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
@@ -52,7 +54,6 @@ import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
-import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 import java.util.function.Supplier;
 
@@ -78,7 +79,8 @@ public class Robot {
 
 	private AutonomousChooser autonomousChooser;
 
-	private final LoggedNetworkBoolean brakeCoast;
+	private final ChooserDigitalInput brakeCoast;
+	private final DigitalInputInputsAutoLogged brakeCoastInputInputs;
 
 	private final Swerve swerve;
 
@@ -231,8 +233,8 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
-		this.brakeCoast = new LoggedNetworkBoolean("/brakeCoast", false);
-
+		this.brakeCoast = new ChooserDigitalInput("BrakeState");
+		this.brakeCoastInputInputs = new DigitalInputInputsAutoLogged();
 		configureAuto();
 	}
 
@@ -273,8 +275,8 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
-		brakeCoast.periodic();
-		configureBrakeChooser();
+		brakeCoast.updateInputs(brakeCoastInputInputs);
+		updateBrakeStateManager(brakeCoastInputInputs.debouncedValue);
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
@@ -362,12 +364,11 @@ public class Robot {
 		return limelightRight;
 	}
 
-	private void configureBrakeChooser() {
-		if (brakeCoast.get()) {
+	public void updateBrakeStateManager(boolean isBrake) {
+		if(isBrake)
 			BrakeStateManager.brake();
-		} else {
+		else
 			BrakeStateManager.coast();
-		}
 	}
 
 	private void configureAuto() {
@@ -394,7 +395,6 @@ public class Robot {
 				AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS
 			)
 		);
-		configureBrakeChooser();
 	}
 
 }
