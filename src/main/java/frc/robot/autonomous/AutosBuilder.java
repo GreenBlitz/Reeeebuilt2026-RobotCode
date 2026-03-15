@@ -74,15 +74,32 @@ public class AutosBuilder {
 		double stuckDebounceSeconds,
 		AllianceSide startingSide
 	) {
+		return createAuto(robot, resetSubsystems, openIntake, closeIntake, scoreSequence, pathfindingConstraints, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance, stuckDebounceSeconds, startingSide,"R quarter","L quarter");
+	}
+
+	private static Supplier<PathPlannerAutoWrapper> createAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> shootSequenceOfChoice,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		AllianceSide startingSide,
+		String rightPath,
+		String leftPath
+	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
 				PathFollowingCommandsBuilder
 					.followAdjustedPathThenStop(
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
-						startingSide == AllianceSide.DEPOT
-							? PathHelper.PATH_PLANNER_PATHS.get("L quarter")
-							: PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
+						startingSide == AllianceSide.OUTPOST
+								? PathHelper.PATH_PLANNER_PATHS.get(rightPath)
+								: PathHelper.PATH_PLANNER_PATHS.get(leftPath),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
 						stuckIsNearEndOfPathTolerance,
@@ -96,7 +113,7 @@ public class AutosBuilder {
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
 					new ParallelCommandGroup(
-						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(shootSequenceOfChoice.get()),
 						openIntake.get()
 							.until(() -> hasPathEnded)
 							.andThen(
@@ -116,9 +133,8 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			startingSide == AllianceSide.OUTPOST ? "R quarter" : "L quarter"
+			startingSide == AllianceSide.OUTPOST ? rightPath : leftPath
 		);
 	}
-
 
 }
