@@ -7,6 +7,7 @@ import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -88,11 +89,16 @@ public class AutosBuilder {
 						stuckIsNearEndOfPathTolerance,
 						stuckDebounceSeconds,
 						robot.getSwerve().getLogPath()
-
 					)
 					.asProxy()
-					.alongWith(new InstantCommand(() -> hasPathEnded = false))
-					.andThen(new InstantCommand(() -> hasPathEnded = true)),
+					.alongWith(new InstantCommand(() -> {
+						hasPathEnded = false;
+						Logger.recordOutput("67676", hasPathEnded);
+					}))
+					.andThen(new InstantCommand(() -> {
+						hasPathEnded = true;
+						Logger.recordOutput("67676", hasPathEnded);
+					})),
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
 					new ParallelCommandGroup(
@@ -106,6 +112,31 @@ public class AutosBuilder {
 											robot.getSwerve()
 												.getCommandsBuilder()
 												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+											PathFollowingCommandsBuilder
+												.followAdjustedPathThenStop(
+													robot.getSwerve(),
+													() -> robot.getPoseEstimator().getEstimatedPose(),
+													startingSide == AllianceSide.DEPOT
+														? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
+														: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line"),
+													pathfindingConstraints,
+													regularIsNearEndOfPathTolerance,
+													stuckIsNearEndOfPathTolerance,
+													stuckDebounceSeconds,
+													robot.getSwerve().getLogPath()
+
+												)
+												.andThen(
+													robot.getSwerve()
+														.getCommandsBuilder()
+														.wiggle(
+															AutonomousConstants.WIGGLE_RANGE,
+															AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS
+														)
+												)
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
