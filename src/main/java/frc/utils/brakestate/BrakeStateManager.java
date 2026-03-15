@@ -1,6 +1,5 @@
 package frc.utils.brakestate;
 
-
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
