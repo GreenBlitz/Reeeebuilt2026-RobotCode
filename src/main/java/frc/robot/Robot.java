@@ -367,7 +367,11 @@ public class Robot {
 	}
 
 	public void updateBrakeStateManager(boolean isBrake) {
-	isBrake ? BrakeStateManager.brake() : BrakeStateManager.coast();
+		if (isBrake) {
+			BrakeStateManager.brake();
+		} else {
+			BrakeStateManager.coast();
+		}
 	}
 
 	private void configureAuto() {
