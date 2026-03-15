@@ -79,8 +79,9 @@ public class Robot {
 
 	private AutonomousChooser autonomousChooser;
 
-	private final ChooserDigitalInput brakeCoast;
-	private final DigitalInputInputsAutoLogged brakeCoastInputInputs;
+	private final ChooserDigitalInput brakeStateChooser;
+	private final DigitalInputInputsAutoLogged brakeStateInputInputs;
+	private boolean brakeStateChangeCheck;
 
 	private final Swerve swerve;
 
@@ -233,8 +234,8 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
-		this.brakeCoast = new ChooserDigitalInput("BrakeState");
-		this.brakeCoastInputInputs = new DigitalInputInputsAutoLogged();
+		this.brakeStateChooser = new ChooserDigitalInput("BrakeState");
+		this.brakeStateInputInputs = new DigitalInputInputsAutoLogged();
 		configureAuto();
 	}
 
@@ -275,8 +276,11 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
-		brakeCoast.updateInputs(brakeCoastInputInputs);
-		updateBrakeStateManager(brakeCoastInputInputs.debouncedValue);
+		brakeStateChooser.updateInputs(brakeStateInputInputs);
+		if (brakeStateInputInputs.debouncedValue != brakeStateChangeCheck) {
+			updateBrakeStateManager(brakeStateInputInputs.debouncedValue);
+			brakeStateChangeCheck = brakeStateInputInputs.debouncedValue;
+		}
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
