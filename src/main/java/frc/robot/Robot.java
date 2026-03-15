@@ -237,8 +237,8 @@ public class Robot {
 		this.brakeStateInputInputs = new DigitalInputInputsAutoLogged();
 		configureAuto();
 
-		Trigger brakeStateChange = new Trigger(() -> brakeStateInputInputs.debouncedValue);
-		brakeStateChange.onChange(new InstantCommand(() -> updateBrakeStateManager(brakeStateInputInputs.debouncedValue)));
+		Trigger brakeStateTrigger = new Trigger(() -> brakeStateInputInputs.debouncedValue);
+		brakeStateTrigger.onChange(new InstantCommand(() -> updateBrakeStateManager(brakeStateInputInputs.debouncedValue)));
 	}
 
 	public RobotConfig getRobotConfig() {
