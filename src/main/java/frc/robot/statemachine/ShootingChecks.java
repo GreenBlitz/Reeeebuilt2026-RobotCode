@@ -96,12 +96,10 @@ public class ShootingChecks {
 	public static boolean isTurretPredictedTargetInRangeFromStaticTarget(
 		Rotation2d rawTurretTarget,
 		Rotation2d staticTurretTarget,
-		Rotation2d rangeFromStaticTarget,
-		String logPath
+		Rotation2d rangeFromStaticTarget
 	) {
 		boolean isTurretPredictedInRangeFromStaticTarget = ToleranceMath
 			.isNearWrapped(rawTurretTarget, staticTurretTarget, rangeFromStaticTarget);
-		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 		return isTurretPredictedInRangeFromStaticTarget;
 	}
 
@@ -110,7 +108,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d turretTolerance,
-		Rotation2d rangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters,
 		Translation2d targetTranslation,
 		String actionLogPath
@@ -139,12 +136,9 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedTargetInRangeFromStaticTarget(
-			ShootingCalculations.getShootingParams().rawTurretTarget(),
-			ShootingCalculations.getShootingParams().staticTurretTarget(),
-			rangeFromStaticTargetForTurret,
-			logPath
-		);
+		boolean isTurretPredictedInRangeFromStaticTarget = ShootingCalculations.getShootingParams()
+			.isTurretPredictedTargetInRangeFromStaticTarget();
+		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 
 		boolean isTurretWithinDistance = isWithinDistance(
 			predictedTurretPosition,
@@ -168,7 +162,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d turretTolerance,
-		Rotation2d rangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters,
 		Translation2d target,
 		String actionLogPath
@@ -198,12 +191,10 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		boolean isTurretPredictedInRangeFromStaticTarget = isTurretPredictedTargetInRangeFromStaticTarget(
-			ShootingCalculations.getShootingParams().rawTurretTarget(),
-			ShootingCalculations.getShootingParams().staticTurretTarget(),
-			rangeFromStaticTargetForTurret,
-			logPath
-		);
+		boolean isTurretPredictedInRangeFromStaticTarget = ShootingCalculations.getShootingParams()
+			.isTurretPredictedTargetInRangeFromStaticTarget();
+		;
+		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
 
 		boolean canContinueShooting = isAtTurretAtTarget
 			&& isFlywheelReadyToShoot
@@ -269,7 +260,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d turretTolerance,
-		Rotation2d rangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		boolean isReadyToShoot = isReadyToShoot(
@@ -277,7 +267,6 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
 			turretTolerance,
-			rangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			"Score"
@@ -295,7 +284,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d turretTolerance,
-		Rotation2d rangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		boolean isReadyToShoot = isReadyToShoot(
@@ -303,7 +291,6 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
 			turretTolerance,
-			rangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass"
@@ -320,7 +307,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d turretTolerance,
-		Rotation2d rangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		boolean canContinueShooting = canContinueShooting(
@@ -328,7 +314,6 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
 			turretTolerance,
-			rangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			"Scoring"
@@ -348,7 +333,6 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d turretTolerance,
-		Rotation2d rangeFromStaticTargetForTurret,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		boolean canContinuePassing = canContinueShooting(
@@ -356,7 +340,6 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
 			turretTolerance,
-			rangeFromStaticTargetForTurret,
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Passing"

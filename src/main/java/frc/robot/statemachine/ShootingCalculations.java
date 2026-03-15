@@ -24,7 +24,8 @@ public class ShootingCalculations {
 		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
 		new Translation2d(),
-		Field.getHubMiddle()
+		Field.getHubMiddle(),
+		true
 	);
 
 	public static ShootingParams getShootingParams() {
@@ -75,14 +76,13 @@ public class ShootingCalculations {
 
 		Rotation2d staticTurretTarget = targetTranslation.minus(fieldRelativeTurretTranslation).getAngle().minus(robotPose.getRotation());
 		Rotation2d finalTurretTarget = rawTurretTarget;
-		if (
-			!ShootingChecks.isTurretPredictedTargetInRangeFromStaticTarget(
-				rawTurretTarget,
-				staticTurretTarget,
-				StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT,
-				targetTranslation.equals(Field.getHubMiddle()) ? "Score" : "Pass"
-			)
-		) {
+
+		boolean isTurretPredictedTargetInRangeFromStaticTarget = ShootingChecks.isTurretPredictedTargetInRangeFromStaticTarget(
+			rawTurretTarget,
+			staticTurretTarget,
+			StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT
+		);
+		if (!isTurretPredictedTargetInRangeFromStaticTarget) {
 			finalTurretTarget = staticTurretTarget;
 		}
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
@@ -108,7 +108,8 @@ public class ShootingCalculations {
 			staticTurretTarget,
 			turretTargetVelocityRPS,
 			turretPredictedPose,
-			targetTranslation
+			targetTranslation,
+			isTurretPredictedTargetInRangeFromStaticTarget
 		);
 	}
 
