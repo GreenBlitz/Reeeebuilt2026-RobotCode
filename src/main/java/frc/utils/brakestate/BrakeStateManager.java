@@ -42,7 +42,7 @@ public class BrakeStateManager {
 	}
 
 	public static void log() {
-		Logger.recordOutput("/currentBrakeCoast", currentMode);
+		Logger.recordOutput("currentBrakeStateMangerState", currentMode);
 	}
 
 }

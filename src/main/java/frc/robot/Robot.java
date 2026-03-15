@@ -81,7 +81,6 @@ public class Robot {
 
 	private final ChooserDigitalInput brakeStateChooser;
 	private final DigitalInputInputsAutoLogged brakeStateInputInputs;
-	private boolean brakeStateChangeCheck;
 
 	private final Swerve swerve;
 
@@ -237,6 +236,9 @@ public class Robot {
 		this.brakeStateChooser = new ChooserDigitalInput("BrakeState");
 		this.brakeStateInputInputs = new DigitalInputInputsAutoLogged();
 		configureAuto();
+
+		Trigger trigger = new Trigger(() -> brakeStateInputInputs.debouncedValue);
+		trigger.onChange(new InstantCommand(() -> updateBrakeStateManager(brakeStateInputInputs.debouncedValue)));
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -277,10 +279,6 @@ public class Robot {
 		robotCommander.update();
 
 		brakeStateChooser.updateInputs(brakeStateInputInputs);
-		if (brakeStateInputInputs.debouncedValue != brakeStateChangeCheck) {
-			updateBrakeStateManager(brakeStateInputInputs.debouncedValue);
-			brakeStateChangeCheck = brakeStateInputInputs.debouncedValue;
-		}
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
