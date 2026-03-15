@@ -74,7 +74,10 @@ public class AutosBuilder {
 		double stuckDebounceSeconds,
 		AllianceSide startingSide
 	) {
-		return createAuto(robot, resetSubsystems, openIntake, closeIntake, scoreSequence, pathfindingConstraints, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance, stuckDebounceSeconds, startingSide,"R quarter","L quarter");
+		if (AllianceSide.DEPOT == startingSide) {
+			return createAuto(robot, resetSubsystems, openIntake, closeIntake, scoreSequence, pathfindingConstraints, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance, stuckDebounceSeconds, "L quarter");
+		}
+		return createAuto(robot, resetSubsystems, openIntake, closeIntake, scoreSequence, pathfindingConstraints, regularIsNearEndOfPathTolerance, stuckIsNearEndOfPathTolerance, stuckDebounceSeconds,"R quarter");
 	}
 
 	private static Supplier<PathPlannerAutoWrapper> createAuto(
@@ -87,9 +90,7 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide startingSide,
-		String rightPath,
-		String leftPath
+		String path
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -97,9 +98,7 @@ public class AutosBuilder {
 					.followAdjustedPathThenStop(
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
-						startingSide == AllianceSide.OUTPOST
-								? PathHelper.PATH_PLANNER_PATHS.get(rightPath)
-								: PathHelper.PATH_PLANNER_PATHS.get(leftPath),
+							PathHelper.PATH_PLANNER_PATHS.get(path),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
 						stuckIsNearEndOfPathTolerance,
@@ -133,7 +132,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			startingSide == AllianceSide.OUTPOST ? rightPath : leftPath
+			path
 		);
 	}
 
