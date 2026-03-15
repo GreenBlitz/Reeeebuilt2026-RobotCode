@@ -7,7 +7,6 @@ import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -91,14 +90,8 @@ public class AutosBuilder {
 						robot.getSwerve().getLogPath()
 					)
 					.asProxy()
-					.alongWith(new InstantCommand(() -> {
-						hasPathEnded = false;
-						Logger.recordOutput("67676", hasPathEnded);
-					}))
-					.andThen(new InstantCommand(() -> {
-						hasPathEnded = true;
-						Logger.recordOutput("67676", hasPathEnded);
-					})),
+					.alongWith(new InstantCommand(() -> hasPathEnded = false))
+					.andThen(new InstantCommand(() -> hasPathEnded = true)),
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
 					new ParallelCommandGroup(
