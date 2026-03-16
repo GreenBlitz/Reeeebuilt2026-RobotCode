@@ -110,14 +110,15 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void updateWhateverTheHellImDoingDetection() {
 		// figure out how to get the result from the python (ny)
-		int dy = 900;
-		int dx = 900;
-		int width = 1800;
-		int height = 1200;
+		double ny = 900;
+		double nx = 900;
+		double Vpw = 2*Math.tan(horizontalFOV.getDegrees()/2);
+		double Vph = 2*Math.tan(verticalFOV.getDegrees()/2);
+		double X = nx * (Vpw/2);
+		double Y = ny * (Vph/2);
+		double tx = Math.atan2(X,1);
+		double ty = Math.atan2(Y,1);
 
-		double tx = dx * (horizontalFOV.getDegrees()/width); //(in degrees)
-		double ty = dy* (verticalFOV.getDegrees()/width);
-		
 
 	}
 
