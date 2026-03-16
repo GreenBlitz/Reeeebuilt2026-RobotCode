@@ -8,6 +8,8 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -138,7 +140,9 @@ public class Robot {
 				new Translation3d(0.297, -0.143, 0.361),
 				new Rotation3d(Math.toRadians(-0.18), Math.toRadians(27.38), Math.toRadians(-0.35))
 			),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG,
+			Rotation2d.fromDegrees(82),
+			Rotation2d.fromDegrees(56.2)
 		);
 
 		limelightFront.setMT1StdDevsCalculation(
@@ -167,7 +171,9 @@ public class Robot {
 				new Translation3d(-0.06, 0.367, 0.469),
 				new Rotation3d(Math.toRadians(-177.78), Math.toRadians(20.64), Math.toRadians(-90.7))
 			),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG,
+			Rotation2d.fromDegrees(82),
+			Rotation2d.fromDegrees(56.2)
 		);
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
@@ -195,7 +201,9 @@ public class Robot {
 				new Translation3d(-0.077, -0.345, 0.5),
 				new Rotation3d(Math.toRadians(-0.17), Math.toRadians(19.31), Math.toRadians(91.91))
 			),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG,
+			Rotation2d.fromDegrees(82),
+			Rotation2d.fromDegrees(56.2)
 		);
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(

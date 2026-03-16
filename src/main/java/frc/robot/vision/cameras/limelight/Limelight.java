@@ -30,6 +30,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private final ArrayList<DetectedObjectObservation> neuralDetections;
 	private final ArrayList<DetectedObjectObservation> colorDetections;
 
+	private final Rotation2d horizontalFOV;
+	private final Rotation2d verticalFOV;
+
 	private final LimelightInputsSet inputs;
 
 	private RobotPoseObservation mt1PoseObservation;
@@ -45,7 +48,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private LimelightPipeline pipeline;
 
-	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
+	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline, Rotation2d horizontalFOV, Rotation2d verticalFOV) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
 
@@ -54,6 +57,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		this.neuralDetections = new ArrayList<>();
 		this.colorDetections = new ArrayList<>();
+
+		this.horizontalFOV = horizontalFOV;
+		this.verticalFOV = verticalFOV;
 
 		this.mt1PoseObservation = new RobotPoseObservation();
 		this.mt2PoseObservation = new RobotPoseObservation();
@@ -102,10 +108,16 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
-	public void updateWhateverTheHellImDoingDetection(){
-		//figure out how to get the result from the python (ny)
-		int ny = 900;
-		int nx = 900;
+	public void updateWhateverTheHellImDoingDetection() {
+		// figure out how to get the result from the python (ny)
+		int dy = 900;
+		int dx = 900;
+		int width = 1800;
+		int height = 1200;
+
+		double tx = dx * (horizontalFOV.getDegrees()/width); //(in degrees)
+		double ty = dy* (verticalFOV.getDegrees()/width);
+		
 
 	}
 
