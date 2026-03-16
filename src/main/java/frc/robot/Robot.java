@@ -229,15 +229,8 @@ public class Robot {
 
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-
-		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("false", false);
-		brakeStateChooser.addOption("true", true);
-		SmartDashboard.putData("BrakeState", brakeStateChooser);
-
+		configureBrakeStateChooser();
 		configureAuto();
-
-		brakeStateChooser.onChange(this::updateBrakeStateManager);
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -366,12 +359,20 @@ public class Robot {
 		return limelightRight;
 	}
 
-	public void updateBrakeStateManager(boolean isBrake) {
+	private void updateBrakeStateManager(boolean isBrake) {
 		if (isBrake) {
 			BrakeStateManager.brake();
 		} else {
 			BrakeStateManager.coast();
 		}
+	}
+	
+	private void configureBrakeStateChooser(){
+		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("false", false);
+		brakeStateChooser.addOption("true", true);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(this::updateBrakeStateManager);
 	}
 
 	private void configureAuto() {
