@@ -102,6 +102,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
+	public void updateWhateverTheHellImDoingDetection(){
+		//figure out how to get the result from the python (ny)
+		int ny = 900;
+		int nx = 900;
+
+	}
+
 	public void updateColorDetection() {
 		if (pipeline.isColorDetecting()) {
 			colorDetections.clear();
