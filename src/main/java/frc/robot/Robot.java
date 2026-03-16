@@ -370,8 +370,8 @@ public class Robot {
 
 	private void configureBrakeStateChooser() {
 		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("false", false);
-		brakeStateChooser.addOption("true", true);
+		brakeStateChooser.setDefaultOption("Coast", false);
+		brakeStateChooser.addOption("Brake", true);
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(this::updateBrakeStateManager);
 	}
