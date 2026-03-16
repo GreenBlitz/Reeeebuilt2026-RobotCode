@@ -4,6 +4,7 @@
 
 package frc;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
@@ -58,14 +59,14 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.updateBrakeStateManager(false);
+			BrakeStateManager.updateBrakeStateManager(NeutralMode.Coast);
 		}
 	}
 
 	@Override
 	public void disabledExit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.updateBrakeStateManager(true);
+			BrakeStateManager.updateBrakeStateManager(NeutralMode.Brake);
 		}
 	}
 

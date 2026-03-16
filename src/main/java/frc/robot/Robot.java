@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
@@ -359,9 +360,9 @@ public class Robot {
 	}
 
 	private void configureBrakeStateChooser() {
-		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("Coast", false);
-		brakeStateChooser.addOption("Brake", true);
+		SendableChooser<NeutralMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Coast", NeutralMode.Coast);
+		brakeStateChooser.addOption("Brake", NeutralMode.Brake);
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(BrakeStateManager::updateBrakeStateManager);
 	}
