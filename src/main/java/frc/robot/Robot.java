@@ -271,8 +271,6 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
-		BrakeStateManager.log();
-
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
@@ -360,20 +358,12 @@ public class Robot {
 		return limelightRight;
 	}
 
-	private void updateBrakeStateManager(boolean isBrake) {
-		if (isBrake) {
-			BrakeStateManager.brake();
-		} else {
-			BrakeStateManager.coast();
-		}
-	}
-
 	private void configureBrakeStateChooser() {
 		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
 		brakeStateChooser.setDefaultOption("Coast", false);
 		brakeStateChooser.addOption("Brake", true);
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
-		brakeStateChooser.onChange(this::updateBrakeStateManager);
+		brakeStateChooser.onChange(BrakeStateManager::updateBrakeStateManager);
 	}
 
 	private void configureAuto() {

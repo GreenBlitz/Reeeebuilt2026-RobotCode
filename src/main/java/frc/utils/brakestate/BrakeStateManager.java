@@ -32,12 +32,13 @@ public class BrakeStateManager {
 		}
 	}
 
-	public static void brake() {
-		setBrakeMode(BrakeMode.BRAKE, brakeRunnables);
-	}
-
-	public static void coast() {
-		setBrakeMode(BrakeMode.COAST, coastRunnables);
+	public static void updateBrakeStateManager(boolean isBrake) {
+		if (isBrake) {
+			setBrakeMode(BrakeMode.BRAKE, brakeRunnables);
+		} else {
+			setBrakeMode(BrakeMode.COAST, coastRunnables);
+		}
+		log();
 	}
 
 	public static void log() {
