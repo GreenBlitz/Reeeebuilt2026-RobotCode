@@ -108,7 +108,7 @@ public class AutosBuilder {
 												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
 										)
 										.andThen(
-											getSideToStartingLineAuto(
+											getAllianceSideToStartingLineAuto(
 												robot,
 												startingSide,
 												pathfindingConstraints,
@@ -130,7 +130,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Command getSideToStartingLineAuto(
+	private static Command getAllianceSideToStartingLineAuto(
 		Robot robot,
 		AllianceSide allianceSide,
 		PathConstraints pathfindingConstraints,
