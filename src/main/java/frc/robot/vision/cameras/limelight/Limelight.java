@@ -114,15 +114,15 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		// figure out how to get the result from the python (ny)
 		double ny = 900;
 		double nx = 900;
-		double Vpw = 2*Math.tan(horizontalFOV.getDegrees()/2);
-		double Vph = 2*Math.tan(verticalFOV.getDegrees()/2);
+		double Vpw = 2 * Math.tan(horizontalFOV.getRadians() / 2);
+		double Vph = 2 * Math.tan(verticalFOV.getRadians() / 2);
 		double X = nx * (Vpw/2);
 		double Y = ny * (Vph/2);
 		double tx = Math.atan2(X,1);
 		double ty = Math.atan2(Y,1);
 
-		Rotation2d yawOffset = Rotation2d.fromDegrees(tx);
-		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
+		Rotation2d yawOffset = new Rotation2d(tx);
+		Rotation2d pitchOffset = new Rotation2d(ty);
 
 		double objectRelativeToCameraX = ObjectDetectionMath.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
 		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, yawOffset, objectRelativeToCameraX);
