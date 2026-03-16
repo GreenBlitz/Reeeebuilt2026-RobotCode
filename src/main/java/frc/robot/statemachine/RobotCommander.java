@@ -97,7 +97,6 @@ public class RobotCommander extends GBSubsystem {
 		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
-		BrakeStateManager.log();
 	}
 
 	public Command setState(RobotState robotState) {

@@ -9,6 +9,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
@@ -78,10 +80,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
-
-	private final ChooserDigitalInput brakeStateChooser;
-	private final DigitalInputInputsAutoLogged brakeStateInputInputs;
-
+	
 	private final Swerve swerve;
 
 	private final IPoseEstimator poseEstimator;
@@ -232,13 +231,15 @@ public class Robot {
 
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-
-		this.brakeStateChooser = new ChooserDigitalInput("BrakeState");
-		this.brakeStateInputInputs = new DigitalInputInputsAutoLogged();
+		
+		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("false", false);
+		brakeStateChooser.addOption("true", true);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		
 		configureAuto();
 
-		Trigger brakeStateTrigger = new Trigger(() -> brakeStateInputInputs.debouncedValue);
-		brakeStateTrigger.onChange(new InstantCommand(() -> updateBrakeStateManager(brakeStateInputInputs.debouncedValue)));
+		brakeStateChooser.onChange(this::updateBrakeStateManager);
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -278,7 +279,8 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
-		brakeStateChooser.updateInputs(brakeStateInputInputs);
+		BrakeStateManager.log();
+		
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
