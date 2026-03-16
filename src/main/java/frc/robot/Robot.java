@@ -228,7 +228,8 @@ public class Robot {
 		simulationManager = new SimulationManager("SimulationManager", this);
 
 		new Trigger(DriverStation::isTeleopEnabled)
-			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+				.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+		
 		configureBrakeStateChooser();
 		configureAuto();
 	}
@@ -366,8 +367,8 @@ public class Robot {
 			BrakeStateManager.coast();
 		}
 	}
-	
-	private void configureBrakeStateChooser(){
+
+	private void configureBrakeStateChooser() {
 		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
 		brakeStateChooser.setDefaultOption("false", false);
 		brakeStateChooser.addOption("true", true);
