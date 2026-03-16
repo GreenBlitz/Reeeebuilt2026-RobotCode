@@ -150,7 +150,6 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				robot.getSwerve().getLogPath()
-
 			)
 			.andThen(
 				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
