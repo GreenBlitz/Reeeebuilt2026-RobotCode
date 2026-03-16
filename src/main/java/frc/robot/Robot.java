@@ -229,7 +229,7 @@ public class Robot {
 
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-		
+
 		configureBrakeStateChooser();
 		configureAuto();
 	}
