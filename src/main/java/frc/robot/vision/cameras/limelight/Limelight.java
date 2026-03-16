@@ -29,6 +29,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private final ArrayList<DetectedObjectObservation> neuralDetections;
 	private final ArrayList<DetectedObjectObservation> colorDetections;
+	private final ArrayList<DetectedObjectObservation> weirdObjectThing;
 
 	private final Rotation2d horizontalFOV;
 	private final Rotation2d verticalFOV;
@@ -57,6 +58,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		this.neuralDetections = new ArrayList<>();
 		this.colorDetections = new ArrayList<>();
+		this.weirdObjectThing = new ArrayList<>();
 
 		this.horizontalFOV = horizontalFOV;
 		this.verticalFOV = verticalFOV;
@@ -119,7 +121,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		double tx = Math.atan2(X,1);
 		double ty = Math.atan2(Y,1);
 
+		Rotation2d yawOffset = Rotation2d.fromDegrees(tx);
+		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
 
+		double objectRelativeToCameraX = ObjectDetectionMath.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
+		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, yawOffset, objectRelativeToCameraX);
+		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
+		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
+		//need to make it compatibale with array but first we need ot see if we eevn have an array to return...
 	}
 
 	public void updateColorDetection() {
