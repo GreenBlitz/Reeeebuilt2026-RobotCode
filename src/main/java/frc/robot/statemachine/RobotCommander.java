@@ -10,7 +10,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.utils.brakestate.BrakeStateManager;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;

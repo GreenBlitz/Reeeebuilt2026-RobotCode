@@ -16,9 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
@@ -80,7 +78,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
-	
+
 	private final Swerve swerve;
 
 	private final IPoseEstimator poseEstimator;
@@ -231,12 +229,12 @@ public class Robot {
 
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
-		
+
 		SendableChooser<Boolean> brakeStateChooser = new SendableChooser<>();
 		brakeStateChooser.setDefaultOption("false", false);
 		brakeStateChooser.addOption("true", true);
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
-		
+
 		configureAuto();
 
 		brakeStateChooser.onChange(this::updateBrakeStateManager);
@@ -280,7 +278,7 @@ public class Robot {
 		robotCommander.update();
 
 		BrakeStateManager.log();
-		
+
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		limelightFront.updateIsConnected();
