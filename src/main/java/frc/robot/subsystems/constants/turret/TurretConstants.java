@@ -49,8 +49,8 @@ public class TurretConstants {
 		SIMULATION_SLOTS_CONFIG.kA = 0;
 	}
 
-	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(121.4);
-	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-238.6);
+	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(126.4);
+	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-233.6);
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(90);
 	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-116);
 
