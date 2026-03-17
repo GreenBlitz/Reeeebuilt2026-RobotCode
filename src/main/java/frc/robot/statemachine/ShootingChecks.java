@@ -173,7 +173,10 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		boolean canContinueShooting = isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance /* && isPoseReliable */;
+		boolean canContinueShooting = isAtTurretAtTarget
+			&& isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isTurretWithinDistance /* && isPoseReliable */;
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinueShooting", canContinueShooting);
 
 		return canContinueShooting;
