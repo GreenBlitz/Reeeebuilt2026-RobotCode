@@ -112,7 +112,6 @@ public class AutosBuilder {
 						stuckIsNearEndOfPathTolerance,
 						stuckDebounceSeconds,
 						robot.getSwerve().getLogPath()
-
 					)
 					.asProxy()
 					.alongWith(new InstantCommand(() -> hasPathEnded = false))
