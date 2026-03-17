@@ -64,18 +64,6 @@
     },
     {
       "anchor": {
-<<<<<<< Updated upstream
-        "x": 8.76845753949814,
-        "y": 2.890186260842628
-      },
-      "prevControl": {
-        "x": 8.784997612235493,
-        "y": 2.640734008910834
-      },
-      "nextControl": {
-        "x": 8.732491216193727,
-        "y": 3.432619204425258
-=======
         "x": 8.71051216891264,
         "y": 2.954287000464685
       },
@@ -86,7 +74,6 @@
       "nextControl": {
         "x": 8.626289740164188,
         "y": 3.4903559673172255
->>>>>>> Stashed changes
       },
       "isLocked": false,
       "linkedName": null
@@ -116,8 +103,6 @@
         "x": 6.980324711280639,
         "y": 3.371200975621093
       },
-<<<<<<< Updated upstream
-=======
       "nextControl": {
         "x": 6.617578692529769,
         "y": 3.0270856956924153
@@ -230,7 +215,6 @@
         "x": 2.0097349848977695,
         "y": 0.4934129104708813
       },
->>>>>>> Stashed changes
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
@@ -242,14 +226,6 @@
       "rotationDegrees": 135.0
     },
     {
-<<<<<<< Updated upstream
-      "waypointRelativePos": 2.95012454710145,
-      "rotationDegrees": 180.0
-    },
-    {
-      "waypointRelativePos": 4.0,
-      "rotationDegrees": -90.0
-=======
       "waypointRelativePos": 2.9180041326992754,
       "rotationDegrees": 180.0
     },
@@ -268,27 +244,17 @@
     {
       "waypointRelativePos": 10.995612545289848,
       "rotationDegrees": 0.0
->>>>>>> Stashed changes
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-<<<<<<< Updated upstream
-      "minWaypointRelativePos": 2.2706213662790695,
-      "maxWaypointRelativePos": 5.0,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 300.0,
-=======
       "minWaypointRelativePos": 1.5718485729386888,
       "maxWaypointRelativePos": 6.448161667547567,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 150.0,
->>>>>>> Stashed changes
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
         "unlimited": false
@@ -302,10 +268,6 @@
         "y": 3.2
       },
       "rotationOffset": 90.0,
-<<<<<<< Updated upstream
-      "minWaypointRelativePos": 4.0236191860465125,
-      "maxWaypointRelativePos": 5.199606897463004,
-=======
       "minWaypointRelativePos": 3.9905688424947137,
       "maxWaypointRelativePos": 5.141087473572938,
       "name": "Point Towards Zone"
@@ -318,7 +280,6 @@
       "rotationOffset": 90.0,
       "minWaypointRelativePos": 3.081907373150104,
       "maxWaypointRelativePos": 3.884629360465116,
->>>>>>> Stashed changes
       "name": "Point Towards Zone"
     }
   ],
@@ -333,11 +294,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-<<<<<<< Updated upstream
-    "rotation": 66.76690089013526
-=======
     "rotation": 0.0
->>>>>>> Stashed changes
   },
   "reversed": false,
   "folder": null,
