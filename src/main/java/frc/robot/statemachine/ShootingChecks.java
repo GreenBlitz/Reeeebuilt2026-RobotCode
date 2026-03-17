@@ -7,6 +7,7 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
+import frc.utils.math.ToleranceMath;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -92,6 +93,16 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
+	public static boolean isTurretPredictedTargetInRangeFromStaticTarget(
+		Rotation2d rawTurretTarget,
+		Rotation2d staticTurretTarget,
+		Rotation2d rangeFromStaticTarget
+	) {
+		boolean isTurretPredictedInRangeFromStaticTarget = ToleranceMath
+			.isNearWrapped(rawTurretTarget, staticTurretTarget, rangeFromStaticTarget);
+		return isTurretPredictedInRangeFromStaticTarget;
+	}
+
 	private static boolean isReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
@@ -106,7 +117,7 @@ public class ShootingChecks {
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.getShootingParams().finalTurretTarget(),
 			turretTolerance,
 			logPath
 		);
@@ -125,6 +136,10 @@ public class ShootingChecks {
 			logPath
 		);
 
+		boolean isTurretPredictedInRangeFromStaticTarget = ShootingCalculations.getShootingParams()
+			.isTurretPredictedTargetInRangeFromStaticTarget();
+		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
+
 		boolean isTurretWithinDistance = isWithinDistance(
 			predictedTurretPosition,
 			maxShootingDistanceFromTargetMeters,
@@ -132,8 +147,14 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance
+		boolean isReadyToShoot = isAtTurretAtTarget
+			&& isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isTurretWithinDistance
+			&& isTurretPredictedInRangeFromStaticTarget
 		/* && isPoseReliable */;
+		Logger.recordOutput(logPath + "/IsReadyToShoot", isReadyToShoot);
+		return isReadyToShoot;
 	}
 
 	private static boolean canContinueShooting(
@@ -150,7 +171,7 @@ public class ShootingChecks {
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 			robot.getTurret().getPosition(),
-			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			ShootingCalculations.getShootingParams().finalTurretTarget(),
 			turretTolerance,
 			logPath
 		);
@@ -170,7 +191,18 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
-		return isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance /* && isPoseReliable */;
+		boolean isTurretPredictedInRangeFromStaticTarget = ShootingCalculations.getShootingParams()
+			.isTurretPredictedTargetInRangeFromStaticTarget();
+
+		Logger.recordOutput(logPath + "/isTurretPredictedInRangeFromStaticTarget", isTurretPredictedInRangeFromStaticTarget);
+
+		boolean canContinueShooting = isAtTurretAtTarget
+			&& isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isTurretWithinDistance
+			&& isTurretPredictedInRangeFromStaticTarget /* && isPoseReliable */;
+		Logger.recordOutput(logPath + "/canContinueShooting", canContinueShooting);
+		return canContinueShooting;
 	}
 
 	public static boolean calibrationIsReadyToShoot(
@@ -300,14 +332,14 @@ public class ShootingChecks {
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
-		Rotation2d headingTolerance,
+		Rotation2d turretTolerance,
 		double maxShootingDistanceFromTargetMeters
 	) {
 		boolean canContinuePassing = canContinueShooting(
 			robot,
 			flywheelVelocityToleranceRPS,
 			hoodPositionTolerance,
-			headingTolerance,
+			turretTolerance,
 			maxShootingDistanceFromTargetMeters,
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Passing"

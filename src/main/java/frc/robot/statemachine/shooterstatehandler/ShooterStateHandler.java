@@ -72,7 +72,7 @@ public class ShooterStateHandler {
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
 					turret,
-					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> shootingParamsSupplier.get().finalTurretTarget(),
 					() -> ShootingCalculations.getShootingParams().targetTurretVelocityRPS(),
 					logPath
 				),
@@ -88,7 +88,7 @@ public class ShooterStateHandler {
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
 					turret,
-					() -> shootingParamsSupplier.get().targetTurretPosition(),
+					() -> shootingParamsSupplier.get().finalTurretTarget(),
 					() -> shootingParamsSupplier.get().targetTurretVelocityRPS(),
 					logPath
 				),

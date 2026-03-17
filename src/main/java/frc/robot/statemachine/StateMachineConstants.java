@@ -21,6 +21,8 @@ public class StateMachineConstants {
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_START_PASSING = Rotation2d.fromDegrees(5);
 	public static final Rotation2d HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING = Rotation2d.fromDegrees(5);
 
+	public static final Rotation2d RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT = Rotation2d.fromDegrees(120);
+
 	public static final double MAX_DISTANCE_TO_SCORE_METERS = 8.5;
 	public static final double MAX_DISTANCE_TO_PASS_METERS = 15;
 

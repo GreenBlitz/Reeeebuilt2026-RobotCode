@@ -20,9 +20,12 @@ public class ShootingCalculations {
 		new Rotation2d(),
 		HoodConstants.MINIMUM_POSITION,
 		TurretConstants.MIN_POSITION,
+		TurretConstants.MIN_POSITION,
+		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
 		new Translation2d(),
-		Field.getHubMiddle()
+		Field.getHubMiddle(),
+		true
 	);
 
 	public static ShootingParams getShootingParams() {
@@ -69,12 +72,26 @@ public class ShootingCalculations {
 		Rotation2d turretTargetVelocityRPS = Rotation2d
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
-		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
+		Rotation2d rawTurretTarget = predictedAngleToTarget.minus(robotPose.getRotation());
+
+		Rotation2d staticTurretTarget = targetTranslation.minus(fieldRelativeTurretTranslation).getAngle().minus(robotPose.getRotation());
+		Rotation2d finalTurretTarget = rawTurretTarget;
+
+		boolean isTurretPredictedTargetInRangeFromStaticTarget = ShootingChecks.isTurretPredictedTargetInRangeFromStaticTarget(
+			rawTurretTarget,
+			staticTurretTarget,
+			StateMachineConstants.RANGE_FROM_STATIC_TURRET_TARGET_TO_SHOOT
+		);
+		if (!isTurretPredictedTargetInRangeFromStaticTarget) {
+			finalTurretTarget = staticTurretTarget;
+		}
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
-		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/rawTurretTarget", rawTurretTarget);
+		Logger.recordOutput(LOG_PATH + "/staticTurretTarget", staticTurretTarget);
+		Logger.recordOutput(LOG_PATH + "/finalTurretTargetPosition", finalTurretTarget);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
@@ -86,10 +103,13 @@ public class ShootingCalculations {
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
-			turretTargetPosition,
+			finalTurretTarget,
+			rawTurretTarget,
+			staticTurretTarget,
 			turretTargetVelocityRPS,
 			turretPredictedPose,
-			targetTranslation
+			targetTranslation,
+			isTurretPredictedTargetInRangeFromStaticTarget
 		);
 	}
 
