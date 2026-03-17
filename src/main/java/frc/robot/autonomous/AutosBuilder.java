@@ -88,7 +88,6 @@ public class AutosBuilder {
 						stuckIsNearEndOfPathTolerance,
 						stuckDebounceSeconds,
 						robot.getSwerve().getLogPath()
-
 					)
 					.asProxy()
 					.alongWith(new InstantCommand(() -> hasPathEnded = false))
@@ -106,6 +105,17 @@ public class AutosBuilder {
 											robot.getSwerve()
 												.getCommandsBuilder()
 												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+											getAllianceSideToStartingLineAuto(
+												robot,
+												startingSide,
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds
+											)
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
@@ -120,5 +130,30 @@ public class AutosBuilder {
 		);
 	}
 
+	private static Command getAllianceSideToStartingLineAuto(
+		Robot robot,
+		AllianceSide allianceSide,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds
+	) {
+		return PathFollowingCommandsBuilder
+			.followAdjustedPathThenStop(
+				robot.getSwerve(),
+				() -> robot.getPoseEstimator().getEstimatedPose(),
+				allianceSide == AllianceSide.DEPOT
+					? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
+					: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line"),
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				robot.getSwerve().getLogPath()
+			)
+			.andThen(
+				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+			);
+	}
 
 }
