@@ -130,6 +130,17 @@ public class AutosBuilder {
 											robot.getSwerve()
 												.getCommandsBuilder()
 												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+												getAllianceSideToStartingLineAuto(
+														robot,
+														AllianceSide.getOppositeSide(startingSide),
+														pathfindingConstraints,
+														regularIsNearEndOfPathTolerance,
+														stuckIsNearEndOfPathTolerance,
+														stuckDebounceSeconds
+												)
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
