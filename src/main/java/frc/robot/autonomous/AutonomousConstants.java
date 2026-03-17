@@ -25,7 +25,7 @@ public class AutonomousConstants {
 	public static final double TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END = 2.0;
 	public static final double TIME_BETWEEN_WIGGLES_SECONDS = 0.3;
 	public static final double TIME_TO_WAIT_AT_DEPOT = 2;
-	public static final Rotation2d WIGGLE_RANGE = Rotation2d.fromDegrees(5);
+	public static final Rotation2d WIGGLE_RANGE = Rotation2d.fromDegrees(7);
 
 	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 
