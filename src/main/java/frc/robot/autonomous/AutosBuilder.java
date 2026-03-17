@@ -133,14 +133,14 @@ public class AutosBuilder {
 												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
 										)
 										.andThen(
-												getAllianceSideToStartingLineAuto(
-														robot,
-														AllianceSide.getOppositeSide(startingSide),
-														pathfindingConstraints,
-														regularIsNearEndOfPathTolerance,
-														stuckIsNearEndOfPathTolerance,
-														stuckDebounceSeconds
-												)
+											getAllianceSideToStartingLineAuto(
+												robot,
+												startingSide.getOppositeSide(),
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds
+											)
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)

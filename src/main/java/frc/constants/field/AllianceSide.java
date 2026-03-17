@@ -5,8 +5,8 @@ public enum AllianceSide {
 	DEPOT,
 	OUTPOST;
 
-	public static AllianceSide getOppositeSide(AllianceSide allianceSide){
-		return switch (allianceSide){
+	public AllianceSide getOppositeSide() {
+		return switch (this) {
 			case DEPOT -> OUTPOST;
 			case OUTPOST -> DEPOT;
 		};
