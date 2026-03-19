@@ -12,7 +12,7 @@
         "y": 5.695287264914479
       },
       "isLocked": false,
-      "linkedName": "starting line left"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -191,7 +191,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -135.0
   },
   "useDefaultConstraints": true
 }

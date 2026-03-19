@@ -12,7 +12,7 @@
         "y": 5.601636363636365
       },
       "isLocked": false,
-      "linkedName": "starting line left"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -57,7 +57,7 @@
       },
       "nextControl": {
         "x": 8.236709828484035,
-        "y": 4.032374126354866
+        "y": 4.032374126354862
       },
       "isLocked": false,
       "linkedName": null
