@@ -11,6 +11,7 @@ import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
+import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 public class ShootingCalculations {
@@ -83,12 +84,15 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 
+		Logger.recordOutput("aaaaaa", new Pose2d(FieldMath.getRelativeTranslation(robotPose.getTranslation(), new Translation2d(2.5, turretTargetPosition)), new Rotation2d()));
+
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
 			turretTargetPosition,
 			turretTargetVelocityRPS,
 			turretPredictedPose,
+
 			targetTranslation
 		);
 	}
@@ -211,17 +215,16 @@ public class ShootingCalculations {
 
 	static {
 		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.7));
-		HOOD_SCORING_INTERPOLATION_MAP.put(2.07, Rotation2d.fromDegrees(34));
-		HOOD_SCORING_INTERPOLATION_MAP.put(3.2, Rotation2d.fromDegrees(42));
-		HOOD_SCORING_INTERPOLATION_MAP.put(4.2, Rotation2d.fromDegrees(44));
-		HOOD_SCORING_INTERPOLATION_MAP.put(6.1, Rotation2d.fromDegrees(45));
-		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(47));
-		HOOD_SCORING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(54));
+		HOOD_SCORING_INTERPOLATION_MAP.put(1.435, Rotation2d.fromDegrees(27.6));
+		HOOD_SCORING_INTERPOLATION_MAP.put(2.5, Rotation2d.fromDegrees(37));
+		HOOD_SCORING_INTERPOLATION_MAP.put(4.41, Rotation2d.fromDegrees(43.5));
+		HOOD_SCORING_INTERPOLATION_MAP.put(8.0, Rotation2d.fromDegrees(54.5));
 
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(14000));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.07, Rotation2d.fromDegrees(16800));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(6.1, Rotation2d.fromDegrees(24500));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(26900));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.435, Rotation2d.fromDegrees(15500));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.5, Rotation2d.fromDegrees(17500));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(4.41, Rotation2d.fromDegrees(21000));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(8.0, Rotation2d.fromDegrees(28300));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(45));
 		HOOD_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(48));
@@ -233,13 +236,10 @@ public class ShootingCalculations {
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(17000));
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(29000));
 
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 0.875);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.5, 0.884);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.0, 0.907);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.8, 0.96);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.2, 1.12);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(6.1, 1.17);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(8.5, 1.24);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.435, 0.8375);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.5, 0.855);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.41, 1.045);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(8.0, 1.315);
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {

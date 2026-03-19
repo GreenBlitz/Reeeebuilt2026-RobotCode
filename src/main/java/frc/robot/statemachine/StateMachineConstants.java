@@ -36,7 +36,7 @@ public class StateMachineConstants {
 	private static final Translation2d DEPOT_PRESET_PASSING_TARGET = FieldMath.mirror(OUTPOST_PRESET_PASSING_TARGET, false, true);
 
 	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 20;
-	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.03;
+	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.00;
 
 	public static double getTargetXValueForPassing() {
 		if (!Field.isFieldConventionAlliance()) {
