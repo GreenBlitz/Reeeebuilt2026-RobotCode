@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
@@ -53,6 +52,7 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
@@ -360,9 +360,9 @@ public class Robot {
 	}
 
 	private void configureBrakeStateChooser() {
-		SendableChooser<NeutralMode> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("Coast", NeutralMode.Coast);
-		brakeStateChooser.addOption("Brake", NeutralMode.Brake);
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Coast", BrakeMode.COAST);
+		brakeStateChooser.addOption("Brake", BrakeMode.BRAKE);
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(BrakeStateManager::updateBrakeStateManager);
 	}

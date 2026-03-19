@@ -1,6 +1,5 @@
 package frc.utils.brakestate;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
@@ -8,11 +7,6 @@ import java.util.List;
 
 public class BrakeStateManager {
 
-	private enum BrakeMode {
-		UNKNOWN,
-		BRAKE,
-		COAST
-	}
 
 	private static final ArrayList<Runnable> brakeRunnables = new ArrayList<>();
 	private static final ArrayList<Runnable> coastRunnables = new ArrayList<>();
@@ -33,10 +27,10 @@ public class BrakeStateManager {
 		}
 	}
 
-	public static void updateBrakeStateManager(NeutralMode brakeMode) {
+	public static void updateBrakeStateManager(BrakeMode brakeMode) {
 		switch (brakeMode) {
-			case Brake -> setBrakeMode(BrakeMode.BRAKE, brakeRunnables);
-			case Coast -> setBrakeMode(BrakeMode.COAST, coastRunnables);
+			case BRAKE -> setBrakeMode(BrakeMode.BRAKE, brakeRunnables);
+			case COAST -> setBrakeMode(BrakeMode.COAST, coastRunnables);
 		}
 		log();
 	}
