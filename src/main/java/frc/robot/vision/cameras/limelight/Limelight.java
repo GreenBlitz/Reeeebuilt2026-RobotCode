@@ -112,7 +112,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
-	public void updateWhateverTheHellImDoingDetection() {
+	public void updateHeatMapObjectDetection() {
 		// figure out how to get the result from the python (ny)
 
 		NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -135,7 +135,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
 
-		//need to make it compatibale with array but first we need ot see if we eevn have an array to return...
+		Logger.recordOutput(logPath+"/objectDetection", objectRelativeToField);
 	}
 
 	public void updateColorDetection() {
