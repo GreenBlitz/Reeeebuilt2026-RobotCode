@@ -8,8 +8,6 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -195,7 +193,7 @@ public class Robot {
 		);
 
 		this.limelightLeft = new Limelight(
-			"limelight-left",
+			"limelight-two",
 			"Vision",
 			new Pose3d(
 				new Translation3d(-0.077, -0.345, 0.5),
@@ -285,6 +283,7 @@ public class Robot {
 		limelightFront.updateMT1();
 		limelightRight.updateMT1();
 		limelightLeft.updateMT1();
+		limelightLeft.updateHeatMapObjectDetection();
 
 		limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);

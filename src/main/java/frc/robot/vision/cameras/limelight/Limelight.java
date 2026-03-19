@@ -51,7 +51,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private LimelightPipeline pipeline;
 
-	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline, Rotation2d horizontalFOV, Rotation2d verticalFOV) {
+	public Limelight(
+		String name,
+		String logPathPrefix,
+		Pose3d robotRelativeCameraPose,
+		LimelightPipeline pipeline,
+		Rotation2d horizontalFOV,
+		Rotation2d verticalFOV
+	) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
 
@@ -123,19 +130,25 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		double ny = llpython[2];
 		double Vpw = 2 * Math.tan(horizontalFOV.getRadians() / 2);
 		double Vph = 2 * Math.tan(verticalFOV.getRadians() / 2);
-		double X = nx * (Vpw/2);
-		double Y = ny * (Vph/2);
-		double tx = Math.atan2(X,1);
-		double ty = Math.atan2(Y,1);
+		double X = nx * (Vpw / 2);
+		double Y = ny * (Vph / 2);
+		double tx = Math.atan2(X, 1);
+		double ty = Math.atan2(Y, 1);
 
 		Rotation2d yawOffset = new Rotation2d(tx);
 		Rotation2d pitchOffset = new Rotation2d(ty);
-		double objectRelativeToCameraX = ObjectDetectionMath.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
-		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, yawOffset, objectRelativeToCameraX);
+		double objectRelativeToCameraX = ObjectDetectionMath
+			.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
+		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(
+			robotRelativeCameraPose,
+			ObjectDetectionMath.heightOfFuelToMiddleMeters,
+			yawOffset,
+			objectRelativeToCameraX
+		);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
 
-		Logger.recordOutput(logPath+"/objectDetection", objectRelativeToField);
+		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
 	}
 
 	public void updateColorDetection() {
