@@ -7,12 +7,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
-import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.utils.alerts.Alert;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -61,9 +61,9 @@ public class SwerveStateHandler {
 				reportMissingSupplier("turret angle");
 				return speeds;
 			}
-			if (isTurretMoveLegalSupplier.get().get() == false) {
-				return handleLookAtTargetAimAssist(speeds);
-			}
+//			if (!isTurretMoveLegalSupplier.get().get()) {
+			return handleLookAtTargetAimAssist(speeds);
+//			}
 		}
 		return speeds;
 	}
@@ -71,24 +71,24 @@ public class SwerveStateHandler {
 	private ChassisSpeeds handleLookAtTargetAimAssist(ChassisSpeeds speeds) {
 		Rotation2d turretAngle = turretAngleSupplier.get().get();
 
-		if (turretAngle.getRotations() < TurretConstants.RANGE_MIDDLE.getRotations()) {
-			if (
-				Math.abs(turretAngle.getDegrees() - TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees())
-					< StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
-			) {
-				double velocityFactor = StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
-					/ Math.abs(turretAngle.getDegrees() - TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees());
-				speeds.times(velocityFactor);
-			}
-		} else {
-			if (
-				Math.abs(turretAngle.getDegrees() - TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees())
-					< StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
-			) {
-				double velocityFactor = StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
-					/ Math.abs(turretAngle.getDegrees() - TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees());
-				speeds.times(velocityFactor);
-			}
+		double diffFromLimit = Math.min(
+			turretAngle.getDegrees() - TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees(),
+			TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees() - turretAngle.getDegrees()
+		);
+
+		boolean directionToLimit = !(speeds.omegaRadiansPerSecond > 0
+			? turretAngle.getDegrees() > TurretConstants.RANGE_MIDDLE.getDegrees()
+			: turretAngle.getDegrees() < TurretConstants.RANGE_MIDDLE.getDegrees());
+
+		Logger.recordOutput("directionToLimit", directionToLimit);
+		Logger.recordOutput("diffFromLimit", diffFromLimit);
+
+
+		if (diffFromLimit < StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees() && directionToLimit) {
+			double velocityFactor = diffFromLimit / StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees();
+			velocityFactor = Math.max(velocityFactor, 0);
+			Logger.recordOutput("Factor", velocityFactor);
+			return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond * velocityFactor);
 		}
 
 		return speeds;
