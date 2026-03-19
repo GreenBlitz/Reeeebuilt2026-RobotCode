@@ -1,6 +1,8 @@
 package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
@@ -112,8 +114,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void updateWhateverTheHellImDoingDetection() {
 		// figure out how to get the result from the python (ny)
-		double ny = 900;
-		double nx = 900;
+
+		NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+
+		double[] llpython = table.getEntry("llpython").getDoubleArray(new double[8]);
+
+		double nx = llpython[1];
+		double ny = llpython[2];
 		double Vpw = 2 * Math.tan(horizontalFOV.getRadians() / 2);
 		double Vph = 2 * Math.tan(verticalFOV.getRadians() / 2);
 		double X = nx * (Vpw/2);
@@ -123,11 +130,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		Rotation2d yawOffset = new Rotation2d(tx);
 		Rotation2d pitchOffset = new Rotation2d(ty);
-
 		double objectRelativeToCameraX = ObjectDetectionMath.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
 		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, yawOffset, objectRelativeToCameraX);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
+
 		//need to make it compatibale with array but first we need ot see if we eevn have an array to return...
 	}
 
