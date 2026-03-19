@@ -303,30 +303,30 @@ public class AutosBuilder {
 		);
 	}
 
-    private static Command getAllianceSideToStartingLineAuto(
-            Robot robot,
-            AllianceSide allianceSide,
-            PathConstraints pathfindingConstraints,
-            Pose2d regularIsNearEndOfPathTolerance,
-            Pose2d stuckIsNearEndOfPathTolerance,
-            double stuckDebounceSeconds
-    ) {
-        return PathFollowingCommandsBuilder
-                .followAdjustedPathThenStop(
-                        robot.getSwerve(),
-                        () -> robot.getPoseEstimator().getEstimatedPose(),
-                        allianceSide == AllianceSide.DEPOT
-                                ? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
-                                : PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line"),
-                        pathfindingConstraints,
-                        regularIsNearEndOfPathTolerance,
-                        stuckIsNearEndOfPathTolerance,
-                        stuckDebounceSeconds,
-                        robot.getSwerve().getLogPath()
-                )
-                .andThen(
-                        robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-                );
-    }
+	private static Command getAllianceSideToStartingLineAuto(
+		Robot robot,
+		AllianceSide allianceSide,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds
+	) {
+		return PathFollowingCommandsBuilder
+			.followAdjustedPathThenStop(
+				robot.getSwerve(),
+				() -> robot.getPoseEstimator().getEstimatedPose(),
+				allianceSide == AllianceSide.DEPOT
+					? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
+					: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line"),
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				robot.getSwerve().getLogPath()
+			)
+			.andThen(
+				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+			);
+	}
 
 }
