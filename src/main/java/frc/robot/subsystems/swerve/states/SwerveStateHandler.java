@@ -12,7 +12,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
-import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.utils.alerts.Alert;
 
 import java.util.Optional;
@@ -70,36 +69,29 @@ public class SwerveStateHandler {
 	}
 
 	private ChassisSpeeds handleLookAtTargetAimAssist(ChassisSpeeds speeds) {
-		Pose2d robotPose = robotPoseSupplier.get().get();
-		Translation2d target = ShootingCalculations.getShootingParams().targetLandingPosition();
 		Rotation2d turretAngle = turretAngleSupplier.get().get();
 
-		double dY = target.getY() - robotPose.getY();
-		double dX = target.getX() - robotPose.getX();
-
-		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
-		Rotation2d targetHeading;
-		double joystickRotationalSpeed = 0;
-
 		if (turretAngle.getRotations() < TurretConstants.RANGE_MIDDLE.getRotations()) {
-			if (speeds.omegaRadiansPerSecond < 0) {
-				joystickRotationalSpeed = speeds.omegaRadiansPerSecond;
+			if (
+				Math.abs(turretAngle.getDegrees() - TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees())
+					< StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
+			) {
+				double velocityFactor = StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
+					/ Math.abs(turretAngle.getDegrees() - TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees());
+				speeds.times(velocityFactor);
 			}
-			targetHeading = Rotation2d.fromDegrees(
-				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() - StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
-			);
 		} else {
-			if (speeds.omegaRadiansPerSecond > 0) {
-				joystickRotationalSpeed = speeds.omegaRadiansPerSecond;
+			if (
+				Math.abs(turretAngle.getDegrees() - TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees())
+					< StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
+			) {
+				double velocityFactor = StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees()
+					/ Math.abs(turretAngle.getDegrees() - TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees());
+				speeds.times(velocityFactor);
 			}
-			targetHeading = Rotation2d.fromDegrees(
-				Rotation2d.fromRadians(Math.atan2(dY, dX)).getDegrees() + StateMachineConstants.DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST
-			);
 		}
 
-		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
-		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
-		return finalSpeeds;
+		return speeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
