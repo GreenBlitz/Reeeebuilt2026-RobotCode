@@ -85,8 +85,8 @@ public class SwerveStateHandler {
 
 
 		if (diffFromLimit < StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees() && directionToLimit) {
+			diffFromLimit = Math.max(diffFromLimit, 0);
 			double velocityFactor = diffFromLimit / StateMachineConstants.TURRET_DISTANCE_FROM_LIMIT_TO_APPLY_AIM_ASSIST.getDegrees();
-			velocityFactor = Math.max(velocityFactor, 0);
 			Logger.recordOutput("Factor", velocityFactor);
 			return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond * velocityFactor);
 		}
