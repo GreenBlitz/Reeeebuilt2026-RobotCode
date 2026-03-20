@@ -77,14 +77,6 @@ public class ShootingCalculations {
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
-		Rotation2d flywheelCompensationOnMagazineDrops = Rotation2d.fromRotations(
-			// Math.min(
-			Math.max((FunnelState.SHOOT.getMagazineVelocity().getRotations() - robot.getMagazine().getVelocity().getRotations()) * 0, 0)
-//						, 10)
-		);
-		Logger.recordOutput(LOG_PATH + "/flywheelCompensationOnMagazineDrops", flywheelCompensationOnMagazineDrops);
-		flywheelTargetRPS = Rotation2d.fromRotations(flywheelTargetRPS.getRotations() + flywheelCompensationOnMagazineDrops.getRotations());
-
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
