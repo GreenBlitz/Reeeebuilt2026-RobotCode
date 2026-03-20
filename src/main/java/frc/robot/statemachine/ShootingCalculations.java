@@ -33,7 +33,6 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculateShootingParams(
-		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity,
@@ -87,14 +86,6 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 
-		Logger.recordOutput(
-			"aaaaaa",
-			new Pose2d(
-				FieldMath.getRelativeTranslation(robotPose.getTranslation(), new Translation2d(2.5, turretTargetPosition)),
-				new Rotation2d()
-			)
-		);
-
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
@@ -107,13 +98,11 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculateScoringParams(
-		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
 		return calculateShootingParams(
-			robot,
 			robotPose,
 			fieldRelativeSpeeds,
 			gyroYawAngularVelocity,
@@ -124,13 +113,11 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculatePassingParams(
-		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
 		return calculateShootingParams(
-			robot,
 			robotPose,
 			fieldRelativeSpeeds,
 			gyroYawAngularVelocity,
@@ -256,15 +243,14 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(
-		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds speedsFieldRelative,
 		Rotation2d gyroYawAngularVelocity
 	) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			shootingParams = calculateScoringParams(robot, robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
-			shootingParams = calculatePassingParams(robot, robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
 	}
 
