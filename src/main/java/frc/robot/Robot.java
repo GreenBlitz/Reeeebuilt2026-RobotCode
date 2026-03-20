@@ -9,6 +9,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
@@ -50,6 +52,7 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
@@ -228,6 +231,7 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+		configureBrakeStateChooser();
 		configureAuto();
 	}
 
@@ -354,6 +358,14 @@ public class Robot {
 
 	public Limelight getLimelightRight() {
 		return limelightRight;
+	}
+
+	private void configureBrakeStateChooser() {
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Coast", BrakeMode.COAST);
+		brakeStateChooser.addOption("Brake", BrakeMode.BRAKE);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
 
 	private void configureAuto() {
