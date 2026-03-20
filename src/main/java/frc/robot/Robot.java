@@ -287,11 +287,8 @@ public class Robot {
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
 		poseEstimator.log();
-		ShootingCalculations.updateShootingParams(
-			poseEstimator.getEstimatedPose(),
-			swerve.getFieldRelativeVelocity(),
-			swerve.getIMUAngularVelocityRPS()[2]
-		);
+		ShootingCalculations
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();

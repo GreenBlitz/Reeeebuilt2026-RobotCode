@@ -7,13 +7,10 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
-import frc.robot.Robot;
-import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
-import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 public class ShootingCalculations {
@@ -242,11 +239,7 @@ public class ShootingCalculations {
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(8.0, 1.315);
 	}
 
-	public static void updateShootingParams(
-		Pose2d robotPose,
-		ChassisSpeeds speedsFieldRelative,
-		Rotation2d gyroYawAngularVelocity
-	) {
+	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
