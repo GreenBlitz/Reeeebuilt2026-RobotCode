@@ -7,6 +7,8 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
+import frc.robot.Robot;
+import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -31,6 +33,7 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculateShootingParams(
+		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity,
@@ -74,6 +77,17 @@ public class ShootingCalculations {
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
+		Rotation2d flywheelCompensationOnMagazineDrops = Rotation2d
+			.fromRotations(
+//				Math.min(
+				Math.max(
+						(FunnelState.SHOOT.getMagazineVelocity().getRotations() - robot.getMagazine().getVelocity().getRotations()) *0
+						, 0)
+//						, 10)
+			);
+		Logger.recordOutput(LOG_PATH + "/flywheelCompensationOnMagazineDrops", flywheelCompensationOnMagazineDrops);
+		flywheelTargetRPS = Rotation2d.fromRotations(flywheelTargetRPS.getRotations() + flywheelCompensationOnMagazineDrops.getRotations());
+
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
@@ -84,7 +98,13 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 
-		Logger.recordOutput("aaaaaa", new Pose2d(FieldMath.getRelativeTranslation(robotPose.getTranslation(), new Translation2d(2.5, turretTargetPosition)), new Rotation2d()));
+		Logger.recordOutput(
+			"aaaaaa",
+			new Pose2d(
+				FieldMath.getRelativeTranslation(robotPose.getTranslation(), new Translation2d(2.5, turretTargetPosition)),
+				new Rotation2d()
+			)
+		);
 
 		return new ShootingParams(
 			flywheelTargetRPS,
@@ -98,11 +118,13 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculateScoringParams(
+		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
 		return calculateShootingParams(
+			robot,
 			robotPose,
 			fieldRelativeSpeeds,
 			gyroYawAngularVelocity,
@@ -113,11 +135,13 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculatePassingParams(
+		Robot robot,
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
 		return calculateShootingParams(
+			robot,
 			robotPose,
 			fieldRelativeSpeeds,
 			gyroYawAngularVelocity,
@@ -242,11 +266,16 @@ public class ShootingCalculations {
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(8.0, 1.315);
 	}
 
-	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
+	public static void updateShootingParams(
+		Robot robot,
+		Pose2d robotPose,
+		ChassisSpeeds speedsFieldRelative,
+		Rotation2d gyroYawAngularVelocity
+	) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculateScoringParams(robot, robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
-			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculatePassingParams(robot, robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
 	}
 

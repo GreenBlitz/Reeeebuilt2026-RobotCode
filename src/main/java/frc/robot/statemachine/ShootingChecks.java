@@ -84,7 +84,10 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS.getDegrees()
 		);
 		Logger.recordOutput(logPath + "/IsFlywheelAtVelocity", isFlywheelAtVelocity);
-		Logger.recordOutput(logPath + "/FlywheelErrorRPS", Rotation2d.fromDegrees(targetFlywheelVelocityRPS.getDegrees() - flywheelVelocityRPS.getDegrees()));
+		Logger.recordOutput(
+			logPath + "/FlywheelErrorRPS",
+			Rotation2d.fromDegrees(targetFlywheelVelocityRPS.getDegrees() - flywheelVelocityRPS.getDegrees())
+		);
 		return isFlywheelAtVelocity;
 	}
 

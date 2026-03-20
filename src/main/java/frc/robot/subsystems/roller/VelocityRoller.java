@@ -4,13 +4,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.hardware.interfaces.ControllableMotor;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class VelocityRoller extends Roller {
 
 	private final InputSignal<Rotation2d> velocitySignal;
-	private final IRequest<Rotation2d> velocityRequest;
+	private final IRequest<Rotation2d> velocityVoltageRequest;
+	private final IRequest<Rotation2d> velocityBangBangRequest;
 	private final VelocityRollerCommandBuilder commandsBuilder;
+
+	Rotation2d targetVelocity;
 
 	public VelocityRoller(
 		String logPath,
@@ -20,12 +24,15 @@ public class VelocityRoller extends Roller {
 		InputSignal<Rotation2d> positionSignal,
 		InputSignal<Rotation2d> velocitySignal,
 		IRequest<Double> voltageRequest,
-		IRequest<Rotation2d> velocityRequest
+		IRequest<Rotation2d> velocityVoltageRequest,
+		IRequest<Rotation2d> velocityBangBangRequest
 	) {
 		super(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest);
 		this.velocitySignal = velocitySignal;
-		this.velocityRequest = velocityRequest;
+		this.velocityVoltageRequest = velocityVoltageRequest;
+		this.velocityBangBangRequest = velocityBangBangRequest;
 		this.commandsBuilder = new VelocityRollerCommandBuilder(this);
+		this.targetVelocity = Rotation2d.kZero;
 		setDefaultCommand(commandsBuilder.stop());
 	}
 
@@ -39,20 +46,28 @@ public class VelocityRoller extends Roller {
 	}
 
 	public void setVelocity(Rotation2d targetVelocity) {
-		velocityRequest.withSetPoint(targetVelocity);
-		motor.applyRequest(velocityRequest);
+		this.targetVelocity = targetVelocity;
+//		if (
+//				velocitySignal.isLess(targetVelocity)
+//		) {
+		motor.applyRequest(velocityBangBangRequest.withSetPoint(targetVelocity));
+		Logger.recordOutput(getLogPath() + "/usedControl", "Bang Bang");
+//		} else {
+//			motor.applyRequest(velocityVoltageRequest.withSetPoint(targetVelocity));
+//			Logger.recordOutput(getLogPath() + "/usedControl", "PID");
+//		}
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
-		velocityRequest.withSetPoint(Rotation2d.kZero);
+		velocityVoltageRequest.withSetPoint(Rotation2d.kZero);
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		Logger.recordOutput(getLogPath() + "/TargetVelocity", getVelocity());
+		Logger.recordOutput(getLogPath() + "/TargetVelocity", targetVelocity);
 		motor.updateInputs(velocitySignal);
 	}
 
