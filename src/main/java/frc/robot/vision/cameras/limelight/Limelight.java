@@ -132,13 +132,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		double Vph = 2 * Math.tan(verticalFOV.getRadians() / 2);
 		double X = nx * (Vpw / 2);
 		double Y = ny * (Vph / 2);
-		double tx = Math.atan2(X, 1);
-		double ty = Math.atan2(Y, 1);
+		double tx = Math.atan(nx * Math.tan(horizontalFOV.getRadians() / 2));
+		double ty = Math.atan(ny * Math.tan(verticalFOV.getDegrees() / 2));
 
 		Rotation2d yawOffset = new Rotation2d(tx);
 		Rotation2d pitchOffset = new Rotation2d(ty);
-		double objectRelativeToCameraX = ObjectDetectionMath
-			.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
+		double objectRelativeToCameraX = ObjectDetectionMath.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters , pitchOffset); //temp instead of the constant
 		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(
 			robotRelativeCameraPose,
 			ObjectDetectionMath.heightOfFuelToMiddleMeters,
@@ -146,6 +145,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			objectRelativeToCameraX
 		);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
+		Logger.recordOutput(logPath+"/objectRelativeToCamera", objectRelativeToCamera);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
 		Logger.recordOutput(logPath+"/inputsFromPython", llpython);
 		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
