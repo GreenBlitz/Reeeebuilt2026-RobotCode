@@ -42,7 +42,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
-import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -261,7 +260,8 @@ public class Robot {
 	}
 
 	public boolean shouldApplyLookAtTargetAimAssist() {
-		return ShootingChecks.shouldApplyLookAtTargetAimAssist(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
+		return ShootingChecks
+			.shouldApplyLookAtTargetAimAssist(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {
