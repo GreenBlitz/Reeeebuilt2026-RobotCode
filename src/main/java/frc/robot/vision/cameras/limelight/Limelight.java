@@ -122,7 +122,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	public void updateHeatMapObjectDetection() {
 		// figure out how to get the result from the python (ny)
 
-		NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+		NetworkTable table = NetworkTableInstance.getDefault().getTable(name);
 
 		double[] llpython = table.getEntry("llpython").getDoubleArray(new double[8]);
 
@@ -147,7 +147,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
-
+		Logger.recordOutput(logPath+"/inputsFromPython", llpython);
 		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
 	}
 
