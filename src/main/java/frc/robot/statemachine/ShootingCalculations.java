@@ -89,7 +89,6 @@ public class ShootingCalculations {
 			turretTargetPosition,
 			turretTargetVelocityRPS,
 			turretPredictedPose,
-
 			targetTranslation
 		);
 	}
