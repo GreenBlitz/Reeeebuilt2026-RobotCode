@@ -72,7 +72,7 @@ public class TalonFXRollerBuilder {
 			.build(roller.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, deviceID.busChain());
 
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
-		Phoenix6FeedForwardRequest velocityRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
+		Phoenix6FeedForwardRequest velocityVoltage = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
 
 		return new VelocityRoller(
 			logPath,
@@ -82,7 +82,7 @@ public class TalonFXRollerBuilder {
 			positionSignal,
 			velocitySignal,
 			voltageRequest,
-			velocityRequest
+			velocityVoltage
 		);
 	}
 

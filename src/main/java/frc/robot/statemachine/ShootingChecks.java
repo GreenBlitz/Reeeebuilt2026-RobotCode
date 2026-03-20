@@ -68,7 +68,6 @@ public class ShootingChecks {
 		boolean isTurretAtPosition = MathUtil
 			.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), turretTolerance.getDegrees());
 		Logger.recordOutput(logPath + "/IsTurretAtPosition", isTurretAtPosition);
-
 		return isTurretAtPosition;
 	}
 
@@ -84,17 +83,12 @@ public class ShootingChecks {
 			flywheelVelocityToleranceRPS.getDegrees()
 		);
 		Logger.recordOutput(logPath + "/IsFlywheelAtVelocity", isFlywheelAtVelocity);
-		Logger.recordOutput(
-			logPath + "/FlywheelErrorRPS",
-			Rotation2d.fromDegrees(targetFlywheelVelocityRPS.getDegrees() - flywheelVelocityRPS.getDegrees())
-		);
 		return isFlywheelAtVelocity;
 	}
 
 	private static boolean isHoodAtPosition(Rotation2d hoodPosition, Rotation2d targetHoodPosition, Rotation2d hoodTolerance, String logPath) {
 		boolean isHoodAtPosition = MathUtil.isNear(targetHoodPosition.getDegrees(), hoodPosition.getDegrees(), hoodTolerance.getDegrees());
 		Logger.recordOutput(logPath + "/IsHoodAtPosition", isHoodAtPosition);
-		Logger.recordOutput(logPath + "/HoodError", Rotation2d.fromDegrees(targetHoodPosition.getDegrees() - hoodPosition.getDegrees()));
 		return isHoodAtPosition;
 	}
 

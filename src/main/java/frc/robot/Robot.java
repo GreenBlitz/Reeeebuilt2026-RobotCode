@@ -285,7 +285,6 @@ public class Robot {
 
 		poseEstimator.log();
 		ShootingCalculations.updateShootingParams(
-			this,
 			poseEstimator.getEstimatedPose(),
 			swerve.getFieldRelativeVelocity(),
 			swerve.getIMUAngularVelocityRPS()[2]
