@@ -108,11 +108,12 @@ public class Phoenix6RequestBuilder {
 		BangBangController bangBangController = new BangBangController();
 		DutyCycleOut dutyCycleOut = new DutyCycleOut(0).withEnableFOC(enableFOC);
 		return new Phoenix6Request<>(
-				Rotation2d.kZero,
-				dutyCycleOut,
-				(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
-						bangBangController.calculate(currentVelocity.get().getRotations(), targetVelocity.getRotations()) == 0 ? maxPower : maxPower
-				)
+			Rotation2d.kZero,
+			dutyCycleOut,
+			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
+				bangBangController.calculate(currentVelocity.get().getRotations(), targetVelocity.getRotations()) == 0 ? maxPower : maxPower
+			)
 		);
 	}
+
 }
