@@ -3,6 +3,7 @@ package frc.robot.statemachine;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.math.FieldMath;
 
 public class StateMachineConstants {
@@ -37,6 +38,9 @@ public class StateMachineConstants {
 
 	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 20;
 	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.03;
+
+	public static final Rotation2d MAX_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees() - 5);
+	public static final Rotation2d MIN_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees() + 5);
 
 	public static double getTargetXValueForPassing() {
 		if (!Field.isFieldConventionAlliance()) {

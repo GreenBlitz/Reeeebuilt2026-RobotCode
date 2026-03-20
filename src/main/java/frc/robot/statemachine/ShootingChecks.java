@@ -6,7 +6,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.HubUtil;
+import frc.utils.math.ToleranceMath;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -324,6 +326,16 @@ public class ShootingChecks {
 			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
 		return true || isOurHubReadyToStartShooting; // todo...
+	}
+
+	public static boolean shouldApplyLookAtTargetAimAssist(Rotation2d turretTarget, Rotation2d turretPosition) {
+		boolean isTargetInMaxRange = !(turretTarget.getDegrees() > StateMachineConstants.MAX_SHOOTING_RANGE_EDGE.getDegrees()
+				&& turretPosition.getDegrees() < StateMachineConstants.MIN_SHOOTING_RANGE_EDGE.getDegrees());
+
+		boolean isTargetInMinRange = !(turretTarget.getDegrees() < StateMachineConstants.MIN_SHOOTING_RANGE_EDGE.getDegrees()
+				&& turretPosition.getDegrees() > StateMachineConstants.MAX_SHOOTING_RANGE_EDGE.getDegrees());
+
+		return isTargetInMaxRange && isTargetInMinRange;
 	}
 
 }
