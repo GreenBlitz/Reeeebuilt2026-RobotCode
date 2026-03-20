@@ -23,22 +23,22 @@ public class SwerveStateHandler {
 	private final Swerve swerve;
 	private final SwerveConstants swerveConstants;
 	private Optional<Supplier<Pose2d>> robotPoseSupplier;
-	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
+	private Optional<Supplier<Boolean>> shouldApplyLookAtTargetAimAssistSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
 
 	public SwerveStateHandler(Swerve swerve) {
 		this.swerve = swerve;
 		this.swerveConstants = swerve.getConstants();
 		this.robotPoseSupplier = Optional.empty();
-		this.isTurretMoveLegalSupplier = Optional.empty();
+		this.shouldApplyLookAtTargetAimAssistSupplier = Optional.empty();
 	}
 
 	public void setRobotPoseSupplier(Supplier<Pose2d> robotPoseSupplier) {
 		this.robotPoseSupplier = Optional.of(robotPoseSupplier);
 	}
 
-	public void setIsTurretMoveLegalSupplier(Supplier<Boolean> isTurretMoveLegalSupplier) {
-		this.isTurretMoveLegalSupplier = Optional.of(isTurretMoveLegalSupplier);
+	public void setShouldApplyLookAtTargetAimAssistSupplier(Supplier<Boolean> isTurretMoveLegalSupplier) {
+		this.shouldApplyLookAtTargetAimAssistSupplier = Optional.of(isTurretMoveLegalSupplier);
 	}
 
 	public void setTurretAngleSupplier(Supplier<Rotation2d> turretAngleSupplier) {
@@ -54,7 +54,7 @@ public class SwerveStateHandler {
 			return speeds;
 		}
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
-			if (isTurretMoveLegalSupplier.isEmpty()) {
+			if (shouldApplyLookAtTargetAimAssistSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
 				return speeds;
 			}
@@ -62,7 +62,7 @@ public class SwerveStateHandler {
 				reportMissingSupplier("turret angle");
 				return speeds;
 			}
-			if (isTurretMoveLegalSupplier.get().get() == false) {
+			if (shouldApplyLookAtTargetAimAssistSupplier.get().get()) {
 				return handleLookAtTargetAimAssist(speeds);
 			}
 		}

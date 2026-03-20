@@ -219,7 +219,7 @@ public class Robot {
 		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
-		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> shouldApplyLookAtTargetAimAssist());
+		swerve.getStateHandler().setShouldApplyLookAtTargetAimAssistSupplier(() -> shouldApplyLookAtTargetAimAssist());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 

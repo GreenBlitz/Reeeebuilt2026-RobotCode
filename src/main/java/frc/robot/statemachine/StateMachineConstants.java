@@ -27,7 +27,9 @@ public class StateMachineConstants {
 
 	public static final double TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS = 0.05;
 
-	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
+	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 0;
+	public static final Rotation2d MAX_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees() - 10);
+	public static final Rotation2d MIN_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees() + 10);
 
 	public static final double MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 6;
 	public static final double MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 11;
@@ -38,9 +40,6 @@ public class StateMachineConstants {
 
 	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 20;
 	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.00;
-
-	public static final Rotation2d MAX_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees() - 5);
-	public static final Rotation2d MIN_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees() + 5);
 
 	public static double getTargetXValueForPassing() {
 		if (!Field.isFieldConventionAlliance()) {

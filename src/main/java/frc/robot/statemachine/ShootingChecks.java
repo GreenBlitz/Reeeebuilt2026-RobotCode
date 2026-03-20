@@ -333,13 +333,10 @@ public class ShootingChecks {
 	}
 
 	public static boolean shouldApplyLookAtTargetAimAssist(Rotation2d turretTarget, Rotation2d turretPosition) {
-		boolean isTargetInMaxRange = !(turretTarget.getDegrees() > StateMachineConstants.MAX_SHOOTING_RANGE_EDGE.getDegrees()
-			&& turretPosition.getDegrees() < StateMachineConstants.MIN_SHOOTING_RANGE_EDGE.getDegrees());
+		boolean isTargetOutMaxRange = turretTarget.getDegrees() > StateMachineConstants.MAX_SHOOTING_RANGE_EDGE.getDegrees()
+			|| turretPosition.getDegrees() < StateMachineConstants.MIN_SHOOTING_RANGE_EDGE.getDegrees();
 
-		boolean isTargetInMinRange = !(turretTarget.getDegrees() < StateMachineConstants.MIN_SHOOTING_RANGE_EDGE.getDegrees()
-			&& turretPosition.getDegrees() > StateMachineConstants.MAX_SHOOTING_RANGE_EDGE.getDegrees());
-
-		return isTargetInMaxRange && isTargetInMinRange;
+		return isTargetOutMaxRange;
 	}
 
 }
