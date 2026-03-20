@@ -260,6 +260,7 @@ public class Robot {
 		robotCommander.update();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		poseEstimator.updateEstimatedPose();
 
 		limelightFront.updateIsConnected();
 		limelightRight.updateIsConnected();
