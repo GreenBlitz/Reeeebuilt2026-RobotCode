@@ -27,7 +27,6 @@ public class StateMachineConstants {
 
 	public static final double TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS = 0.05;
 
-	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 0;
 	public static final Rotation2d MAX_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees() - 10);
 	public static final Rotation2d MIN_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees() + 10);
 
