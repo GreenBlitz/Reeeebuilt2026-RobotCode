@@ -27,7 +27,7 @@ public class BrakeStateManager {
 		}
 	}
 
-	public static void updateBrakeStateManager(BrakeMode brakeMode) {
+	public static void setBrakeMode(BrakeMode brakeMode) {
 		switch (brakeMode) {
 			case BRAKE -> setBrakeMode(BrakeMode.BRAKE, brakeRunnables);
 			case COAST -> setBrakeMode(BrakeMode.COAST, coastRunnables);

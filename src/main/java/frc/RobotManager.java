@@ -59,14 +59,14 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.updateBrakeStateManager(BrakeMode.COAST);
+			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
 		}
 	}
 
 	@Override
 	public void disabledExit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.updateBrakeStateManager(BrakeMode.BRAKE);
+			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
 		}
 	}
 
