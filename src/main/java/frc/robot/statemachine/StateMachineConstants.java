@@ -3,6 +3,7 @@ package frc.robot.statemachine;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.math.FieldMath;
 
 public class StateMachineConstants {
@@ -26,7 +27,8 @@ public class StateMachineConstants {
 
 	public static final double TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS = 0.05;
 
-	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
+	public static final Rotation2d MAX_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees() - 10);
+	public static final Rotation2d MIN_SHOOTING_RANGE_EDGE = Rotation2d.fromDegrees(TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees() + 10);
 
 	public static final double MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 6;
 	public static final double MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 11;

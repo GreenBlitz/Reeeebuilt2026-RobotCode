@@ -22,6 +22,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.ShootingChecks;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
@@ -43,7 +44,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
-import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -222,7 +222,7 @@ public class Robot {
 		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
-		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
+		swerve.getStateHandler().setShouldApplyLookAtTargetAimAssistSupplier(() -> shouldApplyLookAtTargetAimAssist());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
@@ -263,8 +263,9 @@ public class Robot {
 		flyWheel.update();
 	}
 
-	public boolean isTurretMoveLegal() {
-		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
+	public boolean shouldApplyLookAtTargetAimAssist() {
+		return ShootingChecks
+			.shouldApplyLookAtTargetAimAssist(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {

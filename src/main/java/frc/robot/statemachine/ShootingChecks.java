@@ -349,4 +349,9 @@ public class ShootingChecks {
 		return true || isOurHubReadyToStartShooting; // todo...
 	}
 
+	public static boolean shouldApplyLookAtTargetAimAssist(Rotation2d turretTarget, Rotation2d turretPosition) {
+		return turretTarget.getDegrees() > StateMachineConstants.MAX_SHOOTING_RANGE_EDGE.getDegrees()
+			|| turretPosition.getDegrees() < StateMachineConstants.MIN_SHOOTING_RANGE_EDGE.getDegrees();
+	}
+
 }
