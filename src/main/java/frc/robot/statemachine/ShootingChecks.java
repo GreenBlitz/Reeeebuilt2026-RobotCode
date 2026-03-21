@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -343,8 +344,10 @@ public class ShootingChecks {
 	}
 
 	public static boolean isOurHubReadyToStartShooting(double distanceFromHubMeters) {
-		boolean isOurHubReadyToStartShooting = HubUtil
-			.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds() + ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters));
+		double timeSinceTeleopWithFlightTime = TimeUtil.getTimeSinceTeleopInitSeconds()
+			+ ShootingCalculations.getDistanceToBallFlightTime(distanceFromHubMeters);
+		boolean isOurHubReadyToStartShooting = !(HubUtil.isOurHubActive(timeSinceTeleopWithFlightTime))
+			&& (HubUtil.isOurHubActive(timeSinceTeleopWithFlightTime - GamePeriodUtils.ROBOT_TIMER_DELAY));
 		Logger.recordOutput(shootingChecksLogPath + "/IsOurHubActiveToShoot", isOurHubReadyToStartShooting);
 		return true || isOurHubReadyToStartShooting; // todo...
 	}
