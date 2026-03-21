@@ -5,9 +5,11 @@ import frc.robot.Robot;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
+import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -132,6 +134,17 @@ public class ShooterStateHandler {
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
+	}
+
+	public boolean hasABallBeenShot() {
+		if (currentState == ShooterState.SHOOT) {
+			return !ToleranceMath.isNear(
+				shootingParamsSupplier.get().targetFlywheelVelocityRPS().getRotations(),
+				flyWheel.getVelocity().getRotations(),
+				FlywheelConstants.FLYWHEEL_SHOOT_DROP_IN_VELOCITY_ROTATIONS
+			);
+		}
+		return false;
 	}
 
 	public boolean hasTurretBeenReset() {

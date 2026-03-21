@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.brakestate.BrakeMode;
@@ -33,6 +34,9 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
+	private static double autonomousStartTimeSeconds = -1;
+	private static double ballCounter;
+	private static double lastBallShotTimestamp;
 
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
@@ -72,6 +76,9 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
+		autonomousStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+		ballCounter = 0;
+		lastBallShotTimestamp = -1;
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
@@ -105,6 +112,10 @@ public class RobotManager extends LoggedRobot {
 		return teleopStartTimeSeconds;
 	}
 
+	public static double getAutonomousStartTimeSeconds(){
+		return autonomousStartTimeSeconds;
+	}
+
 	@Override
 	public void simulationPeriodic() {
 		robot.getSimulationManager().logPoses();
@@ -115,6 +126,7 @@ public class RobotManager extends LoggedRobot {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
 		HubUtil.refreshAlliances();
+		updateBallCounter();
 		robot.periodic();
 		AlertManager.reportAlerts();
 	}
@@ -123,6 +135,33 @@ public class RobotManager extends LoggedRobot {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
+	}
+
+	private void updateBallCounter() {
+		if (lastBallShotTimestamp == -1) {
+			if (robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()) {
+				if (DriverStation.isAutonomous()) {
+					lastBallShotTimestamp = TimeUtil.getTimeSinceAutonomousInitSeconds();
+                } else {
+					lastBallShotTimestamp = TimeUtil.getTimeSinceTeleopInitSeconds();
+                }
+                ballCounter++;
+            }
+		}
+		else {
+			if (DriverStation.isAutonomous()) {
+				if (TimeUtil.getTimeSinceAutonomousInitSeconds() - lastBallShotTimestamp >= FlywheelConstants.FLYWHEEL_SHOOT_DROP_IN_VELOCITY_ROTATIONS) {
+					lastBallShotTimestamp = TimeUtil.getTimeSinceAutonomousInitSeconds();
+					ballCounter++;
+				}
+			} else {
+				if (TimeUtil.getTimeSinceTeleopInitSeconds() - lastBallShotTimestamp >= FlywheelConstants.TIME_BETWEEN_CHECKS_TO_COUNT_BALLS) {
+					lastBallShotTimestamp = TimeUtil.getTimeSinceTeleopInitSeconds();
+					ballCounter++;
+				}
+			}
+		}
+		Logger.recordOutput("BallCounter", ballCounter);
 	}
 
 }
