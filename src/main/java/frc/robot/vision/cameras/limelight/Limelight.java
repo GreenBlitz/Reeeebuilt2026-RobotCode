@@ -133,17 +133,17 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		double X = nx * (Vpw / 2);
 		double Y = ny * (Vph / 2);
 		double tx = Math.atan(nx * Math.tan(horizontalFOV.getRadians() / 2));
-		double ty = Math.atan(ny * Math.tan(verticalFOV.getDegrees() / 2));
+		double ty = Math.atan(ny * Math.tan(verticalFOV.getRadians() / 2));
 
 		Rotation2d yawOffset = new Rotation2d(tx);
 		Rotation2d pitchOffset = new Rotation2d(ty);
 		double objectRelativeToCameraX = ObjectDetectionMath
-			.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset); // temp instead of
+			.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, yawOffset); // temp instead of
 																																// the constant
 		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(
 			robotRelativeCameraPose,
 			ObjectDetectionMath.heightOfFuelToMiddleMeters,
-			yawOffset,
+			pitchOffset,
 			objectRelativeToCameraX
 		);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
