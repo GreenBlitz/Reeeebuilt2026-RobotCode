@@ -117,7 +117,6 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-
 	public Command turnToHeading(Rotation2d targetHeading) {
 		return turnToHeading(targetHeading, RotateAxis.MIDDLE_OF_CHASSIS);
 	}
@@ -131,7 +130,6 @@ public class SwerveCommandsBuilder {
 			"Rotate around " + rotateAxis.name() + " to " + targetHeading
 		);
 	}
-
 
 	public Command drive(Supplier<ChassisPowers> powersSupplier) {
 		return driveByState(powersSupplier, SwerveState.DEFAULT_DRIVE);
@@ -186,9 +184,9 @@ public class SwerveCommandsBuilder {
 	private Command pathToPose(Pose2d currentPose, Pose2d targetPose, PathConstraints pathfindingConstraints) {
 		Command pathFollowingCommand;
 		if (PathPlannerUtil.isRobotInPathfindingDeadband(currentPose, targetPose)) {
-			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints);
+			pathFollowingCommand = PathPlannerUtil.createPathDuringRuntime(currentPose, targetPose, pathfindingConstraints, swerve.getLogPath());
 		} else {
-			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints);
+			pathFollowingCommand = PathFollowingCommandsBuilder.pathfindToPose(targetPose, pathfindingConstraints, swerve.getLogPath());
 		}
 
 		return swerve.asSubsystemCommand(
@@ -200,7 +198,7 @@ public class SwerveCommandsBuilder {
 	public Command driveToPath(Supplier<Pose2d> currentPose, PathPlannerPath path, Pose2d targetPose, PathConstraints pathfindingConstraints) {
 		return new DeferredCommand(
 			() -> new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints),
+				PathFollowingCommandsBuilder.pathfindThenFollowPath(path, pathfindingConstraints, swerve.getLogPath()),
 				moveToPoseByPID(currentPose, Field.getAllianceRelative(targetPose))
 			),
 			Set.of(swerve)
@@ -211,6 +209,24 @@ public class SwerveCommandsBuilder {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.moveToPoseByPID(currentPose.get(), targetPose)),
 			"PID to pose: " + targetPose
+		);
+	}
+
+	public Command wiggle(Rotation2d wiggleAngle, double timeBetweenWiggles) {
+		return new DeferredCommand(
+			() -> new SequentialCommandGroup(
+				turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - wiggleAngle.getDegrees()))
+					.withTimeout(timeBetweenWiggles),
+				new RepeatCommand(
+					new SequentialCommandGroup(
+						turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() + 2 * wiggleAngle.getDegrees()))
+							.withTimeout(timeBetweenWiggles),
+						turnToHeading(Rotation2d.fromDegrees(swerve.getAbsoluteHeading().getDegrees() - 2 * wiggleAngle.getDegrees()))
+							.withTimeout(timeBetweenWiggles)
+					)
+				)
+			),
+			Set.of(swerve)
 		);
 	}
 

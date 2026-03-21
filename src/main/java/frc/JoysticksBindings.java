@@ -72,6 +72,9 @@ public class JoysticksBindings {
 			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
 
 		// Intake binds...
+		robot.getRobotCommander()
+			.getIntakeStateHandler()
+			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
@@ -120,11 +123,12 @@ public class JoysticksBindings {
 						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					)
+					),
+					robot.getSwerve().getLogPath()
 				),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(depotToOutpost)
+					PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
 				)
@@ -141,11 +145,12 @@ public class JoysticksBindings {
 						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
 						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
 						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					)
+					),
+					robot.getSwerve().getLogPath()
 				),
 				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
 				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(outpostToDepot)
+					PathFollowingCommandsBuilder.followPath(outpostToDepot, robot.getSwerve().getLogPath())
 						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
 					robot.getRobotCommander().scoreSequence()
 				)

@@ -9,6 +9,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
@@ -21,6 +23,7 @@ import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -49,6 +52,7 @@ import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
 
@@ -65,7 +69,7 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
-	private final Arm fourBar;
+	private final CurrentControlArm fourBar;
 	private final Arm hood;
 	private final VelocityRoller magazine;
 	private final IDigitalInput magazineBallSensor;
@@ -187,7 +191,15 @@ public class Robot {
 			)
 		);
 
-		this.limelightLeft = new Limelight("limelight-left", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG);
+		this.limelightLeft = new Limelight(
+			"limelight-left",
+			"Vision",
+			new Pose3d(
+				new Translation3d(-0.077, -0.345, 0.5),
+				new Rotation3d(Math.toRadians(-0.17), Math.toRadians(19.31), Math.toRadians(91.91))
+			),
+			LimelightPipeline.APRIL_TAG
+		);
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
@@ -219,6 +231,7 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+		configureBrakeStateChooser();
 		configureAuto();
 	}
 
@@ -295,7 +308,7 @@ public class Robot {
 		return flyWheel;
 	}
 
-	public Arm getFourBar() {
+	public CurrentControlArm getFourBar() {
 		return fourBar;
 	}
 
@@ -347,8 +360,17 @@ public class Robot {
 		return limelightRight;
 	}
 
+	private void configureBrakeStateChooser() {
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Coast", BrakeMode.COAST);
+		brakeStateChooser.addOption("Brake", BrakeMode.BRAKE);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
+	}
+
 	private void configureAuto() {
-		Supplier<Command> autonomousIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 
@@ -361,10 +383,13 @@ public class Robot {
 			AutosBuilder.getAutoList(
 				this,
 				autonomousResetSubsystemsCommand,
-				autonomousIntakeCommand,
+				autonomousOpenIntakeCommand,
+				autonomousCloseIntakeCommand,
 				autonomousScoringSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE
+				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
+				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
+				AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS
 			)
 		);
 	}
