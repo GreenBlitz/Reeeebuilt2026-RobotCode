@@ -133,8 +133,8 @@ public class TalonFXRollerBuilder {
 	) {
 		TalonFXConfiguration configs = new TalonFXConfiguration();
 		configs.Slot0 = velocityControlConfig;
-		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
-		configs.CurrentLimits.StatorCurrentLimitEnable = true;
+		configs.CurrentLimits.SupplyCurrentLimit = currentLimit;
+		configs.CurrentLimits.SupplyCurrentLimitEnable = true;
 		configs.Feedback = feedbackConfigs;
 		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		return (configs);
