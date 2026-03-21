@@ -137,7 +137,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		Rotation2d yawOffset = new Rotation2d(tx);
 		Rotation2d pitchOffset = new Rotation2d(ty);
-		double objectRelativeToCameraX = ObjectDetectionMath.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters , pitchOffset); //temp instead of the constant
+		double objectRelativeToCameraX = ObjectDetectionMath
+			.getCameraRelativeObjectX(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset); // temp instead of
+																																// the constant
 		double objectRelativeToCameraY = ObjectDetectionMath.getCameraRelativeObjectY(
 			robotRelativeCameraPose,
 			ObjectDetectionMath.heightOfFuelToMiddleMeters,
@@ -145,9 +147,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			objectRelativeToCameraX
 		);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
-		Logger.recordOutput(logPath+"/objectRelativeToCamera", objectRelativeToCamera);
+		Logger.recordOutput(logPath + "/objectRelativeToCamera", objectRelativeToCamera);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
-		Logger.recordOutput(logPath+"/inputsFromPython", llpython);
+		Logger.recordOutput(logPath + "/inputsFromPython", llpython);
 		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
 	}
 
