@@ -51,10 +51,11 @@ public class RobotManager extends LoggedRobot {
 		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
-		CommandScheduler.getInstance().schedule(new WaitCommand(1).andThen(new InstantCommand(() -> robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
-					this.autonomousCommand = autonomousCommand.get();
-				}))
-		));
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+			this.autonomousCommand = autonomousCommand.get();
+		});
+//		CommandScheduler.getInstance().schedule(new WaitCommand(1).andThen(new InstantCommand(() ->
+//		));
 	}
 
 	@Override
