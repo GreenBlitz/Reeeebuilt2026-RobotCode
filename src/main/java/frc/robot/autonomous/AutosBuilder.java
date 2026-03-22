@@ -161,7 +161,7 @@ public class AutosBuilder {
 					.followAdjustedPathThenStop(
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
-						PathHelper.PATH_PLANNER_PATHS.get("R quarter passing"),
+						PathHelper.PATH_PLANNER_PATHS.get("R half passing"),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
 						stuckIsNearEndOfPathTolerance,

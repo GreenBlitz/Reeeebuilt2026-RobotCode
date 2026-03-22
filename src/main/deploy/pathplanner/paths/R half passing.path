@@ -144,15 +144,15 @@
     },
     {
       "anchor": {
-        "x": 0.5756613518432465,
+        "x": 0.643,
         "y": 2.5
       },
       "prevControl": {
-        "x": 0.9128909857486149,
+        "x": 0.9802296339053684,
         "y": 2.553445583565675
       },
       "nextControl": {
-        "x": 0.23843171793787804,
+        "x": 0.3057703660946315,
         "y": 2.446554416434325
       },
       "isLocked": false,
@@ -208,16 +208,16 @@
     },
     {
       "anchor": {
-        "x": 0.5756613518432465,
-        "y": 0.6403776525712521
+        "x": 0.643,
+        "y": 0.736
       },
       "prevControl": {
-        "x": 2.0097349848977695,
-        "y": 0.4934129104708813
+        "x": 2.077073633054523,
+        "y": 0.5890352578996292
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [
@@ -255,6 +255,19 @@
         "maxVelocity": 1.0,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 150.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Just for test",
+      "minWaypointRelativePos": 7.958472873409204,
+      "maxWaypointRelativePos": 13.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
         "unlimited": false
