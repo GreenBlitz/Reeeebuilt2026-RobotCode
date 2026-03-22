@@ -3,6 +3,7 @@ package frc.robot.subsystems.constants.magazine;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.IDs;
 import frc.robot.Robot;
@@ -19,6 +20,8 @@ public class MagazineConstant {
 
 	public static final boolean IS_INVERTED = true;
 	public static final int CURRENT_LIMIT = 60;
+
+	public static Rotation2d WANTED_VELOCITY_RPS = Rotation2d.fromRotations(80);
 
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final Slot0Configs REAL_SLOTS_CONFIG = new Slot0Configs();

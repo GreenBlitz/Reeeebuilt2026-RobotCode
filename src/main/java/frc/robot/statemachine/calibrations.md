@@ -7,6 +7,7 @@ State machine Calibrations
 - [x] Swerve setting in RobotCommander constructor
 - [ ] degrees of overshoot for aim at hub assist
 - [ ] swerve speed at scoring
+- [ ] flywheel compensation ratio
 
 #### Interpolations
 - [ ] Hood interpolation for scoring
