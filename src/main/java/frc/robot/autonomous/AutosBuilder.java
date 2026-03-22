@@ -60,7 +60,7 @@ public class AutosBuilder {
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT
 			),
-			getRQuarterPassingAuto(
+			getQuarterPassingAuto(
 				robot,
 				resetSubsystems,
 				openIntake,
@@ -70,7 +70,21 @@ public class AutosBuilder {
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST
+			),
+			getQuarterPassingAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				passingSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT
 			)
 		);
 	}
@@ -143,7 +157,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getRQuarterPassingAuto(
+	private static Supplier<PathPlannerAutoWrapper> getQuarterPassingAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> openIntake,
@@ -153,7 +167,8 @@ public class AutosBuilder {
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
+		double stuckDebounceSeconds,
+		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -161,7 +176,7 @@ public class AutosBuilder {
 					.followAdjustedPathThenStop(
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
-						PathHelper.PATH_PLANNER_PATHS.get("R half passing"),
+						startingSide == AllianceSide.OUTPOST ? PathHelper.PATH_PLANNER_PATHS.get("R half passing") : PathHelper.PATH_PLANNER_PATHS.get("L half passing"),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
 						stuckIsNearEndOfPathTolerance,
@@ -201,7 +216,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"R quarter passing"
+			startingSide == AllianceSide.OUTPOST ? "R quarter passing" : "L quarter passing"
 		);
 	}
 
