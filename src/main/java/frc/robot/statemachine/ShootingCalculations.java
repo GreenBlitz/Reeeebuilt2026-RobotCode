@@ -214,8 +214,10 @@ public class ShootingCalculations {
 
 	public static Rotation2d flywheelCompensation(Rotation2d magazineVelocity) {
 		return Rotation2d.fromRotations(
-			(MagazineConstant.WANTED_VELOCITY_RPS.getRotations() - magazineVelocity.getRotations())
-				/ StateMachineConstants.FLYWHEEL_COMPENSATION_RATIO
+			Math.abs(
+				(MagazineConstant.WANTED_VELOCITY_RPS.getRotations() - magazineVelocity.getRotations())
+					* StateMachineConstants.FLYWHEEL_COMPENSATION_RATIO
+			)
 		);
 	}
 
