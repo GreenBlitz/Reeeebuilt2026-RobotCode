@@ -20,6 +20,7 @@ import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
 import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
+import frc.utils.math.ToleranceMath;
 import frc.utils.pose.PoseUtil;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -37,7 +38,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final TimeInterpolatableBuffer<Translation2d> imuXYAccelerationGBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
-	private RobotPoseEstimation lastEstimatedPose;
+	private final RobotPoseEstimation lastEstimatedPose;
+	private Pose2d lastEstimatedPoseVelocity;
 	private boolean isIMUOffsetCalibrated;
 
 	public WPILibPoseEstimatorWrapper(
@@ -76,6 +78,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuXYAccelerationGBuffer = TimeInterpolatableBuffer
 			.createBuffer(WPILibPoseEstimatorConstants.IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS);
 		this.lastEstimatedPose = new RobotPoseEstimation(initialTimestampSeconds, new Pose2d());
+		this.lastEstimatedPoseVelocity = new Pose2d();
 	}
 
 
@@ -116,6 +119,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			);
 		}
 
+		lastEstimatedPoseVelocity = getFieldRelativeEstimatedPoseVelocity(TimeUtil.getCurrentTimeSeconds());
+
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
@@ -136,7 +141,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
-	public void updateEstimatedPose() {
+	public void updateLastEstimatedPose() {
 		lastEstimatedPose.setTimestampSeconds(TimeUtil.getCurrentTimeSeconds());
 		lastEstimatedPose.setEstimatedPose(getEstimatedPose());
 	}
@@ -177,6 +182,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void log() {
+//		Logger.recordOutput(logPath + "estimatedPoseVelocity", getEstimatedPoseVelocity(TimeUtil.getCurrentTimeSeconds()));
+
 		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
 		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
 		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
@@ -214,8 +221,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				WPILibPoseEstimatorConstants.MINIMUM_SKID_ROBOT_TO_MODULE_VELOCITY_DIFFERENCE_METERS_PER_SECOND
 			)
 		);
-
-		Logger.recordOutput(logPath + "estimatedPoseVelocity", getEstimatedPoseVelocity(TimeUtil.getCurrentTimeSeconds()));
 	}
 
 	public void resetIsIMUOffsetCalibrated() {
@@ -236,6 +241,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				updateIsIMUOffsetCalibrated();
 			}
 		});
+	}
+
+	public Pose2d getLastEstimatedPoseVelocity() {
+		return lastEstimatedPoseVelocity;
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
@@ -274,14 +283,27 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.flatMap(estimatedPose -> gyroYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
 	}
 
-	private Translation2d getEstimatedPoseVelocity(double timestamp) {
-		if (!lastEstimatedPose.getEstimatedPose().equals(new Pose2d()))
-			return new Translation2d(
-				(getEstimatedPose().getX() - lastEstimatedPose.getEstimatedPose().getX())
-					/ (timestamp - lastEstimatedPose.getTimestampSeconds()),
-				(getEstimatedPose().getY() - lastEstimatedPose.getEstimatedPose().getY()) / (timestamp - lastEstimatedPose.getTimestampSeconds())
-			);
-		return null;
+	@Override
+	public Pose2d getFieldRelativeEstimatedPoseVelocity(double timestamp) {
+		Twist2d changeInPose = new Twist2d(
+			getEstimatedPose().getX() - lastEstimatedPose.getEstimatedPose().getX(),
+			getEstimatedPose().getY() - lastEstimatedPose.getEstimatedPose().getY(),
+			getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getEstimatedPose().getRotation().getRadians()
+		);
+		double dt = (timestamp - lastEstimatedPose.getTimestampSeconds());
+		if (dt != 0) {
+			Pose2d poseVelocity = new Pose2d((changeInPose.dx / dt), (changeInPose.dy / dt), Rotation2d.fromRadians(changeInPose.dtheta / dt));
+			if (
+				ToleranceMath.isNear(0, poseVelocity.getX(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE)
+					&& ToleranceMath.isNear(0, poseVelocity.getY(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE)
+			)
+				return new Pose2d();
+			Logger.recordOutput(logPath + "estimatedPoseVelocity", poseVelocity);
+			Logger.recordOutput(logPath + "/poseVelocity/dt", dt);
+			return poseVelocity;
+		}
+		return lastEstimatedPoseVelocity;
 	}
+
 
 }

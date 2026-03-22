@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -55,6 +56,7 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import frc.utils.time.TimeUtil;
 
 import java.util.function.Supplier;
 
@@ -273,7 +275,7 @@ public class Robot {
 		robotCommander.update();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
-		poseEstimator.updateEstimatedPose();
+		poseEstimator.updateLastEstimatedPose();
 
 		limelightFront.updateIsConnected();
 		limelightRight.updateIsConnected();
@@ -288,8 +290,16 @@ public class Robot {
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
 		poseEstimator.log();
-		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+		Pose2d currentEstimatedVelocity = poseEstimator.getFieldRelativeEstimatedPoseVelocity(TimeUtil.getCurrentTimeSeconds());
+		ShootingCalculations.updateShootingParams(
+			poseEstimator.getEstimatedPose(),
+			new ChassisSpeeds(
+				currentEstimatedVelocity.getX(),
+				currentEstimatedVelocity.getY(),
+				currentEstimatedVelocity.getRotation().getRadians()
+			),
+			swerve.getIMUAngularVelocityRPS()[2]
+		);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
