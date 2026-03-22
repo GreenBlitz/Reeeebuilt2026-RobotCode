@@ -210,7 +210,7 @@ public class ShootingCalculations {
 	}
 
 	static {
-		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.7));
+		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.1));
 		HOOD_SCORING_INTERPOLATION_MAP.put(1.435, Rotation2d.fromDegrees(27.6));
 		HOOD_SCORING_INTERPOLATION_MAP.put(2.5, Rotation2d.fromDegrees(37));
 		HOOD_SCORING_INTERPOLATION_MAP.put(4.41, Rotation2d.fromDegrees(43.5));
@@ -232,6 +232,7 @@ public class ShootingCalculations {
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(17000));
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(29000));
 
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 0.7);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.435, 0.8375);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.5, 0.855);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.41, 1.045);
