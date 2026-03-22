@@ -196,12 +196,12 @@ public class Robot {
 			"limelight-two",
 			"Vision",
 			new Pose3d(
-				new Translation3d(-0.077, -0.345, 0.5),
-				new Rotation3d(Math.toRadians(-0.17), Math.toRadians(19.31), Math.toRadians(91.91))
+					new Translation3d(-0.255, 5.5, 0.18),
+					new Rotation3d(Math.toRadians(0), Math.toRadians(-11), Math.toRadians(4))
 			),
 			LimelightPipeline.APRIL_TAG,
-			Rotation2d.fromDegrees(82),
-			Rotation2d.fromDegrees(56.2)
+			Rotation2d.fromDegrees(62.5),
+			Rotation2d.fromDegrees(48.9)
 		);
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
