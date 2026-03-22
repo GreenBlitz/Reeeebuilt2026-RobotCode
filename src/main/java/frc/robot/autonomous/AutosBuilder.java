@@ -201,16 +201,16 @@ public class AutosBuilder {
 										)
 										.andThen(
 											getDoubleSwipeAuto(
-													robot,
-													resetSubsystems,
-													openIntake,
-													closeIntake,
-													scoreSequence,
-													pathfindingConstraints,
-													regularIsNearEndOfPathTolerance,
-													stuckIsNearEndOfPathTolerance,
-													stuckDebounceSeconds,
-													startingSide
+												robot,
+												resetSubsystems,
+												openIntake,
+												closeIntake,
+												scoreSequence,
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds,
+												startingSide
 											)
 										)
 										.asProxy(),
@@ -252,58 +252,58 @@ public class AutosBuilder {
 			);
 	}
 
-    private static Command getDoubleSwipeAuto(
-            Robot robot,
-            Supplier<Command> resetSubsystems,
-            Supplier<Command> openIntake,
-            Supplier<Command> closeIntake,
-            Supplier<Command> scoreSequence,
-            PathConstraints pathfindingConstraints,
-            Pose2d regularIsNearEndOfPathTolerance,
-            Pose2d stuckIsNearEndOfPathTolerance,
-            double stuckDebounceSeconds,
-            AllianceSide allianceSide
-    ) {
-        return new ParallelCommandGroup(
-                PathFollowingCommandsBuilder
-                        .followAdjustedPathThenStop(
-                                robot.getSwerve(),
-                                () -> robot.getPoseEstimator().getEstimatedPose(),
-                                allianceSide == AllianceSide.DEPOT
-                                        ? PathHelper.PATH_PLANNER_PATHS.get("L double swipe")
-                                        : PathHelper.PATH_PLANNER_PATHS.get("R double swipe"),
-                                pathfindingConstraints,
-                                regularIsNearEndOfPathTolerance,
-                                stuckIsNearEndOfPathTolerance,
-                                stuckDebounceSeconds,
-                                robot.getSwerve().getLogPath()
+	private static Command getDoubleSwipeAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		AllianceSide allianceSide
+	) {
+		return new ParallelCommandGroup(
+			PathFollowingCommandsBuilder
+				.followAdjustedPathThenStop(
+					robot.getSwerve(),
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					allianceSide == AllianceSide.DEPOT
+						? PathHelper.PATH_PLANNER_PATHS.get("L double swipe")
+						: PathHelper.PATH_PLANNER_PATHS.get("R double swipe"),
+					pathfindingConstraints,
+					regularIsNearEndOfPathTolerance,
+					stuckIsNearEndOfPathTolerance,
+					stuckDebounceSeconds,
+					robot.getSwerve().getLogPath()
 
-                        )
-                        .asProxy()
-                        .alongWith(new InstantCommand(() -> hasPathEnded = false))
-                        .andThen(new InstantCommand(() -> hasPathEnded = true)),
-                new SequentialCommandGroup(
-                        resetSubsystems.get(),
-                        new ParallelCommandGroup(
-                                new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
-                                openIntake.get()
-                                        .until(() -> hasPathEnded)
-                                        .andThen(
-                                                new ParallelCommandGroup(
-                                                        new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-                                                                .andThen(
-                                                                        robot.getSwerve()
-                                                                                .getCommandsBuilder()
-                                                                                .wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-                                                                )
-                                                                .asProxy(),
-                                                        new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-                                                                .andThen(closeIntake.get())
-                                                )
-                                        )
-                        )
-                )
-        );
-    }
+				)
+				.asProxy()
+				.alongWith(new InstantCommand(() -> hasPathEnded = false))
+				.andThen(new InstantCommand(() -> hasPathEnded = true)),
+			new SequentialCommandGroup(
+				resetSubsystems.get(),
+				new ParallelCommandGroup(
+					new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+					openIntake.get()
+						.until(() -> hasPathEnded)
+						.andThen(
+							new ParallelCommandGroup(
+								new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
+									.andThen(
+										robot.getSwerve()
+											.getCommandsBuilder()
+											.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+									)
+									.asProxy(),
+								new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+									.andThen(closeIntake.get())
+							)
+						)
+				)
+			)
+		);
+	}
 
 }
