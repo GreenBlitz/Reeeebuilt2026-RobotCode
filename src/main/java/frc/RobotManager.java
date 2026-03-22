@@ -7,7 +7,9 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.GamePeriodUtils;
@@ -137,29 +139,9 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void updateBallCounter() {
-		if (lastBallShotTimestamp == -1) {
-			if (robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()) {
-				if (DriverStation.isAutonomous()) {
-					lastBallShotTimestamp = TimeUtil.getTimeSinceAutonomousInitSeconds();
-                } else {
-					lastBallShotTimestamp = TimeUtil.getTimeSinceTeleopInitSeconds();
-                }
-                ballCounter++;
-            }
-		}
-		else {
-			if (DriverStation.isAutonomous()) {
-				if (TimeUtil.getTimeSinceAutonomousInitSeconds() - lastBallShotTimestamp >= FlywheelConstants.FLYWHEEL_SHOOT_DROP_IN_VELOCITY_ROTATIONS) {
-					lastBallShotTimestamp = TimeUtil.getTimeSinceAutonomousInitSeconds();
-					ballCounter++;
-				}
-			} else {
-				if (TimeUtil.getTimeSinceTeleopInitSeconds() - lastBallShotTimestamp >= FlywheelConstants.TIME_BETWEEN_CHECKS_TO_COUNT_BALLS) {
-					lastBallShotTimestamp = TimeUtil.getTimeSinceTeleopInitSeconds();
-					ballCounter++;
-				}
-			}
-		}
+		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(
+				new InstantCommand(() -> ballCounter++)
+		);
 		Logger.recordOutput("BallCounter", ballCounter);
 	}
 
