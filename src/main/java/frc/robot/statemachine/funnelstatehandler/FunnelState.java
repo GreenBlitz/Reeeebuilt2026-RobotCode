@@ -1,30 +1,32 @@
 package frc.robot.statemachine.funnelstatehandler;
 
 
+import frc.utils.battery.BatteryUtil;
+
 public enum FunnelState {
 
 	STOP,
-	PRE_SHOOT(1, -2),
-	SHOOT(1, 10),
-	OUTTAKE(Double.NaN, -8),
-	ROLL_UNTIL_SENSOR(0.25, 4),
+	PRE_SHOOT(7, -2),
+	SHOOT( 7, 5),
+	OUTTAKE(-3, -8),
+	ROLL_UNTIL_SENSOR(1, 4),
 	CALIBRATION;
 
-	private final double magazinePower;
+	private final double magazineVoltage;
 	private final double conveyorVoltage;
 
-	FunnelState(double magazineVelocity, double conveyorVoltage) {
-		this.magazinePower = magazineVelocity;
+	FunnelState(double magazineVoltage, double conveyorVoltage) {
+		this.magazineVoltage = magazineVoltage;
 		this.conveyorVoltage = conveyorVoltage;
 	}
 
 	FunnelState() {
-		this.magazinePower = 0;
+		this.magazineVoltage = 0;
 		this.conveyorVoltage = 0;
 	}
 
-	public double getMagazinePower() {
-		return magazinePower;
+	public double getMagazineVoltage() {
+		return magazineVoltage;
 	}
 
 	public double getConveyorVoltage() {

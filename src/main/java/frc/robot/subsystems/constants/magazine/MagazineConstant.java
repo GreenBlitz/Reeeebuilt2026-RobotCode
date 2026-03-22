@@ -21,7 +21,7 @@ public class MagazineConstant {
 	public static final boolean IS_INVERTED = true;
 	public static final int CURRENT_LIMIT = 60;
 
-	public static Rotation2d WANTED_VELOCITY_RPS = Rotation2d.fromRotations(80);
+	public static Rotation2d WANTED_VELOCITY_RPS = Rotation2d.fromRotations(50);
 
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final Slot0Configs REAL_SLOTS_CONFIG = new Slot0Configs();

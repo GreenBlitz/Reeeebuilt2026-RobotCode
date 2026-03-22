@@ -1,5 +1,6 @@
 package frc.robot.statemachine;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -73,8 +74,8 @@ public class ShootingCalculations {
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
-		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub)
-			.plus(flywheelCompensation(magazineVelocity));
+		Rotation2d flywheelTargetRPS = Rotation2d.fromRotations(flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub).getRotations() +
+			flywheelCompensation(magazineVelocity).getRotations());
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
@@ -213,12 +214,14 @@ public class ShootingCalculations {
 	);
 
 	public static Rotation2d flywheelCompensation(Rotation2d magazineVelocity) {
-		return Rotation2d.fromRotations(
-			Math.abs(
-				(MagazineConstant.WANTED_VELOCITY_RPS.getRotations() - magazineVelocity.getRotations())
-					* StateMachineConstants.FLYWHEEL_COMPENSATION_RATIO
-			)
+		Rotation2d comp = Rotation2d.fromRotations(
+				MathUtil.clamp(Math.abs(
+						(MagazineConstant.WANTED_VELOCITY_RPS.getRotations() - magazineVelocity.getRotations())
+								* StateMachineConstants.FLYWHEEL_COMPENSATION_RATIO
+				), 0.0, 10.0)
 		);
+		Logger.recordOutput(LOG_PATH + "/flywheelComp", comp);
+		return comp;
 	}
 
 	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {

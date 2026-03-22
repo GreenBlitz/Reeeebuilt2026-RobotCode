@@ -61,7 +61,7 @@ public class FunnelStateHandler {
 	private Command rollUntilSensor() {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
-				magazine.getCommandsBuilder().setPower(FunnelState.ROLL_UNTIL_SENSOR.getMagazinePower()),
+				magazine.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getMagazineVoltage()),
 				conveyor.getCommandsBuilder().setVoltage(FunnelState.ROLL_UNTIL_SENSOR.getConveyorVoltage())
 			).until(this::isBallAtSensor),
 			new ParallelCommandGroup(magazine.getCommandsBuilder().stop(), conveyor.getCommandsBuilder().stop())
@@ -77,14 +77,14 @@ public class FunnelStateHandler {
 
 	private Command preShoot() {
 		return new ParallelCommandGroup(
-			magazine.getCommandsBuilder().setPower(FunnelState.PRE_SHOOT.getMagazinePower()),
+			magazine.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getMagazineVoltage()),
 			conveyor.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage())
 		);
 	}
 
 	private Command shoot() {
 		return new ParallelCommandGroup(
-			magazine.getCommandsBuilder().setPower(FunnelState.SHOOT.getMagazinePower()),
+			magazine.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getMagazineVoltage()),
 			new SequentialCommandGroup(
 				new WaitCommand(StateMachineConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
 				conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage())

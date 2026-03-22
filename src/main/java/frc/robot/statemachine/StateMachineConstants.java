@@ -38,7 +38,7 @@ public class StateMachineConstants {
 	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 20;
 	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.03;
 
-	public static final double FLYWHEEL_COMPENSATION_RATIO = 2.5;
+	public static final double FLYWHEEL_COMPENSATION_RATIO = 0.075;
 
 	public static double getTargetXValueForPassing() {
 		if (!Field.isFieldConventionAlliance()) {
