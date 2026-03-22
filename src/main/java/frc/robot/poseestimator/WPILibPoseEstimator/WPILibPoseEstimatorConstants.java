@@ -35,6 +35,11 @@ public class WPILibPoseEstimatorConstants {
 
 	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
 
-	public static double ESTIMATED_POSE_VELOCITY_TOLERANCE = 0.2;
+	public static double ESTIMATED_POSE_VELOCITY_X_TOLERANCE = 0;
+
+	public static double ESTIMATED_POSE_VELOCITY_Y_TOLERANCE = 0;
+
+	public static double ESTIMATED_POSE_VELOCITY_ANGLE_IN_RADIANS_TOLERANCE = 0;
+
 
 }

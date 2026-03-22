@@ -285,21 +285,42 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public Pose2d getFieldRelativeEstimatedPoseVelocity(double timestamp) {
-		Twist2d changeInPose = new Twist2d(
-			getEstimatedPose().getX() - lastEstimatedPose.getEstimatedPose().getX(),
-			getEstimatedPose().getY() - lastEstimatedPose.getEstimatedPose().getY(),
-			getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getEstimatedPose().getRotation().getRadians()
-		);
 		double dt = (timestamp - lastEstimatedPose.getTimestampSeconds());
 		if (dt != 0) {
-			Pose2d poseVelocity = new Pose2d((changeInPose.dx / dt), (changeInPose.dy / dt), Rotation2d.fromRadians(changeInPose.dtheta / dt));
+			Pose2d poseVelocity = new Pose2d(
+				(getEstimatedPose().getX() - lastEstimatedPose.getEstimatedPose().getX() / dt),
+				(getEstimatedPose().getY() - lastEstimatedPose.getEstimatedPose().getY() / dt),
+				Rotation2d.fromRadians(
+					getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getEstimatedPose().getRotation().getRadians() / dt
+				)
+			);
 			if (
-				ToleranceMath.isNear(0, poseVelocity.getX(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE)
-					&& ToleranceMath.isNear(0, poseVelocity.getY(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE)
+				ToleranceMath.isNear(0, poseVelocity.getX(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_X_TOLERANCE)
+					&& ToleranceMath.isNear(0, poseVelocity.getY(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_Y_TOLERANCE)
+					&& ToleranceMath.isNear(
+						0,
+						poseVelocity.getRotation().getRadians(),
+						WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_ANGLE_IN_RADIANS_TOLERANCE
+					)
 			)
 				return new Pose2d();
 			Logger.recordOutput(logPath + "estimatedPoseVelocity", poseVelocity);
 			Logger.recordOutput(logPath + "/poseVelocity/dt", dt);
+			boolean isXNearLast = ToleranceMath
+				.isNear(lastEstimatedPoseVelocity.getX(), poseVelocity.getX(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_X_TOLERANCE);
+			boolean isYNearLast = ToleranceMath
+				.isNear(lastEstimatedPoseVelocity.getY(), poseVelocity.getY(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_Y_TOLERANCE);
+			boolean isRotationNearLast = ToleranceMath.isNear(
+				lastEstimatedPoseVelocity.getRotation().getRadians(),
+				poseVelocity.getRotation().getRadians(),
+				WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_ANGLE_IN_RADIANS_TOLERANCE
+			);
+			if (isXNearLast && isYNearLast && isRotationNearLast)
+				return new Pose2d(
+					(poseVelocity.getX() + lastEstimatedPoseVelocity.getX()) / 2,
+					(poseVelocity.getY() + lastEstimatedPoseVelocity.getY()) / 2,
+					Rotation2d.fromRadians(poseVelocity.getRotation().getRadians() + lastEstimatedPoseVelocity.getRotation().getRadians())
+				);
 			return poseVelocity;
 		}
 		return lastEstimatedPoseVelocity;
