@@ -55,9 +55,12 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
-			this.autonomousCommand = autonomousCommand.get();
-		});
+		CommandScheduler.getInstance()
+			.schedule(
+				new WaitCommand(1).andThen(new InstantCommand(() -> robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+					this.autonomousCommand = autonomousCommand.get();
+				})))
+			);
 	}
 
 	@Override
@@ -138,7 +141,12 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void updateBallCounter() {
-		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> ballCounter++));
+		new Trigger(
+				() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()
+		).onTrue(
+				new InstantCommand(() -> ballCounter++)
+						.andThen(new WaitUntilCommand(() -> !robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()))
+		);
 		Logger.recordOutput("BallCounter", ballCounter);
 	}
 

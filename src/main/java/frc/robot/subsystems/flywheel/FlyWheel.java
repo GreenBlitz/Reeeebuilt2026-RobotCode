@@ -114,15 +114,13 @@ public class FlyWheel extends GBSubsystem {
 		motor.updateSimulation();
 		motor.updateInputs(velocitySignal, voltageSignal, currentSignal);
 
-		double currentTimestampSeconds = TimeUtil.getCurrentTimeSeconds();
-		double dt = currentTimestampSeconds - previousTimestampSeconds;
+		double dt = TimeUtil.getLatestCycleTimeSeconds();
 		double currentVelocityRotations = velocitySignal.getLatestValue().getRotations();
 		double previousVelocityRotations = previousVelocity.getRotations();
 		if (dt > 0) {
 			velocityDerivative = Rotation2d.fromRotations((currentVelocityRotations - previousVelocityRotations) / dt);
 		}
 		previousVelocity = velocitySignal.getLatestValue();
-		previousTimestampSeconds = currentTimestampSeconds;
 
 		Logger.recordOutput(getLogPath() + "/targetVelocity", targetVelocity);
 		Logger.recordOutput(getLogPath() + "/velocityDerivative", velocityDerivative.getRotations());

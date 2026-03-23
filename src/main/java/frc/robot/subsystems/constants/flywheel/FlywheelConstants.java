@@ -38,7 +38,7 @@ public class FlywheelConstants {
 	public static final double MAX_BANG_BANG_POWER = 0.65;
 
 	public static final double TIME_BETWEEN_CHECKS_TO_COUNT_BALLS = 0.15;
-	public static final double FLYWHEEL_VELOCITY_DERIVATIVE_RATIO_THRESHOLD_FOR_SHOT = -0.3;
+	public static final double FLYWHEEL_VELOCITY_DERIVATIVE_RATIO_THRESHOLD_FOR_SHOT = -0.6;
 
 	public static FlyWheel createFlyWheel() {
 		return KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
