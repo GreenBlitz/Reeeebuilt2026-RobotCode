@@ -7,11 +7,9 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
-import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.brakestate.BrakeMode;
@@ -114,7 +112,7 @@ public class RobotManager extends LoggedRobot {
 		return teleopStartTimeSeconds;
 	}
 
-	public static double getAutonomousStartTimeSeconds(){
+	public static double getAutonomousStartTimeSeconds() {
 		return autonomousStartTimeSeconds;
 	}
 
@@ -140,9 +138,7 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void updateBallCounter() {
-		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(
-				new InstantCommand(() -> ballCounter++)
-		);
+		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> ballCounter++));
 		Logger.recordOutput("BallCounter", ballCounter);
 	}
 

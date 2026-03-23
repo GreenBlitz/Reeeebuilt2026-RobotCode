@@ -9,7 +9,7 @@ import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
-import frc.utils.math.ToleranceMath;
+
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -138,11 +138,8 @@ public class ShooterStateHandler {
 
 	public boolean hasABallBeenShot() {
 		if (currentState == ShooterState.SHOOT) {
-			return !ToleranceMath.isNear(
-				shootingParamsSupplier.get().targetFlywheelVelocityRPS().getRotations(),
-				flyWheel.getVelocity().getRotations(),
-				FlywheelConstants.FLYWHEEL_SHOOT_DROP_IN_VELOCITY_ROTATIONS
-			);
+			return flyWheel.getVelocityDerivative().getRotations() / shootingParamsSupplier.get().targetFlywheelVelocityRPS().getRotations()
+				< FlywheelConstants.FLYWHEEL_VELOCITY_DERIVATIVE_RATIO_THRESHOLD_FOR_SHOT;
 		}
 		return false;
 	}
