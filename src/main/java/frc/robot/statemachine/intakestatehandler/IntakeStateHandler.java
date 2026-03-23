@@ -76,7 +76,10 @@ public class IntakeStateHandler {
 	}
 
 	public Command outtake() {
-		return new ParallelCommandGroup(openFourBar(), rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower()));
+		return new ParallelCommandGroup(
+				openFourBar(),
+				rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
+		);
 	}
 
 	public Command close() {

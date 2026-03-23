@@ -70,7 +70,7 @@ public class FunnelStateHandler {
 
 	private Command outtake() {
 		return new ParallelCommandGroup(
-			magazine.getCommandsBuilder().stop(),
+			magazine.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getMagazinePower()),
 			conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getConveyorVoltage())
 		);
 	}
