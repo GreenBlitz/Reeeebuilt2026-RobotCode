@@ -100,7 +100,7 @@ public class AutosBuilder {
 	}
 
 
-private static Supplier<PathPlannerAutoWrapper> getUAuto(
+	private static Supplier<PathPlannerAutoWrapper> getUAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> openIntake,

@@ -8,6 +8,8 @@ import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
@@ -51,9 +53,12 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
-			this.autonomousCommand = autonomousCommand.get();
-		});
+		CommandScheduler.getInstance()
+			.schedule(
+				new WaitCommand(5).andThen(new InstantCommand(() -> robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+					this.autonomousCommand = autonomousCommand.get();
+				})))
+			);
 	}
 
 	@Override
