@@ -51,6 +51,8 @@ public class RobotManager extends LoggedRobot {
 		this.roborioCycles = 0;
 		this.robot = new Robot();
 
+		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> ballCounter++));
+
 		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
@@ -129,25 +131,16 @@ public class RobotManager extends LoggedRobot {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
 		HubUtil.refreshAlliances();
-		updateBallCounter();
 		robot.periodic();
 		AlertManager.reportAlerts();
+
+		Logger.recordOutput("BallCounter", ballCounter);
 	}
 
 	private void updateTimeRelatedData() {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
-	}
-
-	private void updateBallCounter() {
-		new Trigger(
-				() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()
-		).onTrue(
-				new InstantCommand(() -> ballCounter++)
-						.andThen(new WaitUntilCommand(() -> !robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()))
-		);
-		Logger.recordOutput("BallCounter", ballCounter);
 	}
 
 }
