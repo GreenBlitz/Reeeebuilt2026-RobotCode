@@ -21,6 +21,8 @@ public class AutonomousConstants {
 	public static final Pose2d DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE = new Pose2d(0.2, 0.2, Rotation2d.fromDegrees(10));
 
 	public static final double TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS = 4.0;
+	public static final double TIME_TO_WAIT_TO_START_PASSING_AFTER_AUTO_START = 2.0;
+	public static final double TIME_TO_WAIT_TO_START_SHOOTING_AFTER_PASSING = 7.5;
 	public static final double TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START = 2.0;
 	public static final double TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END = 2.0;
 	public static final double TIME_BETWEEN_WIGGLES_SECONDS = 0.3;
