@@ -22,6 +22,8 @@ public class AutonomousConstants {
 
 	public static final double TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS = 4.0;
 	public static final double TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START = 2.0;
+	public static final double TIME_TO_WAIT_TO_START_PASSING_AFTER_AUTO_START = 3.5;
+	public static final double TIME_TO_WAIT_TO_START_SHOOTING_AFTER_PASSING = 6.0;
 	public static final double TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END = 2.0;
 	public static final double TIME_BETWEEN_WIGGLES_SECONDS = 0.3;
 	public static final double TIME_TO_WAIT_AT_DEPOT = 2;
