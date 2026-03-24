@@ -74,14 +74,16 @@ public class RobotManager extends LoggedRobot {
 			)
 		);
 		new Trigger(GamePeriodUtils::isInActive1).onFalse(
-				new InstantCommand(
-						() -> Logger.recordOutput("averagePeriodPBS/Active1", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
-				)
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/Active1", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
+			)
 		);
 		new Trigger(GamePeriodUtils::isInActive2).onFalse(
-				new InstantCommand(
-						() -> Logger.recordOutput("averagePeriodPBS/Active2", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
-				)
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/Active2", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
+			)
 		);
 
 		JoysticksBindings.configureBindings(robot);
