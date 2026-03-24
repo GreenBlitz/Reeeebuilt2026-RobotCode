@@ -18,6 +18,10 @@ public class GamePeriodUtils {
 		+ TELEOP_AUTONOMOUS_TRANSITION_DURATION_SECONDS
 		+ TELEOP_DURATION_SECONDS;
 
+	public static final int AUTO_WINNER_ACTIVE_1_END_TIME_SINCE_TELEOP_START = GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS + 2 * GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int AUTO_LOOSER_ACTIVE_1_END_TIME_SINCE_TELEOP_START = GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS  * GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int AUTO_LOOSER_ACTIVE_2_END_TIME_SINCE_TELEOP_START = GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS + 3 * GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
+
 	public static boolean isTransitionShift() {
 		if (!DriverStationUtil.isTeleop()) {
 			return false;
@@ -32,6 +36,28 @@ public class GamePeriodUtils {
 	public static boolean isInEndgame() {
 		return TimeUtil.getTimeSinceTeleopInitSeconds() >= ENDGAME_START_TIME_SECONDS
 			&& TimeUtil.getTimeSinceTeleopInitSeconds() <= ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS;
+	}
+
+	public static boolean isInActive1() {
+		if (HubUtil.isRobotAllianceAutoWinner()) {
+			return TimeUtil.getTimeSinceTeleopInitSeconds()
+				> AUTO_LOOSER_ACTIVE_1_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < AUTO_WINNER_ACTIVE_1_END_TIME_SINCE_TELEOP_START;
+		} else {
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > TRANSITION_SHIFT_DURATION_SECONDS
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < AUTO_LOOSER_ACTIVE_1_END_TIME_SINCE_TELEOP_START;
+		}
+	}
+
+	public static boolean isInActive2() {
+		if (HubUtil.isRobotAllianceAutoWinner()) {
+			return TimeUtil.getTimeSinceTeleopInitSeconds()
+					> AUTO_LOOSER_ACTIVE_2_END_TIME_SINCE_TELEOP_START
+					&& TimeUtil.getTimeSinceTeleopInitSeconds() < ENDGAME_START_TIME_SECONDS;
+		} else {
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > AUTO_WINNER_ACTIVE_1_END_TIME_SINCE_TELEOP_START
+					&& TimeUtil.getTimeSinceTeleopInitSeconds() < AUTO_LOOSER_ACTIVE_2_END_TIME_SINCE_TELEOP_START;
+		}
 	}
 
 	public static double getTimeUntilTransitionShiftEnds() {
