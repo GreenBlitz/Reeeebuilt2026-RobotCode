@@ -25,12 +25,14 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Pose2d>> robotPoseSupplier;
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
+	private boolean isAimAssistOn;
 
 	public SwerveStateHandler(Swerve swerve) {
 		this.swerve = swerve;
 		this.swerveConstants = swerve.getConstants();
 		this.robotPoseSupplier = Optional.empty();
 		this.isTurretMoveLegalSupplier = Optional.empty();
+		this.isAimAssistOn = true;
 	}
 
 	public void setRobotPoseSupplier(Supplier<Pose2d> robotPoseSupplier) {
@@ -45,8 +47,16 @@ public class SwerveStateHandler {
 		this.turretAngleSupplier = Optional.of(turretAngleSupplier);
 	}
 
+	public void enableAimAssist() {
+		isAimAssistOn = true;
+	}
+
+	public void disableAimAssist() {
+		isAimAssistOn = false;
+	}
+
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		if (swerveState.getAimAssist() == AimAssist.NONE) {
+		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
 		if (robotPoseSupplier.isEmpty()) {
