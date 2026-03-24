@@ -15,6 +15,6 @@ public class RobotConstants {
 	public static final double WHEEL_COF = 1;
 
 	public static final double MAX_TIME_FOR_BPS_INTERPOLATOR = 35;
-	public static final double TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS = 5;
+	public static final double TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS = 1;
 
 }
