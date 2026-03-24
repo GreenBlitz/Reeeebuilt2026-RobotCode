@@ -5,7 +5,7 @@ public enum FunnelState {
 
 	STOP,
 	PRE_SHOOT(1, -2),
-	SHOOT(1, 10),
+	SHOOT(1, 8.4),
 	OUTTAKE(Double.NaN, -8),
 	ROLL_UNTIL_SENSOR(0.25, 4),
 	CALIBRATION;
