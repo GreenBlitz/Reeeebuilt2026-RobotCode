@@ -7,7 +7,6 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.*;
@@ -61,8 +60,19 @@ public class RobotManager extends LoggedRobot {
 			ballsBuffer.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounter);
 		}));
 
-		new Trigger(GamePeriodUtils::isTransitionShift).onFalse(new InstantCommand(() -> Logger.recordOutput("averagePeriodPBS/TransitionShift", getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS))));
-		new Trigger(GamePeriodUtils::isInEndgame).onFalse(new InstantCommand(() -> Logger.recordOutput("averagePeriodPBS/Endgame", getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS))));
+		new Trigger(GamePeriodUtils::isTransitionShift).onFalse(
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/TransitionShift", getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS))
+			)
+		);
+		new Trigger(GamePeriodUtils::isInEndgame)
+			.onFalse(
+				new InstantCommand(
+					() -> Logger
+						.recordOutput("averagePeriodPBS/Endgame", getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS))
+				)
+			);
 
 		JoysticksBindings.configureBindings(robot);
 
@@ -155,7 +165,7 @@ public class RobotManager extends LoggedRobot {
 		TimeUtil.updateCycleTime(roborioCycles);
 	}
 
-	private double getAverageBPSForLastXSeconds(double seconds){
+	private double getAverageBPSForLastXSeconds(double seconds) {
 		if (ballsBuffer.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).isPresent()) {
 			return (ballCounter - ballsBuffer.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).get()) / seconds;
 		}
