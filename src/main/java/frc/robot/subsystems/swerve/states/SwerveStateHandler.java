@@ -47,8 +47,12 @@ public class SwerveStateHandler {
 		this.turretAngleSupplier = Optional.of(turretAngleSupplier);
 	}
 
-	public void toggleAimAssist() {
-		isAimAssistOn = !isAimAssistOn;
+	public void enableAimAssist() {
+		isAimAssistOn = true;
+	}
+
+	public void disableAimAssist() {
+		isAimAssistOn = false;
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
