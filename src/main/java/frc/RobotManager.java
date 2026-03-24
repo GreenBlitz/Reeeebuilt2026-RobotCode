@@ -53,12 +53,9 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		CommandScheduler.getInstance()
-			.schedule(
-				new WaitCommand(5).andThen(new InstantCommand(() -> robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 					this.autonomousCommand = autonomousCommand.get();
-				})))
-			);
+				});
 	}
 
 	@Override
