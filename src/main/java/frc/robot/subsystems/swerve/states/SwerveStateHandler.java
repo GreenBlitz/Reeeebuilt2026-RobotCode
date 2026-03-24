@@ -52,7 +52,7 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn){
+		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
 		if (robotPoseSupplier.isEmpty()) {
@@ -147,4 +147,5 @@ public class SwerveStateHandler {
 	public RotateAxis getFarLeftRotateAxis() {
 		return getFarRotateAxis(true);
 	}
+
 }
