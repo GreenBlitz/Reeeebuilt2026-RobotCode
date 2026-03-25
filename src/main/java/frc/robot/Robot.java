@@ -216,6 +216,8 @@ public class Robot {
 			)
 		);
 
+		limelightLeft.setThrottle200();
+
 		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
