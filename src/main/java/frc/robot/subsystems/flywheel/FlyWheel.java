@@ -30,8 +30,7 @@ public class FlyWheel extends GBSubsystem {
 	private Rotation2d targetVelocity;
 
 	private Rotation2d previousVelocity;
-	private double previousTimestampSeconds;
-	private Rotation2d velocityDerivative;
+	private Rotation2d acceleration;
 
 	public FlyWheel(
 		String logPath,
@@ -55,8 +54,7 @@ public class FlyWheel extends GBSubsystem {
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, this::setVoltage);
 		this.targetVelocity = Rotation2d.kZero;
 		this.previousVelocity = Rotation2d.kZero;
-		this.previousTimestampSeconds = TimeUtil.getCurrentTimeSeconds();
-		this.velocityDerivative = Rotation2d.kZero;
+		this.acceleration = Rotation2d.kZero;
 		setDefaultCommand(getCommandBuilder().stop());
 	}
 
@@ -106,8 +104,8 @@ public class FlyWheel extends GBSubsystem {
 		motor.setBrake(brake);
 	}
 
-	public Rotation2d getVelocityDerivative() {
-		return velocityDerivative;
+	public Rotation2d getAcceleration() {
+		return acceleration;
 	}
 
 	public void update() {
@@ -115,15 +113,19 @@ public class FlyWheel extends GBSubsystem {
 		motor.updateInputs(velocitySignal, voltageSignal, currentSignal);
 
 		double dt = TimeUtil.getLatestCycleTimeSeconds();
+
 		double currentVelocityRotations = velocitySignal.getLatestValue().getRotations();
 		double previousVelocityRotations = previousVelocity.getRotations();
+		Rotation2d dv = Rotation2d.fromRotations(currentVelocityRotations - previousVelocityRotations);
+
+		Logger.recordOutput(getLogPath() + "/dv", dv);
 		if (dt > 0) {
-			velocityDerivative = Rotation2d.fromRotations((currentVelocityRotations - previousVelocityRotations) / dt);
+			acceleration = Rotation2d.fromRotations(dv.getRotations() / dt);
 		}
 		previousVelocity = velocitySignal.getLatestValue();
 
 		Logger.recordOutput(getLogPath() + "/targetVelocity", targetVelocity);
-		Logger.recordOutput(getLogPath() + "/velocityDerivative", velocityDerivative.getRotations());
+		Logger.recordOutput(getLogPath() + "/acceleration", acceleration.getRotations());
 	}
 
 	public void applyCalibrationsBindings(SmartJoystick joystick) {

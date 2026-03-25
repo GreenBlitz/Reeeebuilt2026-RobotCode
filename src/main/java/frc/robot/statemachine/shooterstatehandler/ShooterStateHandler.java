@@ -9,7 +9,6 @@ import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
-
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -138,8 +137,7 @@ public class ShooterStateHandler {
 
 	public boolean hasABallBeenShot() {
 		if (currentState == ShooterState.SHOOT) {
-			return flyWheel.getVelocityDerivative().getRotations() / shootingParamsSupplier.get().targetFlywheelVelocityRPS().getRotations()
-				< FlywheelConstants.FLYWHEEL_VELOCITY_DERIVATIVE_RATIO_THRESHOLD_FOR_SHOT;
+			return flyWheel.getAcceleration().getRotations() < FlywheelConstants.FLYWHEEL_ACCELERATION_THRESHOLD_FOR_SHOT.getRotations();
 		}
 		return false;
 	}
