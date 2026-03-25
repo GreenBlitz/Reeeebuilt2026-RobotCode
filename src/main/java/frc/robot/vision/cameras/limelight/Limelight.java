@@ -274,6 +274,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
 	}
 
+	public void setThrottle200(){
+		LimelightHelpers.SetThrottle(name, 200);
+	}
+
 	protected LimelightTarget2dValues getTarget2dValues() {
 		if (pipeline.isNeuralDetecting()) {
 			return inputs.neuralDetectionInputs().target2dValues;

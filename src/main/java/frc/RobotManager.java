@@ -91,6 +91,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+		robot.getLimelightLeft().setThrottle200();
 	}
 
 	@Override
