@@ -253,7 +253,7 @@ public class ShootingChecks {
 		);
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		boolean isReadyToScore = isReadyToShoot && isOurHubReadyToStartShooting && isInAllianceZone;
+		boolean isReadyToScore = isReadyToShoot && isOurHubReadyToStartShooting /*&& isInAllianceZone*/;
 		Logger.recordOutput(shootingChecksLogPath + "isReadyToScore", isReadyToScore);
 
 		return isReadyToScore;
@@ -309,7 +309,7 @@ public class ShootingChecks {
 
 		boolean isInAllianceZone = isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
-		boolean canContinueScoring = canContinueShooting && isOurHubReadyToStartShooting && isInAllianceZone;
+		boolean canContinueScoring = canContinueShooting && isOurHubReadyToStartShooting /*&& isInAllianceZone*/;
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinueScoring", canContinueScoring);
 
 		return canContinueScoring;

@@ -1,30 +1,32 @@
 package frc.robot.statemachine.funnelstatehandler;
 
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public enum FunnelState {
 
 	STOP,
-	PRE_SHOOT(1, -2),
-	SHOOT(1, 8.4),
-	OUTTAKE(Double.NaN, -8),
-	ROLL_UNTIL_SENSOR(0.25, 4),
+	PRE_SHOOT(Rotation2d.fromRotations(44), -2),
+	SHOOT(Rotation2d.fromRotations(44), 8.4),
+	OUTTAKE(Rotation2d.fromRotations(Double.NaN), -8),
+	ROLL_UNTIL_SENSOR(Rotation2d.fromRotations(44), 4),
 	CALIBRATION;
 
-	private final double magazinePower;
+	private final Rotation2d magazineVelocity;
 	private final double conveyorVoltage;
 
-	FunnelState(double magazineVelocity, double conveyorVoltage) {
-		this.magazinePower = magazineVelocity;
+	FunnelState(Rotation2d magazineVelocity, double conveyorVoltage) {
+		this.magazineVelocity = magazineVelocity;
 		this.conveyorVoltage = conveyorVoltage;
 	}
 
 	FunnelState() {
-		this.magazinePower = 0;
+		this.magazineVelocity = Rotation2d.kZero;
 		this.conveyorVoltage = 0;
 	}
 
-	public double getMagazinePower() {
-		return magazinePower;
+	public Rotation2d getMagazineVelocity() {
+		return magazineVelocity;
 	}
 
 	public double getConveyorVoltage() {
