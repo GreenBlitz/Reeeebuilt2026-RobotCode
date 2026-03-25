@@ -55,6 +55,7 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.function.Supplier;
 
@@ -267,10 +268,48 @@ public class Robot {
 		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
+	LoggedNetworkNumber distance = new LoggedNetworkNumber("distanceStddev", 0.4);
+	LoggedNetworkNumber factor = new LoggedNetworkNumber("factorStddev", 0.07);
+	LoggedNetworkNumber tagNumExp = new LoggedNetworkNumber("tagNumExpStddev", 0.7);
+	LoggedNetworkNumber addition = new LoggedNetworkNumber("additionStddev", 0.011);
+
 	public void periodic() {
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		robotCommander.update();
+
+		distance.periodic();
+		factor.periodic();
+		tagNumExp.periodic();
+		addition.periodic();
+
+		limelightFront.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelightFront,
+				new StandardDeviations2D(distance.get()),
+				new StandardDeviations2D(factor.get()),
+				new StandardDeviations2D(tagNumExp.get()),
+				new StandardDeviations2D(addition.get())
+			)
+		);
+		limelightRight.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelightRight,
+				new StandardDeviations2D(distance.get()),
+				new StandardDeviations2D(factor.get()),
+				new StandardDeviations2D(tagNumExp.get()),
+				new StandardDeviations2D(addition.get())
+			)
+		);
+		limelightLeft.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelightLeft,
+				new StandardDeviations2D(distance.get()),
+				new StandardDeviations2D(factor.get()),
+				new StandardDeviations2D(tagNumExp.get()),
+				new StandardDeviations2D(addition.get())
+			)
+		);
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
