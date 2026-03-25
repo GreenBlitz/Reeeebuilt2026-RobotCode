@@ -177,7 +177,6 @@ public class RobotManager extends LoggedRobot {
 		robot.periodic();
 		AlertManager.reportAlerts();
 
-
 		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
 		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
 		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
