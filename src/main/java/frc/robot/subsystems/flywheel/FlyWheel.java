@@ -6,7 +6,6 @@ import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.interfaces.IRequest;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.subsystems.GBSubsystem;
-import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.calibration.sysid.SysIdCalibrator;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -64,16 +63,7 @@ public class FlyWheel extends GBSubsystem {
 
 	public void setTargetVelocity(Rotation2d velocity) {
 		targetVelocity = velocity;
-//		if (
-//				velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees()
-//				> FlywheelConstants.MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS.getDegrees()
-//		) {
-//			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));
-//			Logger.recordOutput(getLogPath() + "/usedControl", "Bang Bang");
-//		} else {
-			motor.applyRequest(velocityVoltageRequest.withSetPoint(velocity));
-			Logger.recordOutput(getLogPath() + "/usedControl", "PID");
-//		}
+		motor.applyRequest(velocityVoltageRequest.withSetPoint(velocity));
 	}
 
 	public void setVoltage(double voltage) {

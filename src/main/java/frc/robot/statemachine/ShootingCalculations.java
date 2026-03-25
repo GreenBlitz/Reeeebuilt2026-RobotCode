@@ -224,11 +224,11 @@ public class ShootingCalculations {
 		HOOD_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(48));
 		HOOD_PASSING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(51));
 		HOOD_PASSING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(53));
-		HOOD_PASSING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(53));
+		HOOD_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(54));
 
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(16800));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(14082));
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(17000));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(26700));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(29000));
 
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.718);
@@ -236,11 +236,11 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-//		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-//		} else {
-//			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-//		}
+		} else {
+			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		}
 	}
 
 }

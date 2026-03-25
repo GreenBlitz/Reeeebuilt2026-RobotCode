@@ -71,7 +71,8 @@ public class RobotManager extends LoggedRobot {
 
 		new Trigger(
 			() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()
-				&& (robot.getRobotCommander().getCurrentState() == RobotState.SCORE || robot.getRobotCommander().getCurrentState() == RobotState.CALIBRATION_SCORE )
+				&& (robot.getRobotCommander().getCurrentState() == RobotState.SCORE
+					|| robot.getRobotCommander().getCurrentState() == RobotState.CALIBRATION_SCORE)
 		).onTrue(new InstantCommand(() -> {
 			ballCounterWithoutPassing++;
 			ballsBufferWithoutPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
