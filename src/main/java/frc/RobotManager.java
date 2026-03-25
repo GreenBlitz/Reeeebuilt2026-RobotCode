@@ -54,7 +54,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
 			if (DriverStationUtil.isMatch())
-				robot.disableThrottles();
+				robot.disableAllLimelightThrottles();
 		});
 	}
 
@@ -62,7 +62,7 @@ public class RobotManager extends LoggedRobot {
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
-			robot.enableThrottles();
+			robot.enableAllLimelightThrottles();
 		}
 	}
 
@@ -71,7 +71,7 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
 		}
-		robot.disableThrottles();
+		robot.disableAllLimelightThrottles();
 	}
 
 	@Override
@@ -103,6 +103,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getLimelightFront().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
 		robot.getLimelightLeft().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
 		robot.getLimelightRight().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
+		robot.enableAllLimelightThrottles();
 	}
 
 	public static double getTeleopStartTimeSeconds() {

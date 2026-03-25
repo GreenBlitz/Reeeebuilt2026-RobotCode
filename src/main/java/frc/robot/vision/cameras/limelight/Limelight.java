@@ -23,6 +23,9 @@ import java.util.function.Supplier;
 
 public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, OrientationRequiringRobotPoseSupplier {
 
+	private static final int throttleEnableValue = 200;
+	private static final int throttleDisableValue = 0;
+
 	private final String name;
 	private final String logPath;
 	private final Pose3d robotRelativeCameraPose;
@@ -275,11 +278,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public void enableThrottle() {
-		LimelightHelpers.SetThrottle(name, 200);
+		LimelightHelpers.SetThrottle(name, throttleEnableValue);
 	}
 
 	public void disableThrottle() {
-		LimelightHelpers.SetThrottle(name, 0);
+		LimelightHelpers.SetThrottle(name, throttleDisableValue);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
