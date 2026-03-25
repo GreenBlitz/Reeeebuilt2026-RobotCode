@@ -274,11 +274,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
 	}
 
-	public void enableThrottle(){
+	public void enableThrottle() {
 		LimelightHelpers.SetThrottle(name, 200);
 	}
 
-	public void disableThrottle(){
+	public void disableThrottle() {
 		LimelightHelpers.SetThrottle(name, 0);
 	}
 

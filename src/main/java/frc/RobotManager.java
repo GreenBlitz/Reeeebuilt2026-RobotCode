@@ -52,7 +52,7 @@ public class RobotManager extends LoggedRobot {
 
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
-			if(DriverStationUtil.isMatch())
+			if (DriverStationUtil.isMatch())
 				robot.disableThrottles();
 		});
 	}

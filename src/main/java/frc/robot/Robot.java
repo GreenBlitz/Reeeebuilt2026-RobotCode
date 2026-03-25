@@ -291,13 +291,13 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	public void disableThrottles(){
+	public void disableThrottles() {
 		this.limelightLeft.disableThrottle();
 		this.limelightFront.disableThrottle();
 		this.limelightRight.disableThrottle();
 	}
 
-	public void enableThrottles(){
+	public void enableThrottles() {
 		this.limelightRight.enableThrottle();
 		this.limelightFront.enableThrottle();
 		this.limelightLeft.enableThrottle();
