@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
+import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -60,7 +61,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.coast();
+			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
 			robot.enableThrottles();
 		}
 	}
@@ -68,7 +69,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void disabledExit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.brake();
+			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
 		}
 		robot.disableThrottles();
 	}

@@ -39,8 +39,7 @@ public class VelocityRoller extends Roller {
 	}
 
 	public void setVelocity(Rotation2d targetVelocity) {
-		velocityRequest.withSetPoint(targetVelocity);
-		motor.applyRequest(velocityRequest);
+		motor.applyRequest(velocityRequest.withSetPoint(targetVelocity));
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class VelocityRoller extends Roller {
 	@Override
 	public void update() {
 		super.update();
-		Logger.recordOutput(getLogPath() + "/TargetVelocity", getVelocity());
+		Logger.recordOutput(getLogPath() + "/TargetVelocity", velocityRequest.getSetPoint());
 		motor.updateInputs(velocitySignal);
 	}
 
