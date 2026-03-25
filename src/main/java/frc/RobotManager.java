@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
@@ -35,6 +37,9 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
+	private static double autonomousStartTimeSeconds = -1;
+	private static double ballCounter;
+	private static double lastBallShotTimestamp;
 
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
@@ -77,6 +82,9 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
+		autonomousStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+		ballCounter = 0;
+		lastBallShotTimestamp = -1;
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
@@ -110,6 +118,10 @@ public class RobotManager extends LoggedRobot {
 		return teleopStartTimeSeconds;
 	}
 
+	public static double getAutonomousStartTimeSeconds() {
+		return autonomousStartTimeSeconds;
+	}
+
 	@Override
 	public void simulationPeriodic() {
 		robot.getSimulationManager().logPoses();
@@ -120,6 +132,7 @@ public class RobotManager extends LoggedRobot {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
 		HubUtil.refreshAlliances();
+		updateBallCounter();
 		robot.periodic();
 		AlertManager.reportAlerts();
 	}
@@ -128,6 +141,16 @@ public class RobotManager extends LoggedRobot {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
+	}
+
+	private void updateBallCounter() {
+		new Trigger(
+				() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()
+		).onTrue(
+				new InstantCommand(() -> ballCounter++)
+						.andThen(new WaitUntilCommand(() -> !robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()))
+		);
+		Logger.recordOutput("BallCounter", ballCounter);
 	}
 
 }

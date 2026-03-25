@@ -8,6 +8,7 @@ import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.utils.calibration.sysid.SysIdCalibrator;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 public class FlyWheel extends GBSubsystem {
@@ -27,6 +28,10 @@ public class FlyWheel extends GBSubsystem {
 	private final SysIdCalibrator sysIdCalibrator;
 
 	private Rotation2d targetVelocity;
+
+	private Rotation2d previousVelocity;
+	private double previousTimestampSeconds;
+	private Rotation2d velocityDerivative;
 
 	public FlyWheel(
 		String logPath,
@@ -49,6 +54,9 @@ public class FlyWheel extends GBSubsystem {
 		this.flyWheelCommandBuilder = new FlyWheelCommandBuilder(this);
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, this::setVoltage);
 		this.targetVelocity = Rotation2d.kZero;
+		this.previousVelocity = Rotation2d.kZero;
+		this.previousTimestampSeconds = TimeUtil.getCurrentTimeSeconds();
+		this.velocityDerivative = Rotation2d.kZero;
 		setDefaultCommand(getCommandBuilder().stop());
 	}
 
@@ -59,7 +67,7 @@ public class FlyWheel extends GBSubsystem {
 	public void setTargetVelocity(Rotation2d velocity) {
 		targetVelocity = velocity;
 		if (
-			Math.abs(velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees())
+				velocity.getDegrees() - velocitySignal.getLatestValue().getDegrees()
 				> FlywheelConstants.MIN_ERROR_TO_APPLY_BANG_BANG_CONTROL_RPS.getDegrees()
 		) {
 			motor.applyRequest(velocityBangBangRequest.withSetPoint(velocity));
@@ -98,10 +106,24 @@ public class FlyWheel extends GBSubsystem {
 		motor.setBrake(brake);
 	}
 
+	public Rotation2d getVelocityDerivative() {
+		return velocityDerivative;
+	}
+
 	public void update() {
 		motor.updateSimulation();
 		motor.updateInputs(velocitySignal, voltageSignal, currentSignal);
+
+		double dt = TimeUtil.getLatestCycleTimeSeconds();
+		double currentVelocityRotations = velocitySignal.getLatestValue().getRotations();
+		double previousVelocityRotations = previousVelocity.getRotations();
+		if (dt > 0) {
+			velocityDerivative = Rotation2d.fromRotations((currentVelocityRotations - previousVelocityRotations) / dt);
+		}
+		previousVelocity = velocitySignal.getLatestValue();
+
 		Logger.recordOutput(getLogPath() + "/targetVelocity", targetVelocity);
+		Logger.recordOutput(getLogPath() + "/velocityDerivative", velocityDerivative.getRotations());
 	}
 
 	public void applyCalibrationsBindings(SmartJoystick joystick) {

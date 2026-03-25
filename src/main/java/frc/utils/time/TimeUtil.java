@@ -1,5 +1,6 @@
 package frc.utils.time;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.RobotManager;
 import frc.utils.alerts.Alert;
@@ -50,6 +51,13 @@ public class TimeUtil {
 			return -1;
 		}
 		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
+	}
+
+	public static double getTimeSinceAutonomousInitSeconds() {
+		if (RobotManager.getAutonomousStartTimeSeconds() == -1 || DriverStation.isTeleop()) {
+			return -1;
+		}
+		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getAutonomousStartTimeSeconds();
 	}
 
 }
