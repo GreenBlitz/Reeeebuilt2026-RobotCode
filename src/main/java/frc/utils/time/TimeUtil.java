@@ -1,6 +1,5 @@
 package frc.utils.time;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.RobotManager;
 import frc.utils.alerts.Alert;
