@@ -18,12 +18,10 @@ public class GamePeriodUtils {
 		+ TELEOP_AUTONOMOUS_TRANSITION_DURATION_SECONDS
 		+ TELEOP_DURATION_SECONDS;
 
-	public static final int AUTO_WINNER_ACTIVE_1_END_TIME_SINCE_TELEOP_START = GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS
-		+ 2 * GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
-	public static final int AUTO_LOOSER_ACTIVE_1_END_TIME_SINCE_TELEOP_START = GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS
-		* GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
-	public static final int AUTO_LOOSER_ACTIVE_2_END_TIME_SINCE_TELEOP_START = GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS
-		+ 3 * GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_1_END_TIME_SINCE_TELEOP_START = TRANSITION_SHIFT_DURATION_SECONDS + ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_2_END_TIME_SINCE_TELEOP_START = ACTIVE_1_END_TIME_SINCE_TELEOP_START + ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_3_END_TIME_SINCE_TELEOP_START = ACTIVE_2_END_TIME_SINCE_TELEOP_START + ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_4_END_TIME_SINCE_TELEOP_START = ACTIVE_3_END_TIME_SINCE_TELEOP_START + ALLIANCE_SHIFT_DURATION_SECONDS;
 
 	public static boolean isTransitionShift() {
 		if (!DriverStationUtil.isTeleop()) {
@@ -43,21 +41,21 @@ public class GamePeriodUtils {
 
 	public static boolean isInActive1() {
 		if (HubUtil.isRobotAllianceAutoWinner()) {
-			return TimeUtil.getTimeSinceTeleopInitSeconds() > AUTO_LOOSER_ACTIVE_1_END_TIME_SINCE_TELEOP_START
-				&& TimeUtil.getTimeSinceTeleopInitSeconds() < AUTO_WINNER_ACTIVE_1_END_TIME_SINCE_TELEOP_START;
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_1_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_2_END_TIME_SINCE_TELEOP_START;
 		} else {
 			return TimeUtil.getTimeSinceTeleopInitSeconds() > TRANSITION_SHIFT_DURATION_SECONDS
-				&& TimeUtil.getTimeSinceTeleopInitSeconds() < AUTO_LOOSER_ACTIVE_1_END_TIME_SINCE_TELEOP_START;
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_1_END_TIME_SINCE_TELEOP_START;
 		}
 	}
 
 	public static boolean isInActive2() {
 		if (HubUtil.isRobotAllianceAutoWinner()) {
-			return TimeUtil.getTimeSinceTeleopInitSeconds() > AUTO_LOOSER_ACTIVE_2_END_TIME_SINCE_TELEOP_START
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_3_END_TIME_SINCE_TELEOP_START
 				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ENDGAME_START_TIME_SECONDS;
 		} else {
-			return TimeUtil.getTimeSinceTeleopInitSeconds() > AUTO_WINNER_ACTIVE_1_END_TIME_SINCE_TELEOP_START
-				&& TimeUtil.getTimeSinceTeleopInitSeconds() < AUTO_LOOSER_ACTIVE_2_END_TIME_SINCE_TELEOP_START;
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_2_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_3_END_TIME_SINCE_TELEOP_START;
 		}
 	}
 
