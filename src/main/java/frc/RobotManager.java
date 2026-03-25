@@ -40,7 +40,6 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
-	private static double autonomousStartTimeSeconds = -1;
 	private static double ballCounterIncludingPassing;
 	private static double ballCounterWithoutPassing;
 
@@ -129,7 +128,6 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
-		autonomousStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
 		ballCounterIncludingPassing = 0;
 		ballCounterWithoutPassing = 0;
 		robot.getSwerve().setIsRunningIndependently(true);
@@ -164,10 +162,6 @@ public class RobotManager extends LoggedRobot {
 
 	public static double getTeleopStartTimeSeconds() {
 		return teleopStartTimeSeconds;
-	}
-
-	public static double getAutonomousStartTimeSeconds() {
-		return autonomousStartTimeSeconds;
 	}
 
 	@Override

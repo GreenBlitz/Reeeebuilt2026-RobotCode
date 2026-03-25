@@ -53,11 +53,4 @@ public class TimeUtil {
 		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
 	}
 
-	public static double getTimeSinceAutonomousInitSeconds() {
-		if (RobotManager.getAutonomousStartTimeSeconds() == -1 || DriverStation.isTeleop()) {
-			return -1;
-		}
-		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getAutonomousStartTimeSeconds();
-	}
-
 }

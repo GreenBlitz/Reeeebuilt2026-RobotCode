@@ -118,7 +118,6 @@ public class FlyWheel extends GBSubsystem {
 		double previousVelocityRotations = previousVelocity.getRotations();
 		Rotation2d dv = Rotation2d.fromRotations(currentVelocityRotations - previousVelocityRotations);
 
-		Logger.recordOutput(getLogPath() + "/dt", dt);
 		Logger.recordOutput(getLogPath() + "/dv", dv);
 		if (dt > 0) {
 			acceleration = Rotation2d.fromRotations(dv.getRotations() / dt);
