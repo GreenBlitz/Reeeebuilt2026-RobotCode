@@ -70,6 +70,8 @@ public class JoysticksBindings {
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
 			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist()));
+		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().disableAimAssist()));
 
 		// Intake binds...
 		robot.getRobotCommander()
@@ -78,7 +80,6 @@ public class JoysticksBindings {
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
-		usedJoystick.POV_DOWN.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().toggleAimAssist()));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
