@@ -97,15 +97,15 @@
     {
       "anchor": {
         "x": 0.643,
-        "y": 0.736
+        "y": 5.973
       },
       "prevControl": {
         "x": 1.2326816465669375,
-        "y": 0.7360000000000001
+        "y": 5.973
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [

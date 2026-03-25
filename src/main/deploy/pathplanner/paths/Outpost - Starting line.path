@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 0.643,
-        "y": 0.736
+        "y": 5.973
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.410966233360837,
-        "y": 1.0471295424792166
+        "y": 6.284129542479217
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     },
     {
       "anchor": {
