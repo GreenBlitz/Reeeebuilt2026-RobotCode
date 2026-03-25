@@ -52,6 +52,8 @@ public class RobotManager extends LoggedRobot {
 
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
+			if(DriverStationUtil.isMatch())
+				robot.disableThrottles();
 		});
 	}
 
@@ -59,6 +61,7 @@ public class RobotManager extends LoggedRobot {
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.coast();
+			robot.enableThrottles();
 		}
 	}
 
@@ -67,6 +70,7 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.brake();
 		}
+		robot.disableThrottles();
 	}
 
 	@Override

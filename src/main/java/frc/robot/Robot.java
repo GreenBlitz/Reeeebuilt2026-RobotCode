@@ -216,8 +216,6 @@ public class Robot {
 			)
 		);
 
-		limelightLeft.setThrottle200();
-
 		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
@@ -291,6 +289,18 @@ public class Robot {
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
+	}
+
+	public void disableThrottles(){
+		this.limelightLeft.disableThrottle();
+		this.limelightFront.disableThrottle();
+		this.limelightRight.disableThrottle();
+	}
+
+	public void enableThrottles(){
+		this.limelightRight.enableThrottle();
+		this.limelightFront.enableThrottle();
+		this.limelightLeft.enableThrottle();
 	}
 
 	public Roller getIntakeRoller() {
