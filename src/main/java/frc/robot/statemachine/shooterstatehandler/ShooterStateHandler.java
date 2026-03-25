@@ -136,7 +136,7 @@ public class ShooterStateHandler {
 	}
 
 	public boolean hasABallBeenShot() {
-		if (currentState == ShooterState.SHOOT) {
+		if (currentState == ShooterState.SHOOT || currentState == ShooterState.CALIBRATION) {
 			return flyWheel.getAcceleration().getRotations() < FlywheelConstants.FLYWHEEL_ACCELERATION_THRESHOLD_FOR_SHOT.getRotations();
 		}
 		return false;

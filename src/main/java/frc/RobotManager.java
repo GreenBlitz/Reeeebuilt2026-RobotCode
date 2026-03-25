@@ -9,6 +9,9 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
@@ -68,7 +71,8 @@ public class RobotManager extends LoggedRobot {
 
 		new Trigger(
 			() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()
-				&& robot.getRobotCommander().getCurrentState() == RobotState.SCORE
+				&& (robot.getRobotCommander().getCurrentState() == RobotState.SCORE
+					|| robot.getRobotCommander().getCurrentState() == RobotState.CALIBRATION_SCORE)
 		).onTrue(new InstantCommand(() -> {
 			ballCounterWithoutPassing++;
 			ballsBufferWithoutPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
