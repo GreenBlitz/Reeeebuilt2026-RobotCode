@@ -78,9 +78,9 @@ public class JoysticksBindings {
 		// Shoot & Pass...
 
 
-		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.R1.onTrue(robot.getRobotCommander().driveFastWhileShooting(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), usedJoystick.R1));
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
-			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+			.onTrue(robot.getRobotCommander().driveFastWhileShooting(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)));
 		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(true)));
 		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));
 

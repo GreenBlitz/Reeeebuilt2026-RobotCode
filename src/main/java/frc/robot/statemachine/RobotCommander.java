@@ -129,6 +129,12 @@ public class RobotCommander extends GBSubsystem {
 		return asSubsystemCommand(wantedCommand, state);
 	}
 
+	public Command driveFastWhileShooting(RobotState state, Command command, BooleanSupplier fast) {
+		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(() -> fast.getAsBoolean() ? state.getSwerveState().withDriveSpeed(DriveSpeed.FAST_SHOOT) : state.getSwerveState());
+		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
+		return asSubsystemCommand(wantedCommand, state);
+	}
+
 	public Command driveWith(RobotState state) {
 		return driveWith(state, setState(state));
 	}
