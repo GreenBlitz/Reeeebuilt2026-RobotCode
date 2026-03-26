@@ -13,7 +13,7 @@ public class RobotPoseEstimation {
 		this.estimatedPose = estimatedPose;
 	}
 
-	public RobotPoseEstimation(double timestampSeconds){
+	public RobotPoseEstimation(double timestampSeconds) {
 		this.timestampSeconds = timestampSeconds;
 		this.estimatedPose = new Pose2d();
 	}
@@ -26,11 +26,17 @@ public class RobotPoseEstimation {
 		return estimatedPose;
 	}
 
-	public double getX(){ return estimatedPose.getX(); }
+	public double getX() {
+		return estimatedPose.getX();
+	}
 
-	public double getY(){ return estimatedPose.getY();}
+	public double getY() {
+		return estimatedPose.getY();
+	}
 
-	public Rotation2d getRotation(){ return estimatedPose.getRotation(); }
+	public Rotation2d getRotation() {
+		return estimatedPose.getRotation();
+	}
 
 	public void setTimestampSeconds(double timestampSeconds) {
 		this.timestampSeconds = timestampSeconds;

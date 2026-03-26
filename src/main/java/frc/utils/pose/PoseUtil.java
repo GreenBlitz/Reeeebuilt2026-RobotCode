@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.constants.MathConstants;
 import frc.robot.poseestimator.Pose2dComponentsValue;
 import frc.robot.poseestimator.Pose3dComponentsValue;
-import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.utils.AngleUnit;
 import frc.utils.alerts.Alert;
 import frc.utils.math.ToleranceMath;
@@ -86,19 +85,6 @@ public class PoseUtil {
 					Rotation2d.fromRadians(rotation3d.getY()).getRotations(),
 					Rotation2d.fromRadians(rotation3d.getZ()).getRotations()};
 		};
-	}
-
-	public static boolean isPoseNear(Pose2d pose1, Pose2d pose2, Pose2d poseTolerance){
-		boolean isXNear = ToleranceMath
-				.isNear(pose1.getX(), pose2.getX(), poseTolerance.getX());
-		boolean isYNear = ToleranceMath
-				.isNear(pose1.getY(), pose2.getY(), poseTolerance.getY());
-		boolean isRotationNear = ToleranceMath.isNear(
-				pose1.getRotation().getRadians(),
-				pose2.getRotation().getRadians(),
-				poseTolerance.getRotation().getRadians()
-		);
-		return isXNear && isYNear && isRotationNear;
 	}
 
 	public static boolean getIsColliding(Translation2d imuAccelerationG, double minimumCollisionIMUAccelerationG) {
