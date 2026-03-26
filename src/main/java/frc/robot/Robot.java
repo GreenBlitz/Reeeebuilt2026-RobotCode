@@ -295,16 +295,16 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	public void disableAllLimelightThrottles() {
-		this.limelightLeft.disableThrottle();
-		this.limelightFront.disableThrottle();
-		this.limelightRight.disableThrottle();
+	public void disableAllLimelightTemperatureRegulations() {
+		this.limelightFront.disableTemperatureRegulation();
+		this.limelightRight.disableTemperatureRegulation();
+		this.limelightLeft.disableTemperatureRegulation();
 	}
 
-	public void enableAllLimelightThrottles() {
-		this.limelightRight.enableThrottle();
-		this.limelightFront.enableThrottle();
-		this.limelightLeft.enableThrottle();
+	public void enableAllLimelightTemperatureRegulations() {
+		this.limelightFront.enableTemperatureRegulation();
+		this.limelightRight.enableTemperatureRegulation();
+		this.limelightLeft.enableTemperatureRegulation();
 	}
 
 	public Roller getIntakeRoller() {

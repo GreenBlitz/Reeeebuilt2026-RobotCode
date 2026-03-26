@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 
 public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, OrientationRequiringRobotPoseSupplier {
 
-	private static final int throttleEnableValue = 200;
-	private static final int throttleDisableValue = 0;
+	private static final int THROTTLE_ENABLE_VALUE = 200;
+	private static final int THROTTLE_DISABLE_VALUE = 0;
 
 	private final String name;
 	private final String logPath;
@@ -277,12 +277,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
 	}
 
-	public void enableThrottle() {
-		LimelightHelpers.SetThrottle(name, throttleEnableValue);
+	public void enableTemperatureRegulation() {
+		LimelightHelpers.SetThrottle(name, THROTTLE_ENABLE_VALUE);
 	}
 
-	public void disableThrottle() {
-		LimelightHelpers.SetThrottle(name, throttleDisableValue);
+	public void disableTemperatureRegulation() {
+		LimelightHelpers.SetThrottle(name, THROTTLE_DISABLE_VALUE);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
