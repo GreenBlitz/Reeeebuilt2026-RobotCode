@@ -7,6 +7,7 @@ import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
+import frc.utils.driverstation.DriverStationUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
@@ -36,8 +37,8 @@ public class IntakeStateHandler {
 	}
 
 	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closeFourBarHarder) {
-		this.isOpenFourBarLocked = openFourBarLocked;
-		this.isCloseFourBarHarder = closeFourBarHarder;
+		this.isOpenFourBarLocked = () -> openFourBarLocked.getAsBoolean() || DriverStationUtil.isAutonomous();
+		this.isCloseFourBarHarder = () -> closeFourBarHarder.getAsBoolean() || DriverStationUtil.isAutonomous();
 	}
 
 	public Command calibration() {

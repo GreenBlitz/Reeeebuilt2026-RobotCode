@@ -119,7 +119,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
+//			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
 		}
 	}
 
