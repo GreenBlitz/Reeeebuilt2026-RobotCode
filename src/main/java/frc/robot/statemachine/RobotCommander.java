@@ -10,9 +10,12 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.states.DriveSpeed;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -21,6 +24,9 @@ public class RobotCommander extends GBSubsystem {
 	private final IntakeStateHandler intakeStateHandler;
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
+
+	private BooleanSupplier fastPass;
+	private BooleanSupplier fastScore;
 
 	private RobotState currentState;
 	private final String logPath;
@@ -96,6 +102,11 @@ public class RobotCommander extends GBSubsystem {
 		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
+	}
+
+	public void setFastShootingButtonsSuppliers(BooleanSupplier fastPass, BooleanSupplier fastScore){
+		this.fastPass = fastPass;
+		this.fastScore = fastScore;
 	}
 
 	public Command setState(RobotState robotState) {
@@ -235,15 +246,19 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.SHOOT),
 			new SequentialCommandGroup(
-				asSubsystemCommand(funnelStateHandler.setState(FunnelState.STOP), RobotState.PRE_SCORE).until(this::isReadyToScore),
+				asSubsystemCommand(funnelStateHandler.setState(FunnelState.STOP), getFastShootingState(RobotState.PRE_SCORE, fastScore.getAsBoolean())).until(this::isReadyToScore),
 				new RepeatCommand(
 					new SequentialCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToScore), RobotState.PRE_SCORE),
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), RobotState.SCORE)
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToScore), getFastShootingState(RobotState.PRE_SCORE, fastScore.getAsBoolean())),
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueScoring()), getFastShootingState(RobotState.SCORE, fastScore.getAsBoolean()))
 					)
 				)
 			)
 		);
+	}
+
+	private RobotState getFastShootingState(RobotState robotState, boolean fast) {
+		return fast ? robotState.withSwerveState(robotState.getSwerveState().withDriveSpeed(DriveSpeed.FAST_SHOOT)) : robotState;
 	}
 
 	public Command passSequence() {
@@ -252,10 +267,10 @@ public class RobotCommander extends GBSubsystem {
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToPass), RobotState.PRE_PASS)
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToPass), getFastShootingState(RobotState.PRE_PASS, fastPass.getAsBoolean()))
 					),
 					new ParallelCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinuePassing()), RobotState.PASS)
+						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinuePassing()), getFastShootingState(RobotState.PASS, fastPass.getAsBoolean()))
 					)
 				)
 			)

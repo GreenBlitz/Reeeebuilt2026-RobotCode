@@ -17,7 +17,7 @@ public enum RobotState {
 	CALIBRATION_PRE_SCORE,
 	CALIBRATION_SCORE;
 
-	private final SwerveState swerveState;
+	private SwerveState swerveState;
 	private boolean swerveStateActive;
 
 	RobotState() {
@@ -36,6 +36,11 @@ public enum RobotState {
 
 	public SwerveState getSwerveState() {
 		return swerveStateActive ? swerveState : SwerveState.DEFAULT_DRIVE;
+	}
+
+	public RobotState withSwerveState(SwerveState swerveState){
+		this.swerveState = swerveState;
+		return this;
 	}
 
 }
