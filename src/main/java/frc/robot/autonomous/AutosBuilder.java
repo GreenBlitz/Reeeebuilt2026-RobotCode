@@ -29,6 +29,7 @@ public class AutosBuilder {
 		Supplier<Command> openIntake,
 		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
+		Supplier<Command> passSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
@@ -89,6 +90,7 @@ public class AutosBuilder {
 				openIntake,
 				closeIntake,
 				scoreSequence,
+				passSequence,
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
@@ -103,6 +105,7 @@ public class AutosBuilder {
 		Supplier<Command> openIntake,
 		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
+		Supplier<Command> passSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
@@ -127,7 +130,9 @@ public class AutosBuilder {
 				new SequentialCommandGroup(
 					resetSubsystems.get(),
 					new ParallelCommandGroup(
-						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_PASSING_AFTER_PUSH_AUTO_START)
+							.andThen(passSequence.get().withTimeout(AutonomousConstants.TIME_TO_PASS_IN_PUSH_AUTO))
+							.andThen(scoreSequence.get()),
 						openIntake.get()
 							.until(() -> hasPathEnded)
 							.andThen(
