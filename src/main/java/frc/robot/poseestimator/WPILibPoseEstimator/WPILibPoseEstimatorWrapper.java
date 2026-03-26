@@ -288,10 +288,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		double dt = (timestamp - lastEstimatedPose.getTimestampSeconds());
 		if (dt != 0) {
 			Pose2d poseVelocity = new Pose2d(
-				(getEstimatedPose().getX() - lastEstimatedPose.getEstimatedPose().getX() / dt),
-				(getEstimatedPose().getY() - lastEstimatedPose.getEstimatedPose().getY() / dt),
+				(getEstimatedPose().getX() - lastEstimatedPose.getEstimatedPose().getX()) / dt,
+				(getEstimatedPose().getY() - lastEstimatedPose.getEstimatedPose().getY()) / dt,
 				Rotation2d.fromRadians(
-					getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getEstimatedPose().getRotation().getRadians() / dt
+						(getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getEstimatedPose().getRotation().getRadians()) / dt
 				)
 			);
 			if (
@@ -304,8 +304,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 					)
 			)
 				return new Pose2d();
-			Logger.recordOutput(logPath + "estimatedPoseVelocity", poseVelocity);
-			Logger.recordOutput(logPath + "/poseVelocity/dt", dt);
 			boolean isXNearLast = ToleranceMath
 				.isNear(lastEstimatedPoseVelocity.getX(), poseVelocity.getX(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_X_TOLERANCE);
 			boolean isYNearLast = ToleranceMath
@@ -316,12 +314,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_ANGLE_IN_RADIANS_TOLERANCE
 			);
 			if (isXNearLast && isYNearLast && isRotationNearLast)
-				return new Pose2d(
-					(poseVelocity.getX() + lastEstimatedPoseVelocity.getX()) / 2,
-					(poseVelocity.getY() + lastEstimatedPoseVelocity.getY()) / 2,
-					Rotation2d.fromRadians(poseVelocity.getRotation().getRadians() + lastEstimatedPoseVelocity.getRotation().getRadians())
+				poseVelocity = new Pose2d(
+						((poseVelocity.getX() + lastEstimatedPoseVelocity.getX()) / 2),
+						((poseVelocity.getY() + lastEstimatedPoseVelocity.getY()) / 2),
+					Rotation2d.fromRadians((poseVelocity.getRotation().getRadians() + lastEstimatedPoseVelocity.getRotation().getRadians())/2)
 				);
+			Logger.recordOutput(logPath + "estimatedPoseVelocity", poseVelocity);
+			Logger.recordOutput(logPath + "/poseVelocity/dt", dt);
 			return poseVelocity;
+
 		}
 		return lastEstimatedPoseVelocity;
 	}

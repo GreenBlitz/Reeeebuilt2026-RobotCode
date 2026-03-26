@@ -17,6 +17,8 @@ public interface IPoseEstimator extends IVisionEstimator, IOdometryEstimator {
 
 	void log();
 
+	Pose2d getLastEstimatedPoseVelocity();
+
 	void updateLastEstimatedPose();
 
 	Pose2d getFieldRelativeEstimatedPoseVelocity(double timestamp);

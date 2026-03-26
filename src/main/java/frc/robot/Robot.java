@@ -290,7 +290,7 @@ public class Robot {
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
 		poseEstimator.log();
-		Pose2d currentEstimatedVelocity = poseEstimator.getFieldRelativeEstimatedPoseVelocity(TimeUtil.getCurrentTimeSeconds());
+		Pose2d currentEstimatedVelocity = poseEstimator.getLastEstimatedPoseVelocity();
 		ShootingCalculations.updateShootingParams(
 			poseEstimator.getEstimatedPose(),
 			new ChassisSpeeds(
