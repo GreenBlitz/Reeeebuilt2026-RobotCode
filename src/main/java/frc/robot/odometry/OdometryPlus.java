@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.Odometry;
-
 import java.util.function.Supplier;
 
 public class OdometryPlus<T> extends Odometry<T> {
@@ -22,8 +21,9 @@ public class OdometryPlus<T> extends Odometry<T> {
 	 * @param initialPoseMeters The starting position of the robot on the field.
 	 */
 	public OdometryPlus(Kinematics<?, T> kinematics, Rotation2d gyroAngle, T wheelPositions, Pose2d initialPoseMeters) {
-        this(kinematics, gyroAngle, wheelPositions, initialPoseMeters, null);
-    }
+		super(kinematics, gyroAngle, wheelPositions, initialPoseMeters);
+		this.robotOrientationSupplier = () -> new Rotation3d(0, 0, this.getHeading().getRadians());
+	}
 
 	public OdometryPlus(
 		Kinematics<?, T> kinematics,
@@ -43,11 +43,8 @@ public class OdometryPlus<T> extends Odometry<T> {
 
 		if (robotOrientationSupplier == null)
 			return unCompensatedPose;
-
 		Rotation3d robotOrientation = robotOrientationSupplier.get();
-		// in case angle above 90 so wont minus , i dont think pose is relevant when robot flips
-		double scale = Math.max(0, Math.cos(robotOrientation.rotateBy(new Rotation3d(0, 0, -robotOrientation.getZ())).getY()));
-
+		double scale = Math.cos(robotOrientation.rotateBy(new Rotation3d(0, 0, -robotOrientation.getZ())).getY());
 		Transform2d unCompensatedDistance = new Transform2d(lastPose, unCompensatedPose);
 
 		Pose2d compensatedByPitch = lastPose
@@ -56,6 +53,10 @@ public class OdometryPlus<T> extends Odometry<T> {
 		resetTranslation(compensatedByPitch.getTranslation());
 
 		return compensatedByPitch;
+	}
+
+	public Rotation2d getHeading() {
+		return this.getPoseMeters().getRotation();
 	}
 
 }
