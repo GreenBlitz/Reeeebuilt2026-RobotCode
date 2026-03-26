@@ -1,6 +1,7 @@
 package frc.robot.poseestimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.util.Optional;
 
@@ -21,6 +22,6 @@ public interface IPoseEstimator extends IVisionEstimator, IOdometryEstimator {
 
 	void updateLastEstimatedPose();
 
-	Pose2d getFieldRelativeEstimatedPoseVelocity(double timestamp);
+	RobotPoseEstimation getFieldRelativeEstimatedPoseVelocity(double timestamp, ChassisSpeeds swerveVelocity);
 
 }
