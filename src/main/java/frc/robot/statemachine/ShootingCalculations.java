@@ -218,7 +218,7 @@ public class ShootingCalculations {
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(-2000.0));
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(16800));
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17600));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(25700));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(26700));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(45));
 		HOOD_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(48));
