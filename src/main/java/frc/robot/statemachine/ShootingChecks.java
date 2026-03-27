@@ -1,6 +1,7 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
@@ -28,14 +29,18 @@ public class ShootingChecks {
 
 	public static boolean isFarEnoughBehindHubs(Translation2d turretTranslation) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
-		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX() > StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING
-			&& allianceRelativeTurretTranslation.getX() < StateMachineConstants.MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING;
-		boolean isFarEnoughBehindOpponentHub = allianceRelativeTurretTranslation.getX()
-			> StateMachineConstants.MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING;
-
+		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX()
+			> ShootingCalculations.PASSING_POSITION_INTERPOLATION_MAP.get(allianceRelativeTurretTranslation.getY());
+		Logger.recordOutput(
+			"X TARGET VALUE",
+			new Pose2d(
+				ShootingCalculations.PASSING_POSITION_INTERPOLATION_MAP.get(allianceRelativeTurretTranslation.getY()),
+				allianceRelativeTurretTranslation.getY(),
+				new Rotation2d()
+			)
+		);
 		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOurHub", isFarEnoughBehindOurHub);
-		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOpponentHub", isFarEnoughBehindOpponentHub);
-		return isFarEnoughBehindOurHub || isFarEnoughBehindOpponentHub;
+		return isFarEnoughBehindOurHub;
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
@@ -275,9 +280,8 @@ public class ShootingChecks {
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass"
 		);
-		boolean isInPositionForPassing = isInPositionForPassing(
-			ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-			shootingChecksLogPath + "/IsReadyToPass"
+		boolean isInPositionForPassing = isFarEnoughBehindHubs(
+			ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose())
 		);
 
 		boolean isReadyToPass = isReadyToShoot && isInPositionForPassing;

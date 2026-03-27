@@ -5,6 +5,8 @@
 package frc;
 
 import com.revrobotics.util.StatusLogger;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.statemachine.RobotState;
+import frc.robot.statemachine.StateMachineConstants;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.brakestate.BrakeMode;
@@ -173,6 +176,10 @@ public class RobotManager extends LoggedRobot {
 		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
+
+		Logger.recordOutput("DEPOT_TARGET", new Pose2d(StateMachineConstants.getDepotPresetPassingTarget(), new Rotation2d()));
+		Logger.recordOutput("OUTPOST_TARGET", new Pose2d(StateMachineConstants.getOutpostPresetPassingTarget(), new Rotation2d()));
+
 
 		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
 		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);

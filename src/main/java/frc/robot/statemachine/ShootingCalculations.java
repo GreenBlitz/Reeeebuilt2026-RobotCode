@@ -171,9 +171,6 @@ public class ShootingCalculations {
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
-		if (!ShootingChecks.isBehindHubs(turretTranslation)) {
-			return new Translation2d(StateMachineConstants.getTargetXValueForPassing(), turretTranslation.getY());
-		}
 		if (Field.getAllianceRelative(turretTranslation).getY() > Field.WIDTH_METERS / 2) {
 			return StateMachineConstants.getDepotPresetPassingTarget();
 		}
@@ -205,6 +202,8 @@ public class ShootingCalculations {
 		Interpolator.forDouble()
 	);
 
+	public static final InterpolationMap<Double, Double> PASSING_POSITION_INTERPOLATION_MAP = calculatePassingInterpolationMap();
+
 	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
 		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 	}
@@ -220,20 +219,41 @@ public class ShootingCalculations {
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17600));
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(26700));
 
-		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(45));
-		HOOD_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(48));
-		HOOD_PASSING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(51));
-		HOOD_PASSING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(53));
-		HOOD_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(54));
+		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
+		HOOD_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(54.67));
 
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(14082));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(17000));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(29000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(4.0, Rotation2d.fromDegrees(22000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(35000));
 
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.718);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.1, 1.13);
+	}
+
+	private static Translation2d findPoint(Translation2d target, Translation2d hubCorner) {
+		double m = (target.getY() - hubCorner.getY()) / (target.getX() - hubCorner.getX());
+		double b = target.getY() - m * target.getX();
+		double x = ((Field.WIDTH_METERS / 2) - b) / m;
+
+		Translation2d point = new Translation2d(x + 0.25, Field.WIDTH_METERS / 2);
+		Logger.recordOutput("Cutoff POINT", Field.getAllianceRelative(new Pose2d(point, new Rotation2d())));
+		return point;
+	}
+
+	private static InterpolationMap<Double, Double> calculatePassingInterpolationMap() {
+		InterpolationMap<Double, Double> interpolationMap = new InterpolationMap<>(InverseInterpolator.forDouble(), Interpolator.forDouble());
+
+		Translation2d depotTarget = StateMachineConstants.DEPOT_PRESET_PASSING_TARGET;
+		Translation2d outpostTarget = StateMachineConstants.OUTPOST_PRESET_PASSING_TARGET;
+
+		Translation2d point = findPoint(depotTarget, Field.FAR_LEFT_HUB_CORNER);
+
+		interpolationMap.put(depotTarget.getY(), depotTarget.getX());
+		interpolationMap.put(outpostTarget.getY(), outpostTarget.getX());
+		interpolationMap.put(point.getY(), point.getX());
+
+		return interpolationMap;
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
