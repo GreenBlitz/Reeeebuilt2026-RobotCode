@@ -1,7 +1,6 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
@@ -27,30 +26,12 @@ public class ShootingChecks {
 		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
 	}
 
-	public static boolean isFarEnoughBehindHubs(Translation2d turretTranslation) {
+	public static boolean isFarEnoughBehindHub(Translation2d turretTranslation) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isFarEnoughBehindOurHub = allianceRelativeTurretTranslation.getX()
 			> ShootingCalculations.PASSING_POSITION_INTERPOLATION_MAP.get(allianceRelativeTurretTranslation.getY());
-		Logger.recordOutput(
-			"X TARGET VALUE",
-			new Pose2d(
-				ShootingCalculations.PASSING_POSITION_INTERPOLATION_MAP.get(allianceRelativeTurretTranslation.getY()),
-				allianceRelativeTurretTranslation.getY(),
-				new Rotation2d()
-			)
-		);
 		Logger.recordOutput(shootingChecksLogPath + "/IsFarEnoughBehindOurHub", isFarEnoughBehindOurHub);
 		return isFarEnoughBehindOurHub;
-	}
-
-	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
-		boolean isBehindHubs = isBehindHubs(turretTranslation);
-		boolean isFarEnoughBehindHubs = isFarEnoughBehindHubs(turretTranslation);
-		boolean isInAllianceZone = isInAllianceZone(turretTranslation);
-		Logger.recordOutput(logPath + "/IsBehindHubs", isBehindHubs);
-		Logger.recordOutput(logPath + "/IsFarEnoughBehindHubs", isFarEnoughBehindHubs);
-		Logger.recordOutput(logPath + "/IsInAllianceZone", isInAllianceZone);
-		return (!isBehindHubs || isFarEnoughBehindHubs) && !isInAllianceZone;
 	}
 
 	private static boolean isWithinDistance(
@@ -280,7 +261,7 @@ public class ShootingChecks {
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Pass"
 		);
-		boolean isInPositionForPassing = isFarEnoughBehindHubs(
+		boolean isInPositionForPassing = isFarEnoughBehindHub(
 			ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose())
 		);
 
@@ -335,10 +316,7 @@ public class ShootingChecks {
 			ShootingCalculations.getShootingParams().targetLandingPosition(),
 			"Passing"
 		);
-		boolean isInPositionForPassing = isInPositionForPassing(
-			ShootingCalculations.getShootingParams().predictedTurretPoseWhenBallLands(),
-			shootingChecksLogPath + "/CanContinuePassing"
-		);
+		boolean isInPositionForPassing = isFarEnoughBehindHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
 
 		boolean canContinuePassing = canContinueShooting && isInPositionForPassing;
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinuePassing", canContinuePassing);
