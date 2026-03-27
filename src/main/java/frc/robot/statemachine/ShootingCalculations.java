@@ -236,9 +236,7 @@ public class ShootingCalculations {
 		double b = target.getY() - m * target.getX();
 		double x = ((Field.WIDTH_METERS / 2) - b) / m;
 
-		Translation2d point = new Translation2d(x + StateMachineConstants.PASSING_NEAR_HUB_SAFETY_BUFFER_METERS, Field.WIDTH_METERS / 2);
-		Logger.recordOutput("Cutoff POINT", Field.getAllianceRelative(new Pose2d(point, new Rotation2d())));
-		return point;
+        return new Translation2d(x + StateMachineConstants.PASSING_NEAR_HUB_SAFETY_BUFFER_METERS, Field.WIDTH_METERS / 2);
 	}
 
 	private static InterpolationMap<Double, Double> calculatePassingInterpolationMap() {
