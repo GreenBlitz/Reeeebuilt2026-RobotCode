@@ -74,8 +74,26 @@ public class CMDHandler {
 	 * @param arguments  The arguments given to the python file.
 	 */
 	public static void runPythonClass(Path pythonPath, String... arguments) {
-		String command = "py " + pythonPath + ".py " + getSeparatedArguments(arguments);
-		runCMDCommand(DirectoryPaths.PYTHON_DIRECTORY_PATH, command);
+		try {
+			String pythonExecutable = isWindows()
+					? "py"
+					: "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3";
+
+			ArrayList<String> command = new ArrayList<>();
+			command.add(pythonExecutable);
+			command.add(pythonPath.toString() + ".py");
+
+			for (String arg : arguments) {
+				command.add(arg);
+			}
+
+			ProcessBuilder pb = new ProcessBuilder(command);
+			pb.directory(DirectoryPaths.PYTHON_DIRECTORY_PATH.toFile());
+			pb.inheritIO();
+			pb.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static String getSeparatedArguments(String[] arguments) {
