@@ -231,8 +231,8 @@ public class ShootingCalculations {
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.1, 1.13);
 	}
 
-	private static Translation2d findPassingTrianglePoint(Translation2d target, Translation2d hubCorner) {
-		double m = (target.getY() - hubCorner.getY()) / (target.getX() - hubCorner.getX());
+	private static Translation2d findPassingTrianglePoint(Translation2d target, Translation2d hubNeutralCorner) {
+		double m = (target.getY() - hubNeutralCorner.getY()) / (target.getX() - hubNeutralCorner.getX());
 		double b = target.getY() - m * target.getX();
 		double x = ((Field.WIDTH_METERS / 2) - b) / m;
 
