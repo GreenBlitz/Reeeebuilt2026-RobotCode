@@ -45,10 +45,6 @@ public class RobotCommander extends GBSubsystem {
 		this.currentState = RobotState.STAY_IN_PLACE;
 		Logger.recordOutput(logPath + "/CurrentState", RobotState.STAY_IN_PLACE);
 
-//		new Trigger(funnelStateHandler::isStuck).onTrue(
-//				conveyorOuttakeScoreSequence()
-//		);
-
 		setDefaultCommand(
 			new ConditionalCommand(
 				asSubsystemCommand(Commands.none(), "Disabled"),
