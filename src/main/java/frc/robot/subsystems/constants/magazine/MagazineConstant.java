@@ -24,6 +24,8 @@ public class MagazineConstant {
 	public static final Slot0Configs REAL_SLOTS_CONFIG = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
+	public static final double STUCK_CURRENT = 20;
+
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 1;

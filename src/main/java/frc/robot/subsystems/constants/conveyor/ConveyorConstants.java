@@ -21,6 +21,8 @@ public class ConveyorConstants {
 	public final static int CURRENT_LIMIT = 60;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
 
+	public static final double STUCK_CURRENT = 90;
+
 	public static Roller createConveyor() {
 		return TalonFXRollerBuilder.build(LOG_PATH, IDs.TalonFXIDs.CONVEYOR, IS_INVERTED, FEEDBACK_CONFIGS, CURRENT_LIMIT, MOMENT_OF_INERTIA);
 	}

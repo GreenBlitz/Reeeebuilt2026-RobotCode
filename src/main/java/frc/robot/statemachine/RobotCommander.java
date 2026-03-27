@@ -1,6 +1,7 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
@@ -44,6 +45,10 @@ public class RobotCommander extends GBSubsystem {
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		Logger.recordOutput(logPath + "/CurrentState", RobotState.STAY_IN_PLACE);
+
+		new Trigger(funnelStateHandler::isStuck).onTrue(
+				conveyorOuttakeScoreSequence()
+		);
 
 		setDefaultCommand(
 			new ConditionalCommand(

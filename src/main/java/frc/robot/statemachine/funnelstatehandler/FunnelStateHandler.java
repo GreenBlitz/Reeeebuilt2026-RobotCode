@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.StateMachineConstants;
+import frc.robot.subsystems.constants.conveyor.ConveyorConstants;
+import frc.robot.subsystems.constants.magazine.MagazineConstant;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
 import org.littletonrobotics.junction.Logger;
@@ -109,6 +111,11 @@ public class FunnelStateHandler {
 			magazine.getCommandsBuilder().setVoltage(() -> magazineCalibrationVoltage.get()),
 			conveyor.getCommandsBuilder().setVoltage(() -> conveyorCalibrationVoltage.get())
 		);
+	}
+
+	public boolean isStuck(){
+		return magazine.getCurrent() < MagazineConstant.STUCK_CURRENT
+				&& conveyor.getCurrent() > ConveyorConstants.STUCK_CURRENT;
 	}
 
 	public void periodic() {
