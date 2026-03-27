@@ -12,6 +12,7 @@ public class SwerveState {
 	private static final RotateAxis DEFAULT_ROTATE_AXIS = RotateAxis.MIDDLE_OF_CHASSIS;
 	private static final AimAssist DEFAULT_AIM_ASSIST = AimAssist.NONE;
 	private static final HeadingControl DEFAULT_HEADING_CONTROL = HeadingControl.NONE;
+	private static final AccelerationLimit DEFAULT_ACCELERATION_LIMIT = AccelerationLimit.NONE;
 
 	public static final SwerveState DEFAULT_PATH_PLANNER = new SwerveState().withDriveRelative(DriveRelative.ROBOT_RELATIVE);
 	public static final SwerveState DEFAULT_DRIVE = new SwerveState();
@@ -23,6 +24,7 @@ public class SwerveState {
 	private RotateAxis rotateAxis;
 	private AimAssist aimAssist;
 	private HeadingControl headingControl;
+	private AccelerationLimit accelerationLimit;
 
 	public SwerveState(SwerveState swerveState) {
 		this(
@@ -31,12 +33,13 @@ public class SwerveState {
 			swerveState.loopMode,
 			swerveState.rotateAxis,
 			swerveState.aimAssist,
-			swerveState.headingControl
+			swerveState.headingControl,
+			swerveState.accelerationLimit
 		);
 	}
 
 	private SwerveState() {
-		this(DEFAULT_DRIVE_RELATIVE, DEFAULT_DRIVE_SPEED, DEFAULT_LOOP_MODE, DEFAULT_ROTATE_AXIS, DEFAULT_AIM_ASSIST, DEFAULT_HEADING_CONTROL);
+		this(DEFAULT_DRIVE_RELATIVE, DEFAULT_DRIVE_SPEED, DEFAULT_LOOP_MODE, DEFAULT_ROTATE_AXIS, DEFAULT_AIM_ASSIST, DEFAULT_HEADING_CONTROL, DEFAULT_ACCELERATION_LIMIT);
 	}
 
 	private SwerveState(
@@ -45,7 +48,8 @@ public class SwerveState {
 		LoopMode loopMode,
 		RotateAxis rotateAxis,
 		AimAssist aimAssist,
-		HeadingControl headingControl
+		HeadingControl headingControl,
+		AccelerationLimit accelerationLimit
 	) {
 		this.driveRelative = driveRelative;
 		this.driveSpeed = driveSpeed;
@@ -53,6 +57,7 @@ public class SwerveState {
 		this.rotateAxis = rotateAxis;
 		this.aimAssist = aimAssist;
 		this.headingControl = headingControl;
+		this.accelerationLimit = accelerationLimit;
 	}
 
 	public void log(String logPath) {
@@ -62,6 +67,7 @@ public class SwerveState {
 		Logger.recordOutput(logPath + "/RotateAxis", rotateAxis);
 		Logger.recordOutput(logPath + "/AimAssist", aimAssist);
 		Logger.recordOutput(logPath + "/HeadingControl", headingControl);
+		Logger.recordOutput(logPath + "/AccelerationLimit", accelerationLimit);
 	}
 
 	public SwerveState withDriveRelative(DriveRelative driveRelative) {
@@ -100,6 +106,12 @@ public class SwerveState {
 		return swerveState;
 	}
 
+	public SwerveState withAccelerationLimit(AccelerationLimit accelerationLimit) {
+		SwerveState swerveState = new SwerveState(this);
+		swerveState.accelerationLimit = accelerationLimit;
+		return swerveState;
+	}
+
 
 	public DriveRelative getDriveRelative() {
 		return driveRelative;
@@ -123,6 +135,10 @@ public class SwerveState {
 
 	public HeadingControl getHeadingControl() {
 		return headingControl;
+	}
+
+	public AccelerationLimit getAccelerationLimit() {
+		return accelerationLimit;
 	}
 
 }

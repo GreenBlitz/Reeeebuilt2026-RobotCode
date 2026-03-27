@@ -290,6 +290,7 @@ public class Swerve extends GBSubsystem {
 		speeds = SwerveMath.factorSpeeds(speeds, swerveState.getDriveSpeed());
 		speeds = SwerveMath.applyDeadband(speeds, SwerveConstants.DEADBANDS);
 		speeds = getDriveModeRelativeSpeeds(speeds, swerveState);
+		speeds = stateHandler.applyAccelerationLimit(speeds, getFieldRelativeVelocity(), swerveState.getAccelerationLimit());
 		speeds = SwerveMath.discretize(speeds);
 
 		applySpeeds(speeds, swerveState);

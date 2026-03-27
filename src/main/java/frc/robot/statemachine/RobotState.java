@@ -3,14 +3,16 @@ package frc.robot.statemachine;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
+import frc.robot.subsystems.swerve.states.AccelerationLimit;
+
 
 public enum RobotState {
 
 	STAY_IN_PLACE,
-	NEUTRAL,
+	NEUTRAL(SwerveState.DEFAULT_DRIVE.withAccelerationLimit(AccelerationLimit.SHOOTING)),
 	OUTTAKE,
 	PRE_SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
-	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
+	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT).withAccelerationLimit(AccelerationLimit.SHOOTING)),
 	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
 	PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
 	RESET_SUBSYSTEMS,

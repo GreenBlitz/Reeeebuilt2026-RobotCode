@@ -108,6 +108,36 @@ public class SwerveStateHandler {
 		return finalSpeeds;
 	}
 
+	public ChassisSpeeds applyAccelerationLimit(ChassisSpeeds commandedSpeeds, ChassisSpeeds currentSpeeds, AccelerationLimit accelerationLimit) {
+		if (accelerationLimit == AccelerationLimit.NONE) {
+			return commandedSpeeds;
+		}
+
+		double currentSpeed = Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
+		double commandedSpeed = Math.hypot(commandedSpeeds.vxMetersPerSecond, commandedSpeeds.vyMetersPerSecond);
+
+		if (commandedSpeed <= currentSpeed) {
+			return commandedSpeeds;
+		}
+
+		double dvx = commandedSpeeds.vxMetersPerSecond - currentSpeeds.vxMetersPerSecond;
+		double dvy = commandedSpeeds.vyMetersPerSecond - currentSpeeds.vyMetersPerSecond;
+		double deltaSpeed = Math.hypot(dvx, dvy);
+
+		double maxDelta = accelerationLimit.getMaxAccelerationMetersPerSecondSquared() * 0.02;
+
+		if (deltaSpeed > maxDelta) {
+			double scale = maxDelta / deltaSpeed;
+			return new ChassisSpeeds(
+				currentSpeeds.vxMetersPerSecond + dvx * scale,
+				currentSpeeds.vyMetersPerSecond + dvy * scale,
+				commandedSpeeds.omegaRadiansPerSecond
+			);
+		}
+
+		return commandedSpeeds;
+	}
+
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
 		return switch (rotationAxisState) {
 			case MIDDLE_OF_CHASSIS -> new Translation2d();
