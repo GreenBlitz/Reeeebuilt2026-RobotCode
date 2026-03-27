@@ -77,11 +77,11 @@ public class FunnelStateHandler {
 			conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getConveyorVoltage())
 		);
 	}
-	
+
 	private Command outtakeShoot() {
 		return new ParallelCommandGroup(
-				magazine.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getMagazineVelocity()),
-				conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getConveyorVoltage())
+			magazine.getCommandsBuilder().setVelocity(FunnelState.OUTTAKE_SHOOT.getMagazineVelocity()),
+			conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getConveyorVoltage())
 		);
 	}
 
@@ -113,9 +113,8 @@ public class FunnelStateHandler {
 		);
 	}
 
-	public boolean isStuck(){
-		return magazine.getCurrent() < MagazineConstant.STUCK_CURRENT
-				&& conveyor.getCurrent() > ConveyorConstants.STUCK_CURRENT;
+	public boolean isStuck() {
+		return magazine.getCurrent() < MagazineConstant.STUCK_CURRENT && conveyor.getCurrent() > ConveyorConstants.STUCK_CURRENT;
 	}
 
 	public void periodic() {

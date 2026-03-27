@@ -80,8 +80,8 @@ public class JoysticksBindings {
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
-		
-		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().conveyorOuttakeScoreSequence()));
+
+		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
