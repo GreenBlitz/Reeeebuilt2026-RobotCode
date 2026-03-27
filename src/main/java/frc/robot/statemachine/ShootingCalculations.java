@@ -231,7 +231,7 @@ public class ShootingCalculations {
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.1, 1.13);
 	}
 
-	private static Translation2d findPoint(Translation2d target, Translation2d hubCorner) {
+	private static Translation2d findPassingTrianglePoint(Translation2d target, Translation2d hubCorner) {
 		double m = (target.getY() - hubCorner.getY()) / (target.getX() - hubCorner.getX());
 		double b = target.getY() - m * target.getX();
 		double x = ((Field.WIDTH_METERS / 2) - b) / m;
@@ -247,7 +247,7 @@ public class ShootingCalculations {
 		Translation2d depotTarget = StateMachineConstants.DEPOT_PRESET_PASSING_TARGET;
 		Translation2d outpostTarget = StateMachineConstants.OUTPOST_PRESET_PASSING_TARGET;
 
-		Translation2d point = findPoint(depotTarget, Field.FAR_LEFT_HUB_CORNER);
+		Translation2d point = findPassingTrianglePoint(depotTarget, Field.FAR_LEFT_HUB_CORNER);
 
 		interpolationMap.put(depotTarget.getY(), depotTarget.getX());
 		interpolationMap.put(outpostTarget.getY(), outpostTarget.getX());
