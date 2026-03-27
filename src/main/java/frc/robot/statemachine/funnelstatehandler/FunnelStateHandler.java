@@ -45,6 +45,7 @@ public class FunnelStateHandler {
 			case STOP -> stop();
 			case OUTTAKE -> outtake();
 			case PRE_SHOOT -> preShoot();
+			case OUTTAKE_SHOOT -> outtakeShoot();
 			case CALIBRATION -> calibration();
 		};
 		return new ParallelCommandGroup(
@@ -72,6 +73,13 @@ public class FunnelStateHandler {
 		return new ParallelCommandGroup(
 			magazine.getCommandsBuilder().stop(),
 			conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getConveyorVoltage())
+		);
+	}
+	
+	private Command outtakeShoot() {
+		return new ParallelCommandGroup(
+				magazine.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getMagazineVelocity()),
+				conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE.getConveyorVoltage())
 		);
 	}
 
