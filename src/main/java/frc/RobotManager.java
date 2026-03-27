@@ -19,6 +19,7 @@ import frc.robot.RobotConstants;
 import frc.robot.statemachine.RobotState;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
+import frc.utils.OperatorTimerClicker;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -132,6 +133,8 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
+		CommandScheduler.getInstance().schedule(new OperatorTimerClicker());
+
 		ballCounterIncludingPassing = 0;
 		ballCounterWithoutPassing = 0;
 		robot.getSwerve().setIsRunningIndependently(true);
