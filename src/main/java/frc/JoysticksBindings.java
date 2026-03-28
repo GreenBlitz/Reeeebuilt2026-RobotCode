@@ -4,9 +4,7 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -62,9 +60,20 @@ public class JoysticksBindings {
 		}
 	}
 
+	private static Command driveActionChooser(Robot robot) {
+		return new InstantCommand(() -> {
+			Command intakeCommand = Commands.none();
+			if (robot.getRobotCommander().getCurrentState() == RobotState.OUTTAKE) {
+				intakeCommand = robot.getRobotCommander().getIntakeStateHandler().intake();
+			}
+			CommandScheduler.getInstance()
+				.schedule(new ParallelCommandGroup(robot.getRobotCommander().driveWith(RobotState.NEUTRAL), intakeCommand));
+		});
+	}
+
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+		usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		// Shoot & Pass...
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
