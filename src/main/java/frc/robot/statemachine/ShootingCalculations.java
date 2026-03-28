@@ -236,7 +236,7 @@ public class ShootingCalculations {
 		double b = target.getY() - m * target.getX();
 		double x = ((Field.WIDTH_METERS / 2) - b) / m;
 
-        return new Translation2d(x + StateMachineConstants.PASSING_NEAR_HUB_SAFETY_BUFFER_METERS, Field.WIDTH_METERS / 2);
+		return new Translation2d(x + StateMachineConstants.PASSING_NEAR_HUB_SAFETY_BUFFER_METERS, Field.WIDTH_METERS / 2);
 	}
 
 	private static InterpolationMap<Double, Double> calculatePassingInterpolationMap() {
