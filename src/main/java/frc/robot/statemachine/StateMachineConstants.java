@@ -28,22 +28,12 @@ public class StateMachineConstants {
 
 	public static final int DEGREES_OF_OVERSHOOT_FOR_AIM_AT_HUB_ASSIST = 5;
 
-	public static final double MIN_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 6;
-	public static final double MAX_X_VALUE_FOR_BEHIND_OUR_HUB_PASSING = 11;
-	public static final double MIN_X_VALUE_FOR_BEHIND_OPPONENT_HUB_PASSING = 14;
-	private static final double TARGET_X_VALUE_FOR_PASSING = Field.getAllianceRelative(Field.getHubMiddle()).getX() - 1;
-	private static final Translation2d OUTPOST_PRESET_PASSING_TARGET = new Translation2d(1, 1);
-	private static final Translation2d DEPOT_PRESET_PASSING_TARGET = FieldMath.mirror(OUTPOST_PRESET_PASSING_TARGET, false, true);
+	public static final double PASSING_NEAR_HUB_SAFETY_BUFFER_METERS = 0.25;
+	public static final Translation2d OUTPOST_PRESET_PASSING_TARGET = new Translation2d(1.5, 1.25);
+	public static final Translation2d DEPOT_PRESET_PASSING_TARGET = FieldMath.mirror(OUTPOST_PRESET_PASSING_TARGET, false, true);
 
 	public static final double MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME = 20;
 	public static final double MIN_DIFFERENCE_BETWEEN_FLIGHT_TIMES_TO_STOP_CALCULATIONS_SECONDS = 0.03;
-
-	public static double getTargetXValueForPassing() {
-		if (!Field.isFieldConventionAlliance()) {
-			return FieldMath.mirrorX(TARGET_X_VALUE_FOR_PASSING);
-		}
-		return TARGET_X_VALUE_FOR_PASSING;
-	}
 
 	public static Translation2d getOutpostPresetPassingTarget() {
 		return Field.getAllianceRelative(OUTPOST_PRESET_PASSING_TARGET);
