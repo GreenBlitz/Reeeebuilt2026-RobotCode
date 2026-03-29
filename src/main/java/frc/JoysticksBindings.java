@@ -17,6 +17,8 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
+import frc.robot.subsystems.swerve.states.DriveSpeed;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
@@ -60,6 +62,13 @@ public class JoysticksBindings {
 		}
 	}
 
+	public static SwerveState getShootState(SmartJoystick joystick) {
+		return RobotState.SCORE.getSwerveState()
+			.withDriveSpeed(
+				joystick.R1.or(joystick.getAxisAsButton(Axis.RIGHT_TRIGGER)).getAsBoolean() ? DriveSpeed.BOOST_SHOOT : DriveSpeed.SHOOT
+			);
+	}
+
 	private static Command driveActionChooser(Robot robot) {
 		return new InstantCommand(() -> {
 			Command intakeCommand = Commands.none();
@@ -76,9 +85,15 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		// Shoot & Pass...
-		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.R1.onTrue(
+			robot.getRobotCommander()
+				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getShootState(usedJoystick))
+		);
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
-			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+			.onTrue(
+				robot.getRobotCommander()
+					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), () -> getShootState(usedJoystick))
+			);
 		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(true)));
 		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));
 

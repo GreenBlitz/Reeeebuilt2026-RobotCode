@@ -153,6 +153,13 @@ public class SwerveCommandsBuilder {
 		return new DeferredCommand(() -> driveByDriversInputs(state.get()), Set.of(swerve));
 	}
 
+	public Command driveByDriversInputsWithChangingState(Supplier<SwerveState> state) {
+		return swerve.asSubsystemCommand(
+			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state.get())),
+			"Drive by drivers inputs with state"
+		);
+	}
+
 	public Command driveByDriversInputs(SwerveState state) {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByDriversTargetsPowers(state)),
