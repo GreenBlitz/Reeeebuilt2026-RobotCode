@@ -28,7 +28,7 @@ public class AutonomousConstants {
 	public static final Rotation2d WIGGLE_RANGE = Rotation2d.fromDegrees(5);
 	public static final double TIME_TO_WAIT_TO_START_PASSING_AFTER_PUSH_AUTO_START = 2;
 	public static final double TIME_TO_PASS_IN_PUSH_AUTO = 7;
-	public static final double TIME_TO_RELEASE_IN_PUSH_AUTO = 2.5;
+	public static final double TIME_TO_RELEASE_IN_PUSH_AUTO = 1.5;
 
 	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 
