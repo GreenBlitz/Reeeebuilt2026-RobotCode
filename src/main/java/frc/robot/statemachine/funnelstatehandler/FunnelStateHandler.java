@@ -94,7 +94,9 @@ public class FunnelStateHandler {
 		return new ParallelCommandGroup(
 			magazine.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getMagazineVelocity()),
 			new SequentialCommandGroup(
-				new WaitCommand(StateMachineConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
+				conveyor.getCommandsBuilder()
+					.setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage())
+					.withTimeout(StateMachineConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
 				conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage())
 			)
 		);

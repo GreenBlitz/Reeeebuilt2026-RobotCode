@@ -373,6 +373,7 @@ public class Robot {
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
 		Supplier<Command> autonomousPassSequenceCommand = () -> getRobotCommander().passSequence();
+		Supplier<Command> autonomousReleaseSequenceCommand = () -> getRobotCommander().releaseSequence();
 
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
@@ -387,6 +388,7 @@ public class Robot {
 				autonomousCloseIntakeCommand,
 				autonomousScoringSequenceCommand,
 				autonomousPassSequenceCommand,
+				autonomousReleaseSequenceCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
 				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
