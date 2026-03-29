@@ -10,9 +10,11 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -114,6 +116,12 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command driveWith(RobotState state, Command command) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
+		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
+		return asSubsystemCommand(wantedCommand, state);
+	}
+
+	public Command driveWithChangingState(RobotState state, Command command, Supplier<SwerveState> swerveState) {
+		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get());
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
