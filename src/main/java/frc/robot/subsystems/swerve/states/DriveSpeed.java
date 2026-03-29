@@ -4,6 +4,7 @@ public enum DriveSpeed {
 
 	NORMAL(1, 0.8),
 	SHOOT(0.2, 0.8),
+	BOOST_SHOOT(0.5, 0.8),
 	SLOW(0.4, 0.4);
 
 	private final double translationSpeedFactor;
