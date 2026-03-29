@@ -149,7 +149,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command outtake() {
-		return new ParallelCommandGroup(setState(RobotState.CONVEYOR_OUTTAKE), intakeStateHandler.setState(IntakeState.OUTTAKE));
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.NEUTRAL),
+			funnelStateHandler.setState(FunnelState.OUTTAKE),
+			intakeStateHandler.setState(IntakeState.OUTTAKE)
+		);
 	}
 
 	private Command conveyorOuttake() {
