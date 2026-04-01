@@ -67,7 +67,7 @@ import java.util.function.Supplier;
  */
 public class Robot {
 
-	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
+	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(true);
 	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
@@ -89,6 +89,11 @@ public class Robot {
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+
+	private final double tagDist = 0.4;
+	private final double factor = 0.07;
+	private final double tagNumExp = 0.7;
+	private final double addition = 0.011;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -149,10 +154,10 @@ public class Robot {
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
-				new StandardDeviations2D(0.011)
+				new StandardDeviations2D(tagDist),
+				new StandardDeviations2D(factor),
+				new StandardDeviations2D(tagNumExp),
+				new StandardDeviations2D(addition)
 			)
 		);
 		limelightFront.setMT1PoseFilter(
@@ -177,10 +182,10 @@ public class Robot {
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightRight,
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
-				new StandardDeviations2D(0.011)
+				new StandardDeviations2D(tagDist),
+				new StandardDeviations2D(factor),
+				new StandardDeviations2D(tagNumExp),
+				new StandardDeviations2D(addition)
 			)
 		);
 		limelightRight.setMT1PoseFilter(
@@ -205,10 +210,10 @@ public class Robot {
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
-				new StandardDeviations2D(0.011)
+				new StandardDeviations2D(tagDist),
+				new StandardDeviations2D(factor),
+				new StandardDeviations2D(tagNumExp),
+				new StandardDeviations2D(addition)
 			)
 		);
 		limelightLeft.setMT1PoseFilter(
@@ -273,6 +278,8 @@ public class Robot {
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		robotCommander.update();
+
+		Logger.recordOutput("AAAA", 1);
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
