@@ -5,7 +5,7 @@ import java.nio.file.Path;
 
 enum LogSavePath {
 
-	USB(Path.of("/media/sdb1")),
+	USB(Path.of("/media/sda1")),
 	ROBORIO(Path.of("/home/lvuser/logs")),
 	COMPUTER(Path.of("simulationlogs"));
 

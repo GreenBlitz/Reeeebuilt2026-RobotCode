@@ -44,6 +44,7 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.utils.HubUtil;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -55,6 +56,7 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
 
@@ -290,6 +292,8 @@ public class Robot {
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
+		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
+
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
@@ -376,6 +380,8 @@ public class Robot {
 
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
+		Supplier<Command> autonomousOuttakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE);
+
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.autonomousChooser = new AutonomousChooser(
@@ -387,6 +393,7 @@ public class Robot {
 				autonomousCloseIntakeCommand,
 				autonomousScoringSequenceCommand,
 				autonomousPassSequenceCommand,
+				autonomousOuttakeCommand,
 				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
 				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
 				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,

@@ -128,4 +128,11 @@ public class HubUtil {
 		return true;
 	}
 
+	public static boolean isRobotAllianceAutoWinnerForLog() {
+		if (autoWinnerAlliance.isEmpty()) {
+			return false;
+		}
+		return DriverStationUtil.getAlliance().equals(autoWinnerAlliance.get());
+	}
+
 }
