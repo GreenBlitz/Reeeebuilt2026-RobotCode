@@ -30,7 +30,6 @@ public class AutosBuilder {
 		Supplier<Command> closeIntake,
 		Supplier<Command> scoreSequence,
 		Supplier<Command> passSequence,
-		Supplier<Command> releaseSequence,
 		Supplier<Command> outtakeSequence,
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
