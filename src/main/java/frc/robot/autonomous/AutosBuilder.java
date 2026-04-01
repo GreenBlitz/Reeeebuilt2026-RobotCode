@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class AutosBuilder {
 
-	public static boolean hasPathEnded = false;
+	private static boolean hasPathEnded = false;
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAllTestAutos() {
 		return List.of(
