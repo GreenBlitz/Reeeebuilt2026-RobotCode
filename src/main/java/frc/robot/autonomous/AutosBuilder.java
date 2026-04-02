@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 public class AutosBuilder {
 
 	private static boolean hasPathEnded = false;
-	private static double time = 0;
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAllTestAutos() {
 		return List.of(
@@ -274,7 +273,7 @@ public class AutosBuilder {
 			new ParallelCommandGroup(
 				new SequentialCommandGroup(
 					new ParallelDeadlineGroup(
-						new WaitCommand(3.5),
+						new WaitCommand(AutonomousConstants.TIME_TO_STEAL),
 						PathFollowingCommandsBuilder
 							.followAdjustedPathThenStop(
 								robot.getSwerve(),
