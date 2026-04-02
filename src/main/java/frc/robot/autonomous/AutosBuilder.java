@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 public class AutosBuilder {
 
 	private static boolean hasPathEnded = false;
+	private static double time = 0;
 
 	public static List<Supplier<PathPlannerAutoWrapper>> getAllTestAutos() {
 		return List.of(
@@ -132,6 +133,58 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				false,
+				AllianceSide.DEPOT
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				true,
+				AllianceSide.DEPOT
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				false,
+				AllianceSide.OUTPOST
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				true,
+				AllianceSide.OUTPOST
 			)
 		);
 	}
@@ -201,6 +254,92 @@ public class AutosBuilder {
 			),
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter"
+		);
+	}
+
+	private static Supplier<PathPlannerAutoWrapper> getStealAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		boolean cross,
+		AllianceSide side
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			new ParallelCommandGroup(
+				new SequentialCommandGroup(
+					new ParallelDeadlineGroup(
+						new WaitCommand(3.5),
+						PathFollowingCommandsBuilder
+							.followAdjustedPathThenStop(
+								robot.getSwerve(),
+								() -> robot.getPoseEstimator().getEstimatedPose(),
+								side == AllianceSide.DEPOT
+									? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
+									: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
+								pathfindingConstraints,
+								regularIsNearEndOfPathTolerance,
+								stuckIsNearEndOfPathTolerance,
+								stuckDebounceSeconds,
+								robot.getSwerve().getLogPath()
+							)
+							.asProxy(),
+						new InstantCommand(() -> hasPathEnded = false)
+					),
+					PathFollowingCommandsBuilder
+						.followAdjustedPathThenStop(
+							robot.getSwerve(),
+							() -> robot.getPoseEstimator().getEstimatedPose(),
+							cross ? PathHelper.PATH_PLANNER_PATHS.get("Steal Cross") : PathHelper.PATH_PLANNER_PATHS.get("Steal"),
+							pathfindingConstraints,
+							regularIsNearEndOfPathTolerance,
+							stuckIsNearEndOfPathTolerance,
+							stuckDebounceSeconds,
+							robot.getSwerve().getLogPath()
+						)
+						.asProxy()
+						.andThen(new InstantCommand(() -> hasPathEnded = true))
+				),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new ParallelCommandGroup(
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
+										.andThen(
+											robot.getSwerve()
+												.getCommandsBuilder()
+												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+											getAllianceSideToStartingLineAuto(
+												robot,
+												AllianceSide.DEPOT,
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds
+											)
+										)
+										.asProxy(),
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+										.andThen(closeIntake.get())
+								)
+							)
+					)
+				)
+			),
+			new Pose2d(),
+			(cross ? "Steal Cross " : "Steal ") + side
 		);
 	}
 
@@ -334,61 +473,6 @@ public class AutosBuilder {
 			),
 			new Pose2d(),
 			"L quarter to outpost"
-		);
-	}
-
-	private static Supplier<PathPlannerAutoWrapper> getFlippedLQuarterAuto(
-		Robot robot,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> openIntake,
-		Supplier<Command> closeIntake,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d regularIsNearEndOfPathTolerance,
-		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
-	) {
-		return () -> new PathPlannerAutoWrapper(
-			new ParallelCommandGroup(
-				PathFollowingCommandsBuilder
-					.followAdjustedPathThenStop(
-						robot.getSwerve(),
-						() -> robot.getPoseEstimator().getEstimatedPose(),
-						PathHelper.PATH_PLANNER_PATHS.get("Flipped L quarter auto"),
-						pathfindingConstraints,
-						regularIsNearEndOfPathTolerance,
-						stuckIsNearEndOfPathTolerance,
-						stuckDebounceSeconds,
-						robot.getSwerve().getLogPath()
-					)
-					.asProxy()
-					.alongWith(new InstantCommand(() -> hasPathEnded = false))
-					.andThen(new InstantCommand(() -> hasPathEnded = true)),
-				new SequentialCommandGroup(
-					resetSubsystems.get(),
-					new ParallelCommandGroup(
-						scoreSequence.get(),
-						openIntake.get()
-							.until(() -> hasPathEnded)
-							.andThen(
-								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.asProxy(),
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get())
-								)
-							)
-					)
-				)
-			),
-			new Pose2d(),
-			"Flipped L quarter auto"
 		);
 	}
 

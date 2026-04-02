@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5321824686940966,
+        "y": 5.665652951699462
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.41432915921288,
+        "y": 5.584525939177102
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.755062611806798,
+        "y": 4.05
+      },
+      "prevControl": {
+        "x": 6.647459749552772,
+        "y": 5.997048300536672
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "hub wait"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.2,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Steal Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -148.61680894364096
+  },
+  "useDefaultConstraints": true
+}
