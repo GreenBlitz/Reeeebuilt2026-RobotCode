@@ -90,10 +90,10 @@ public class Robot {
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
 
-	private final double tagDist = 0.4;
-	private final double factor = 0.07;
-	private final double tagNumExp = 0.7;
-	private final double addition = 0.011;
+	private final double tagDist = 0.5; //0.4
+	private final double factor = 0.15; //0.07
+	private final double tagNumExp = 0.4; //0.7
+	private final double addition = 0.011; //0.011
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
