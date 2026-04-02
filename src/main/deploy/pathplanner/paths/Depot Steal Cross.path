@@ -1,0 +1,133 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.755,
+        "y": 3.97
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.7772003577817514,
+        "y": 4.03490161001789
+      },
+      "isLocked": false,
+      "linkedName": "hub wait"
+    },
+    {
+      "anchor": {
+        "x": 10.5,
+        "y": 5.15
+      },
+      "prevControl": {
+        "x": 9.591305027803946,
+        "y": 6.723905860425953
+      },
+      "nextControl": {
+        "x": 10.73624542646073,
+        "y": 4.740810918314233
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.5,
+        "y": 3.15
+      },
+      "prevControl": {
+        "x": 10.727155635062614,
+        "y": 3.543445101154021
+      },
+      "nextControl": {
+        "x": 9.428324754386765,
+        "y": 1.2938040253840195
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.710661896243291,
+        "y": 5.681878354203935
+      },
+      "prevControl": {
+        "x": 6.501431127012523,
+        "y": 5.763005366726297
+      },
+      "nextControl": {
+        "x": 3.4607674607648073,
+        "y": 5.674613981079561
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.56,
+        "y": 5.975825159143519
+      },
+      "prevControl": {
+        "x": 2.948526252837482,
+        "y": 5.975825159143519
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Depot Feed"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.39572192513368953,
+      "rotationDegrees": -150.0
+    },
+    {
+      "waypointRelativePos": 0.8770053475935827,
+      "rotationDegrees": 119.99999999999999
+    },
+    {
+      "waypointRelativePos": 2.053475935828877,
+      "rotationDegrees": 59.99999999999999
+    },
+    {
+      "waypointRelativePos": 2.4812834224598967,
+      "rotationDegrees": -39.670508190727816
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.2135593220338867,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 0.8,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.2,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Steal Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
@@ -108,12 +107,7 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		CommandScheduler.getInstance()
-			.schedule(
-				new WaitCommand(1).andThen(new InstantCommand(() -> robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
-					this.autonomousCommand = autonomousCommand.get();
-				})))
-			);
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> this.autonomousCommand = autonomousCommand.get());
 	}
 
 	@Override
