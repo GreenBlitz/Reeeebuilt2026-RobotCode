@@ -346,7 +346,7 @@ public class AutosBuilder {
 			new ParallelCommandGroup(
 				new SequentialCommandGroup(
 					new ParallelDeadlineGroup(
-						new WaitCommand(AutonomousConstants.TIME_TO_STEAL),
+						new WaitCommand(AutonomousConstants.STEAL_START_SECOND_SINCE_AUTO_BEGAN),
 						PathFollowingCommandsBuilder
 							.followAdjustedPathThenStop(
 								robot.getSwerve(),
