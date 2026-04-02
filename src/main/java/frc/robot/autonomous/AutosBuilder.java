@@ -662,9 +662,10 @@ public class AutosBuilder {
 						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_PASSING_AFTER_PUSH_AUTO_START)
 							.andThen(passSequence.get().withTimeout(AutonomousConstants.TIME_TO_PASS_IN_PUSH_AUTO))
 							.andThen(scoreSequence.get()),
-						((openIntake.get().withTimeout(10)).andThen(outtakeSequence.get().withTimeout(1.5)))
-							.andThen(openIntake.get().withTimeout(4.2))
-							.andThen(outtakeSequence.get().withTimeout(1.75))
+						((openIntake.get().withTimeout(AutonomousConstants.TIME_FOR_FIRST_INTAKE_OPEN_IN_PUSH_AUTO))
+							.andThen(outtakeSequence.get().withTimeout(AutonomousConstants.TIME_FOR_FIRST_OUTTAKE_IN_PUSH_AUTO)))
+							.andThen(openIntake.get().withTimeout(AutonomousConstants.TIME_FOR_SECOND_INTAKE_OPEN_IN_PUSH_AUTO))
+							.andThen(outtakeSequence.get().withTimeout(AutonomousConstants.TIME_FOR_SECOND_OUTTAKE_IN_PUSH_AUTO))
 							.andThen(openIntake.get())
 							.until(() -> hasPathEnded)
 							.andThen(
