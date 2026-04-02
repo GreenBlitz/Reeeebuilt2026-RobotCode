@@ -337,61 +337,6 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getFlippedLQuarterAuto(
-		Robot robot,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> openIntake,
-		Supplier<Command> closeIntake,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d regularIsNearEndOfPathTolerance,
-		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
-	) {
-		return () -> new PathPlannerAutoWrapper(
-			new ParallelCommandGroup(
-				PathFollowingCommandsBuilder
-					.followAdjustedPathThenStop(
-						robot.getSwerve(),
-						() -> robot.getPoseEstimator().getEstimatedPose(),
-						PathHelper.PATH_PLANNER_PATHS.get("Flipped L quarter auto"),
-						pathfindingConstraints,
-						regularIsNearEndOfPathTolerance,
-						stuckIsNearEndOfPathTolerance,
-						stuckDebounceSeconds,
-						robot.getSwerve().getLogPath()
-					)
-					.asProxy()
-					.alongWith(new InstantCommand(() -> hasPathEnded = false))
-					.andThen(new InstantCommand(() -> hasPathEnded = true)),
-				new SequentialCommandGroup(
-					resetSubsystems.get(),
-					new ParallelCommandGroup(
-						scoreSequence.get(),
-						openIntake.get()
-							.until(() -> hasPathEnded)
-							.andThen(
-								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.asProxy(),
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get())
-								)
-							)
-					)
-				)
-			),
-			new Pose2d(),
-			"Flipped L quarter auto"
-		);
-	}
-
 	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
