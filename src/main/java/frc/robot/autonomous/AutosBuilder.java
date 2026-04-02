@@ -134,6 +134,17 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds
 			),
+			getMiddleAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds
+			),
 			getStealAuto(
 				robot,
 				resetSubsystems,
@@ -548,61 +559,6 @@ public class AutosBuilder {
 		);
 	}
 
-	private static Supplier<PathPlannerAutoWrapper> getFlippedLQuarterAuto(
-		Robot robot,
-		Supplier<Command> resetSubsystems,
-		Supplier<Command> openIntake,
-		Supplier<Command> closeIntake,
-		Supplier<Command> scoreSequence,
-		PathConstraints pathfindingConstraints,
-		Pose2d regularIsNearEndOfPathTolerance,
-		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
-	) {
-		return () -> new PathPlannerAutoWrapper(
-			new ParallelCommandGroup(
-				PathFollowingCommandsBuilder
-					.followAdjustedPathThenStop(
-						robot.getSwerve(),
-						() -> robot.getPoseEstimator().getEstimatedPose(),
-						PathHelper.PATH_PLANNER_PATHS.get("Flipped L quarter auto"),
-						pathfindingConstraints,
-						regularIsNearEndOfPathTolerance,
-						stuckIsNearEndOfPathTolerance,
-						stuckDebounceSeconds,
-						robot.getSwerve().getLogPath()
-					)
-					.asProxy()
-					.alongWith(new InstantCommand(() -> hasPathEnded = false))
-					.andThen(new InstantCommand(() -> hasPathEnded = true)),
-				new SequentialCommandGroup(
-					resetSubsystems.get(),
-					new ParallelCommandGroup(
-						scoreSequence.get(),
-						openIntake.get()
-							.until(() -> hasPathEnded)
-							.andThen(
-								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.asProxy(),
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get())
-								)
-							)
-					)
-				)
-			),
-			new Pose2d(),
-			"Flipped L quarter auto"
-		);
-	}
-
 	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
@@ -706,9 +662,10 @@ public class AutosBuilder {
 						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_PASSING_AFTER_PUSH_AUTO_START)
 							.andThen(passSequence.get().withTimeout(AutonomousConstants.TIME_TO_PASS_IN_PUSH_AUTO))
 							.andThen(scoreSequence.get()),
-						((openIntake.get().withTimeout(10)).andThen(outtakeSequence.get().withTimeout(1.5)))
-							.andThen(openIntake.get().withTimeout(4.2))
-							.andThen(outtakeSequence.get().withTimeout(1.75))
+						((openIntake.get().withTimeout(AutonomousConstants.TIME_FOR_FIRST_INTAKE_OPEN_IN_PUSH_AUTO))
+							.andThen(outtakeSequence.get().withTimeout(AutonomousConstants.TIME_FOR_FIRST_OUTTAKE_IN_PUSH_AUTO)))
+							.andThen(openIntake.get().withTimeout(AutonomousConstants.TIME_FOR_SECOND_INTAKE_OPEN_IN_PUSH_AUTO))
+							.andThen(outtakeSequence.get().withTimeout(AutonomousConstants.TIME_FOR_SECOND_OUTTAKE_IN_PUSH_AUTO))
 							.andThen(openIntake.get())
 							.until(() -> hasPathEnded)
 							.andThen(
@@ -725,6 +682,58 @@ public class AutosBuilder {
 			),
 			new Pose2d(),
 			"Push Auto"
+		);
+	}
+
+	private static Supplier<PathPlannerAutoWrapper> getMiddleAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			new ParallelCommandGroup(
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						PathHelper.PATH_PLANNER_PATHS.get("Middle path"),
+						pathfindingConstraints,
+						regularIsNearEndOfPathTolerance,
+						stuckIsNearEndOfPathTolerance,
+						stuckDebounceSeconds,
+						robot.getSwerve().getLogPath()
+					)
+					.asProxy()
+					.alongWith(new InstantCommand(() -> hasPathEnded = false))
+					.andThen(new InstantCommand(() -> hasPathEnded = true)),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						scoreSequence.get(),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new ParallelCommandGroup(
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END).andThen(
+										robot.getSwerve()
+											.getCommandsBuilder()
+											.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+									),
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+										.andThen(closeIntake.get())
+								).asProxy()
+							)
+					)
+				)
+			),
+			new Pose2d(),
+			"Middle Auto"
 		);
 	}
 
