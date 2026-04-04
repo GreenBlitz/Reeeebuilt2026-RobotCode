@@ -62,11 +62,13 @@ public class JoysticksBindings {
 		}
 	}
 
-	public static SwerveState getShootState(SmartJoystick joystick) {
-		return RobotState.SCORE.getSwerveState()
-			.withDriveSpeed(
-				joystick.R1.or(joystick.getAxisAsButton(Axis.RIGHT_TRIGGER)).getAsBoolean() ? DriveSpeed.BOOST_SHOOT : DriveSpeed.SHOOT
-			);
+	public static SwerveState getScoringState(SmartJoystick joystick) {
+		return RobotState.SCORE.getSwerveState().withDriveSpeed(joystick.R1.getAsBoolean() ? DriveSpeed.BOOST_SHOOT : DriveSpeed.SHOOT);
+	}
+
+	public static SwerveState getPassState(SmartJoystick joystick) {
+		return RobotState.PASS.getSwerveState()
+			.withDriveSpeed(joystick.getAxisAsButton(Axis.RIGHT_TRIGGER).getAsBoolean() ? DriveSpeed.BOOST_PASS : DriveSpeed.PASS);
 	}
 
 	private static Command driveActionChooser(Robot robot) {
@@ -87,12 +89,12 @@ public class JoysticksBindings {
 		// Shoot & Pass...
 		usedJoystick.R1.onTrue(
 			robot.getRobotCommander()
-				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getShootState(usedJoystick))
+				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
 		);
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
 			.onTrue(
 				robot.getRobotCommander()
-					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), () -> getShootState(usedJoystick))
+					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), () -> getPassState(usedJoystick))
 			);
 		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(true)));
 		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));

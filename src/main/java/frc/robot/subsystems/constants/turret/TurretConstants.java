@@ -30,7 +30,7 @@ public class TurretConstants {
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
 	static {
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 63.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 70;
 
 		REAL_SLOTS_CONFIG.kP = 600;
 		REAL_SLOTS_CONFIG.kI = 0;
