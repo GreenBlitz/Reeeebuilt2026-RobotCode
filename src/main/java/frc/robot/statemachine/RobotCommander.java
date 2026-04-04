@@ -1,7 +1,14 @@
 package frc.robot.statemachine;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.constants.field.AllianceSide;
+import frc.constants.field.Field;
 import frc.robot.Robot;
+import frc.robot.autonomous.AutonomousConstants;
+import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -15,6 +22,9 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
 import java.util.function.Supplier;
+
+import static frc.constants.field.AllianceSide.DEPOT;
+import static frc.constants.field.Field.isFieldConventionAlliance;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -295,6 +305,15 @@ public class RobotCommander extends GBSubsystem {
 				)
 			)
 		);
+	}
+
+	public Command towerAssist(Robot robot) {
+		Pose2d targetPose = new Pose2d(Field.getTowerMiddle(),Rotation2d.kCW_90deg);
+		boolean isRobotOnDepotSide = robot.getPoseEstimator().getEstimatedPose().getY() > 4;
+		isRobotOnDepotSide = Field.isFieldConventionAlliance() == isRobotOnDepotSide;
+		targetPose = targetPose.relativeTo(new Pose2d(-0.5,isRobotOnDepotSide ? 1 : -1,isRobotOnDepotSide ? Rotation2d.kZero : Rotation2d.k180deg));
+		Pose2d finalTargetPose = targetPose;
+		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,"TowerAssist");
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
