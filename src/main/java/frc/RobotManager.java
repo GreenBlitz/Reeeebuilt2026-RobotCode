@@ -56,12 +56,13 @@ public class RobotManager extends LoggedRobot {
 		PathPlannerUtil.setupPathPlannerLogging();
 
 		this.roborioCycles = 0;
-		this.robot = new Robot();
 
 		ballsBufferIncludingPassing = TimeInterpolatableBuffer
 			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
 		ballsBufferWithoutPassing = TimeInterpolatableBuffer
 			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+
+		this.robot = new Robot(() -> ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null ? TimeUtil.getCurrentTimeSeconds() :ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()));
 
 		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> {
 			ballCounterIncludingPassing++;
@@ -162,6 +163,7 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void robotPeriodic() {
+		Logger.recordOutput("aaaaaaaaaaaaaa", TimeUtil.getCurrentTimeSeconds() - (ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null ? TimeUtil.getCurrentTimeSeconds() :ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds())));
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
 		HubUtil.refreshAlliances();

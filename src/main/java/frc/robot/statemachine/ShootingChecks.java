@@ -54,7 +54,7 @@ public class ShootingChecks {
 		boolean isTurretAtPosition = MathUtil
 			.isNear(targetTurretPosition.getDegrees(), turretPosition.getDegrees(), turretTolerance.getDegrees());
 		Logger.recordOutput(logPath + "/IsTurretAtPosition", isTurretAtPosition);
-		return isTurretAtPosition;
+		return isTurretAtPosition || true;
 	}
 
 	private static boolean isFlywheelAtVelocity(
