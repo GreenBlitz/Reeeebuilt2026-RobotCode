@@ -56,6 +56,7 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -89,10 +90,12 @@ public class Robot {
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+	private final Supplier<Double> lastBallThrownTimestamp;
 
-	public Robot() {
+	public Robot(Supplier<Double> lastBallThrownTimestamp) {
 		BatteryUtil.scheduleLimiter();
 
+		this.lastBallThrownTimestamp = lastBallThrownTimestamp;
 		this.turret = TurretConstants.createTurret();
 		turret.setPosition(TurretConstants.MAX_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
@@ -221,7 +224,7 @@ public class Robot {
 			)
 		);
 
-		robotCommander = new RobotCommander("StateMachine", this);
+		robotCommander = new RobotCommander("StateMachine", this, lastBallThrownTimestamp);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
@@ -294,6 +297,8 @@ public class Robot {
 
 		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
 
+		Logger.recordOutput("time", TimeUtil.getCurrentTimeSeconds());
+		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last

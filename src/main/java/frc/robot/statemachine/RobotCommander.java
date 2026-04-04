@@ -27,7 +27,7 @@ public class RobotCommander extends GBSubsystem {
 	private RobotState currentState;
 	private final String logPath;
 
-	public RobotCommander(String logPath, Robot robot) {
+	public RobotCommander(String logPath, Robot robot, Supplier<Double> lastBallThrownTimestamp) {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
@@ -35,7 +35,7 @@ public class RobotCommander extends GBSubsystem {
 		this.logPath = logPath;
 
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
-		this.funnelStateHandler = new FunnelStateHandler(robot.getMagazine(), robot.getConveyor(), logPath, robot.getMagazineBallSensor());
+		this.funnelStateHandler = new FunnelStateHandler(robot.getMagazine(), robot.getConveyor(), logPath, robot.getMagazineBallSensor(), lastBallThrownTimestamp);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -149,8 +149,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command resetSubsystems() {
 		return new ParallelDeadlineGroup(
 			new ParallelCommandGroup(
-				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
-				intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
+				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS)
 			),
 			funnelStateHandler.setState(FunnelState.STOP)
 		);

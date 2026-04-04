@@ -3,11 +3,15 @@ package frc.robot.statemachine.funnelstatehandler;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.supplied.SuppliedDigitalInput;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
+import java.util.function.Supplier;
 
 public class FunnelStateHandler {
 
@@ -26,7 +30,9 @@ public class FunnelStateHandler {
 
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller magazine, Roller conveyor, String logPath, IDigitalInput ballSensor) {
+	private final Supplier<Double> lastBallThrownTimestamp;
+
+	public FunnelStateHandler(VelocityRoller magazine, Roller conveyor, String logPath, IDigitalInput ballSensor, Supplier<Double> lastBallThrownTimestamp) {
 		this.magazine = magazine;
 		this.conveyor = conveyor;
 		this.logPath = logPath + "/FunnelStateHandler";
@@ -35,6 +41,7 @@ public class FunnelStateHandler {
 		this.conveyorCalibrationVoltage = new LoggedNetworkNumber("Tunable/ConveyorVoltage", 0);
 		this.ballSensor = ballSensor;
 		this.sensorInputsAutoLogged = new DigitalInputInputsAutoLogged();
+		this.lastBallThrownTimestamp = lastBallThrownTimestamp;
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 	}
 
@@ -97,7 +104,15 @@ public class FunnelStateHandler {
 				conveyor.getCommandsBuilder()
 					.setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage())
 					.withTimeout(StateMachineConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
-				conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage())
+					conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()).withTimeout(FunnelConstants.CONVEYOR_STARTING_ACCELERATION_DELAY_SECONDS),
+					new RepeatCommand(
+							new SequentialCommandGroup(
+									conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage())
+											.until(() -> (TimeUtil.getCurrentTimeSeconds() - lastBallThrownTimestamp.get() > FunnelConstants.TIME_BETWEEN_BALLS_TO_CONSIDER_STUCK_SECONDS)),
+									conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getConveyorVoltage()).withTimeout(FunnelConstants.CONVEYOR_OUTTAKE_DURING_STUCK_SECONDS),
+									conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_IGNORE_STUCK)
+							)
+					)
 			)
 		);
 	}
