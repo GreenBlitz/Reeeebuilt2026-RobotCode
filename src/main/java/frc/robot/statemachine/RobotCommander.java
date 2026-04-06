@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.constants.field.AllianceSide;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
@@ -18,13 +17,12 @@ import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static frc.constants.field.AllianceSide.DEPOT;
-import static frc.constants.field.Field.isFieldConventionAlliance;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -308,12 +306,28 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command towerAssist(Robot robot) {
-		Pose2d targetPose = new Pose2d(Field.getTowerMiddle(),Rotation2d.kCW_90deg);
-		boolean isRobotOnDepotSide = robot.getPoseEstimator().getEstimatedPose().getY() > 4;
-		isRobotOnDepotSide = Field.isFieldConventionAlliance() == isRobotOnDepotSide;
-		targetPose = targetPose.relativeTo(new Pose2d(-0.5,isRobotOnDepotSide ? 1 : -1,isRobotOnDepotSide ? Rotation2d.kZero : Rotation2d.k180deg));
-		Pose2d finalTargetPose = targetPose;
-		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,"TowerAssist");
+		Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
+
+		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
+		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
+
+		int yOffest = isRobotOnOutpostSide ? 1 : -1;
+		if (shouldMirror) {
+			yOffest *= -1;
+		}
+
+		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
+
+		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
+
+		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
+
+		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+
+		Pose2d finalTargetPose = new Pose2d(targetTranslation, targetRotation);
+
+		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
