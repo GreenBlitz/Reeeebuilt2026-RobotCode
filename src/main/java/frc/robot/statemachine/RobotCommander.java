@@ -34,7 +34,7 @@ public class RobotCommander extends GBSubsystem {
 	private RobotState currentState;
 	private final String logPath;
 
-    public static boolean isTowerAssist = false;
+	public static boolean isTowerAssist = false;
 
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
@@ -306,7 +306,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command driveToTower(Robot robot) {
+	private Command driveToTower(Robot robot) {
 		Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
 
 		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
@@ -328,6 +328,23 @@ public class RobotCommander extends GBSubsystem {
 		Pose2d finalTargetPose = new Pose2d(targetTranslation, targetRotation);
 
 		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
+	}
+
+	public Command driveToTowerWithAssist(Robot robot) {
+		return asSubsystemCommand(
+			new ConditionalCommand(
+				new InstantCommand(() -> {}),
+				new DeferredCommand(() -> robot.getRobotCommander().driveToTower(robot), Set.of(robot.getSwerve())),
+				() -> RobotCommander.isTowerAssist
+			).andThen(
+				new ConditionalCommand(
+					new InstantCommand(() -> RobotCommander.isTowerAssist = false),
+					new InstantCommand(() -> RobotCommander.isTowerAssist = true),
+					() -> RobotCommander.isTowerAssist
+				)
+			),
+			"TowerAssist"
+		);
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
