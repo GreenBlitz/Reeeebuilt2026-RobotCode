@@ -10,6 +10,7 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
+import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -50,8 +51,13 @@ public class JoysticksBindings {
 
 	public static void updateChassisDriverInputs() {
 		if (MAIN_JOYSTICK.isConnected()) {
-			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
-			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
+            if (RobotCommander.isTowerAssist) {
+                chassisDriverInputs.xPower = 0;
+            }
+            else {
+                chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+            }
+            chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
 			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (THIRD_JOYSTICK.isConnected()) {
 			chassisDriverInputs.xPower = THIRD_JOYSTICK.getAxisValue(Axis.LEFT_Y);
@@ -110,7 +116,8 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.X.onTrue(new DeferredCommand(() -> robot.getRobotCommander().towerAssist(robot), Set.of(robot.getSwerve())));
+		usedJoystick.X.onTrue(new ConditionalCommand(new InstantCommand(() -> {}),new DeferredCommand(() -> robot.getRobotCommander().driveToTower(robot),Set.of(robot.getSwerve())),() -> RobotCommander.isTowerAssist).andThen(new ConditionalCommand(new InstantCommand(() -> RobotCommander.isTowerAssist = false
+        ),new InstantCommand(() -> RobotCommander.isTowerAssist = true),() -> RobotCommander.isTowerAssist)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

@@ -34,6 +34,8 @@ public class RobotCommander extends GBSubsystem {
 	private RobotState currentState;
 	private final String logPath;
 
+    public static boolean isTowerAssist = false;
+
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
 		this.robot = robot;
@@ -304,7 +306,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command towerAssist(Robot robot) {
+	public Command driveToTower(Robot robot) {
 		Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
 
 		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
