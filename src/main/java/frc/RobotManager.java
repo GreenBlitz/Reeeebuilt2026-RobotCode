@@ -37,8 +37,6 @@ import org.littletonrobotics.junction.Logger;
 public class RobotManager extends LoggedRobot {
 
 	private final Robot robot;
-	private final TimeInterpolatableBuffer<Double> ballsBufferIncludingPassing;
-	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
@@ -57,12 +55,8 @@ public class RobotManager extends LoggedRobot {
 
 		this.roborioCycles = 0;
 
-		ballsBufferIncludingPassing = TimeInterpolatableBuffer
-			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
-		ballsBufferWithoutPassing = TimeInterpolatableBuffer
-			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
 
-		this.robot = new Robot(() -> ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null ? TimeUtil.getCurrentTimeSeconds() :ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()));
+		this.robot = new Robot();
 
 		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> {
 			ballCounterIncludingPassing++;
@@ -163,7 +157,13 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void robotPeriodic() {
-		Logger.recordOutput("aaaaaaaaaaaaaa", TimeUtil.getCurrentTimeSeconds() - (ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null ? TimeUtil.getCurrentTimeSeconds() :ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds())));
+		Logger.recordOutput(
+			"aaaaaaaaaaaaaa",
+			TimeUtil.getCurrentTimeSeconds()
+				- (ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
+					? TimeUtil.getCurrentTimeSeconds()
+					: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()))
+		);
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
 		HubUtil.refreshAlliances();

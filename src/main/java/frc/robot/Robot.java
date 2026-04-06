@@ -7,6 +7,8 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.interpolation.Interpolator;
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -90,12 +92,22 @@ public class Robot {
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+
+	private final TimeInterpolatableBuffer<Double> ballsBufferIncludingPassing;
+	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
 	private final Supplier<Double> lastBallThrownTimestamp;
 
-	public Robot(Supplier<Double> lastBallThrownTimestamp) {
+	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
-		this.lastBallThrownTimestamp = lastBallThrownTimestamp;
+		ballsBufferIncludingPassing = TimeInterpolatableBuffer
+				.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+		ballsBufferWithoutPassing = TimeInterpolatableBuffer
+				.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+
+		this.lastBallThrownTimestamp = () -> ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
+				? TimeUtil.getCurrentTimeSeconds()
+				: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds());
 		this.turret = TurretConstants.createTurret();
 		turret.setPosition(TurretConstants.MAX_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
@@ -224,7 +236,7 @@ public class Robot {
 			)
 		);
 
-		robotCommander = new RobotCommander("StateMachine", this, lastBallThrownTimestamp);
+		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
@@ -297,7 +309,6 @@ public class Robot {
 
 		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
 
-		Logger.recordOutput("time", TimeUtil.getCurrentTimeSeconds());
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
@@ -366,6 +377,10 @@ public class Robot {
 
 	public Limelight getLimelightRight() {
 		return limelightRight;
+	}
+
+	public Supplier<Double> getLastBallThrownTimestamp() {
+		return lastBallThrownTimestamp;
 	}
 
 	private void configureBrakeStateChooser() {
