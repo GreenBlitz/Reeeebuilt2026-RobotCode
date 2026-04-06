@@ -23,7 +23,6 @@ import org.littletonrobotics.junction.Logger;
 import java.util.Set;
 import java.util.function.Supplier;
 
-
 public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;
@@ -323,7 +322,6 @@ public class RobotCommander extends GBSubsystem {
 		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
 
 		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
-
 
 		Pose2d finalTargetPose = new Pose2d(targetTranslation, targetRotation);
 
