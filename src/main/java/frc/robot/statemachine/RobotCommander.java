@@ -35,7 +35,13 @@ public class RobotCommander extends GBSubsystem {
 		this.logPath = logPath;
 
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
-		this.funnelStateHandler = new FunnelStateHandler(robot.getMagazine(), robot.getConveyor(), logPath, robot.getMagazineBallSensor());
+		this.funnelStateHandler = new FunnelStateHandler(
+			robot.getMagazine(),
+			robot.getConveyor(),
+			robot.getUpperRoller(),
+			logPath,
+			robot.getMagazineBallSensor()
+		);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -58,11 +64,12 @@ public class RobotCommander extends GBSubsystem {
 								Set.of(
 									this,
 									swerve,
+									robot.getFlyWheel(),
 									robot.getTurret(),
 									robot.getHood(),
 									robot.getMagazine(),
 									robot.getConveyor(),
-									robot.getFlyWheel()
+									robot.getUpperRoller()
 								)
 							)
 						)
@@ -87,10 +94,11 @@ public class RobotCommander extends GBSubsystem {
 	public boolean isRunningIndependently() {
 		return swerve.isRunningIndependently()
 			|| robot.getFlyWheel().isRunningIndependently()
+			|| robot.getTurret().isRunningIndependently()
 			|| robot.getHood().isRunningIndependently()
 			|| robot.getMagazine().isRunningIndependently()
 			|| robot.getConveyor().isRunningIndependently()
-			|| robot.getTurret().isRunningIndependently();
+			|| robot.getUpperRoller().isRunningIndependently();
 	}
 
 	public void update() {
