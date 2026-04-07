@@ -35,7 +35,7 @@ public class FunnelStateHandler {
 
 		this.magazineCalibrationVoltage = new LoggedNetworkNumber("Tunable/MagazineVoltage", 0);
 		this.conveyorCalibrationVoltage = new LoggedNetworkNumber("Tunable/ConveyorVoltage", 0);
-		this.upperRollerCalibrationVoltage = new LoggedNetworkNumber("Tunable/UpperRoller", 0);
+		this.upperRollerCalibrationVoltage = new LoggedNetworkNumber("Tunable/UpperRollerVoltage", 0);
 
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
