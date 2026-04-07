@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
+import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
@@ -80,6 +81,8 @@ public class Robot {
 	private final Roller conveyor;
 	private final Roller upperRoller;
 
+	private final IDigitalInput magazineBallSensor;
+
 	private final Swerve swerve;
 
 	private final SimulationManager simulationManager;
@@ -122,6 +125,8 @@ public class Robot {
 
 		this.upperRoller = UpperRollerConstants.createUpperRoller();
 		BrakeStateManager.add(() -> upperRoller.setBrake(true), () -> upperRoller.setBrake(false));
+
+		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -336,6 +341,10 @@ public class Robot {
 
 	public Roller getUpperRoller() {
 		return upperRoller;
+	}
+
+	public IDigitalInput getMagazineBallSensor() {
+		return magazineBallSensor;
 	}
 
 	public Swerve getSwerve() {
