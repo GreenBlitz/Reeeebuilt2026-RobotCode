@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
+import frc.constants.field.Field;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.utils.alerts.Alert;
+import frc.utils.math.FieldMath;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -59,6 +61,9 @@ public class SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
+        if (swerveState.getAimAssist() == AimAssist.TOWER_INTAKE){
+            return handleTowerAimAssist(speeds,robotPoseSupplier.get().get(),swerveState);
+        }
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
@@ -107,6 +112,26 @@ public class SwerveStateHandler {
 		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
 		return finalSpeeds;
 	}
+
+    private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds,Pose2d robotPose,SwerveState swerveState){
+        boolean isRobotOnOutpostSide = robotPose.getY() < Field.TOWER_MIDDLE.getY();
+        boolean shouldMirror = robotPose.getX() > Field.LENGTH_METERS / 2;
+
+        int yOffest = isRobotOnOutpostSide ? 1 : -1;
+        if (shouldMirror) {
+            yOffest *= -1;
+        }
+
+        Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
+
+        Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
+
+        targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
+
+        Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+        return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(speeds,robotPose,Rotation2d.kCW_90deg,targetTranslation,swerveConstants,swerveState),robotPose.getRotation(),targetRotation,swerveConstants);
+    }
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
 		return switch (rotationAxisState) {
