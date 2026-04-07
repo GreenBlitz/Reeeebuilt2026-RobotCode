@@ -16,6 +16,7 @@ public class IDs {
 		public static final Phoenix6DeviceID SWERVE_BACK_RIGHT_STEER = new Phoenix6DeviceID(6, BusChain.CHASSIS);
 		public static final Phoenix6DeviceID SWERVE_BACK_RIGHT_DRIVE = new Phoenix6DeviceID(7, BusChain.CHASSIS);
 
+
 		public static final Phoenix6DeviceID FLYWHEEL = new Phoenix6DeviceID(10, BusChain.ROBORIO);
 		public static final Phoenix6DeviceID FLYWHEEL_FOLLOWER = new Phoenix6DeviceID(11, BusChain.ROBORIO);
 
@@ -34,7 +35,6 @@ public class IDs {
 		public static final Phoenix6DeviceID INTAKE_ROLLERS = new Phoenix6DeviceID(50, BusChain.CHASSIS);
 
 		public static final Phoenix6DeviceID FOUR_BAR = new Phoenix6DeviceID(51, BusChain.CHASSIS);
-
 
 	}
 

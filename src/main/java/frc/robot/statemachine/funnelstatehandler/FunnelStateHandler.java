@@ -123,7 +123,7 @@ public class FunnelStateHandler {
 		return new ParallelCommandGroup(
 			magazine.getCommandsBuilder().stop(),
 			conveyor.getCommandsBuilder().stop(),
-			conveyor.getCommandsBuilder().stop()
+			upperRoller.getCommandsBuilder().stop()
 		);
 	}
 
