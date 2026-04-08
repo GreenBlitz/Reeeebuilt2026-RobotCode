@@ -311,7 +311,7 @@ public class RobotCommander extends GBSubsystem {
 		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
 		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
 
-		double yOffest = isRobotOnOutpostSide ? 1.5 : -1.5;
+		double yOffest = isRobotOnOutpostSide ? 1.2 : -1.2;
 		if (shouldMirror) {
 			yOffest *= -1;
 		}
