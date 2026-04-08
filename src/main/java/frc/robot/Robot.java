@@ -47,6 +47,7 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
@@ -99,6 +100,9 @@ public class Robot {
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+
+	private static double ballCounterIncludingPassing;
+	private static double ballCounterWithoutPassing;
 
 	private final TimeInterpolatableBuffer<Double> ballsBufferIncludingPassing;
 	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
@@ -259,6 +263,48 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+		ballCounterIncludingPassing = 0;
+		ballCounterWithoutPassing = 0;
+
+		new Trigger(() -> robotCommander.getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> {
+			ballCounterIncludingPassing++;
+			ballsBufferIncludingPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterIncludingPassing);
+		}));
+
+		new Trigger(
+			() -> robotCommander.getShooterStateHandler().hasABallBeenShot()
+				&& (robotCommander.getCurrentState() == RobotState.SCORE || robotCommander.getCurrentState() == RobotState.CALIBRATION_SCORE)
+		).onTrue(new InstantCommand(() -> {
+			ballCounterWithoutPassing++;
+			ballsBufferIncludingPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
+		}));
+
+		new Trigger(GamePeriodUtils::isTransitionShift).onFalse(
+			new InstantCommand(
+				() -> Logger.recordOutput(
+					"averagePeriodPBS/TransitionShift",
+					getAverageBPSForLastXSeconds(GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
+				)
+			)
+		);
+		new Trigger(GamePeriodUtils::isInEndgame).onFalse(
+			new InstantCommand(
+				() -> Logger.recordOutput("averagePeriodPBS/Endgame", getAverageBPSForLastXSeconds(GamePeriodUtils.ENDGAME_DURATION_SECONDS))
+			)
+		);
+		new Trigger(GamePeriodUtils::isInActive1).onFalse(
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/Active1", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
+			)
+		);
+		new Trigger(GamePeriodUtils::isInActive2).onFalse(
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/Active2", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
+			)
+		);
+
 		configureBrakeStateChooser();
 		configureAuto();
 	}
@@ -321,10 +367,28 @@ public class Robot {
 
 		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
+		Logger.recordOutput(
+			"TimeSinceLastBall",
+			TimeUtil.getCurrentTimeSeconds()
+				- (ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
+					? TimeUtil.getCurrentTimeSeconds()
+					: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()))
+		);
+		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
+		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
+		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
+	}
+
+	public double getAverageBPSForLastXSeconds(double seconds) {
+		if (ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).isPresent()) {
+			return (ballCounterIncludingPassing - ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).get())
+				/ seconds;
+		}
+		return 0;
 	}
 
 	public FlyWheel getFlyWheel() {
