@@ -320,8 +320,8 @@ public class Robot {
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
 		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
-
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
+
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
