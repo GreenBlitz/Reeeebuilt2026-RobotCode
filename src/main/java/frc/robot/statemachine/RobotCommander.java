@@ -324,7 +324,6 @@ public class RobotCommander extends GBSubsystem {
 
 		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
 
-
 		Pose2d finalTargetPose = new Pose2d(targetTranslation, targetRotation);
 
 		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
@@ -341,7 +340,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-            case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE , TOWER_INTAKE ->
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE, TOWER_INTAKE ->
 				driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);

@@ -110,7 +110,10 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.X.onTrue(new DeferredCommand(() -> robot.getRobotCommander().driveToTower(robot), Set.of()).andThen(robot.getRobotCommander().driveWith(RobotState.TOWER_INTAKE)));
+		usedJoystick.X.onTrue(
+			new DeferredCommand(() -> robot.getRobotCommander().driveToTower(robot), Set.of())
+				.andThen(robot.getRobotCommander().driveWith(RobotState.TOWER_INTAKE))
+		);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
