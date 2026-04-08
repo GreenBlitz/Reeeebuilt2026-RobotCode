@@ -134,12 +134,12 @@ public class FunnelStateHandler {
 							upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
 						).until(
 							() -> (TimeUtil.getCurrentTimeSeconds() - lastBallThrownTimestamp.get()
-								> FunnelConstants.TIME_BETWEEN_BALLS_TO_CONSIDER_STUCK_SECONDS)
+								> FunnelConstants.TIME_BETWEEN_BALLS_TO_DETECT_JAM_SECONDS)
 						),
 						new ParallelCommandGroup(
 							conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getConveyorVoltage()),
 							upperRoller.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getUpperRollerVoltage())
-						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_OUTTAKE_DURING_STUCK_SECONDS),
+						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_OUTTAKE_DURING_JAM_SECONDS),
 						new ParallelCommandGroup(
 							conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
 							upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
