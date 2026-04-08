@@ -98,8 +98,6 @@ public class JoysticksBindings {
 				robot.getRobotCommander()
 					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), () -> getPassState(usedJoystick))
 			);
-		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(true)));
-		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));
 
 		// Intake binds...
 		robot.getRobotCommander()
