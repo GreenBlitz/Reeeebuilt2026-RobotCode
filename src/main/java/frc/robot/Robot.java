@@ -101,13 +101,13 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		ballsBufferIncludingPassing = TimeInterpolatableBuffer
-				.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
 		ballsBufferWithoutPassing = TimeInterpolatableBuffer
-				.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
 
 		this.lastBallThrownTimestamp = () -> ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
-				? TimeUtil.getCurrentTimeSeconds()
-				: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds());
+			? TimeUtil.getCurrentTimeSeconds()
+			: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds());
 		this.turret = TurretConstants.createTurret();
 		turret.setPosition(TurretConstants.MAX_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
@@ -381,6 +381,14 @@ public class Robot {
 
 	public Supplier<Double> getLastBallThrownTimestamp() {
 		return lastBallThrownTimestamp;
+	}
+
+	public TimeInterpolatableBuffer<Double> getBallsBufferIncludingPassing() {
+		return ballsBufferIncludingPassing;
+	}
+
+	public TimeInterpolatableBuffer<Double> getBallsBufferWithoutPassing() {
+		return ballsBufferWithoutPassing;
 	}
 
 	private void configureBrakeStateChooser() {

@@ -131,7 +131,7 @@ public class IntakeStateHandler {
 		Logger.recordOutput(logPath + "/isCloseFourBarHarder", isCloseFourBarHarder.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
-		hasFourBarBeenReset = true;
+			hasFourBarBeenReset = true;
 		}
 
 		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians() && !hasFourBarBeenReset()) {

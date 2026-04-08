@@ -5,8 +5,6 @@
 package frc;
 
 import com.revrobotics.util.StatusLogger;
-import edu.wpi.first.math.interpolation.Interpolator;
-import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -54,13 +52,11 @@ public class RobotManager extends LoggedRobot {
 		PathPlannerUtil.setupPathPlannerLogging();
 
 		this.roborioCycles = 0;
-
-
 		this.robot = new Robot();
 
 		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> {
 			ballCounterIncludingPassing++;
-			ballsBufferIncludingPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterIncludingPassing);
+			robot.getBallsBufferIncludingPassing().addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterIncludingPassing);
 		}));
 
 		new Trigger(
@@ -69,7 +65,7 @@ public class RobotManager extends LoggedRobot {
 					|| robot.getRobotCommander().getCurrentState() == RobotState.CALIBRATION_SCORE)
 		).onTrue(new InstantCommand(() -> {
 			ballCounterWithoutPassing++;
-			ballsBufferWithoutPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
+			robot.getBallsBufferWithoutPassing().addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
 		}));
 
 		new Trigger(GamePeriodUtils::isTransitionShift).onFalse(
@@ -158,11 +154,11 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void robotPeriodic() {
 		Logger.recordOutput(
-			"aaaaaaaaaaaaaa",
+			"TimeSinceLastBall",
 			TimeUtil.getCurrentTimeSeconds()
-				- (ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
+				- (robot.getBallsBufferIncludingPassing().getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
 					? TimeUtil.getCurrentTimeSeconds()
-					: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()))
+					: robot.getBallsBufferIncludingPassing().getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()))
 		);
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
@@ -182,9 +178,9 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private double getAverageBPSForLastXSeconds(double seconds) {
-		if (ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).isPresent()) {
-			return (ballCounterIncludingPassing - ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).get())
-				/ seconds;
+		if (robot.getBallsBufferIncludingPassing().getSample(TimeUtil.getCurrentTimeSeconds() - seconds).isPresent()) {
+			return (ballCounterIncludingPassing
+				- robot.getBallsBufferIncludingPassing().getSample(TimeUtil.getCurrentTimeSeconds() - seconds).get()) / seconds;
 		}
 		return 0;
 	}
