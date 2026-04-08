@@ -28,6 +28,7 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
 	private boolean isAimAssistOn;
+	public Rotation2d towerAimAssistRotationTarget;
 
 	public SwerveStateHandler(Swerve swerve) {
 		this.swerve = swerve;
@@ -61,8 +62,8 @@ public class SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
-		if (swerveState.getAimAssist() == AimAssist.TOWER_INTAKE) {
-			return handleTowerAimAssist(speeds, robotPoseSupplier.get().get(), swerveState);
+		if (swerveState.getAimAssist() == AimAssist.TOWER_INTAKE){
+			return handleTowerAimAssist(speeds,robotPoseSupplier.get().get(),swerveState);
 		}
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
@@ -113,7 +114,7 @@ public class SwerveStateHandler {
 		return finalSpeeds;
 	}
 
-	private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds, Pose2d robotPose, SwerveState swerveState) {
+	private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds,Pose2d robotPose,SwerveState swerveState){
 		boolean shouldMirror = robotPose.getX() > Field.LENGTH_METERS / 2;
 
 		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, 0);
@@ -122,10 +123,7 @@ public class SwerveStateHandler {
 
 		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
 
-		ChassisSpeeds finalSpeeds = AimAssistMath
-			.getObjectAssistedSpeeds(speeds, robotPose, Rotation2d.kCW_90deg, targetTranslation, swerveConstants, swerveState);
-		finalSpeeds.omegaRadiansPerSecond = 0;
-		return finalSpeeds;
+		return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(speeds,robotPose,Rotation2d.kCW_90deg,targetTranslation,swerveConstants,swerveState),robotPose.getRotation(),towerAimAssistRotationTarget,swerveConstants);
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
