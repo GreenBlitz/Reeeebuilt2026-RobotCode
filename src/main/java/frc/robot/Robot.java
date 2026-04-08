@@ -38,6 +38,7 @@ import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.magazine.MagazineConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
+import frc.robot.subsystems.constants.upperRoller.UpperRollerConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
@@ -71,21 +72,27 @@ import java.util.function.Supplier;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final VelocityPositionArm turret;
+
 	private final FlyWheel flyWheel;
-	private final Roller intakeRoller;
-	private final CurrentControlArm fourBar;
+	private final VelocityPositionArm turret;
 	private final Arm hood;
+
+	private final CurrentControlArm fourBar;
+	private final Roller intakeRoller;
+
 	private final VelocityRoller magazine;
-	private final IDigitalInput magazineBallSensor;
-	private final SimulationManager simulationManager;
 	private final Roller conveyor;
+	private final Roller upperRoller;
+
+	private final IDigitalInput magazineBallSensor;
+
+	private final Swerve swerve;
+
+	private final SimulationManager simulationManager;
 
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
-
-	private final Swerve swerve;
 
 	private final IPoseEstimator poseEstimator;
 
@@ -100,6 +107,8 @@ public class Robot {
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
+		this.flyWheel = FlywheelConstants.createFlyWheel();
+
 		ballsBufferIncludingPassing = TimeInterpolatableBuffer
 			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
 		ballsBufferWithoutPassing = TimeInterpolatableBuffer
@@ -112,25 +121,27 @@ public class Robot {
 		turret.setPosition(TurretConstants.MAX_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
-		this.flyWheel = FlywheelConstants.createFlyWheel();
+		this.hood = HoodConstants.createHood();
+		hood.setPosition(HoodConstants.MINIMUM_POSITION);
+		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
 		this.fourBar = FourBarConstants.createFourBar();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
-		this.hood = HoodConstants.createHood();
-		hood.setPosition(HoodConstants.MINIMUM_POSITION);
-		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
-
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.magazine = MagazineConstant.createMagazine();
-		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 		BrakeStateManager.add(() -> magazine.setBrake(true), () -> magazine.setBrake(false));
 
 		this.conveyor = ConveyorConstants.createConveyor();
 		BrakeStateManager.add(() -> conveyor.setBrake(true), () -> conveyor.setBrake(false));
+
+		this.upperRoller = UpperRollerConstants.createUpperRoller();
+		BrakeStateManager.add(() -> upperRoller.setBrake(true), () -> upperRoller.setBrake(false));
+
+		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -270,14 +281,15 @@ public class Robot {
 	}
 
 	private void updateAllSubsystems() {
-		swerve.update();
-		fourBar.update();
-		intakeRoller.update();
-		conveyor.update();
-		magazine.update();
+		flyWheel.update();
 		turret.update();
 		hood.update();
-		flyWheel.update();
+		fourBar.update();
+		intakeRoller.update();
+		magazine.update();
+		conveyor.update();
+		upperRoller.update();
+		swerve.update();
 	}
 
 	public boolean isTurretMoveLegal() {
@@ -315,20 +327,24 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	public Roller getIntakeRoller() {
-		return intakeRoller;
+	public FlyWheel getFlyWheel() {
+		return flyWheel;
 	}
 
 	public VelocityPositionArm getTurret() {
 		return turret;
 	}
 
-	public FlyWheel getFlyWheel() {
-		return flyWheel;
+	public Arm getHood() {
+		return hood;
 	}
 
 	public CurrentControlArm getFourBar() {
 		return fourBar;
+	}
+
+	public Roller getIntakeRoller() {
+		return intakeRoller;
 	}
 
 	public VelocityRoller getMagazine() {
@@ -339,20 +355,20 @@ public class Robot {
 		return conveyor;
 	}
 
-	public Arm getHood() {
-		return hood;
+	public Roller getUpperRoller() {
+		return upperRoller;
 	}
 
 	public IDigitalInput getMagazineBallSensor() {
 		return magazineBallSensor;
 	}
 
-	public IPoseEstimator getPoseEstimator() {
-		return poseEstimator;
-	}
-
 	public Swerve getSwerve() {
 		return swerve;
+	}
+
+	public IPoseEstimator getPoseEstimator() {
+		return poseEstimator;
 	}
 
 	public RobotCommander getRobotCommander() {
