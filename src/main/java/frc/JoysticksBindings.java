@@ -24,7 +24,6 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.Set;
 
 public class JoysticksBindings {
 
@@ -110,9 +109,7 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.X.onTrue(
-			robot.getRobotCommander().towerIntakeAssist()
-		);
+		usedJoystick.X.onTrue(robot.getRobotCommander().towerIntakeAutomation());
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

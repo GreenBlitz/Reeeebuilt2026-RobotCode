@@ -306,10 +306,10 @@ public class RobotCommander extends GBSubsystem {
 		return PathFollowingCommandsBuilder.pathfindToPose(targetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
 	}
 
-	public Command towerIntakeAssist(){
+	public Command towerIntakeAutomation() {
 		return new DeferredCommand(
-				() -> robot.getRobotCommander().driveToTower(robot.getSwerve().getStateHandler().getTowerAssistPose()),
-				Set.of()
+			() -> robot.getRobotCommander().driveToTower(robot.getSwerve().getStateHandler().getTowerAssistPose()),
+			Set.of()
 		).andThen(robot.getRobotCommander().driveWith(RobotState.TOWER_INTAKE));
 	}
 
