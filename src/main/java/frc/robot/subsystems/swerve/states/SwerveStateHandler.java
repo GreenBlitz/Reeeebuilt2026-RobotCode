@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
-import frc.constants.field.Field;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -14,8 +13,8 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
+import frc.utils.AssistUtil;
 import frc.utils.alerts.Alert;
-import frc.utils.math.FieldMath;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -114,16 +113,14 @@ public class SwerveStateHandler {
 	}
 
 	private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds, Pose2d robotPose, SwerveState swerveState) {
-		boolean shouldMirror = robotPose.getX() > Field.LENGTH_METERS / 2;
-
-		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, 0);
-
-		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
-
-		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
-
-		ChassisSpeeds finalSpeeds = AimAssistMath
-			.getObjectAssistedSpeeds(speeds, robotPose, Rotation2d.kCW_90deg, targetTranslation, swerveConstants, swerveState);
+		ChassisSpeeds finalSpeeds = AimAssistMath.getObjectAssistedSpeeds(
+			speeds,
+			robotPose,
+			Rotation2d.kCW_90deg,
+			AssistUtil.targetTowerTranslation(robotPose),
+			swerveConstants,
+			swerveState
+		);
 		finalSpeeds.omegaRadiansPerSecond = 0;
 		return finalSpeeds;
 	}

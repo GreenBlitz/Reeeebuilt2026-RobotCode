@@ -112,8 +112,8 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
-            case TOWER_INTAKE -> intakeStateHandler.intake();
-            case RESET_SUBSYSTEMS -> resetSubsystems();
+			case TOWER_INTAKE -> intakeStateHandler.intake();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
 	}
