@@ -44,6 +44,7 @@ public class RobotCommander extends GBSubsystem {
 			robot.getMagazineBallSensor(),
 			robot.getLastBallThrownTimestamp()
 		);
+
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
