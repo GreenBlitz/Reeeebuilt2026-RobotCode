@@ -1,10 +1,6 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
@@ -17,7 +13,7 @@ import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.utils.math.FieldMath;
+import frc.utils.AssistUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -306,27 +302,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command driveToTower(Robot robot) {
-		Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
-
-		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
-		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
-
-		double yOffest = isRobotOnOutpostSide ? 1.2 : -1.2;
-		if (shouldMirror) {
-			yOffest *= -1;
-		}
-
-		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
-
-		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
-
-		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
-
-		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
-
-		Pose2d finalTargetPose = new Pose2d(targetTranslation, targetRotation);
-
-		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
+		return PathFollowingCommandsBuilder.pathfindToPose(
+			AssistUtil.finalTargetPose(robot.getPoseEstimator().getEstimatedPose()),
+			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+			"TowerAssist"
+		);
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
