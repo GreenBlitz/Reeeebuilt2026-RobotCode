@@ -112,7 +112,7 @@ public class JoysticksBindings {
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
 		usedJoystick.X.onTrue(
 			new DeferredCommand(
-				() -> robot.getRobotCommander().driveToTower(robot, () -> robot.getSwerve().getStateHandler().getTowerAssistPose()),
+				() -> robot.getRobotCommander().driveToTower(robot, robot.getSwerve().getStateHandler().getTowerAssistPose()),
 				Set.of()
 			).andThen(robot.getRobotCommander().driveWith(RobotState.TOWER_INTAKE))
 		);

@@ -301,9 +301,9 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command driveToTower(Robot robot, Supplier<Pose2d> targetPose) {
-		robot.getSwerve().getStateHandler().towerAimAssistRotationTarget = targetPose.get().getRotation();
-		return PathFollowingCommandsBuilder.pathfindToPose(targetPose.get(), AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
+	public Command driveToTower(Robot robot, Pose2d targetPose) {
+		robot.getSwerve().getStateHandler().towerAimAssistRotationTarget = targetPose.getRotation();
+		return PathFollowingCommandsBuilder.pathfindToPose(targetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
