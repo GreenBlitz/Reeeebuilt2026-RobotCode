@@ -227,8 +227,8 @@ public class Robot {
 			"limelight-left",
 			"Vision",
 			new Pose3d(
-				new Translation3d(-0.077, -0.345, 0.5),
-				new Rotation3d(Math.toRadians(-0.17), Math.toRadians(19.31), Math.toRadians(91.91))
+				new Translation3d(-0.125, -0.37, 0.481),
+				new Rotation3d(Math.toRadians(-179.25), Math.toRadians(20.05), Math.toRadians(90.35))
 			),
 			LimelightPipeline.APRIL_TAG
 		);
