@@ -3,7 +3,6 @@ package frc.robot.statemachine.funnelstatehandler;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
 import frc.utils.time.TimeUtil;
@@ -123,11 +122,11 @@ public class FunnelStateHandler {
 				new ParallelCommandGroup(
 					conveyor.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage()),
 					upperRoller.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getUpperRollerVoltage())
-				).withTimeout(StateMachineConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
+				).withTimeout(FunnelConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
 				new ParallelCommandGroup(
 					conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
 					upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
-				).withTimeout(FunnelConstants.CONVEYOR_STARTING_ACCELERATION_DELAY_SECONDS),
+				).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_ACCELERATE),
 				new RepeatCommand(
 					new SequentialCommandGroup(
 						new ParallelCommandGroup(
