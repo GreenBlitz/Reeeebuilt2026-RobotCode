@@ -122,7 +122,10 @@ public class SwerveStateHandler {
 
 		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
 
-		return AimAssistMath.getObjectAssistedSpeeds(speeds, robotPose, Rotation2d.kCW_90deg, targetTranslation, swerveConstants, swerveState);
+		ChassisSpeeds finalSpeeds = AimAssistMath
+			.getObjectAssistedSpeeds(speeds, robotPose, Rotation2d.kCW_90deg, targetTranslation, swerveConstants, swerveState);
+		finalSpeeds.omegaRadiansPerSecond = 0;
+		return finalSpeeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
