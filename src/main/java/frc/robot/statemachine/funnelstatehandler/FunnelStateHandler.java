@@ -126,7 +126,7 @@ public class FunnelStateHandler {
 				new ParallelCommandGroup(
 					conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
 					upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
-				).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_ACCELERATE),
+				).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_ACCELERATE_SECONDS),
 				new RepeatCommand(
 					new SequentialCommandGroup(
 						new ParallelCommandGroup(
@@ -139,11 +139,11 @@ public class FunnelStateHandler {
 						new ParallelCommandGroup(
 							conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getConveyorVoltage()),
 							upperRoller.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getUpperRollerVoltage())
-						).withTimeout(FunnelConstants.CONVEYOR_OUTTAKE_DURING_STUCK_SECONDS),
+						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_OUTTAKE_DURING_STUCK_SECONDS),
 						new ParallelCommandGroup(
 							conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
 							upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
-						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_IGNORE_STUCK)
+						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_IGNORE_STUCK_SECONDS)
 					)
 				)
 			)
