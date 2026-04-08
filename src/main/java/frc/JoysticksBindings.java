@@ -10,7 +10,6 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
-import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -24,6 +23,8 @@ import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.Set;
 
 public class JoysticksBindings {
 
@@ -49,27 +50,17 @@ public class JoysticksBindings {
 
 	public static void updateChassisDriverInputs() {
 		if (MAIN_JOYSTICK.isConnected()) {
-			applyChassisPower();
+			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
+			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else if (THIRD_JOYSTICK.isConnected()) {
-			applyChassisPower();
+			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
+			chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
+			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		} else {
 			chassisDriverInputs.xPower = 0;
 			chassisDriverInputs.yPower = 0;
 			chassisDriverInputs.rotationalPower = 0;
-		}
-	}
-
-	private static void applyChassisPower() {
-		if (RobotCommander.isTowerAssist) {
-			chassisDriverInputs.xPower = 0;
-		} else {
-			chassisDriverInputs.xPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_Y);
-		}
-		chassisDriverInputs.yPower = MAIN_JOYSTICK.getAxisValue(Axis.LEFT_X);
-		if (RobotCommander.isTowerAssist) {
-			chassisDriverInputs.rotationalPower = 0;
-		} else {
-			chassisDriverInputs.rotationalPower = MAIN_JOYSTICK.getAxisValue(Axis.RIGHT_X);
 		}
 	}
 
@@ -119,7 +110,10 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.X.onTrue(robot.getRobotCommander().driveWith(RobotState.TOWER_INTAKE));
+		usedJoystick.X.onTrue(
+			new DeferredCommand(() -> robot.getRobotCommander().driveToTower(robot), Set.of())
+				.andThen(robot.getRobotCommander().driveWith(RobotState.TOWER_INTAKE))
+		);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

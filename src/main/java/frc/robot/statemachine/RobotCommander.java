@@ -34,8 +34,6 @@ public class RobotCommander extends GBSubsystem {
 	private RobotState currentState;
 	private final String logPath;
 
-	public static boolean isTowerAssist = false;
-
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
 		this.robot = robot;
@@ -118,8 +116,8 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
-            case TOWER_INTAKE -> intakeStateHandler.intake();
-            case RESET_SUBSYSTEMS -> resetSubsystems();
+			case TOWER_INTAKE -> intakeStateHandler.intake();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
 	}
@@ -307,6 +305,30 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public Command driveToTower(Robot robot) {
+		Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
+
+		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
+		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
+
+		int yOffest = isRobotOnOutpostSide ? 1 : -1;
+		if (shouldMirror) {
+			yOffest *= -1;
+		}
+
+		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
+
+		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
+
+		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
+
+		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+		Pose2d finalTargetPose = new Pose2d(targetTranslation, targetRotation);
+
+		return PathFollowingCommandsBuilder.pathfindToPose(finalTargetPose, AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS, "TowerAssist");
+	}
+
 	private Command asSubsystemCommand(Command command, RobotState state) {
 		return new ParallelCommandGroup(
 			asSubsystemCommand(command, state.name()),
@@ -318,7 +340,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-            case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE , TOWER_INTAKE ->
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE, TOWER_INTAKE ->
 				driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
