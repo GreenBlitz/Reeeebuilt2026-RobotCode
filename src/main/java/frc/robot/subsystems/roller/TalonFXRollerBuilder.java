@@ -119,10 +119,13 @@ public class TalonFXRollerBuilder {
 			AngleUnit.ROTATIONS,
 			id.busChain()
 		);
+		InputSignal<Rotation2d> velocitySignal = Phoenix6SignalBuilder
+				.build(roller.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, id.busChain());
+
 
 		Phoenix6Request<Double> VoltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
-		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, VoltageRequest);
+		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, VoltageRequest, velocitySignal);
 	}
 
 	public static TalonFXConfiguration buildConfiguration(

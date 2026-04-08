@@ -83,19 +83,24 @@ public class IntakeStateHandler {
 	public Command close() {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
-				fourBar.getCommandsBuilder()
-					.setVoltageWithoutLimit(
-						FourBarConstants.CLOSE_VOLTAGE,
-						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-					),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(
-						() -> isCloseFourBarHarder.getAsBoolean()
-							? FourBarConstants.CLOSE_HARDER_CURRENT_AMP
-							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
-					)
-			),
-			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+				new ParallelDeadlineGroup(
+						fourBar.getCommandsBuilder()
+								.setVoltageWithoutLimit(
+										FourBarConstants.CLOSE_VOLTAGE,
+										() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
+								),
+						rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+				),
+				new ParallelCommandGroup(
+						fourBar.getCommandsBuilder()
+								.setCurrentWithoutLimit(
+										() -> isCloseFourBarHarder.getAsBoolean()
+												? FourBarConstants.CLOSE_HARDER_CURRENT_AMP
+												: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
+								),
+						rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+				)
+			)
 		);
 	}
 

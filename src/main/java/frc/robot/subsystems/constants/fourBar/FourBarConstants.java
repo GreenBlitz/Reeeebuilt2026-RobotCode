@@ -58,8 +58,8 @@ public class FourBarConstants {
 	public static final double CLOSE_HARDER_CURRENT_AMP = 6.0;
 
 	public static final double OPEN_VOLTAGE = -5.0;
-	public static final double OPEN_RELAXED_CURRENT_AMP = -3.5;
-	public static final double OPEN_LOCKED_CURRENT_AMP = -6.0;
+	public static final double OPEN_RELAXED_CURRENT_AMP = -0;
+	public static final double OPEN_LOCKED_CURRENT_AMP = -4.0;
 
 	public static final double COLLISION_STALL_CURRENT = 13;
 
