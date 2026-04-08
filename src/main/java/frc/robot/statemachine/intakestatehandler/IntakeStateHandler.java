@@ -84,21 +84,32 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				new ParallelDeadlineGroup(
+					new SequentialCommandGroup(
 						fourBar.getCommandsBuilder()
-								.setVoltageWithoutLimit(
-										FourBarConstants.CLOSE_VOLTAGE,
-										() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-								),
-						rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+							.setCurrentWithoutLimit(FourBarConstants.STRONG_CLOSE_CURRENT_AMP)
+							.withTimeout(FourBarConstants.STRONG_CLOSE_TIME_SECONDS),
+						fourBar.getCommandsBuilder()
+							.setVoltageWithoutLimit(
+								FourBarConstants.CLOSE_VOLTAGE,
+								() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
+							)
+					),
+
+					rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 				),
 				new ParallelCommandGroup(
+					new SequentialCommandGroup(
 						fourBar.getCommandsBuilder()
-								.setCurrentWithoutLimit(
-										() -> isCloseFourBarHarder.getAsBoolean()
-												? FourBarConstants.CLOSE_HARDER_CURRENT_AMP
-												: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
-								),
-						rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+							.setCurrentWithoutLimit(FourBarConstants.RELAXED_CLOSE_CURRENT_AMP)
+							.withTimeout(FourBarConstants.RELAXED_CLOSE_TIME_SECONDS),
+						fourBar.getCommandsBuilder()
+							.setCurrentWithoutLimit(
+								() -> isCloseFourBarHarder.getAsBoolean()
+									? FourBarConstants.RELAXED_CLOSE_CURRENT_AMP
+									: FourBarConstants.HOLD_CLOSE_CURRENT_AMP
+							)
+					),
+					rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 				)
 			)
 		);
@@ -120,13 +131,14 @@ public class IntakeStateHandler {
 
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
+			// fourBar.getCommandsBuilder()
+//				.setVoltageWithoutLimit(FourBarConstants.OPEN_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT),
 			fourBar.getCommandsBuilder()
-				.setVoltageWithoutLimit(FourBarConstants.OPEN_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT),
+				.setCurrentWithoutLimit(FourBarConstants.STRONG_OPEN_CURRENT_AMP)
+				.withTimeout(FourBarConstants.RELAXED_OPEN_TIME_SECONDS),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isOpenFourBarLocked.getAsBoolean()
-						? FourBarConstants.OPEN_LOCKED_CURRENT_AMP
-						: FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.RELAXED_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
 				)
 		);
 	}

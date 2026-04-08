@@ -50,11 +50,7 @@ public class SparkMaxRollerBuilder {
 			() -> sparkMaxWrapper.getEncoder().getPosition(),
 			AngleUnit.ROTATIONS
 		);
-		SuppliedAngleSignal velo = new SuppliedAngleSignal(
-				"position",
-				() -> sparkMaxWrapper.getEncoder().getPosition(),
-				AngleUnit.ROTATIONS
-		);
+		SuppliedAngleSignal velo = new SuppliedAngleSignal("position", () -> sparkMaxWrapper.getEncoder().getPosition(), AngleUnit.ROTATIONS);
 
 		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
 
