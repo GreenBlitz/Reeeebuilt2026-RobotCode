@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
 import frc.constants.field.Field;
-import frc.robot.Robot;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -56,15 +55,15 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		if (swerveState.getAimAssist() == AimAssist.NONE  || !isAimAssistOn) {
+		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
 		if (robotPoseSupplier.isEmpty()) {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
-		if (swerveState.getAimAssist() == AimAssist.TOWER_INTAKE){
-			return handleTowerAimAssist(speeds,robotPoseSupplier.get().get(),swerveState);
+		if (swerveState.getAimAssist() == AimAssist.TOWER_INTAKE) {
+			return handleTowerAimAssist(speeds, robotPoseSupplier.get().get(), swerveState);
 		}
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
@@ -115,11 +114,23 @@ public class SwerveStateHandler {
 		return finalSpeeds;
 	}
 
-	private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds,Pose2d robotPose,SwerveState swerveState){
-		return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(speeds,robotPose,Rotation2d.kCW_90deg,getTowerAssistPose().getTranslation(),swerveConstants,swerveState),robotPose.getRotation(),towerAimAssistRotationTarget,swerveConstants);
+	private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds, Pose2d robotPose, SwerveState swerveState) {
+		return AimAssistMath.getRotationAssistedSpeeds(
+			AimAssistMath.getObjectAssistedSpeeds(
+				speeds,
+				robotPose,
+				Rotation2d.kCW_90deg,
+				getTowerAssistPose().getTranslation(),
+				swerveConstants,
+				swerveState
+			),
+			robotPose.getRotation(),
+			towerAimAssistRotationTarget,
+			swerveConstants
+		);
 	}
 
-	public Pose2d getTowerAssistPose(){
+	public Pose2d getTowerAssistPose() {
 		Pose2d currentPose = robotPoseSupplier.get().get();
 
 		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();

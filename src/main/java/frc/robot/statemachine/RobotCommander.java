@@ -1,10 +1,7 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
@@ -17,7 +14,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
