@@ -136,7 +136,7 @@ public class SwerveStateHandler {
 		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
 		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
 
-		double yOffest = isRobotOnOutpostSide ? 1.2 : -1.2;
+		double yOffest = isRobotOnOutpostSide ? Field.TOWER_ASSIST_Y_OFFSET : -Field.TOWER_ASSIST_Y_OFFSET;
 
 		if (shouldMirror) {
 			yOffest *= -1;
