@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
 import frc.constants.field.Field;
+import frc.robot.Robot;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -115,15 +116,30 @@ public class SwerveStateHandler {
 	}
 
 	private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds,Pose2d robotPose,SwerveState swerveState){
-		boolean shouldMirror = robotPose.getX() > Field.LENGTH_METERS / 2;
+		return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(speeds,robotPose,Rotation2d.kCW_90deg,getTowerAssistPose().getTranslation(),swerveConstants,swerveState),robotPose.getRotation(),towerAimAssistRotationTarget,swerveConstants);
+	}
 
-		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, 0);
+	public Pose2d getTowerAssistPose(){
+		Pose2d currentPose = robotPoseSupplier.get().get();
+
+		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
+		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
+
+		double yOffest = isRobotOnOutpostSide ? 1.2 : -1.2;
+
+		if (shouldMirror) {
+			yOffest *= -1;
+		}
+
+		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
 
 		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
 
 		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
 
-		return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(speeds,robotPose,Rotation2d.kCW_90deg,targetTranslation,swerveConstants,swerveState),robotPose.getRotation(),towerAimAssistRotationTarget,swerveConstants);
+		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+		return new Pose2d(targetTranslation, targetRotation);
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
