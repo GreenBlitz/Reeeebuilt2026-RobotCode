@@ -43,6 +43,8 @@ public class SparkMaxRollerBuilder {
 
 		BrushlessSparkMAXMotor roller = new BrushlessSparkMAXMotor(logPath, sparkMaxWrapper, rollerSimulation, new SysIdRoutine.Config());
 
+		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
+
 		SuppliedDoubleSignal voltageSignal = new SuppliedDoubleSignal("voltage", sparkMaxWrapper::getVoltage);
 		SuppliedDoubleSignal currentSignal = new SuppliedDoubleSignal("current", sparkMaxWrapper::getOutputCurrent);
 		SuppliedAngleSignal positionSignal = new SuppliedAngleSignal(
@@ -55,8 +57,6 @@ public class SparkMaxRollerBuilder {
 			() -> sparkMaxWrapper.getEncoder().getPosition(),
 			AngleUnit.ROTATIONS
 		);
-
-		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
 
 		SparkMaxRequest<Double> voltageRequest = SparkMaxRequestBuilder.build(0.0, SparkBase.ControlType.kVoltage, ClosedLoopSlot.kSlot0);
 
