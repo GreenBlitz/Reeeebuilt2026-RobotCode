@@ -10,7 +10,7 @@ public enum FunnelState {
 	SHOOT(Rotation2d.fromRotations(80), 10.08, 10),
 	OUTTAKE(Rotation2d.fromRotations(Double.NaN), -9.6, -8),
 	ROLL_UNTIL_SENSOR(Rotation2d.fromRotations(70), 4.8, 4),
-	OUTTAKE_SHOOT(Rotation2d.fromRotations(70), -9.6, -8),
+	OUTTAKE_SHOOT(Rotation2d.fromRotations(80), -9.6, -8),
 	CALIBRATION;
 
 	private final Rotation2d magazineVelocity;
