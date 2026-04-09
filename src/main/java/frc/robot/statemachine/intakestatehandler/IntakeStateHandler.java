@@ -124,14 +124,12 @@ public class IntakeStateHandler {
 
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
-			// fourBar.getCommandsBuilder()
-//				.setVoltageWithoutLimit(FourBarConstants.OPEN_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(FourBarConstants.STRONG_OPEN_CURRENT_AMP)
 				.withTimeout(FourBarConstants.RELAXED_OPEN_TIME_SECONDS),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.RELAXED_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
+					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_OPEN_CURRENT_AMP : FourBarConstants.RELAXED_OPEN_CURRENT_AMP
 				)
 		);
 	}

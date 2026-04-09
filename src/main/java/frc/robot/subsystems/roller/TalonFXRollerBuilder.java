@@ -125,7 +125,7 @@ public class TalonFXRollerBuilder {
 
 		Phoenix6Request<Double> VoltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
-		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, VoltageRequest, velocitySignal);
+		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, VoltageRequest);
 	}
 
 	public static TalonFXConfiguration buildConfiguration(

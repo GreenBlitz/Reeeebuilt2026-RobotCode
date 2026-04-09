@@ -50,13 +50,17 @@ public class SparkMaxRollerBuilder {
 			() -> sparkMaxWrapper.getEncoder().getPosition(),
 			AngleUnit.ROTATIONS
 		);
-		SuppliedAngleSignal velo = new SuppliedAngleSignal("position", () -> sparkMaxWrapper.getEncoder().getPosition(), AngleUnit.ROTATIONS);
+		SuppliedAngleSignal velocitySignal = new SuppliedAngleSignal(
+			"velocity",
+			() -> sparkMaxWrapper.getEncoder().getPosition(),
+			AngleUnit.ROTATIONS
+		);
 
 		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
 
 		SparkMaxRequest<Double> voltageRequest = SparkMaxRequestBuilder.build(0.0, SparkBase.ControlType.kVoltage, ClosedLoopSlot.kSlot0);
 
-		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest, velo);
+		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest);
 	}
 
 	public static Roller build(
