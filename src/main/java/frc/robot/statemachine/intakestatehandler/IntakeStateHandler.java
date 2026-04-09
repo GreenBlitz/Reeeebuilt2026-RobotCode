@@ -84,20 +84,20 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.STRONG_CLOSE_CURRENT_AMP)
-					.withTimeout(FourBarConstants.STRONG_CLOSE_TIME_SECONDS),
+					.setCurrentWithoutLimit(FourBarConstants.HARD_CLOSE_CURRENT_AMP)
+					.withTimeout(FourBarConstants.HARD_CLOSE_TIME_SECONDS),
 				fourBar.getCommandsBuilder()
 					.setVoltageWithoutLimit(
 						FourBarConstants.CLOSE_VOLTAGE,
 						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
 					),
 				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.RELAXED_CLOSE_CURRENT_AMP)
-					.withTimeout(FourBarConstants.RELAXED_CLOSE_TIME_SECONDS),
+					.setCurrentWithoutLimit(FourBarConstants.SOFT_CLOSE_CURRENT_AMP)
+					.withTimeout(FourBarConstants.SOFT_CLOSE_TIME_SECONDS),
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
 						() -> isCloseFourBarHarder.getAsBoolean()
-							? FourBarConstants.RELAXED_CLOSE_CURRENT_AMP
+							? FourBarConstants.SOFT_CLOSE_CURRENT_AMP
 							: FourBarConstants.HOLD_CLOSE_CURRENT_AMP
 					)
 			),
@@ -125,11 +125,11 @@ public class IntakeStateHandler {
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
 			fourBar.getCommandsBuilder()
-				.setCurrentWithoutLimit(FourBarConstants.STRONG_OPEN_CURRENT_AMP)
+				.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP)
 				.withTimeout(FourBarConstants.RELAXED_OPEN_TIME_SECONDS),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.HOLD_OPEN_CURRENT_AMP : FourBarConstants.RELAXED_OPEN_CURRENT_AMP
+					() -> isOpenFourBarLocked.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
 				)
 		);
 	}
