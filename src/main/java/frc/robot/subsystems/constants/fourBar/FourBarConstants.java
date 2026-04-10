@@ -64,7 +64,7 @@ public class FourBarConstants {
 	public static final double HARD_OPEN_CURRENT_AMP = -4.0;
 	public static final double HOLD_OPEN_CURRENT_AMP = 0;
 
-	public static final double RELAXED_OPEN_TIME_SECONDS = 1;
+	public static final double HARD_OPEN_TIME_SECONDS = 1;
 
 
 	public static final double COLLISION_STALL_CURRENT = 13;
