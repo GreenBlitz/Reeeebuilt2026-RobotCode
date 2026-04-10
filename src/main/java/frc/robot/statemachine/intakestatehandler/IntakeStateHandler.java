@@ -135,7 +135,7 @@ public class IntakeStateHandler {
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsOpenFourBarLocked", isOpenFourBarHarder.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsOpenFourBarHarder", isOpenFourBarHarder.getAsBoolean());
 		Logger.recordOutput(logPath + "/isCloseFourBarHarder", isCloseFourBarHarder.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
