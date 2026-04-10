@@ -2,9 +2,9 @@ upper roller calibrations
 --------------------------------
 
 #### IDs
-- [ ] Motor id
-- [ ] Bus Chain
+- [x] Motor id
+- [x] Bus Chain
 
 #### Config
-- [ ] Is inverted
+- [x] Is inverted
 - [ ] Current limit
