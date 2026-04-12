@@ -184,7 +184,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	@Override
 	public Optional<RobotPoseObservation> getIndependentRobotPose() {
-        Logger.recordOutput(logPath + "/mt1/passesFilter", mt1PoseFilter.passesFilter());
+		Logger.recordOutput(logPath + "/mt1/passesFilter", mt1PoseFilter.passesFilter());
 		if (pipeline.isUsingMT() && doesObservationExist(mt1PoseObservation) && mt1PoseFilter.passesFilter()) {
 			return Optional.of(mt1PoseObservation);
 		}
@@ -193,7 +193,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	@Override
 	public Optional<RobotPoseObservation> getOrientationRequiringRobotPose() {
-        Logger.recordOutput(logPath + "/mt2/passesFilter", mt2PoseFilter.passesFilter());
+		Logger.recordOutput(logPath + "/mt2/passesFilter", mt2PoseFilter.passesFilter());
 		if (pipeline.isUsingMT() && doesObservationExist(mt2PoseObservation) && mt2PoseFilter.passesFilter()) {
 			return Optional.of(mt2PoseObservation);
 		}
