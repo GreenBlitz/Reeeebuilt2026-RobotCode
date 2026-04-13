@@ -1,19 +1,18 @@
-
 {
   "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
         "x": 5.746961483594864,
-        "y": 4.3908131241084165
+        "y": 4.05
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.769161841376616,
-        "y": 4.325911514090527
+        "y": 3.9850983899821104
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "hub wait"
     },
     {
       "anchor": {
