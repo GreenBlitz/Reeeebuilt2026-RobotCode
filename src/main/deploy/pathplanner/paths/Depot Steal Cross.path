@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.730927037150985,
-        "y": 3.538702979618461
+        "x": 6.761037567084079,
+        "y": 4.254042933810375
       },
       "isLocked": false,
       "linkedName": "hub wait"
@@ -52,12 +52,12 @@
         "y": 4.960114122681883
       },
       "prevControl": {
-        "x": 8.754037029505694,
-        "y": 4.430647738494247
+        "x": 9.488136984473895,
+        "y": 3.997404963665284
       },
       "nextControl": {
-        "x": 7.328958199476788,
-        "y": 6.092475488841401
+        "x": 7.141006801352596,
+        "y": 5.899209010019191
       },
       "isLocked": false,
       "linkedName": null
@@ -94,8 +94,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.39572192513368953,
-      "rotationDegrees": -150.0
+      "waypointRelativePos": 0.6283422459893045,
+      "rotationDegrees": -154.98331581345016
     },
     {
       "waypointRelativePos": 1.0,
