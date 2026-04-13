@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.746961483594864,
-        "y": 4.3908131241084165
+        "y": 4.05
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.769161841376617,
-        "y": 4.325911514090526
+        "y": 3.9850983899821095
       },
       "isLocked": false,
       "linkedName": "hub wait"
