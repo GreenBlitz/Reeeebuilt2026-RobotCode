@@ -5,6 +5,7 @@ import frc.robot.Robot;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
@@ -132,6 +133,13 @@ public class ShooterStateHandler {
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
+	}
+
+	public boolean hasABallBeenShot() {
+		if (currentState == ShooterState.SHOOT || currentState == ShooterState.CALIBRATION) {
+			return flyWheel.getAcceleration().getRotations() < FlywheelConstants.FLYWHEEL_ACCELERATION_THRESHOLD_FOR_SHOT.getRotations();
+		}
+		return false;
 	}
 
 	public boolean hasTurretBeenReset() {

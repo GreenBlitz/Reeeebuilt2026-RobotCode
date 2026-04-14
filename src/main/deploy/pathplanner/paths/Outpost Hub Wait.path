@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.490904803240741,
-        "y": 5.359282986111111
+        "x": 3.5321824686940966,
+        "y": 2.4854740608228973
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.01217441807669,
-        "y": 3.6901959675661757
+        "x": 5.414329159212881,
+        "y": 2.404347048300537
       },
       "isLocked": false,
-      "linkedName": "Depot"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.532515946137491,
-        "y": 2.206215450035436
+        "x": 5.746961483594864,
+        "y": 4.3908131241084165
       },
       "prevControl": {
-        "x": 3.416068014611101,
-        "y": 3.7588545370539803
+        "x": 6.347301376260337,
+        "y": 2.5991315498687038
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost"
+      "linkedName": "hub wait"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.2,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Steal Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 127.40535663140855
   },
   "useDefaultConstraints": true
 }

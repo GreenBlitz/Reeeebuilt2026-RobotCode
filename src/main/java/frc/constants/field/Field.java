@@ -25,6 +25,8 @@ public class Field {
 	public static final Translation2d HUB_MIDDLE = new Translation2d(4.62, 4.03);
 	public static final double HUB_SIDE_LENGTH_METERS = 1.19;
 
+	public static final Translation2d FAR_LEFT_HUB_CORNER = HUB_MIDDLE.plus(new Translation2d(0.6, 0.6));
+
 	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
 	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
 	public static final double DEPOT_X_AXIS_LENGTH_METERS = 0.6858;
@@ -44,6 +46,10 @@ public class Field {
 
 	public static Translation2d getHubMiddle() {
 		return getAllianceRelative(HUB_MIDDLE);
+	}
+
+	public static Translation2d getFarLeftHubCorner() {
+		return getAllianceRelative(FAR_LEFT_HUB_CORNER);
 	}
 
 	public static Translation2d getDepotMiddle() {

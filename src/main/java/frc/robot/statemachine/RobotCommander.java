@@ -10,9 +10,11 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -33,7 +35,16 @@ public class RobotCommander extends GBSubsystem {
 		this.logPath = logPath;
 
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
-		this.funnelStateHandler = new FunnelStateHandler(robot.getMagazine(), robot.getConveyor(), logPath, robot.getMagazineBallSensor());
+
+		this.funnelStateHandler = new FunnelStateHandler(
+			robot.getMagazine(),
+			robot.getConveyor(),
+			robot.getUpperRoller(),
+			logPath,
+			robot.getMagazineBallSensor(),
+			robot.getLastBallThrownTimestamp()
+		);
+
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -56,11 +67,12 @@ public class RobotCommander extends GBSubsystem {
 								Set.of(
 									this,
 									swerve,
+									robot.getFlyWheel(),
 									robot.getTurret(),
 									robot.getHood(),
 									robot.getMagazine(),
 									robot.getConveyor(),
-									robot.getFlyWheel()
+									robot.getUpperRoller()
 								)
 							)
 						)
@@ -85,10 +97,11 @@ public class RobotCommander extends GBSubsystem {
 	public boolean isRunningIndependently() {
 		return swerve.isRunningIndependently()
 			|| robot.getFlyWheel().isRunningIndependently()
+			|| robot.getTurret().isRunningIndependently()
 			|| robot.getHood().isRunningIndependently()
 			|| robot.getMagazine().isRunningIndependently()
 			|| robot.getConveyor().isRunningIndependently()
-			|| robot.getTurret().isRunningIndependently();
+			|| robot.getUpperRoller().isRunningIndependently();
 	}
 
 	public void update() {
@@ -103,6 +116,7 @@ public class RobotCommander extends GBSubsystem {
 			case STAY_IN_PLACE -> stayInPlace();
 			case NEUTRAL -> neutral();
 			case OUTTAKE -> outtake();
+			case CONVEYOR_OUTTAKE -> conveyorOuttake();
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
@@ -113,6 +127,12 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command driveWith(RobotState state, Command command) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
+		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
+		return asSubsystemCommand(wantedCommand, state);
+	}
+
+	public Command driveWithChangingState(RobotState state, Command command, Supplier<SwerveState> swerveState) {
+		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get());
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
@@ -153,6 +173,10 @@ public class RobotCommander extends GBSubsystem {
 			funnelStateHandler.setState(FunnelState.OUTTAKE),
 			intakeStateHandler.setState(IntakeState.OUTTAKE)
 		);
+	}
+
+	private Command conveyorOuttake() {
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.NEUTRAL), funnelStateHandler.setState(FunnelState.OUTTAKE));
 	}
 
 	private Command calibrationPreShoot() {
@@ -295,7 +319,8 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE -> driveWith(RobotState.NEUTRAL);
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE ->
+				driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};

@@ -26,6 +26,13 @@ public class AutonomousConstants {
 	public static final double TIME_BETWEEN_WIGGLES_SECONDS = 0.3;
 	public static final double TIME_TO_WAIT_AT_DEPOT = 2;
 	public static final Rotation2d WIGGLE_RANGE = Rotation2d.fromDegrees(5);
+	public static final double TIME_TO_WAIT_TO_START_PASSING_AFTER_PUSH_AUTO_START = 2;
+	public static final double TIME_TO_PASS_IN_PUSH_AUTO = 7;
+	public static final double TIME_FOR_FIRST_INTAKE_OPEN_IN_PUSH_AUTO = 10;
+	public static final double TIME_FOR_FIRST_OUTTAKE_IN_PUSH_AUTO = 1.5;
+	public static final double TIME_FOR_SECOND_INTAKE_OPEN_IN_PUSH_AUTO = 4.2;
+	public static final double TIME_FOR_SECOND_OUTTAKE_IN_PUSH_AUTO = 1.75;
+	public static final double STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
 
 	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 

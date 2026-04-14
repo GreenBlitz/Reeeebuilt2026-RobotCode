@@ -215,8 +215,6 @@ public class TalonFXArmBuilder {
 		Slot0Configs simulationSlotsConfig,
 		double currentLimit,
 		double signalsFrequency,
-		Rotation2d forwardSoftwareLimit,
-		Rotation2d reverseSoftwareLimit,
 		ArmSimulationConstants simulationConstants
 	) {
 		TalonFXMotor motor = new TalonFXMotor(
@@ -243,14 +241,43 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
-			forwardSoftwareLimit,
-			reverseSoftwareLimit,
 			isInverted,
 			isContinuesWrap,
 			currentLimit
 		);
 		motor.applyConfiguration(configuration);
 		return new CurrentControlArm(logPath, motor, signals, voltageRequest, positionRequest, currentRequest, configuration.Slot0.kG);
+	}
+
+	private static TalonFXConfiguration buildConfiguration(
+		FeedbackConfigs feedbackConfigs,
+		Slot0Configs simulationConfigSlots,
+		Slot0Configs realConfigSlots,
+		boolean isInverted,
+		boolean isContinuesWrap,
+		double currentLimit
+	) {
+		TalonFXConfiguration config = new TalonFXConfiguration();
+
+		switch (Robot.ROBOT_TYPE) {
+			case REAL, REPLAY -> {
+				config.Slot0 = realConfigSlots;
+			}
+			case SIMULATION -> {
+				config.Slot0 = simulationConfigSlots;
+			}
+		}
+		config.Feedback = feedbackConfigs;
+
+		config.ClosedLoopGeneral.ContinuousWrap = isContinuesWrap;
+
+		config.CurrentLimits.StatorCurrentLimitEnable = true;
+		config.CurrentLimits.StatorCurrentLimit = currentLimit;
+
+		config.MotorOutput.Inverted = isInverted ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
+		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+		return config;
 	}
 
 	private static TalonFXConfiguration buildConfiguration(

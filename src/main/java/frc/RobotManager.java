@@ -8,6 +8,7 @@ import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
@@ -51,16 +52,7 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
-			this.autonomousCommand = autonomousCommand.get();
-		});
-	}
-
-	@Override
-	public void disabledInit() {
-		if (!DriverStationUtil.isMatch()) {
-			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
-		}
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> this.autonomousCommand = autonomousCommand.get());
 	}
 
 	@Override
@@ -87,6 +79,7 @@ public class RobotManager extends LoggedRobot {
 		}
 
 		robot.getSwerve().setIsRunningIndependently(false);
+		Logger.recordOutput("averagePeriodPBS/Autonomous", robot.getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
 	}
 
 	@Override
