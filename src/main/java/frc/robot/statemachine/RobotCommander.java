@@ -4,10 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.constants.field.Field;
 import frc.robot.Robot;
-import frc.robot.autonomous.AutonomousConstants;
-import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -20,6 +17,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
+import frc.constants.field.Field;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -39,8 +37,6 @@ public class RobotCommander extends GBSubsystem {
 	private RobotState currentState;
 	private final String logPath;
 
-	public static boolean isTowerAssist = false;
-
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
 		this.robot = robot;
@@ -49,7 +45,13 @@ public class RobotCommander extends GBSubsystem {
 		this.logPath = logPath;
 
 		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
-		this.funnelStateHandler = new FunnelStateHandler(robot.getMagazine(), robot.getConveyor(), logPath, robot.getMagazineBallSensor());
+		this.funnelStateHandler = new FunnelStateHandler(
+			robot.getMagazine(),
+			robot.getConveyor(),
+			robot.getUpperRoller(),
+			logPath,
+			robot.getMagazineBallSensor()
+		);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
@@ -72,11 +74,12 @@ public class RobotCommander extends GBSubsystem {
 								Set.of(
 									this,
 									swerve,
+									robot.getFlyWheel(),
 									robot.getTurret(),
 									robot.getHood(),
 									robot.getMagazine(),
 									robot.getConveyor(),
-									robot.getFlyWheel()
+									robot.getUpperRoller()
 								)
 							)
 						)
@@ -101,10 +104,11 @@ public class RobotCommander extends GBSubsystem {
 	public boolean isRunningIndependently() {
 		return swerve.isRunningIndependently()
 			|| robot.getFlyWheel().isRunningIndependently()
+			|| robot.getTurret().isRunningIndependently()
 			|| robot.getHood().isRunningIndependently()
 			|| robot.getMagazine().isRunningIndependently()
 			|| robot.getConveyor().isRunningIndependently()
-			|| robot.getTurret().isRunningIndependently();
+			|| robot.getUpperRoller().isRunningIndependently();
 	}
 
 	public void update() {
@@ -123,8 +127,8 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
-            case TOWER_INTAKE -> intakeStateHandler.intake();
-            case RESET_SUBSYSTEMS -> resetSubsystems();
+			case TOWER_INTAKE -> intakeStateHandler.intake();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
 	}
@@ -323,7 +327,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-            case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE , TOWER_INTAKE ->
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE, TOWER_INTAKE ->
 				driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
@@ -339,51 +343,44 @@ public class RobotCommander extends GBSubsystem {
 	public Command driveToTower(ChassisPowers driverInputs) {
 		SwerveState swerveState = SwerveState.DEFAULT_DRIVE;
 
-		return new ConditionalCommand(
-			new DeferredCommand(() -> {
-				swerve.setIsRunningIndependently(true);
-				Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
-				Translation2d blueTower = Field.TOWER_MIDDLE;
-				Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
-				boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
-				Translation2d closestTower = isNearBlueTower ? blueTower : redTower;
+		return new ConditionalCommand(new DeferredCommand(() -> {
+			swerve.setIsRunningIndependently(true);
+			Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+			Translation2d blueTower = Field.TOWER_MIDDLE;
+			Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
+			boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
+			Translation2d closestTower = isNearBlueTower ? blueTower : redTower;
 
-				boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
-				double xOffset = isNearBlueTower ? -0.5 : 0.5;
-				double yOffset = isOnOutpostSide ? -1 : 1;
-				Translation2d lockedTarget = closestTower.plus(new Translation2d(xOffset, yOffset));
+			boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
+			double xOffset = isNearBlueTower ? -0.5 : 0.5;
+			double yOffset = isOnOutpostSide ? -1 : 1;
+			Translation2d lockedTarget = closestTower.plus(new Translation2d(xOffset, yOffset));
 
-				Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+			Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
 
-				return swerve.getCommandsBuilder().driveBySpeeds(() -> {
-					ChassisSpeeds driverSpeeds = SwerveMath.powersToSpeeds(driverInputs, swerve.getConstants());
-					Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
+			return swerve.getCommandsBuilder().driveBySpeeds(() -> {
+				ChassisSpeeds driverSpeeds = SwerveMath.powersToSpeeds(driverInputs, swerve.getConstants());
+				Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
 
-					ChassisSpeeds objectAssisted = AimAssistMath.getObjectAssistedSpeeds(
-						driverSpeeds, currentPose, Rotation2d.kCW_90deg, lockedTarget, swerve.getConstants(), swerveState
-					);
-					return AimAssistMath.getRotationAssistedSpeeds(
-						objectAssisted, currentPose.getRotation(), targetRotation, swerve.getConstants()
-					);
-				}, swerveState).finallyDo(() -> swerve.setIsRunningIndependently(false));
-			}, Set.of(swerve)),
-			Commands.none(),
-			() -> {
-				Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
-				Translation2d blueTower = Field.TOWER_MIDDLE;
-				Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
-				Translation2d closestTower = robotPose.getX() < Field.LENGTH_METERS / 2 ? blueTower : redTower;
+				ChassisSpeeds objectAssisted = AimAssistMath
+					.getObjectAssistedSpeeds(driverSpeeds, currentPose, Rotation2d.kCW_90deg, lockedTarget, swerve.getConstants(), swerveState);
+				return AimAssistMath.getRotationAssistedSpeeds(objectAssisted, currentPose.getRotation(), targetRotation, swerve.getConstants());
+			}, swerveState).finallyDo(() -> swerve.setIsRunningIndependently(false));
+		}, Set.of(swerve)), Commands.none(), () -> {
+			Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+			Translation2d blueTower = Field.TOWER_MIDDLE;
+			Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
+			Translation2d closestTower = robotPose.getX() < Field.LENGTH_METERS / 2 ? blueTower : redTower;
 
-				boolean inFront = Math.abs(robotPose.getY() - closestTower.getY()) < TOWER_HALF_WIDTH;
-				double trenchX = Field.getTrenchMiddle(frc.constants.field.AllianceSide.DEPOT).getX();
-				double mirroredTrenchX = FieldMath.mirrorX(trenchX);
-				double minTrenchX = Math.min(trenchX, mirroredTrenchX);
-				double maxTrenchX = Math.max(trenchX, mirroredTrenchX);
-				boolean inMiddle = robotPose.getX() > minTrenchX && robotPose.getX() < maxTrenchX;
+			boolean inFront = Math.abs(robotPose.getY() - closestTower.getY()) < TOWER_HALF_WIDTH;
+			double trenchX = Field.getTrenchMiddle(frc.constants.field.AllianceSide.DEPOT).getX();
+			double mirroredTrenchX = FieldMath.mirrorX(trenchX);
+			double minTrenchX = Math.min(trenchX, mirroredTrenchX);
+			double maxTrenchX = Math.max(trenchX, mirroredTrenchX);
+			boolean inMiddle = robotPose.getX() > minTrenchX && robotPose.getX() < maxTrenchX;
 
-				return !inFront && !inMiddle;
-			}
-		);
+			return !inFront && !inMiddle;
+		});
 	}
 
 }

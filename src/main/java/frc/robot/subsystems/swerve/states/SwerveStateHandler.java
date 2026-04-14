@@ -20,7 +20,7 @@ import frc.utils.math.FieldMath;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class  SwerveStateHandler {
+public class SwerveStateHandler {
 
 	private final Swerve swerve;
 	private final SwerveConstants swerveConstants;
@@ -29,6 +29,7 @@ public class  SwerveStateHandler {
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
 	private Optional<Boolean> lockedTowerSide;
 	private boolean isAimAssistOn;
+	public Rotation2d towerAimAssistRotationTarget;
 
 	public SwerveStateHandler(Swerve swerve) {
 		this.swerve = swerve;
@@ -66,9 +67,6 @@ public class  SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
-        if (swerveState.getAimAssist() == AimAssist.TOWER_INTAKE){
-            return handleTowerAimAssist(speeds,robotPoseSupplier.get().get(),swerveState);
-        }
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
@@ -118,28 +116,28 @@ public class  SwerveStateHandler {
 		return finalSpeeds;
 	}
 
-    private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds,Pose2d robotPose,SwerveState swerveState){
-        if (lockedTowerSide.isEmpty()) {
-            lockedTowerSide = Optional.of(robotPose.getY() < Field.TOWER_MIDDLE.getY());
-        }
-        boolean isRobotOnOutpostSide = lockedTowerSide.get();
-        boolean shouldMirror = robotPose.getX() > Field.LENGTH_METERS / 2;
+	public Pose2d getTowerAssistPose() {
+		Pose2d currentPose = robotPoseSupplier.get().get();
 
-        int yOffest = isRobotOnOutpostSide ? 1 : -1;
-        if (shouldMirror) {
-            yOffest *= -1;
-        }
+		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
+		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
 
-        Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
+		double yOffest = isRobotOnOutpostSide ? Field.TOWER_ASSIST_Y_OFFSET : -Field.TOWER_ASSIST_Y_OFFSET;
 
-        Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
+		if (shouldMirror) {
+			yOffest *= -1;
+		}
 
-        targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
+		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
 
-        Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
 
-        return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(speeds,robotPose,Rotation2d.kCW_90deg,targetTranslation,swerveConstants,swerveState),robotPose.getRotation(),targetRotation,swerveConstants);
-    }
+		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
+
+		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+		return new Pose2d(targetTranslation, targetRotation);
+	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
 		return switch (rotationAxisState) {
