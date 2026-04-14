@@ -1,6 +1,7 @@
 package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
@@ -162,6 +163,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	public void updateCameraMatrix() {
 		inputs.connectedInput().connected = LimelightHelpersAdditions.getIsConnected(name);
 		Logger.processInputs(logPath, inputs.connectedInput());
+		Logger.recordOutput(logPath, NetworkTableInstance.getDefault().getTable(name).getEntry("temp").getDouble(0));
 	}
 
 	public String getName() {
