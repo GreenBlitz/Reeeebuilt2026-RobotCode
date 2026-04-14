@@ -128,7 +128,6 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
-			case TOWER_INTAKE -> intakeStateHandler.intake();
 			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
@@ -328,7 +327,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE, TOWER_INTAKE ->
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS, OUTTAKE, CONVEYOR_OUTTAKE ->
 				driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
