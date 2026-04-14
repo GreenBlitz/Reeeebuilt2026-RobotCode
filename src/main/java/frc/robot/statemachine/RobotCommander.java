@@ -15,10 +15,15 @@ import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
+import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -327,6 +332,58 @@ public class RobotCommander extends GBSubsystem {
 
 	public IntakeStateHandler getIntakeStateHandler() {
 		return intakeStateHandler;
+	}
+
+	private static final double TOWER_HALF_WIDTH = 0.41;
+
+	public Command driveToTower(ChassisPowers driverInputs) {
+		SwerveState swerveState = SwerveState.DEFAULT_DRIVE;
+
+		return new ConditionalCommand(
+			new DeferredCommand(() -> {
+				swerve.setIsRunningIndependently(true);
+				Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+				Translation2d blueTower = Field.TOWER_MIDDLE;
+				Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
+				boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
+				Translation2d closestTower = isNearBlueTower ? blueTower : redTower;
+
+				boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
+				double xOffset = isNearBlueTower ? -0.5 : 0.5;
+				double yOffset = isOnOutpostSide ? -1 : 1;
+				Translation2d lockedTarget = closestTower.plus(new Translation2d(xOffset, yOffset));
+
+				Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+				return swerve.getCommandsBuilder().driveBySpeeds(() -> {
+					ChassisSpeeds driverSpeeds = SwerveMath.powersToSpeeds(driverInputs, swerve.getConstants());
+					Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
+
+					ChassisSpeeds objectAssisted = AimAssistMath.getObjectAssistedSpeeds(
+						driverSpeeds, currentPose, Rotation2d.kCW_90deg, lockedTarget, swerve.getConstants(), swerveState
+					);
+					return AimAssistMath.getRotationAssistedSpeeds(
+						objectAssisted, currentPose.getRotation(), targetRotation, swerve.getConstants()
+					);
+				}, swerveState).finallyDo(() -> swerve.setIsRunningIndependently(false));
+			}, Set.of(swerve)),
+			Commands.none(),
+			() -> {
+				Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+				Translation2d blueTower = Field.TOWER_MIDDLE;
+				Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
+				Translation2d closestTower = robotPose.getX() < Field.LENGTH_METERS / 2 ? blueTower : redTower;
+
+				boolean inFront = Math.abs(robotPose.getY() - closestTower.getY()) < TOWER_HALF_WIDTH;
+				double trenchX = Field.getTrenchMiddle(frc.constants.field.AllianceSide.DEPOT).getX();
+				double mirroredTrenchX = FieldMath.mirrorX(trenchX);
+				double minTrenchX = Math.min(trenchX, mirroredTrenchX);
+				double maxTrenchX = Math.max(trenchX, mirroredTrenchX);
+				boolean inMiddle = robotPose.getX() > minTrenchX && robotPose.getX() < maxTrenchX;
+
+				return !inFront && !inMiddle;
+			}
+		);
 	}
 
 }

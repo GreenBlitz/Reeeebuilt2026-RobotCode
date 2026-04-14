@@ -20,13 +20,14 @@ import frc.utils.math.FieldMath;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class SwerveStateHandler {
+public class  SwerveStateHandler {
 
 	private final Swerve swerve;
 	private final SwerveConstants swerveConstants;
 	private Optional<Supplier<Pose2d>> robotPoseSupplier;
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
+	private Optional<Boolean> lockedTowerSide;
 	private boolean isAimAssistOn;
 
 	public SwerveStateHandler(Swerve swerve) {
@@ -34,6 +35,7 @@ public class SwerveStateHandler {
 		this.swerveConstants = swerve.getConstants();
 		this.robotPoseSupplier = Optional.empty();
 		this.isTurretMoveLegalSupplier = Optional.empty();
+		this.lockedTowerSide = Optional.empty();
 		this.isAimAssistOn = true;
 	}
 
@@ -54,6 +56,9 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
+		if (swerveState.getAimAssist() != AimAssist.TOWER_INTAKE) {
+			lockedTowerSide = Optional.empty();
+		}
 		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
@@ -114,7 +119,10 @@ public class SwerveStateHandler {
 	}
 
     private ChassisSpeeds handleTowerAimAssist(ChassisSpeeds speeds,Pose2d robotPose,SwerveState swerveState){
-        boolean isRobotOnOutpostSide = robotPose.getY() < Field.TOWER_MIDDLE.getY();
+        if (lockedTowerSide.isEmpty()) {
+            lockedTowerSide = Optional.of(robotPose.getY() < Field.TOWER_MIDDLE.getY());
+        }
+        boolean isRobotOnOutpostSide = lockedTowerSide.get();
         boolean shouldMirror = robotPose.getX() > Field.LENGTH_METERS / 2;
 
         int yOffest = isRobotOnOutpostSide ? 1 : -1;
