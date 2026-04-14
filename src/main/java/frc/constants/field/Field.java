@@ -30,6 +30,8 @@ public class Field {
 	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
 	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
 	public static final double DEPOT_X_AXIS_LENGTH_METERS = 0.6858;
+	public static final double TOWER_Y_AXIS_LENGTH_METERS = 0.82;
+
 
 	private static final Translation2d OUTPOST_MIDDLE = new Translation2d(0, 0.67);
 	private static final Translation2d DEPOT_TRENCH_MIDDLE = new Translation2d(4.62, 7.43);

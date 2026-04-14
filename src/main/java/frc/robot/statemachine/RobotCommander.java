@@ -12,6 +12,7 @@ import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
+import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveMath;
@@ -338,8 +339,6 @@ public class RobotCommander extends GBSubsystem {
 		return intakeStateHandler;
 	}
 
-	private static final double TOWER_HALF_WIDTH = 0.41;
-
 	public Command driveToTower(ChassisPowers driverInputs) {
 		SwerveState swerveState = SwerveState.DEFAULT_DRIVE;
 
@@ -352,8 +351,8 @@ public class RobotCommander extends GBSubsystem {
 			Translation2d closestTower = isNearBlueTower ? blueTower : redTower;
 
 			boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
-			double xOffset = isNearBlueTower ? -0.5 : 0.5;
-			double yOffset = isOnOutpostSide ? -1 : 1;
+			double xOffset = isNearBlueTower ? -Field.TOWER_MIDDLE.getX()/2 : Field.TOWER_MIDDLE.getX()/2;
+			double yOffset = isOnOutpostSide ? -Field.TOWER_ASSIST_Y_OFFSET : Field.TOWER_ASSIST_Y_OFFSET;
 			Translation2d lockedTarget = closestTower.plus(new Translation2d(xOffset, yOffset));
 
 			Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
@@ -372,7 +371,7 @@ public class RobotCommander extends GBSubsystem {
 			Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
 			Translation2d closestTower = robotPose.getX() < Field.LENGTH_METERS / 2 ? blueTower : redTower;
 
-			boolean inFront = Math.abs(robotPose.getY() - closestTower.getY()) < TOWER_HALF_WIDTH;
+			boolean inFront = Math.abs(robotPose.getY() - closestTower.getY()) < Field.TOWER_Y_AXIS_LENGTH_METERS / 2 + FourBarConstants.ROBOT_MIDDLE_TO_FOUR_BAR;
 			double trenchX = Field.getTrenchMiddle(frc.constants.field.AllianceSide.DEPOT).getX();
 			double mirroredTrenchX = FieldMath.mirrorX(trenchX);
 			double minTrenchX = Math.min(trenchX, mirroredTrenchX);

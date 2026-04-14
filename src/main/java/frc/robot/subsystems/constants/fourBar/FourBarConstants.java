@@ -67,6 +67,7 @@ public class FourBarConstants {
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
 	public static final double FOUR_BAR_LENGTH = 0.3;
+	public static final double ROBOT_MIDDLE_TO_FOUR_BAR = 0.65;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
