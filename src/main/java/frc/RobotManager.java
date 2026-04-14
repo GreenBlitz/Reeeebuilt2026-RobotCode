@@ -45,7 +45,7 @@ public class RobotManager extends LoggedRobot {
 		LoggerFactory.initializeLogger();
 		PathPlannerUtil.startPathfinder();
 		PathPlannerUtil.setupPathPlannerLogging();
-        CameraServer.startAutomaticCapture();
+		CameraServer.startAutomaticCapture();
 
 		this.roborioCycles = 0;
 		this.robot = new Robot();
