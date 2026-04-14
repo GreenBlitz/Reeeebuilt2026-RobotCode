@@ -5,6 +5,7 @@
 package frc;
 
 import com.revrobotics.util.StatusLogger;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -44,6 +45,7 @@ public class RobotManager extends LoggedRobot {
 		LoggerFactory.initializeLogger();
 		PathPlannerUtil.startPathfinder();
 		PathPlannerUtil.setupPathPlannerLogging();
+		CameraServer.startAutomaticCapture();
 
 		this.roborioCycles = 0;
 		this.robot = new Robot();
