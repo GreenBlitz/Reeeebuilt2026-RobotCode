@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
-import frc.constants.field.Field;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -15,7 +14,6 @@ import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.utils.alerts.Alert;
-import frc.utils.math.FieldMath;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -27,16 +25,13 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Pose2d>> robotPoseSupplier;
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
-	private Optional<Boolean> lockedTowerSide;
 	private boolean isAimAssistOn;
-	public Rotation2d towerAimAssistRotationTarget;
 
 	public SwerveStateHandler(Swerve swerve) {
 		this.swerve = swerve;
 		this.swerveConstants = swerve.getConstants();
 		this.robotPoseSupplier = Optional.empty();
 		this.isTurretMoveLegalSupplier = Optional.empty();
-		this.lockedTowerSide = Optional.empty();
 		this.isAimAssistOn = true;
 	}
 
@@ -57,9 +52,6 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		if (swerveState.getAimAssist() != AimAssist.TOWER_INTAKE) {
-			lockedTowerSide = Optional.empty();
-		}
 		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
@@ -114,29 +106,6 @@ public class SwerveStateHandler {
 		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
 		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
 		return finalSpeeds;
-	}
-
-	public Pose2d getTowerAssistPose() {
-		Pose2d currentPose = robotPoseSupplier.get().get();
-
-		boolean isRobotOnOutpostSide = currentPose.getY() < Field.TOWER_MIDDLE.getY();
-		boolean shouldMirror = currentPose.getX() > Field.LENGTH_METERS / 2;
-
-		double yOffest = isRobotOnOutpostSide ? Field.TOWER_ASSIST_Y_OFFSET : -Field.TOWER_ASSIST_Y_OFFSET;
-
-		if (shouldMirror) {
-			yOffest *= -1;
-		}
-
-		Translation2d offset = new Translation2d(Field.TOWER_MIDDLE.getX() / 2, yOffest);
-
-		Translation2d targetTranslation = Field.TOWER_MIDDLE.minus(offset);
-
-		targetTranslation = FieldMath.mirror(targetTranslation, shouldMirror, shouldMirror);
-
-		Rotation2d targetRotation = isRobotOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
-
-		return new Pose2d(targetTranslation, targetRotation);
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {

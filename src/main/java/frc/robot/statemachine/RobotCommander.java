@@ -350,7 +350,7 @@ public class RobotCommander extends GBSubsystem {
 			Translation2d closestTower = isNearBlueTower ? blueTower : redTower;
 
 			boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
-			double xOffset = isNearBlueTower ? -Field.TOWER_MIDDLE.getX()/2 : Field.TOWER_MIDDLE.getX()/2;
+			double xOffset = isNearBlueTower ? -Field.TOWER_MIDDLE.getX() / 2 : Field.TOWER_MIDDLE.getX() / 2;
 			double yOffset = isOnOutpostSide ? -Field.TOWER_ASSIST_Y_OFFSET : Field.TOWER_ASSIST_Y_OFFSET;
 			Translation2d lockedTarget = closestTower.plus(new Translation2d(xOffset, yOffset));
 
@@ -370,7 +370,8 @@ public class RobotCommander extends GBSubsystem {
 			Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
 			Translation2d closestTower = robotPose.getX() < Field.LENGTH_METERS / 2 ? blueTower : redTower;
 
-			boolean inFront = Math.abs(robotPose.getY() - closestTower.getY()) < Field.TOWER_Y_AXIS_LENGTH_METERS / 2 + FourBarConstants.ROBOT_MIDDLE_TO_FOUR_BAR;
+			boolean inFront = Math.abs(robotPose.getY() - closestTower.getY())
+				< Field.TOWER_Y_AXIS_LENGTH_METERS / 2 + FourBarConstants.ROBOT_MIDDLE_TO_FOUR_BAR;
 			double trenchX = Field.getTrenchMiddle(frc.constants.field.AllianceSide.DEPOT).getX();
 			double mirroredTrenchX = FieldMath.mirrorX(trenchX);
 			double minTrenchX = Math.min(trenchX, mirroredTrenchX);
