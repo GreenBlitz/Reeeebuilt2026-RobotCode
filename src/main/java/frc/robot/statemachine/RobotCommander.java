@@ -1,8 +1,6 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
@@ -12,17 +10,12 @@ import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
-import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
-import frc.constants.field.Field;
-import frc.utils.math.FieldMath;
+import frc.robot.subsystems.swerve.states.aimassist.TowerAssistCalculations;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -341,48 +334,26 @@ public class RobotCommander extends GBSubsystem {
 		return intakeStateHandler;
 	}
 
-	public Command driveToTower(ChassisPowers driverInputs) {
-		SwerveState swerveState = SwerveState.DEFAULT_DRIVE;
+	private Command driveToTower(ChassisPowers driverInputs) {
+		swerve.setIsRunningIndependently(true);
 
-		return new ConditionalCommand(new DeferredCommand(() -> {
-			swerve.setIsRunningIndependently(true);
-			Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
-			Translation2d blueTower = Field.TOWER_MIDDLE;
-			Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
-			boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
-			Translation2d closestTower = isNearBlueTower ? blueTower : redTower;
+		Pose2d assistTarget = TowerAssistCalculations.getTowerAssistTarget(robot.getPoseEstimator().getEstimatedPose());
 
-			boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
-			double xOffset = isNearBlueTower ? -Field.TOWER_MIDDLE.getX() / 2 : Field.TOWER_MIDDLE.getX() / 2;
-			double yOffset = isOnOutpostSide ? -Field.TOWER_ASSIST_Y_OFFSET : Field.TOWER_ASSIST_Y_OFFSET;
-			Translation2d lockedTarget = closestTower.plus(new Translation2d(xOffset, yOffset));
+		return swerve.getCommandsBuilder()
+			.driveBySpeeds(
+				() -> TowerAssistCalculations.getTowerAssistedSpeeds(driverInputs, robot, assistTarget, SwerveState.DEFAULT_DRIVE),
+				SwerveState.DEFAULT_DRIVE
+			)
+			.finallyDo(() -> swerve.setIsRunningIndependently(false));
+	}
 
-			Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
-
-			return swerve.getCommandsBuilder().driveBySpeeds(() -> {
-				ChassisSpeeds driverSpeeds = SwerveMath.powersToSpeeds(driverInputs, swerve.getConstants());
-				Pose2d currentPose = robot.getPoseEstimator().getEstimatedPose();
-
-				ChassisSpeeds objectAssisted = AimAssistMath
-					.getObjectAssistedSpeeds(driverSpeeds, currentPose, Rotation2d.kCW_90deg, lockedTarget, swerve.getConstants(), swerveState);
-				return AimAssistMath.getRotationAssistedSpeeds(objectAssisted, currentPose.getRotation(), targetRotation, swerve.getConstants());
-			}, swerveState).finallyDo(() -> swerve.setIsRunningIndependently(false));
-		}, Set.of(swerve)), Commands.none(), () -> {
-			Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
-			Translation2d blueTower = Field.TOWER_MIDDLE;
-			Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
-			Translation2d closestTower = robotPose.getX() < Field.LENGTH_METERS / 2 ? blueTower : redTower;
-
-			boolean inFront = Math.abs(robotPose.getY() - closestTower.getY())
-				< Field.TOWER_Y_AXIS_LENGTH_METERS / 2 + FourBarConstants.ROBOT_MIDDLE_TO_FOUR_BAR;
-			double trenchX = Field.getTrenchMiddle(frc.constants.field.AllianceSide.DEPOT).getX();
-			double mirroredTrenchX = FieldMath.mirrorX(trenchX);
-			double minTrenchX = Math.min(trenchX, mirroredTrenchX);
-			double maxTrenchX = Math.max(trenchX, mirroredTrenchX);
-			boolean inMiddle = robotPose.getX() > minTrenchX && robotPose.getX() < maxTrenchX;
-
-			return !inFront && !inMiddle;
-		});
+	public Command driveToTowerWithConstraints(ChassisPowers driverInputs) {
+		return new ConditionalCommand(
+			new DeferredCommand(() -> driveToTower(driverInputs), Set.of(swerve)),
+			Commands.none(),
+			() -> !TowerAssistCalculations.isInFrontOfClosestTower(robot.getPoseEstimator().getEstimatedPose())
+				&& !TowerAssistCalculations.isInNeutralZone(robot.getPoseEstimator().getEstimatedPose())
+		);
 	}
 
 }
