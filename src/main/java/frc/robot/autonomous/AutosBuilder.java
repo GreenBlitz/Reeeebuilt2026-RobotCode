@@ -402,7 +402,7 @@ public class AutosBuilder {
 			pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Depot Steal Cross" : "Depot Steal";
 		} else {
 			if (overrideDepot) {
-				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal Depot" : "Outpost Steal Cross Depot";
+				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal to Depot" : "Outpost Steal Cross to Depot";
 			} else {
 				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal" : "Outpost Steal Cross";
 			}
