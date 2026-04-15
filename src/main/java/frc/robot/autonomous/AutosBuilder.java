@@ -396,12 +396,12 @@ public class AutosBuilder {
 		);
 	}
 
-	private static PathPlannerPath getStealPath(AllianceSide firstOpponentBumpSide, AllianceSide returnSide, boolean overrideDepot) {
+	private static PathPlannerPath getStealPath(AllianceSide firstOpponentBumpSide, AllianceSide returnSide, boolean skipOutpost) {
 		String pathName;
 		if (returnSide == AllianceSide.DEPOT) {
 			pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Depot Steal Cross" : "Depot Steal";
 		} else {
-			if (overrideDepot) {
+			if (skipOutpost) {
 				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal to Depot" : "Outpost Steal Cross to Depot";
 			} else {
 				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal" : "Outpost Steal Cross";
@@ -424,9 +424,9 @@ public class AutosBuilder {
 		AllianceSide firstOpponentBumpSide,
 		AllianceSide returnSide,
 		AllianceSide startingSide,
-		boolean overrideDepot
+		boolean skipOutpost
 	) {
-		AllianceSide actualReturnSide = overrideDepot || returnSide == AllianceSide.DEPOT ? AllianceSide.DEPOT : AllianceSide.OUTPOST;
+		AllianceSide actualReturnSide = skipOutpost || returnSide == AllianceSide.DEPOT ? AllianceSide.DEPOT : AllianceSide.OUTPOST;
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
 				new SequentialCommandGroup(
@@ -452,7 +452,7 @@ public class AutosBuilder {
 						.followAdjustedPathThenStop(
 							robot.getSwerve(),
 							() -> robot.getPoseEstimator().getEstimatedPose(),
-							getStealPath(firstOpponentBumpSide, returnSide, overrideDepot),
+							getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
 							pathfindingConstraints,
 							regularIsNearEndOfPathTolerance,
 							stuckIsNearEndOfPathTolerance,
@@ -496,7 +496,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"Steal start:" + startingSide + " Bump: " + firstOpponentBumpSide + " Return: " + returnSide + " Override Depot: " + overrideDepot
+			"Steal start:" + startingSide + " Bump: " + firstOpponentBumpSide + " Return: " + returnSide + " Skip outpost: " + skipOutpost
 		);
 	}
 
