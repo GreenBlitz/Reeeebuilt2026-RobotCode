@@ -72,7 +72,8 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.DEPOT
+				AllianceSide.DEPOT,
+				false
 			),
 			getLightQuarterAuto(
 				robot,
@@ -84,7 +85,21 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.OUTPOST
+				AllianceSide.DEPOT,
+				true
+			),
+			getLightQuarterAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				true
 			),
 			getExtendedLQuarterAuto(
 				robot,
@@ -436,7 +451,8 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide startingSide
+		AllianceSide startingSide,
+		boolean endInOutpost
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -445,7 +461,9 @@ public class AutosBuilder {
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
 						startingSide == AllianceSide.DEPOT
-							? PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
+							? endInOutpost
+								? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
+								: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 							: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
@@ -490,7 +508,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			startingSide == AllianceSide.DEPOT ? "L quarter light" : "R quarter light"
+			startingSide == AllianceSide.DEPOT ? endInOutpost ? "L quarter light to outpost" : "L quarter light" : "R quarter light"
 		);
 	}
 
