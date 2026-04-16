@@ -43,6 +43,13 @@ public class JoysticksBindings {
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
 
+	private static Command preShiftEndRumbleJoystick(SmartJoystick joystick) {
+		return new ExecuteEndCommand(
+			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
+			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
+		).withTimeout(PRE_SHIFT_END_RUMBLE_TIME);
+	}
+
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
 
@@ -93,8 +100,9 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 
-		Trigger rumbleTrigger = new Trigger(() -> HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= 5)
-			.onTrue(rumbleJoystick(usedJoystick));
+		Trigger preShiftEndJoystickRumble = new Trigger(
+			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
+		).onTrue(preShiftEndRumbleJoystick(usedJoystick));
 
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
@@ -146,13 +154,6 @@ public class JoysticksBindings {
 	private static void sixthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SIXTH_JOYSTICK;
 		// bindings...
-	}
-
-	private static Command rumbleJoystick(SmartJoystick joystick) {
-		return new ExecuteEndCommand(
-			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5),
-			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
-		).withTimeout(5);
 	}
 
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
