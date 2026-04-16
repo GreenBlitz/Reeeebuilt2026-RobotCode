@@ -45,7 +45,6 @@ public class JoysticksBindings {
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
 
 
-
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
 
@@ -62,8 +61,8 @@ public class JoysticksBindings {
 
 	private static Command preShiftEndRumble(SmartJoystick joystick) {
 		return new ExecuteEndCommand(
-				() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
-				() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
+			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
+			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
 		).withTimeout(PRE_SHIFT_END_RUMBLE_TIME_SECONDS);
 	}
 
