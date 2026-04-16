@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5321824686940966,
+        "y": 5.600751341681574
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 9.032182468694096,
+        "y": 5.600751341681574
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.27,
+        "y": 7.3
+      },
+      "prevControl": {
+        "x": 4.765313059033989,
+        "y": 7.336869409660108
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Depot Side Wait"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.2,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": "Side Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -143.0047288572929
+  },
+  "useDefaultConstraints": true
+}
