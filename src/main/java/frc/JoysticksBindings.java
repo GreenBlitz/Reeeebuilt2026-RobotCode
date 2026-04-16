@@ -43,7 +43,7 @@ public class JoysticksBindings {
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
 
-	private static Command preShiftEndRumbleJoystick(SmartJoystick joystick) {
+	private static Command preShiftEndJoystickRumble(SmartJoystick joystick) {
 		return new ExecuteEndCommand(
 			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
 			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
@@ -102,7 +102,7 @@ public class JoysticksBindings {
 
 		Trigger preShiftEndJoystickRumble = new Trigger(
 			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
-		).onTrue(preShiftEndRumbleJoystick(usedJoystick));
+		).onTrue(preShiftEndJoystickRumble(usedJoystick));
 
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
