@@ -30,6 +30,10 @@ import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
+	private static final double PRE_SHIFT_END_RUMBLE_TIME = 1.0;
+	private static final double PRE_SHIFT_END_RUMBLE_POWER = 0.5;
+	private static final double TIME_BEFORE_SHIFT_END_TO_RUMBLE = 5.0;
+
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
 	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD);
@@ -38,6 +42,13 @@ public class JoysticksBindings {
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
+
+	private static Command preShiftEndRumbleJoystick(SmartJoystick joystick) {
+		return new ExecuteEndCommand(
+			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
+			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
+		).withTimeout(PRE_SHIFT_END_RUMBLE_TIME);
+	}
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
@@ -89,8 +100,9 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 
-		Trigger rumbleTrigger = new Trigger(() -> HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= 5)
-			.onTrue(rumbleJoystick(usedJoystick));
+		Trigger preShiftEndRumbleTrigger = new Trigger(
+			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
+		).onTrue(preShiftEndRumbleJoystick(usedJoystick));
 
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
@@ -142,13 +154,6 @@ public class JoysticksBindings {
 	private static void sixthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SIXTH_JOYSTICK;
 		// bindings...
-	}
-
-	private static Command rumbleJoystick(SmartJoystick joystick) {
-		return new ExecuteEndCommand(
-			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5),
-			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
-		).withTimeout(5);
 	}
 
 	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
