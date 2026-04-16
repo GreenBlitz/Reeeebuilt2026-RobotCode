@@ -4,7 +4,9 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -19,12 +21,19 @@ import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.utils.GamePeriodUtils;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
+import frc.utils.utilcommands.ExecuteEndCommand;
 import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
+
+
+	private static final double PRE_SHIFT_END_RUMBLE_TIME_SECONDS = 0.5;
+	private static final double PRE_SHIFT_END_RUMBLE_POWER = 0.4;
+	private static final double TIME_BEFORE_SHIFT_END_TO_RUMBLE_SECONDS = 5;
 
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
@@ -35,6 +44,8 @@ public class JoysticksBindings {
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
 
+
+
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
 
@@ -44,6 +55,16 @@ public class JoysticksBindings {
 		fourthJoystickButtons(robot);
 		fifthJoystickButtons(robot);
 		sixthJoystickButtons(robot);
+
+		Trigger preShiftEndRumbleTrigger = new Trigger(() -> GamePeriodUtils.getTimeUntilShiftEnds() < TIME_BEFORE_SHIFT_END_TO_RUMBLE_SECONDS);
+		preShiftEndRumbleTrigger.onTrue(preShiftEndRumble(MAIN_JOYSTICK));
+	}
+
+	private static Command preShiftEndRumble(SmartJoystick joystick) {
+		return new ExecuteEndCommand(
+				() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
+				() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
+		).withTimeout(PRE_SHIFT_END_RUMBLE_TIME_SECONDS);
 	}
 
 	public static void updateChassisDriverInputs() {
