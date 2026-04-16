@@ -89,8 +89,12 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 
-		Trigger rumbleTrigger = new Trigger(() -> HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= 5)
-			.onTrue(rumbleJoystick(usedJoystick));
+		Trigger rumbleTrigger = new Trigger(() -> HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= 5).onTrue(
+			new ParallelCommandGroup(
+				rumbleJoystick(usedJoystick),
+				new RunCommand(() -> Logger.recordOutput("working", TimeUtil.getCurrentTimeSeconds()))
+			)
+		);
 
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
