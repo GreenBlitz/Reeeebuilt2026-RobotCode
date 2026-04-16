@@ -100,7 +100,7 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 
-		Trigger aaaaa = new Trigger(
+		Trigger preShiftEndJoystickRumble = new Trigger(
 			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
 		).onTrue(preShiftEndRumbleJoystick(usedJoystick));
 
