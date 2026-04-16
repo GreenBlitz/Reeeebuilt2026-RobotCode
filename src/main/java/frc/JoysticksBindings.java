@@ -30,7 +30,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
-
 	private static final double PRE_SHIFT_END_RUMBLE_TIME_SECONDS = 0.5;
 	private static final double PRE_SHIFT_END_RUMBLE_POWER = 0.4;
 	private static final double TIME_BEFORE_SHIFT_END_TO_RUMBLE_SECONDS = 5;
@@ -43,7 +42,6 @@ public class JoysticksBindings {
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
-
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
