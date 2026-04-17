@@ -212,12 +212,12 @@ public class ShootingCalculations {
 		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.6));
 		HOOD_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(27.6));
 		HOOD_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(34));
-		HOOD_SCORING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(53));
+		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(50));
 
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(-2000.0));
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(16800));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17600));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.1, Rotation2d.fromDegrees(26700));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17000));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26500));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
 		HOOD_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(54.67));
@@ -227,8 +227,8 @@ public class ShootingCalculations {
 
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.718);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.1, 1.13);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.8575);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.0, 1.2);
 	}
 
 	private static Translation2d findPassingTrianglePoint(Translation2d target, Translation2d hubNeutralCorner) {

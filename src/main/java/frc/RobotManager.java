@@ -5,17 +5,11 @@
 package frc;
 
 import com.revrobotics.util.StatusLogger;
-import edu.wpi.first.math.interpolation.Interpolator;
-import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
-import frc.robot.RobotConstants;
-import frc.robot.statemachine.RobotState;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.brakestate.BrakeMode;
@@ -37,13 +31,9 @@ import org.littletonrobotics.junction.Logger;
 public class RobotManager extends LoggedRobot {
 
 	private final Robot robot;
-	private final TimeInterpolatableBuffer<Double> ballsBufferIncludingPassing;
-	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
-	private static double ballCounterIncludingPassing;
-	private static double ballCounterWithoutPassing;
 
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
@@ -57,51 +47,6 @@ public class RobotManager extends LoggedRobot {
 
 		this.roborioCycles = 0;
 		this.robot = new Robot();
-
-		ballsBufferIncludingPassing = TimeInterpolatableBuffer
-			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
-		ballsBufferWithoutPassing = TimeInterpolatableBuffer
-			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
-
-		new Trigger(() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> {
-			ballCounterIncludingPassing++;
-			ballsBufferIncludingPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterIncludingPassing);
-		}));
-
-		new Trigger(
-			() -> robot.getRobotCommander().getShooterStateHandler().hasABallBeenShot()
-				&& (robot.getRobotCommander().getCurrentState() == RobotState.SCORE
-					|| robot.getRobotCommander().getCurrentState() == RobotState.CALIBRATION_SCORE)
-		).onTrue(new InstantCommand(() -> {
-			ballCounterWithoutPassing++;
-			ballsBufferWithoutPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
-		}));
-
-		new Trigger(GamePeriodUtils::isTransitionShift).onFalse(
-			new InstantCommand(
-				() -> Logger.recordOutput(
-					"averagePeriodPBS/TransitionShift",
-					getAverageBPSForLastXSeconds(GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
-				)
-			)
-		);
-		new Trigger(GamePeriodUtils::isInEndgame).onFalse(
-			new InstantCommand(
-				() -> Logger.recordOutput("averagePeriodPBS/Endgame", getAverageBPSForLastXSeconds(GamePeriodUtils.ENDGAME_DURATION_SECONDS))
-			)
-		);
-		new Trigger(GamePeriodUtils::isInActive1).onFalse(
-			new InstantCommand(
-				() -> Logger
-					.recordOutput("averagePeriodPBS/Active1", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
-			)
-		);
-		new Trigger(GamePeriodUtils::isInActive2).onFalse(
-			new InstantCommand(
-				() -> Logger
-					.recordOutput("averagePeriodPBS/Active2", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
-			)
-		);
 
 		JoysticksBindings.configureBindings(robot);
 
@@ -119,8 +64,6 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
-		ballCounterIncludingPassing = 0;
-		ballCounterWithoutPassing = 0;
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
@@ -136,7 +79,7 @@ public class RobotManager extends LoggedRobot {
 		}
 
 		robot.getSwerve().setIsRunningIndependently(false);
-		Logger.recordOutput("averagePeriodPBS/Autonomous", getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
+		Logger.recordOutput("averagePeriodPBS/Autonomous", robot.getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
 	}
 
 	@Override
@@ -167,24 +110,12 @@ public class RobotManager extends LoggedRobot {
 		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
-
-		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
-		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
-		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
 	}
 
 	private void updateTimeRelatedData() {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
-	}
-
-	private double getAverageBPSForLastXSeconds(double seconds) {
-		if (ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).isPresent()) {
-			return (ballCounterIncludingPassing - ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).get())
-				/ seconds;
-		}
-		return 0;
 	}
 
 }

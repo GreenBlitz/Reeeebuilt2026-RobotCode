@@ -72,7 +72,8 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.DEPOT
+				AllianceSide.DEPOT,
+				false
 			),
 			getLightQuarterAuto(
 				robot,
@@ -84,7 +85,21 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.OUTPOST
+				AllianceSide.DEPOT,
+				true
+			),
+			getLightQuarterAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				true
 			),
 			getExtendedLQuarterAuto(
 				robot,
@@ -157,9 +172,187 @@ public class AutosBuilder {
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
 				AllianceSide.DEPOT,
+				AllianceSide.DEPOT,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				AllianceSide.DEPOT,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				false
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				true
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				true
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				true
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				true
+			),
+			getSideAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				AllianceSide.DEPOT
 			),
-			getStealAuto(
+			getSideAuto(
 				robot,
 				resetSubsystems,
 				openIntake,
@@ -169,92 +362,6 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.OUTPOST,
-				AllianceSide.DEPOT,
-				AllianceSide.DEPOT
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.DEPOT,
-				AllianceSide.DEPOT,
-				AllianceSide.OUTPOST
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.DEPOT,
-				AllianceSide.OUTPOST,
-				AllianceSide.DEPOT
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST,
-				AllianceSide.DEPOT
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.DEPOT,
-				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.OUTPOST,
-				AllianceSide.DEPOT,
-				AllianceSide.OUTPOST
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST,
 				AllianceSide.OUTPOST
 			)
 		);
@@ -328,18 +435,7 @@ public class AutosBuilder {
 		);
 	}
 
-	private static PathPlannerPath getStealPath(AllianceSide firstOpponentBumpSide, AllianceSide returnSide) {
-		String pathName;
-		if (returnSide == AllianceSide.DEPOT) {
-			pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Depot Steal Cross" : "Depot Steal";
-		} else {
-			pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal" : "Outpost Steal Cross";
-		}
-
-		return PathHelper.PATH_PLANNER_PATHS.get(pathName);
-	}
-
-	private static Supplier<PathPlannerAutoWrapper> getStealAuto(
+	private static Supplier<PathPlannerAutoWrapper> getSideAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
 		Supplier<Command> openIntake,
@@ -349,22 +445,20 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide firstOpponentBumpSide,
-		AllianceSide returnSide,
 		AllianceSide startingSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
 				new SequentialCommandGroup(
 					new ParallelDeadlineGroup(
-						new WaitCommand(AutonomousConstants.STEAL_START_SECOND_SINCE_AUTO_BEGAN),
+						new WaitCommand(AutonomousConstants.SIDE_STEAL_START_SECOND_SINCE_AUTO_BEGAN),
 						PathFollowingCommandsBuilder
 							.followAdjustedPathThenStop(
 								robot.getSwerve(),
 								() -> robot.getPoseEstimator().getEstimatedPose(),
 								startingSide == AllianceSide.DEPOT
-									? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
-									: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
+									? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Wait")
+									: PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Wait"),
 								pathfindingConstraints,
 								regularIsNearEndOfPathTolerance,
 								stuckIsNearEndOfPathTolerance,
@@ -378,7 +472,9 @@ public class AutosBuilder {
 						.followAdjustedPathThenStop(
 							robot.getSwerve(),
 							() -> robot.getPoseEstimator().getEstimatedPose(),
-							getStealPath(firstOpponentBumpSide, returnSide),
+							startingSide == AllianceSide.DEPOT
+								? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Steal")
+								: PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Steal"),
 							pathfindingConstraints,
 							regularIsNearEndOfPathTolerance,
 							stuckIsNearEndOfPathTolerance,
@@ -406,7 +502,7 @@ public class AutosBuilder {
 										.andThen(
 											getAllianceSideToStartingLineAuto(
 												robot,
-												returnSide,
+												AllianceSide.DEPOT,
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
@@ -422,7 +518,111 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"Steal start:" + startingSide + " Bump: " + firstOpponentBumpSide + " Return: " + returnSide
+			"Side Steal: " + startingSide
+		);
+	}
+
+	private static PathPlannerPath getStealPath(AllianceSide firstOpponentBumpSide, AllianceSide returnSide, boolean skipOutpost) {
+		String pathName;
+		if (returnSide == AllianceSide.DEPOT) {
+			pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Depot Steal Cross" : "Depot Steal";
+		} else {
+			if (skipOutpost) {
+				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal to Depot" : "Outpost Steal Cross to Depot";
+			} else {
+				pathName = firstOpponentBumpSide == AllianceSide.DEPOT ? "Outpost Steal" : "Outpost Steal Cross";
+			}
+		}
+
+		return PathHelper.PATH_PLANNER_PATHS.get(pathName);
+	}
+
+	private static Supplier<PathPlannerAutoWrapper> getStealAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		AllianceSide firstOpponentBumpSide,
+		AllianceSide returnSide,
+		AllianceSide startingSide,
+		boolean skipOutpost
+	) {
+		AllianceSide actualReturnSide = skipOutpost || returnSide == AllianceSide.DEPOT ? AllianceSide.DEPOT : AllianceSide.OUTPOST;
+		return () -> new PathPlannerAutoWrapper(
+			new ParallelCommandGroup(
+				new SequentialCommandGroup(
+					new ParallelDeadlineGroup(
+						new WaitCommand(AutonomousConstants.STEAL_START_SECOND_SINCE_AUTO_BEGAN),
+						PathFollowingCommandsBuilder
+							.followAdjustedPathThenStop(
+								robot.getSwerve(),
+								() -> robot.getPoseEstimator().getEstimatedPose(),
+								startingSide == AllianceSide.DEPOT
+									? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
+									: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
+								pathfindingConstraints,
+								regularIsNearEndOfPathTolerance,
+								stuckIsNearEndOfPathTolerance,
+								stuckDebounceSeconds,
+								robot.getSwerve().getLogPath()
+							)
+							.asProxy(),
+						new InstantCommand(() -> hasPathEnded = false)
+					),
+					PathFollowingCommandsBuilder
+						.followAdjustedPathThenStop(
+							robot.getSwerve(),
+							() -> robot.getPoseEstimator().getEstimatedPose(),
+							getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
+							pathfindingConstraints,
+							regularIsNearEndOfPathTolerance,
+							stuckIsNearEndOfPathTolerance,
+							stuckDebounceSeconds,
+							robot.getSwerve().getLogPath()
+						)
+						.asProxy()
+						.andThen(new InstantCommand(() -> hasPathEnded = true))
+				),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new ParallelCommandGroup(
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
+										.andThen(
+											robot.getSwerve()
+												.getCommandsBuilder()
+												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+											getAllianceSideToStartingLineAuto(
+												robot,
+												actualReturnSide,
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds
+											)
+										)
+										.asProxy(),
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+										.andThen(closeIntake.get())
+								)
+							)
+					)
+				)
+			),
+			new Pose2d(),
+			"Steal start:" + startingSide + " Bump: " + firstOpponentBumpSide + " Return: " + returnSide + " Skip outpost: " + skipOutpost
 		);
 	}
 
@@ -436,7 +636,8 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide startingSide
+		AllianceSide startingSide,
+		boolean endInOutpost
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -445,7 +646,9 @@ public class AutosBuilder {
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
 						startingSide == AllianceSide.DEPOT
-							? PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
+							? endInOutpost
+								? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
+								: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 							: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
@@ -490,7 +693,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			startingSide == AllianceSide.DEPOT ? "L quarter light" : "R quarter light"
+			startingSide == AllianceSide.DEPOT ? endInOutpost ? "L quarter light to outpost" : "L quarter light" : "R quarter light"
 		);
 	}
 

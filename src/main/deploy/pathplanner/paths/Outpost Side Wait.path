@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.5321824686940966,
-        "y": 2.4854740608228973
+        "y": 2.449248658318426
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.414329159212881,
-        "y": 2.404347048300537
+        "x": 9.032182468694096,
+        "y": 2.449248658318426
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.746961483594864,
-        "y": 4.05
+        "x": 8.27,
+        "y": 0.75
       },
       "prevControl": {
-        "x": 6.347301376260337,
-        "y": 2.258318425760287
+        "x": 3.7699999999999996,
+        "y": 0.7500000000000006
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "hub wait"
+      "linkedName": "Outpost Side Wait"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Steal Auto",
+  "folder": "Side Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 127.40535663140855
+    "rotation": 143.0047288572929
   },
   "useDefaultConstraints": true
 }

@@ -3,11 +3,13 @@ package frc.robot.statemachine.funnelstatehandler;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
+import java.util.function.Supplier;
 
 public class FunnelStateHandler {
 
@@ -25,7 +27,16 @@ public class FunnelStateHandler {
 	private final String logPath;
 	protected FunnelState currentState;
 
-	public FunnelStateHandler(VelocityRoller magazine, Roller conveyor, Roller upperRoller, String logPath, IDigitalInput ballSensor) {
+	private final Supplier<Double> lastBallThrownTimestamp;
+
+	public FunnelStateHandler(
+		VelocityRoller magazine,
+		Roller conveyor,
+		Roller upperRoller,
+		String logPath,
+		IDigitalInput ballSensor,
+		Supplier<Double> lastBallThrownTimestamp
+	) {
 		this.magazine = magazine;
 		this.conveyor = conveyor;
 		this.upperRoller = upperRoller;
@@ -40,6 +51,7 @@ public class FunnelStateHandler {
 		this.logPath = logPath + "/FunnelStateHandler";
 		this.currentState = FunnelState.STOP;
 
+		this.lastBallThrownTimestamp = lastBallThrownTimestamp;
 		Logger.recordOutput(logPath + "/CurrentState", currentState.name());
 	}
 
@@ -110,10 +122,29 @@ public class FunnelStateHandler {
 				new ParallelCommandGroup(
 					conveyor.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage()),
 					upperRoller.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getUpperRollerVoltage())
-				).withTimeout(StateMachineConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
+				).withTimeout(FunnelConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
 				new ParallelCommandGroup(
 					conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
 					upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
+				).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_ACCELERATE_SECONDS),
+				new RepeatCommand(
+					new SequentialCommandGroup(
+						new ParallelCommandGroup(
+							conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
+							upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
+						).until(
+							() -> (TimeUtil.getCurrentTimeSeconds() - lastBallThrownTimestamp.get()
+								> FunnelConstants.TIME_BETWEEN_BALLS_TO_DETECT_JAM_SECONDS)
+						),
+						new ParallelCommandGroup(
+							conveyor.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getConveyorVoltage()),
+							upperRoller.getCommandsBuilder().setVoltage(FunnelState.OUTTAKE_SHOOT.getUpperRollerVoltage())
+						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_OUTTAKE_DURING_JAM_SECONDS),
+						new ParallelCommandGroup(
+							conveyor.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getConveyorVoltage()),
+							upperRoller.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getUpperRollerVoltage())
+						).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_IGNORE_STUCK_SECONDS)
+					)
 				)
 			)
 		);

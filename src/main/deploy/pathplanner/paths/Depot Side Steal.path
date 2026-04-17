@@ -3,77 +3,77 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.746961483594864,
-        "y": 4.05
+        "x": 8.27,
+        "y": 7.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.761037567084079,
-        "y": 4.254042933810375
+        "x": 8.944987228313062,
+        "y": 6.325951468070039
       },
       "isLocked": false,
-      "linkedName": "hub wait"
+      "linkedName": "Depot Side Wait"
     },
     {
       "anchor": {
-        "x": 10.0,
-        "y": 5.15
+        "x": 10.45,
+        "y": 5.28
       },
       "prevControl": {
-        "x": 9.068455035441623,
-        "y": 6.007552074767108
+        "x": 9.473429605792383,
+        "y": 6.7565565158419005
       },
       "nextControl": {
-        "x": 10.303209012730976,
-        "y": 4.870874968092602
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 10.0,
-        "y": 3.15
-      },
-      "prevControl": {
-        "x": 10.780249943070897,
-        "y": 3.4952481507704976
-      },
-      "nextControl": {
-        "x": 9.09854274076988,
-        "y": 2.75111954571516
+        "x": 10.978315511432184,
+        "y": 4.481196641376276
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.3,
-        "y": 4.960114122681883
+        "x": 10.45,
+        "y": 2.98
       },
       "prevControl": {
-        "x": 9.488136984473895,
-        "y": 3.997404963665284
+        "x": 10.505897367203389,
+        "y": 3.3392304185317014
       },
       "nextControl": {
-        "x": 7.141006801352596,
-        "y": 5.899209010019191
+        "x": 10.321926719352048,
+        "y": 2.1569233416220546
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.710661896243291,
-        "y": 5.681878354203935
+        "x": 8.757,
+        "y": 2.582826475849731
       },
       "prevControl": {
-        "x": 5.988518499206467,
-        "y": 5.342421211503333
+        "x": 9.118830188522331,
+        "y": 1.6508242418343873
       },
       "nextControl": {
-        "x": 1.870783953270819,
-        "y": 5.956065811231225
+        "x": 8.517113235663217,
+        "y": 3.2007268262479203
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.864364937388194,
+        "y": 5.130214669051878
+      },
+      "prevControl": {
+        "x": 8.357009720842825,
+        "y": 4.3501937619153805
+      },
+      "nextControl": {
+        "x": 7.330371946000212,
+        "y": 5.97570357208285
       },
       "isLocked": false,
       "linkedName": null
@@ -84,8 +84,8 @@
         "y": 5.975825159143519
       },
       "prevControl": {
-        "x": 2.0178902627071142,
-        "y": 5.754394643930405
+        "x": -0.20579302099695773,
+        "y": 5.975825159143519
       },
       "nextControl": null,
       "isLocked": false,
@@ -94,26 +94,30 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6283422459893045,
-      "rotationDegrees": -154.98331581345016
-    },
-    {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 119.99999999999999
+      "rotationDegrees": 100.0
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": 59.99999999999999
+      "rotationDegrees": 80.0
     },
     {
-      "waypointRelativePos": 3.411513859275014,
+      "waypointRelativePos": 3,
+      "rotationDegrees": -59.99999999999999
+    },
+    {
+      "waypointRelativePos": 3.7967914438502715,
+      "rotationDegrees": -64.52260594673932
+    },
+    {
+      "waypointRelativePos": 4.278074866310161,
       "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 4.05,
+      "minWaypointRelativePos": 4.542372881355926,
       "maxWaypointRelativePos": 5.0,
       "constraints": {
         "maxVelocity": 0.8,
@@ -140,10 +144,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Steal Auto",
+  "folder": "Side Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

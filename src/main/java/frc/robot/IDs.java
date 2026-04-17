@@ -27,9 +27,9 @@ public class IDs {
 
 		public static final Phoenix6DeviceID MAGAZINE = new Phoenix6DeviceID(40, BusChain.ROBORIO);
 
-		public static final Phoenix6DeviceID CONVEYOR = new Phoenix6DeviceID(60, BusChain.ROBORIO);
+		public static final Phoenix6DeviceID CONVEYOR = new Phoenix6DeviceID(61, BusChain.CHASSIS);
 
-		public static final Phoenix6DeviceID UPPER_ROLLER = new Phoenix6DeviceID(61, BusChain.ROBORIO);
+		public static final Phoenix6DeviceID UPPER_ROLLER = new Phoenix6DeviceID(60, BusChain.ROBORIO);
 
 
 		public static final Phoenix6DeviceID INTAKE_ROLLERS = new Phoenix6DeviceID(50, BusChain.CHASSIS);

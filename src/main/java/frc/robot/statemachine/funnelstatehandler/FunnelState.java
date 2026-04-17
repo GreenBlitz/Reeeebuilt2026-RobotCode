@@ -6,11 +6,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public enum FunnelState {
 
 	STOP,
-	PRE_SHOOT(Rotation2d.fromRotations(44), -2, -2),
-	SHOOT(Rotation2d.fromRotations(44), 8.4, 8.4),
-	OUTTAKE(Rotation2d.fromRotations(Double.NaN), -8, -8),
-	ROLL_UNTIL_SENSOR(Rotation2d.fromRotations(44), 4, 4),
-	OUTTAKE_SHOOT(Rotation2d.fromRotations(44), -8, -8),
+	PRE_SHOOT(Rotation2d.fromRotations(80), -2.4, -2),
+	SHOOT(Rotation2d.fromRotations(80), 10.08, 10),
+	OUTTAKE(Rotation2d.fromRotations(Double.NaN), -9.6, -8),
+	ROLL_UNTIL_SENSOR(Rotation2d.fromRotations(70), 4.8, 4),
+	OUTTAKE_SHOOT(Rotation2d.fromRotations(80), -9.6, -8),
 	CALIBRATION;
 
 	private final Rotation2d magazineVelocity;
