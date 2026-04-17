@@ -1,7 +1,6 @@
 package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
