@@ -288,9 +288,9 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		limelightFront.updateCameraMatrix();
-		limelightRight.updateCameraMatrix();
-		limelightLeft.updateCameraMatrix();
+		limelightFront.updateCameraMetrics();
+		limelightRight.updateCameraMetrics();
+		limelightLeft.updateCameraMetrics();
 
 		limelightFront.updateMT1();
 		limelightRight.updateMT1();

@@ -7,7 +7,8 @@ public record LimelightInputsSet(
 	MTInputsAutoLogged mt2Inputs,
 	NeuralDetectionInputsAutoLogged neuralDetectionInputs,
 	ColorDetectionInputsAutoLogged colorDetectionInputs,
-	ConnectedInputAutoLogged connectedInput
+	ConnectedInputAutoLogged connectedInput,
+	LimelightHardwareInputsAutoLogged hardwareInputs
 ) {
 
 	public LimelightInputsSet() {
@@ -16,7 +17,8 @@ public record LimelightInputsSet(
 			new MTInputsAutoLogged(),
 			new NeuralDetectionInputsAutoLogged(),
 			new ColorDetectionInputsAutoLogged(),
-			new ConnectedInputAutoLogged()
+			new ConnectedInputAutoLogged(),
+			new LimelightHardwareInputsAutoLogged()
 		);
 	}
 
