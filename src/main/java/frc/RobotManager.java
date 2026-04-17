@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
@@ -59,13 +58,10 @@ public class RobotManager extends LoggedRobot {
 		field2d = new Field2d();
 		SmartDashboard.putData(field2d);
 
-		robot.getAutonomousChooser().getChooser().onChange(
-				(autonomousCommand) -> {
-					this.autonomousCommand = autonomousCommand.get();
-					field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
-				}
-		);
-
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+			this.autonomousCommand = autonomousCommand.get();
+			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
+		});
 	}
 
 	@Override
@@ -132,7 +128,7 @@ public class RobotManager extends LoggedRobot {
 		TimeUtil.updateCycleTime(roborioCycles);
 	}
 
-	private void logElasticRelatedInfo(){
+	private void logElasticRelatedInfo() {
 		Logger.recordOutput("TimeUntilHubActive", HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
 		Logger.recordOutput("TimeUntilHubInactive", HubUtil.getTimeLeftUntilInactiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
 		Logger.recordOutput("IsHubActive", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
