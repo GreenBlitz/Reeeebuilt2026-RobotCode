@@ -13,8 +13,6 @@ import java.util.function.Consumer;
 
 public class PathPlannerAutoWrapper extends PathPlannerAuto {
 
-	private PathPlannerPath firstPath;
-	private PathPlannerPath[] additionalPaths;
 	private PathPlannerPath[] paths;
 
 	public PathPlannerAutoWrapper() {
@@ -35,12 +33,21 @@ public class PathPlannerAutoWrapper extends PathPlannerAuto {
 		super(autoCommand, startingPose);
 		setName(autoName);
 
-		this.firstPath = path;
-		this.additionalPaths = additionalPaths;
-
 		this.paths = new PathPlannerPath[additionalPaths.length + 1];
 		paths[0] = path;
 		System.arraycopy(additionalPaths, 0, paths, 1, additionalPaths.length);
+	}
+
+	private PathPlannerAutoWrapper(
+			Command autoCommand,
+			Pose2d startingPose,
+			String autoName,
+			PathPlannerPath[] paths
+	) {
+		super(autoCommand, startingPose);
+		setName(autoName);
+
+		this.paths = paths;
 	}
 
 	public PathPlannerAutoWrapper withAutoName(String name) {
@@ -53,13 +60,12 @@ public class PathPlannerAutoWrapper extends PathPlannerAuto {
 			this.beforeStarting(() -> resetPose.accept(Field.getAllianceRelative(getStartingPose()))),
 			this.getStartingPose(),
 			this.getName(),
-			this.firstPath,
-			this.additionalPaths
+			this.paths
 		);
 	}
 
 	public PathPlannerAutoWrapper asProxyAuto() {
-		return new PathPlannerAutoWrapper(this.asProxy(), this.getStartingPose(), this.getName(), this.firstPath, this.additionalPaths);
+		return new PathPlannerAutoWrapper(this.asProxy(), this.getStartingPose(), this.getName(), this.paths);
 	}
 
 	public List<Pose2d> getPath(boolean flip) {
