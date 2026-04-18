@@ -340,6 +340,58 @@ public class AutosBuilder {
 				AllianceSide.DEPOT,
 				true
 			),
+			getLightStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.DEPOT
+			),
+			getLightStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				AllianceSide.OUTPOST
+			),
+			getLightStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST
+			),
+			getLightStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT
+			),
 			getSideAuto(
 				robot,
 				resetSubsystems,
@@ -649,8 +701,8 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide returnSide,
-		AllianceSide startingSide
+		AllianceSide startingSide,
+		AllianceSide returnSide
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -723,7 +775,13 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"light steal start:" + startingSide + " Return: " + returnSide
+			"Light steal start:" + startingSide + " Return: " + returnSide,
+			startingSide == AllianceSide.DEPOT
+				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
+				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
+			returnSide == AllianceSide.DEPOT
+				? PathHelper.PATH_PLANNER_PATHS.get("Light depot steal")
+				: PathHelper.PATH_PLANNER_PATHS.get("Light outpost steal")
 		);
 	}
 
