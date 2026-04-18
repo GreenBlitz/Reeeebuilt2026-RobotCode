@@ -149,13 +149,6 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-	public Command driveBySpeedsWithSupplier(Supplier<ChassisSpeeds> chassisSpeedsSupplier, SwerveState state) {
-		return swerve.asSubsystemCommand(
-			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByState(chassisSpeedsSupplier.get(), state)),
-			"Drive by chassis speeds supplier and state"
-		);
-	}
-
 	public Command driveByDriversInputs(Supplier<SwerveState> state) {
 		return new DeferredCommand(() -> driveByDriversInputs(state.get()), Set.of(swerve));
 	}
