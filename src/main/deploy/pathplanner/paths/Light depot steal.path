@@ -8,100 +8,104 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.769161841376617,
-        "y": 3.9850983899821095
+        "x": 6.226559968169989,
+        "y": 4.873765046301843
       },
       "isLocked": false,
       "linkedName": "hub wait"
     },
     {
       "anchor": {
-        "x": 10.5,
-        "y": 5.384
+        "x": 6.709125434027778,
+        "y": 5.800513816556096
       },
       "prevControl": {
-        "x": 9.591305027803946,
-        "y": 6.957905860425954
+        "x": 5.794724229220172,
+        "y": 5.844707061560879
       },
       "nextControl": {
-        "x": 10.73624542646073,
-        "y": 4.974810918314238
+        "x": 8.273018084489433,
+        "y": 5.7249304832231385
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.5,
-        "y": 3.372
+        "x": 6.709125434027778,
+        "y": 2.6474684606533185
       },
       "prevControl": {
-        "x": 10.727155635062614,
-        "y": 3.765445101154021
+        "x": 7.960121455438507,
+        "y": 2.6208305844962876
       },
       "nextControl": {
-        "x": 9.428324754386763,
-        "y": 1.5158040253840184
+        "x": 4.400486202909519,
+        "y": 2.696627086961691
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5321824686940966,
-        "y": 2.534150268336315
+        "x": 3.780205656828704,
+        "y": 5.442936414930556
       },
       "prevControl": {
-        "x": 6.330347098979122,
-        "y": 2.534150268336315
+        "x": 7.923182725694444,
+        "y": 5.843291883680556
       },
       "nextControl": {
-        "x": 3.2821824686940966,
-        "y": 2.534150268336315
+        "x": 2.877649290036669,
+        "y": 5.355718124485311
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.67,
-        "y": 0.682763997165132
+        "x": 0.56,
+        "y": 5.975825159143519
       },
       "prevControl": {
-        "x": 1.666261180679785,
-        "y": 1.9987119856887297
+        "x": 2.948526252837482,
+        "y": 5.975825159143519
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost Feed"
+      "linkedName": "Depot Feed"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.3422459893048126,
-      "rotationDegrees": -153.9654425372209
+      "waypointRelativePos": 0.3724095394736838,
+      "rotationDegrees": -90.04641112286312
     },
     {
-      "waypointRelativePos": 0.9732620320855624,
-      "rotationDegrees": 119.99999999999999
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -104.04238849671329
     },
     {
-      "waypointRelativePos": 2.053475935828877,
-      "rotationDegrees": 59.99999999999999
+      "waypointRelativePos": 1.321957236842103,
+      "rotationDegrees": 92.47829001289458
     },
     {
-      "waypointRelativePos": 2.588235294117647,
-      "rotationDegrees": -3.6258057067372897
+      "waypointRelativePos": 2.2659950657894803,
+      "rotationDegrees": -88.70618188358267
     },
     {
-      "waypointRelativePos": 4,
+      "waypointRelativePos": 3.0057565789473726,
+      "rotationDegrees": -59.97833232536691
+    },
+    {
+      "waypointRelativePos": 3.8340871710526376,
       "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.2135593220338907,
+      "minWaypointRelativePos": 3.026578073089698,
       "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 0.8,
@@ -116,12 +120,22 @@
   "pointTowardsZones": [
     {
       "fieldPosition": {
-        "x": 4.65,
-        "y": 4.05
+        "x": 6.6,
+        "y": 5.0
       },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 3.1,
-      "maxWaypointRelativePos": 3.7,
+      "rotationOffset": -90.0,
+      "minWaypointRelativePos": 0.49252491694352046,
+      "maxWaypointRelativePos": 1.184125830564785,
+      "name": "Point Towards Zone"
+    },
+    {
+      "fieldPosition": {
+        "x": 6.6,
+        "y": 3.35
+      },
+      "rotationOffset": -90.0,
+      "minWaypointRelativePos": 1.7234738372093104,
+      "maxWaypointRelativePos": 2.0322362956810633,
       "name": "Point Towards Zone"
     }
   ],
