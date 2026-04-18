@@ -16,6 +16,14 @@ public class TowerAssistCalculations {
 		return isNearBlueTower ? blueTower : redTower;
 	}
 
+	public static Pose2d getAssistTarget(Pose2d robotPose) {
+		Translation2d closestTower = getClosestTower(robotPose);
+		boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
+		Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+
+		return new Pose2d(closestTower, targetRotation);
+	}
+
 	public static boolean isInFrontOfClosestTower(Pose2d robotPose) {
 		Translation2d closestTower = getClosestTower(robotPose);
 
@@ -25,14 +33,6 @@ public class TowerAssistCalculations {
 
 	public static boolean isInNeutralZone(Pose2d robotPose) {
 		return robotPose.getX() > Field.ALLIANCE_START_LINE_X_VALUE && robotPose.getX() < FieldMath.mirrorX(Field.ALLIANCE_START_LINE_X_VALUE);
-	}
-
-	public static Pose2d getTowerAssistTarget(Pose2d robotPose) {
-		Translation2d closestTower = getClosestTower(robotPose);
-		boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
-		Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
-
-		return new Pose2d(closestTower, targetRotation);
 	}
 
 }

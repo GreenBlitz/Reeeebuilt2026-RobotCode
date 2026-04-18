@@ -117,7 +117,7 @@ public class SwerveStateHandler {
 			!(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
 				|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()))
 		) {
-			Pose2d assistTarget = TowerAssistCalculations.getTowerAssistTarget(robotPoseSupplier.get().get());
+			Pose2d assistTarget = TowerAssistCalculations.getAssistTarget(robotPoseSupplier.get().get());
 			return AimAssistMath.getRotationAssistedSpeeds(
 				AimAssistMath.getObjectAssistedSpeeds(
 					speeds,
