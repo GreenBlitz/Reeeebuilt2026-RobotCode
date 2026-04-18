@@ -13,6 +13,7 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
+import frc.robot.subsystems.swerve.states.aimassist.TowerAssistCalculations;
 import frc.utils.alerts.Alert;
 
 import java.util.Optional;
@@ -72,6 +73,9 @@ public class SwerveStateHandler {
 				return handleLookAtTargetAimAssist(speeds);
 			}
 		}
+		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
+			return handleEnterTowerAimAssist(speeds);
+		}
 		return speeds;
 	}
 
@@ -106,6 +110,29 @@ public class SwerveStateHandler {
 		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
 		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
 		return finalSpeeds;
+	}
+
+	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
+		if (
+			!(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
+				|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()))
+		) {
+			Pose2d assistTarget = TowerAssistCalculations.getTowerAssistTarget(robotPoseSupplier.get().get());
+			return AimAssistMath.getRotationAssistedSpeeds(
+				AimAssistMath.getObjectAssistedSpeeds(
+					speeds,
+					robotPoseSupplier.get().get(),
+					Rotation2d.kCW_90deg,
+					assistTarget.getTranslation(),
+					swerveConstants,
+					SwerveState.DEFAULT_DRIVE
+				),
+				robotPoseSupplier.get().get().getRotation(),
+				assistTarget.getRotation(),
+				swerveConstants
+			);
+		}
+		return speeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {

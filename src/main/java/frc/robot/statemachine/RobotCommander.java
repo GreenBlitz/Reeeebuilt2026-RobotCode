@@ -1,6 +1,5 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
@@ -10,10 +9,9 @@ import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
-import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.robot.subsystems.swerve.states.aimassist.TowerAssistCalculations;
+import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -311,6 +309,13 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public Command towerAssist() {
+		return new ParallelCommandGroup(
+			setState(RobotState.NEUTRAL),
+			swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
+		);
+	}
+
 	private Command asSubsystemCommand(Command command, RobotState state) {
 		return new ParallelCommandGroup(
 			asSubsystemCommand(command, state.name()),
@@ -331,28 +336,6 @@ public class RobotCommander extends GBSubsystem {
 
 	public IntakeStateHandler getIntakeStateHandler() {
 		return intakeStateHandler;
-	}
-
-	private Command driveToTower(ChassisPowers driverInputs) {
-		swerve.setIsRunningIndependently(true);
-
-		Pose2d assistTarget = TowerAssistCalculations.getTowerAssistTarget(robot.getPoseEstimator().getEstimatedPose());
-
-		return swerve.getCommandsBuilder()
-			.driveBySpeeds(
-				() -> TowerAssistCalculations.getTowerAssistedSpeeds(driverInputs, robot, assistTarget, SwerveState.DEFAULT_DRIVE),
-				SwerveState.DEFAULT_DRIVE
-			)
-			.finallyDo(() -> swerve.setIsRunningIndependently(false));
-	}
-
-	public Command driveToTowerWithConstraints(ChassisPowers driverInputs) {
-		return new ConditionalCommand(
-			new DeferredCommand(() -> driveToTower(driverInputs), Set.of(swerve)),
-			Commands.none(),
-			() -> !TowerAssistCalculations.isInFrontOfClosestTower(robot.getPoseEstimator().getEstimatedPose())
-				&& !TowerAssistCalculations.isInNeutralZone(robot.getPoseEstimator().getEstimatedPose())
-		);
 	}
 
 }
