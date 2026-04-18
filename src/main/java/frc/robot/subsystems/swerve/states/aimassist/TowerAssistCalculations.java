@@ -25,9 +25,7 @@ public class TowerAssistCalculations {
 	}
 
 	public static boolean isInFrontOfClosestTower(Pose2d robotPose) {
-		Translation2d closestTower = getClosestTower(robotPose);
-
-		return Math.abs(robotPose.getY() - closestTower.getY())
+		return Math.abs(robotPose.getY() - getClosestTower(robotPose).getY())
 			< Field.TOWER_Y_AXIS_LENGTH_METERS / 2 + RobotConstants.DISTANCE_FROM_ROBOT_CENTER_TO_HOPPER_EDGE_WHEN_OPENED_METERS;
 	}
 
