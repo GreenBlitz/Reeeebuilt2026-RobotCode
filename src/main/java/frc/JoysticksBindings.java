@@ -4,7 +4,9 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -19,12 +21,18 @@ import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.utils.HubUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
+import frc.utils.utilcommands.ExecuteEndCommand;
 import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
+
+	private static final double PRE_SHIFT_END_RUMBLE_TIME = 1.0;
+	private static final double PRE_SHIFT_END_RUMBLE_POWER = 0.5;
+	private static final double TIME_BEFORE_SHIFT_END_TO_RUMBLE = 5.0;
 
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
@@ -34,6 +42,13 @@ public class JoysticksBindings {
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
+
+	private static Command preShiftEndJoystickRumble(SmartJoystick joystick) {
+		return new ExecuteEndCommand(
+			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
+			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
+		).withTimeout(PRE_SHIFT_END_RUMBLE_TIME);
+	}
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
@@ -84,6 +99,11 @@ public class JoysticksBindings {
 
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
+
+		Trigger preShiftEndJoystickRumble = new Trigger(
+			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
+		).onTrue(preShiftEndJoystickRumble(usedJoystick));
+
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		// Shoot & Pass...
