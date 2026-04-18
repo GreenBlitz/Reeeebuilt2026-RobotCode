@@ -29,15 +29,10 @@ public class TowerAssistCalculations {
 
 	public static Pose2d getTowerAssistTarget(Pose2d robotPose) {
 		Translation2d closestTower = getClosestTower(robotPose);
-		boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
-
 		boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
-		double xOffset = isNearBlueTower ? -Field.TOWER_MIDDLE.getX() / 2 : Field.TOWER_MIDDLE.getX() / 2;
-		double yOffset = isOnOutpostSide ? -Field.TOWER_ASSIST_Y_OFFSET : Field.TOWER_ASSIST_Y_OFFSET;
-
 		Rotation2d targetRotation = isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
 
-		return new Pose2d(closestTower.plus(new Translation2d(xOffset, yOffset)), targetRotation);
+		return new Pose2d(closestTower, targetRotation);
 	}
 
 }

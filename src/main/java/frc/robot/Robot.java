@@ -47,7 +47,6 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
-import frc.robot.subsystems.swerve.states.aimassist.TowerAssistCalculations;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.auto.AutonomousChooser;
@@ -362,15 +361,6 @@ public class Robot {
 		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
-		Logger.recordOutput("aaaaaa", TowerAssistCalculations.getTowerAssistTarget(poseEstimator.getEstimatedPose()));
-		Logger.recordOutput(
-			"bbbbb",
-			new Pose2d(
-				poseEstimator.getEstimatedPose().getTranslation(),
-				TowerAssistCalculations.getTowerAssistTarget(poseEstimator.getEstimatedPose()).getRotation()
-			)
-		);
-		Logger.recordOutput("cccccc", TowerAssistCalculations.getClosestTower(poseEstimator.getEstimatedPose()));
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
