@@ -515,6 +515,94 @@ public class AutosBuilder {
 		);
 	}
 
+	private static Supplier<PathPlannerAutoWrapper> getLightStealAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		AllianceSide returnSide,
+		AllianceSide startingSide
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			new ParallelCommandGroup(
+				new SequentialCommandGroup(
+					new ParallelDeadlineGroup(
+						new WaitCommand(AutonomousConstants.STEAL_START_SECOND_SINCE_AUTO_BEGAN),
+						PathFollowingCommandsBuilder
+							.followAdjustedPathThenStop(
+								robot.getSwerve(),
+								() -> robot.getPoseEstimator().getEstimatedPose(),
+								startingSide == AllianceSide.DEPOT
+									? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
+									: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
+								pathfindingConstraints,
+								regularIsNearEndOfPathTolerance,
+								stuckIsNearEndOfPathTolerance,
+								stuckDebounceSeconds,
+								robot.getSwerve().getLogPath()
+							)
+							.asProxy(),
+						new InstantCommand(() -> hasPathEnded = false)
+					),
+					PathFollowingCommandsBuilder
+						.followAdjustedPathThenStop(
+							robot.getSwerve(),
+							() -> robot.getPoseEstimator().getEstimatedPose(),
+							returnSide == AllianceSide.DEPOT
+								? PathHelper.PATH_PLANNER_PATHS.get("Light depot steal")
+								: PathHelper.PATH_PLANNER_PATHS.get("Light outpost steal"),
+							pathfindingConstraints,
+							regularIsNearEndOfPathTolerance,
+							stuckIsNearEndOfPathTolerance,
+							stuckDebounceSeconds,
+							robot.getSwerve().getLogPath()
+						)
+						.asProxy()
+						.andThen(new InstantCommand(() -> hasPathEnded = true))
+				),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new ParallelCommandGroup(
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
+										.andThen(
+											robot.getSwerve()
+												.getCommandsBuilder()
+												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+											getAllianceSideToStartingLineAuto(
+												robot,
+												returnSide,
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds
+											)
+										)
+										.asProxy(),
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+										.andThen(closeIntake.get())
+								)
+							)
+					)
+				)
+			),
+			new Pose2d(),
+			"light steal start:" + startingSide + " Return: " + returnSide
+		);
+	}
+
 	private static Supplier<PathPlannerAutoWrapper> getLightQuarterAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
