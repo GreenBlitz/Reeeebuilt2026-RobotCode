@@ -132,24 +132,24 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command drive(Supplier<ChassisPowers> powersSupplier) {
-		return driveByState(powersSupplier, SwerveState.DEFAULT_DRIVE);
+		return driveByPowersWithSupplier(powersSupplier, SwerveState.DEFAULT_DRIVE);
 	}
 
-	public Command driveByState(Supplier<ChassisPowers> powersSupplier, Supplier<SwerveState> state) {
+	public Command driveByPowersWithSupplier(Supplier<ChassisPowers> powersSupplier, Supplier<SwerveState> state) {
 		return swerve.asSubsystemCommand(
-			new DeferredCommand(() -> driveByState(powersSupplier, state.get()), Set.of(swerve)),
+			new DeferredCommand(() -> driveByPowersWithSupplier(powersSupplier, state.get()), Set.of(swerve)),
 			"Drive with supplier state"
 		);
 	}
 
-	public Command driveByState(Supplier<ChassisPowers> chassisPowersSupplier, SwerveState state) {
+	public Command driveByPowersWithSupplier(Supplier<ChassisPowers> chassisPowersSupplier, SwerveState state) {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByState(chassisPowersSupplier.get(), state)),
 			"Drive with state"
 		);
 	}
 
-	public Command driveBySpeeds(Supplier<ChassisSpeeds> chassisSpeedsSupplier, SwerveState state) {
+	public Command driveBySpeedsWithSupplier(Supplier<ChassisSpeeds> chassisSpeedsSupplier, SwerveState state) {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByState(chassisSpeedsSupplier.get(), state)),
 			"Drive with ChassisSpeeds state"
