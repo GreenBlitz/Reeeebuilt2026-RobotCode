@@ -129,8 +129,8 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void logElasticRelatedInfo() {
-		Logger.recordOutput("TimeUntilHubActive", HubUtil.getTimeLeftUntilActiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
-		Logger.recordOutput("TimeUntilHubInactive", HubUtil.getTimeLeftUntilInactiveSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
+		Logger.recordOutput("isAutoWinner", HubUtil.isRobotAllianceAutoWinnerForLog());
+		Logger.recordOutput("TimeUntilNextShift", HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
 		Logger.recordOutput("IsHubActive", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
 		Logger.recordOutput("TimeSinceTeleop", TimeUtil.getTimeSinceTeleopInitSeconds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
