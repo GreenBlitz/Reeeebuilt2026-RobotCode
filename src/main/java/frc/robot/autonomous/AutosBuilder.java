@@ -991,10 +991,10 @@ public class AutosBuilder {
 			);
 	}
 
-	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide){
+	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide) {
 		return allianceSide == AllianceSide.DEPOT
-				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
-				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
+			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
+			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
 	}
 
 }

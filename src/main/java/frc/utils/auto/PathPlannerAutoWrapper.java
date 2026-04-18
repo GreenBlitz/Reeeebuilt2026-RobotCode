@@ -38,12 +38,7 @@ public class PathPlannerAutoWrapper extends PathPlannerAuto {
 		System.arraycopy(additionalPaths, 0, paths, 1, additionalPaths.length);
 	}
 
-	private PathPlannerAutoWrapper(
-			Command autoCommand,
-			Pose2d startingPose,
-			String autoName,
-			PathPlannerPath[] paths
-	) {
+	private PathPlannerAutoWrapper(Command autoCommand, Pose2d startingPose, String autoName, PathPlannerPath[] paths) {
 		super(autoCommand, startingPose);
 		setName(autoName);
 
