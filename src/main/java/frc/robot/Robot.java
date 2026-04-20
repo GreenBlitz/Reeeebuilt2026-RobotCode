@@ -48,7 +48,6 @@ import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.GamePeriodUtils;
-import frc.utils.HubUtil;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -365,7 +364,6 @@ public class Robot {
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
-		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(
 			"TimeSinceLastBall",
