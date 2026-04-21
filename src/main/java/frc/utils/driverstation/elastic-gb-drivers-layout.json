@@ -135,14 +135,14 @@
             }
           },
           {
-            "title": "TimeLeft",
+            "title": "TimeLeftForGame",
             "x": 640.0,
             "y": 384.0,
             "width": 768.0,
             "height": 256.0,
             "type": "Match Time",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/TimeLeft",
+              "topic": "/AdvantageKit/RealOutputs/TimeLeftForGame",
               "period": 0.06,
               "data_type": "double",
               "time_display_mode": "Minutes and Seconds",
