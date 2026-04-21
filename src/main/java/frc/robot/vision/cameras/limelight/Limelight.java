@@ -159,10 +159,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
-	public void updateCameraMetrics() {
-		inputs.connectedInput().connected = LimelightHelpersAdditions.getIsConnected(name);
-		inputs.hardwareInputs().temperature = LimelightHelpersAdditions.getTemperature(name);
-		Logger.processInputs(logPath, inputs.connectedInput());
+	public void updateHardwareInputs() {
+		inputs.hardwareInputs().connected = LimelightHelpersAdditions.getIsConnected(name);
+		inputs.hardwareInputs().temperatureInCelsius = LimelightHelpersAdditions.getTemperature(name);
 		Logger.processInputs(logPath, inputs.hardwareInputs());
 	}
 

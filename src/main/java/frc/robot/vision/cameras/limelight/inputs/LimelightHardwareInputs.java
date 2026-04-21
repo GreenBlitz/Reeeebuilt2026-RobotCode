@@ -1,10 +1,11 @@
 package frc.robot.vision.cameras.limelight.inputs;
 
+import frc.robot.hardware.ConnectedInput;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog
-public class LimelightHardwareInputs {
+public class LimelightHardwareInputs extends ConnectedInput{
 
-	public double temperature = 0.0;
+	public double temperatureInCelsius = 0.0;
 
 }
