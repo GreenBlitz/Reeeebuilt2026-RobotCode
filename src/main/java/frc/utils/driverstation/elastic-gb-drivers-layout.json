@@ -106,22 +106,6 @@
             }
           },
           {
-            "title": "TimeSinceTeleop",
-            "x": 640.0,
-            "y": 384.0,
-            "width": 768.0,
-            "height": 256.0,
-            "type": "Match Time",
-            "properties": {
-              "topic": "/AdvantageKit/RealOutputs/TimeSinceTeleop",
-              "period": 0.06,
-              "data_type": "double",
-              "time_display_mode": "Minutes and Seconds",
-              "red_start_time": 20,
-              "yellow_start_time": 30
-            }
-          },
-          {
             "title": "CurrentGamePeriod",
             "x": 1408.0,
             "y": 0.0,
@@ -143,6 +127,22 @@
             "type": "Match Time",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/TimeUntilNextShift",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 20,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "TimeLeftForGame",
+            "x": 640.0,
+            "y": 384.0,
+            "width": 768.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/TimeLeftForGame",
               "period": 0.06,
               "data_type": "double",
               "time_display_mode": "Minutes and Seconds",
