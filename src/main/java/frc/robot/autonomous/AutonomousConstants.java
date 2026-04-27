@@ -35,6 +35,9 @@ public class AutonomousConstants {
 	public static final double STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
 	public static final double SIDE_STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
 
+	public static final double NY_AUTO_TIME_TO_START_PASSING = 3.0;
+	public static final double NY_AUTO_TIME_TO_PASS = 9;
+
 	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 
 }
