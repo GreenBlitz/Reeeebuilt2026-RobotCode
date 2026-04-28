@@ -517,6 +517,10 @@ public class AutosBuilder {
 		AllianceSide startingSide,
 		boolean skipOutpost
 	) {
+		PathPlannerPath returnPath = startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Steal")
+			: skipOutpost ? PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Steal to depot")
+			: PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Steal");
+
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
 				new SequentialCommandGroup(
@@ -526,8 +530,8 @@ public class AutosBuilder {
 							.followAdjustedPathThenStop(
 								robot.getSwerve(),
 								() -> robot.getPoseEstimator().getEstimatedPose(),
-								startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Wait")
-									: skipOutpost ? PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Steal to depot")
+								startingSide == AllianceSide.DEPOT
+									? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Wait")
 									: PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Wait"),
 								pathfindingConstraints,
 								regularIsNearEndOfPathTolerance,
@@ -542,9 +546,7 @@ public class AutosBuilder {
 						.followAdjustedPathThenStop(
 							robot.getSwerve(),
 							() -> robot.getPoseEstimator().getEstimatedPose(),
-							startingSide == AllianceSide.DEPOT
-								? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Steal")
-								: PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Steal"),
+							returnPath,
 							pathfindingConstraints,
 							regularIsNearEndOfPathTolerance,
 							stuckIsNearEndOfPathTolerance,
@@ -588,7 +590,7 @@ public class AutosBuilder {
 				)
 			),
 			new Pose2d(),
-			"Side Steal: " + startingSide,
+			"Side Steal: " + startingSide + ", Skip Outpost: " + skipOutpost,
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Wait"),
