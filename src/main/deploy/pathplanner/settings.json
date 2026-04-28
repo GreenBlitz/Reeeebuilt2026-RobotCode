@@ -24,7 +24,7 @@
   "driveCurrentLimit": 60.0,
   "wheelCOF": 0.96,
   "flModuleX": 0.27833,
-  "flModuleY": 0.34733,
+  "flModuleY": 0.347,
   "frModuleX": 0.27833,
   "frModuleY": -0.34733,
   "blModuleX": -0.27833,
@@ -33,5 +33,7 @@
   "brModuleY": -0.34733,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":-0.5,\"y\":0.0},\"size\":{\"width\":0.897,\"length\":0.2665},\"borderRadius\":0.02,\"strokeWidth\":0.03,\"filled\":false}}"
+  ]
 }
