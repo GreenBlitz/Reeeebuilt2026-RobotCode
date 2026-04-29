@@ -430,6 +430,30 @@ public class AutosBuilder {
 				stuckDebounceSeconds,
 				AllianceSide.OUTPOST,
 				true
+			),
+			getNewYorkAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				scoreSequence,
+				passSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST
+			),
+			getNewYorkAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				scoreSequence,
+				passSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT
 			)
 		);
 	}
@@ -1130,6 +1154,54 @@ public class AutosBuilder {
 			PathHelper.PATH_PLANNER_PATHS.get("Middle path")
 		);
 	}
+
+	private static Supplier<PathPlannerAutoWrapper> getNewYorkAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> scoreSequence,
+		Supplier<Command> passSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		AllianceSide startingSide
+	) {
+		return () -> new PathPlannerAutoWrapper(
+			new ParallelCommandGroup(
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						startingSide == AllianceSide.OUTPOST
+							? PathHelper.PATH_PLANNER_PATHS.get("R NY auto")
+							: PathHelper.PATH_PLANNER_PATHS.get("L NY auto"),
+						pathfindingConstraints,
+						regularIsNearEndOfPathTolerance,
+						stuckIsNearEndOfPathTolerance,
+						stuckDebounceSeconds,
+						robot.getSwerve().getLogPath()
+					)
+					.asProxy()
+					.andThen(new InstantCommand(() -> hasPathEnded = true)),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(AutonomousConstants.NY_AUTO_TIME_TO_START_PASSING).andThen(passSequence.get())
+							.withTimeout(AutonomousConstants.NY_AUTO_TIME_TO_PASS)
+							.andThen(scoreSequence.get()),
+						openIntake.get()
+					)
+				)
+			),
+			new Pose2d(),
+			startingSide.name() + " NY auto",
+			startingSide == AllianceSide.OUTPOST
+				? PathHelper.PATH_PLANNER_PATHS.get("R NY auto")
+				: PathHelper.PATH_PLANNER_PATHS.get("L NY auto")
+		);
+	}
+
 
 	private static Command getAllianceSideToStartingLineAuto(
 		Robot robot,
