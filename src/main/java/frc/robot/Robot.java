@@ -448,6 +448,10 @@ public class Robot {
 		return autonomousChooser;
 	}
 
+	public SendableChooser<Boolean> getReturnToMiddleChooser() {
+		return returnToMiddle;
+	}
+
 	public Limelight getLimelightFront() {
 		return limelightFront;
 	}
@@ -494,44 +498,26 @@ public class Robot {
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
 		this.returnToMiddle = new SendableChooser<>();
-		returnToMiddle.setDefaultOption("returnToMiddle", false);
+		returnToMiddle.setDefaultOption("Don't Return To Middle", false);
+		returnToMiddle.addOption("Return To Middle", true);
+		SmartDashboard.putData("Return To Middle", returnToMiddle);
 
-		List<Supplier<PathPlannerAutoWrapper>> autosWithReturnToMiddle =
-				AutosBuilder.getAutoList(
-						this,
-						autonomousResetSubsystemsCommand,
-						autonomousOpenIntakeCommand,
-						autonomousCloseIntakeCommand,
-						autonomousScoringSequenceCommand,
-						autonomousPassSequenceCommand,
-						autonomousOuttakeCommand,
-						AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-						AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
-						AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
-						AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS,
-						true
-				);
-
-		List<Supplier<PathPlannerAutoWrapper>> autosWithoutReturnToMiddle =
-				AutosBuilder.getAutoList(
-						this,
-						autonomousResetSubsystemsCommand,
-						autonomousOpenIntakeCommand,
-						autonomousCloseIntakeCommand,
-						autonomousScoringSequenceCommand,
-						autonomousPassSequenceCommand,
-						autonomousOuttakeCommand,
-						AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-						AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
-						AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
-						AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS,
-						false
-				);
-
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-
+		List<Supplier<PathPlannerAutoWrapper>> autos = AutosBuilder.getAutoList(
+			this,
+			autonomousResetSubsystemsCommand,
+			autonomousOpenIntakeCommand,
+			autonomousCloseIntakeCommand,
+			autonomousScoringSequenceCommand,
+			autonomousPassSequenceCommand,
+			autonomousOuttakeCommand,
+			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+			AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS,
+			() -> returnToMiddle.getSelected() != null && returnToMiddle.getSelected()
 		);
+
+		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
 	}
 
 }
