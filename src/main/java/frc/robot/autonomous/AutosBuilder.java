@@ -472,17 +472,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-
-											getAllianceSideToStartingLineAuto(
-												robot,
-												startingSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-											)
-
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										startingSide,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
@@ -557,16 +554,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-											getAllianceSideToStartingLineAuto(
-												robot,
-												AllianceSide.DEPOT,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-											)
-
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										AllianceSide.DEPOT,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
@@ -659,17 +654,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-
-											getAllianceSideToStartingLineAuto(
-												robot,
-												actualReturnSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-
-										)
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										actualReturnSide,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
@@ -745,17 +737,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-
-											getAllianceSideToStartingLineAuto(
-												robot,
-												returnSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-											)
-
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										returnSide,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
@@ -815,17 +804,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-
-											getAllianceSideToStartingLineAuto(
-												robot,
-												startingSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-											)
-
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										startingSide,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
@@ -939,17 +925,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-
-											getAllianceSideToStartingLineAuto(
-												robot,
-												startingSide.getOppositeSide(),
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-											)
-
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										startingSide.getOppositeSide(),
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
