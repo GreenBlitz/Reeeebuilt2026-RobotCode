@@ -55,6 +55,7 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
+import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
@@ -62,6 +63,7 @@ import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -93,6 +95,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
+	private SendableChooser<Boolean> returnToMiddle;
 
 	private final IPoseEstimator poseEstimator;
 
@@ -445,6 +448,10 @@ public class Robot {
 		return autonomousChooser;
 	}
 
+	public SendableChooser<Boolean> getReturnToMiddleChooser() {
+		return returnToMiddle;
+	}
+
 	public Limelight getLimelightFront() {
 		return limelightFront;
 	}
@@ -490,22 +497,27 @@ public class Robot {
 
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				this,
-				autonomousResetSubsystemsCommand,
-				autonomousOpenIntakeCommand,
-				autonomousCloseIntakeCommand,
-				autonomousScoringSequenceCommand,
-				autonomousPassSequenceCommand,
-				autonomousOuttakeCommand,
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS
-			)
+		this.returnToMiddle = new SendableChooser<>();
+		returnToMiddle.setDefaultOption("Don't Return To Middle", false);
+		returnToMiddle.addOption("Return To Middle", true);
+		SmartDashboard.putData("Return To Middle", returnToMiddle);
+
+		List<Supplier<PathPlannerAutoWrapper>> autos = AutosBuilder.getAutoList(
+			this,
+			autonomousResetSubsystemsCommand,
+			autonomousOpenIntakeCommand,
+			autonomousCloseIntakeCommand,
+			autonomousScoringSequenceCommand,
+			autonomousPassSequenceCommand,
+			autonomousOuttakeCommand,
+			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+			AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS,
+			() -> returnToMiddle.getSelected() != null && returnToMiddle.getSelected()
 		);
+
+		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
 	}
 
 }
