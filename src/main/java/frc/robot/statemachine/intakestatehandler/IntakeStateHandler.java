@@ -135,7 +135,7 @@ public class IntakeStateHandler {
 	}
 
 	public Command openFourBarForAutonomous() {
-		return new SequentialCommandGroup(
+		return new ParallelCommandGroup(new SequentialCommandGroup(
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS)
 				.withTimeout(FourBarConstants.HARD_OPEN_TIME_SECONDS_FOR_AUTONOMOUS),
@@ -143,6 +143,9 @@ public class IntakeStateHandler {
 				.setCurrentWithoutLimit(
 					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
 				)
+		),
+		new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "Open intake for autonomous")),
+				new InstantCommand(() -> currentState = IntakeState.INTAKE)
 		);
 	}
 
@@ -159,7 +162,6 @@ public class IntakeStateHandler {
 		}
 
 		Logger.recordOutput(logPath + "/HasFourBarBeenReset", hasFourBarBeenReset());
-		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
 	public boolean hasFourBarBeenReset() {
