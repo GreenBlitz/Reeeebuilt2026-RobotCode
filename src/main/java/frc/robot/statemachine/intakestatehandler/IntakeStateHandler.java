@@ -17,7 +17,7 @@ public class IntakeStateHandler {
 
 	private final CurrentControlArm fourBar;
 	private final Roller rollers;
-	private boolean hasFourBarBeenReset;
+	private boolean hasFourBarBeenReset = true;
 	private final String logPath;
 	private final LoggedNetworkNumber rollersCalibrationPower = new LoggedNetworkNumber("Tunable/IntakeRollerPower");
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
@@ -29,7 +29,7 @@ public class IntakeStateHandler {
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
-		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
+		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation() || true;
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 		this.isOpenFourBarHarder = () -> false;
@@ -113,6 +113,7 @@ public class IntakeStateHandler {
 			case CALIBRATION -> calibration();
 			case STAY_IN_PLACE -> stayInPlace();
 			case INTAKE -> intake();
+			case FORCE_OPEN -> forceOpen();
 			case OUTTAKE -> outtake();
 			case RESET_FOUR_BAR -> resetFourBar();
 			case CLOSED -> close();
@@ -134,8 +135,21 @@ public class IntakeStateHandler {
 		);
 	}
 
+	private Command forceOpen() {
+		return new ParallelCommandGroup(
+				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
+				new SequentialCommandGroup(
+			fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS).withTimeout(0.5),
+			fourBar.getCommandsBuilder()
+				.setCurrentWithoutLimit(
+					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
+				)
+		));
+	}
+
 	public Command openFourBarForAutonomous() {
 		return new ParallelCommandGroup(
+				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS)
