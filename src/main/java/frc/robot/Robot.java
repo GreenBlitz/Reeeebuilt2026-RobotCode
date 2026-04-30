@@ -478,7 +478,7 @@ public class Robot {
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().openFourBarForAutonomous();
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();

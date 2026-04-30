@@ -66,6 +66,10 @@ public class FourBarConstants {
 
 	public static final double HARD_OPEN_TIME_SECONDS = 1;
 
+	public static final double HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS = -8.0;
+
+	public static final double HARD_OPEN_TIME_SECONDS_FOR_AUTONOMOUS = 1;
+
 
 	public static final double COLLISION_STALL_CURRENT = 13;
 

@@ -134,6 +134,18 @@ public class IntakeStateHandler {
 		);
 	}
 
+	public Command openFourBarForAutonomous() {
+		return new SequentialCommandGroup(
+				fourBar.getCommandsBuilder()
+						.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS)
+						.withTimeout(FourBarConstants.HARD_OPEN_TIME_SECONDS_FOR_AUTONOMOUS),
+				fourBar.getCommandsBuilder()
+						.setCurrentWithoutLimit(
+								() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
+						)
+		);
+	}
+
 	public void periodic() {
 		Logger.recordOutput(logPath + "/IsOpenFourBarHarder", isOpenFourBarHarder.getAsBoolean());
 		Logger.recordOutput(logPath + "/isCloseFourBarHarder", isCloseFourBarHarder.getAsBoolean());
