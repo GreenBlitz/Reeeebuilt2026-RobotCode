@@ -10,6 +10,7 @@ import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class AutosBuilder {
@@ -35,7 +36,8 @@ public class AutosBuilder {
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
+		double stuckDebounceSeconds,
+		BooleanSupplier returnToMiddle
 	) {
 		return List.of(
 			getQuarterAuto(
@@ -48,7 +50,8 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.DEPOT
+				AllianceSide.DEPOT,
+				returnToMiddle
 			),
 			getQuarterAuto(
 				robot,
@@ -60,7 +63,8 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.OUTPOST
+				AllianceSide.OUTPOST,
+				returnToMiddle
 			),
 			getLightQuarterAuto(
 				robot,
@@ -73,7 +77,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
-				false
+				false,
+				returnToMiddle
 			),
 			getLightQuarterAuto(
 				robot,
@@ -86,7 +91,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
-				true
+				true,
+				returnToMiddle
 			),
 			getLightQuarterAuto(
 				robot,
@@ -99,7 +105,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.OUTPOST,
-				true
+				true,
+				returnToMiddle
 			),
 			getExtendedLQuarterAuto(
 				robot,
@@ -110,7 +117,8 @@ public class AutosBuilder {
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds
+				stuckDebounceSeconds,
+				returnToMiddle
 			),
 			getHorseshoeAuto(
 				robot,
@@ -122,7 +130,8 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.DEPOT
+				AllianceSide.DEPOT,
+				returnToMiddle
 			),
 			getHorseshoeAuto(
 				robot,
@@ -134,7 +143,8 @@ public class AutosBuilder {
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
-				AllianceSide.OUTPOST
+				AllianceSide.OUTPOST,
+				returnToMiddle
 			),
 			getPushAuto(
 				robot,
@@ -173,7 +183,8 @@ public class AutosBuilder {
 				AllianceSide.DEPOT,
 				AllianceSide.DEPOT,
 				AllianceSide.DEPOT,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -188,7 +199,8 @@ public class AutosBuilder {
 				AllianceSide.OUTPOST,
 				AllianceSide.DEPOT,
 				AllianceSide.DEPOT,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -203,7 +215,8 @@ public class AutosBuilder {
 				AllianceSide.DEPOT,
 				AllianceSide.DEPOT,
 				AllianceSide.OUTPOST,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -218,7 +231,8 @@ public class AutosBuilder {
 				AllianceSide.DEPOT,
 				AllianceSide.OUTPOST,
 				AllianceSide.DEPOT,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -233,7 +247,8 @@ public class AutosBuilder {
 				AllianceSide.OUTPOST,
 				AllianceSide.OUTPOST,
 				AllianceSide.DEPOT,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -248,7 +263,8 @@ public class AutosBuilder {
 				AllianceSide.DEPOT,
 				AllianceSide.OUTPOST,
 				AllianceSide.OUTPOST,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -263,7 +279,8 @@ public class AutosBuilder {
 				AllianceSide.OUTPOST,
 				AllianceSide.DEPOT,
 				AllianceSide.OUTPOST,
-				false
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -278,37 +295,8 @@ public class AutosBuilder {
 				AllianceSide.OUTPOST,
 				AllianceSide.OUTPOST,
 				AllianceSide.OUTPOST,
-				false
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.DEPOT,
-				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST,
-				true
-			),
-			getStealAuto(
-				robot,
-				resetSubsystems,
-				openIntake,
-				closeIntake,
-				scoreSequence,
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST,
-				true
+				false,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -322,8 +310,41 @@ public class AutosBuilder {
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
 				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				true,
+				returnToMiddle
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				AllianceSide.OUTPOST,
+				true,
+				returnToMiddle
+			),
+			getStealAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
-				true
+				AllianceSide.OUTPOST,
+				AllianceSide.DEPOT,
+				true,
+				returnToMiddle
 			),
 			getStealAuto(
 				robot,
@@ -338,7 +359,8 @@ public class AutosBuilder {
 				AllianceSide.OUTPOST,
 				AllianceSide.OUTPOST,
 				AllianceSide.DEPOT,
-				true
+				true,
+				returnToMiddle
 			),
 			getLightStealAuto(
 				robot,
@@ -351,7 +373,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
-				AllianceSide.DEPOT
+				AllianceSide.DEPOT,
+				returnToMiddle
 			),
 			getLightStealAuto(
 				robot,
@@ -364,7 +387,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
-				AllianceSide.OUTPOST
+				AllianceSide.OUTPOST,
+				returnToMiddle
 			),
 			getLightStealAuto(
 				robot,
@@ -377,7 +401,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.OUTPOST,
-				AllianceSide.OUTPOST
+				AllianceSide.OUTPOST,
+				returnToMiddle
 			),
 			getLightStealAuto(
 				robot,
@@ -390,7 +415,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.OUTPOST,
-				AllianceSide.DEPOT
+				AllianceSide.DEPOT,
+				returnToMiddle
 			),
 			getSideAuto(
 				robot,
@@ -403,7 +429,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.DEPOT,
-				false
+				false,
+				returnToMiddle
 			),
 			getSideAuto(
 				robot,
@@ -416,7 +443,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.OUTPOST,
-				false
+				false,
+				returnToMiddle
 			),
 			getSideAuto(
 				robot,
@@ -429,7 +457,8 @@ public class AutosBuilder {
 				stuckIsNearEndOfPathTolerance,
 				stuckDebounceSeconds,
 				AllianceSide.OUTPOST,
-				true
+				true,
+				returnToMiddle
 			)
 		);
 	}
@@ -444,7 +473,8 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide startingSide
+		AllianceSide startingSide,
+		BooleanSupplier returnToMiddle
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -486,7 +516,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -500,7 +531,7 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-			getAllianceSideToStartingLinePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
 		);
 	}
 
@@ -515,7 +546,8 @@ public class AutosBuilder {
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
 		AllianceSide startingSide,
-		boolean skipOutpost
+		boolean skipOutpost,
+		BooleanSupplier returnToMiddle
 	) {
 		PathPlannerPath returnPath = startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("Depot Side Steal")
 			: skipOutpost ? PathHelper.PATH_PLANNER_PATHS.get("Outpost Side Steal to depot")
@@ -578,7 +610,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -628,7 +661,8 @@ public class AutosBuilder {
 		AllianceSide firstOpponentBumpSide,
 		AllianceSide returnSide,
 		AllianceSide startingSide,
-		boolean skipOutpost
+		boolean skipOutpost,
+		BooleanSupplier returnToMiddle
 	) {
 		AllianceSide actualReturnSide = skipOutpost || returnSide == AllianceSide.DEPOT ? AllianceSide.DEPOT : AllianceSide.OUTPOST;
 		return () -> new PathPlannerAutoWrapper(
@@ -688,7 +722,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -705,7 +740,7 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
 			getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
-			getAllianceSideToStartingLinePath(actualReturnSide)
+			getAllianceSideToStartingLinePath(actualReturnSide, returnToMiddle)
 		);
 	}
 
@@ -720,7 +755,8 @@ public class AutosBuilder {
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
 		AllianceSide startingSide,
-		AllianceSide returnSide
+		AllianceSide returnSide,
+		BooleanSupplier returnToMiddle
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -781,7 +817,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -814,7 +851,8 @@ public class AutosBuilder {
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
 		AllianceSide startingSide,
-		boolean endInOutpost
+		boolean endInOutpost,
+		BooleanSupplier returnToMiddle
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -858,7 +896,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -876,7 +915,7 @@ public class AutosBuilder {
 					? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
 					: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 				: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
-			getAllianceSideToStartingLinePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
 		);
 	}
 
@@ -889,7 +928,8 @@ public class AutosBuilder {
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
+		double stuckDebounceSeconds,
+		BooleanSupplier returnToMiddle
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -929,7 +969,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -957,7 +998,8 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		AllianceSide startingSide
+		AllianceSide startingSide,
+		BooleanSupplier returnToMiddle
 	) {
 		return () -> new PathPlannerAutoWrapper(
 			new ParallelCommandGroup(
@@ -999,7 +1041,8 @@ public class AutosBuilder {
 												pathfindingConstraints,
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
+												stuckDebounceSeconds,
+												returnToMiddle
 											)
 										)
 										.asProxy(),
@@ -1015,7 +1058,7 @@ public class AutosBuilder {
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
 				: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
-			getAllianceSideToStartingLinePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
 		);
 	}
 
@@ -1137,13 +1180,14 @@ public class AutosBuilder {
 		PathConstraints pathfindingConstraints,
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
-		double stuckDebounceSeconds
+		double stuckDebounceSeconds,
+		BooleanSupplier returnToMiddle
 	) {
 		return PathFollowingCommandsBuilder
 			.followAdjustedPathThenStop(
 				robot.getSwerve(),
 				() -> robot.getPoseEstimator().getEstimatedPose(),
-				getAllianceSideToStartingLinePath(allianceSide),
+				getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
@@ -1155,7 +1199,12 @@ public class AutosBuilder {
 			);
 	}
 
-	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide) {
+	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide, BooleanSupplier returnToMiddle) {
+		if (returnToMiddle.getAsBoolean()) {
+			return allianceSide == AllianceSide.DEPOT
+				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
+				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
+		}
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
 			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
