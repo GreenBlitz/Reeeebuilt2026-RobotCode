@@ -472,14 +472,7 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
+
 											getAllianceSideToStartingLineAuto(
 												robot,
 												startingSide,
@@ -488,7 +481,7 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds
 											)
-										)
+
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -564,14 +557,6 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
 											getAllianceSideToStartingLineAuto(
 												robot,
 												AllianceSide.DEPOT,
@@ -580,7 +565,7 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds
 											)
-										)
+
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -674,14 +659,7 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
+
 											getAllianceSideToStartingLineAuto(
 												robot,
 												actualReturnSide,
@@ -689,7 +667,7 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds
-											)
+
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
@@ -767,14 +745,7 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
+
 											getAllianceSideToStartingLineAuto(
 												robot,
 												returnSide,
@@ -783,7 +754,7 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds
 											)
-										)
+
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -844,14 +815,7 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
+
 											getAllianceSideToStartingLineAuto(
 												robot,
 												startingSide,
@@ -860,7 +824,7 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds
 											)
-										)
+
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -915,24 +879,14 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
-											getAllianceSideToStartingLineAuto(
-												robot,
-												AllianceSide.OUTPOST,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds
-											)
-										)
-										.asProxy(),
+									getAllianceSideToStartingLineAuto(
+										robot,
+										AllianceSide.OUTPOST,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								)
@@ -985,14 +939,7 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
+
 											getAllianceSideToStartingLineAuto(
 												robot,
 												startingSide.getOppositeSide(),
@@ -1001,7 +948,7 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds
 											)
-										)
+
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -1113,11 +1060,9 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END).andThen(
-										robot.getSwerve()
-											.getCommandsBuilder()
-											.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-									),
+									robot.getSwerve()
+										.getCommandsBuilder()
+										.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 								).asProxy()
