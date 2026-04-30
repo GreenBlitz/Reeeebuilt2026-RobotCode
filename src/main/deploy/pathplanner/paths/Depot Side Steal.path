@@ -8,39 +8,55 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.725814399108442,
-        "y": 5.875846297307132
+        "x": 8.839300998573465,
+        "y": 7.521968616262482
       },
       "isLocked": false,
       "linkedName": "Depot Side Wait"
     },
     {
       "anchor": {
-        "x": 7.6,
-        "y": 1.9357989333151373
+        "x": 8.63,
+        "y": 6.253980028530671
       },
       "prevControl": {
-        "x": 7.619511471492068,
-        "y": 2.185036375286071
+        "x": 8.604122681883025,
+        "y": 6.939728958630528
       },
       "nextControl": {
-        "x": 7.538418679494178,
-        "y": 1.1491657569141194
+        "x": 8.668547505656523,
+        "y": 5.232471128632829
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.864223924217613,
+        "x": 8.63,
         "y": 2.0584189637918486
       },
       "prevControl": {
-        "x": 6.226054112739944,
+        "x": 8.649511471492069,
+        "y": 2.307656405762782
+      },
+      "nextControl": {
+        "x": 8.56841867949418,
+        "y": 1.2717857873908307
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.979857346647646,
+        "y": 2.0584189637918486
+      },
+      "prevControl": {
+        "x": 6.341687535169977,
         "y": 1.1264167297765049
       },
       "nextControl": {
-        "x": 5.62433715988083,
+        "x": 5.739970582310863,
         "y": 2.676319314190038
       },
       "isLocked": false,
@@ -48,28 +64,28 @@
     },
     {
       "anchor": {
-        "x": 5.500251374421297,
-        "y": 5.404160590277778
+        "x": 5.552881597717547,
+        "y": 5.361212553495007
       },
       "prevControl": {
-        "x": 7.13347729883097,
-        "y": 5.342796859205683
+        "x": 6.471526390870184,
+        "y": 5.400028530670471
       },
       "nextControl": {
-        "x": 4.525289325289553,
-        "y": 5.440791963864407
+        "x": 4.5781014111798175,
+        "y": 5.320024658289188
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.56,
-        "y": 5.975825159143519
+        "x": 0.6879457917261056,
+        "y": 5.982268188302426
       },
       "prevControl": {
-        "x": -0.20579302099695773,
-        "y": 5.975825159143519
+        "x": 1.2558059914407986,
+        "y": 5.885201944993429
       },
       "nextControl": null,
       "isLocked": false,
@@ -79,26 +95,34 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 90.5336518105933
+      "rotationDegrees": 75.0
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": -89.30793065567332
+      "rotationDegrees": 75.0
     },
     {
-      "waypointRelativePos": 2.5085115131578957,
-      "rotationDegrees": -89.50893249690549
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": -70.22831951394737
     },
     {
-      "waypointRelativePos": 3.378289473684209,
+      "waypointRelativePos": 3.5085115131578957,
+      "rotationDegrees": -62.009828781070105
+    },
+    {
+      "waypointRelativePos": 3.965884861407209,
+      "rotationDegrees": -45.0
+    },
+    {
+      "waypointRelativePos": 4.378289473684209,
       "rotationDegrees": -52.34529936440549
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.438590116279074,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 4.438590116279074,
+      "maxWaypointRelativePos": 5.0,
       "constraints": {
         "maxVelocity": 0.8,
         "maxAcceleration": 2.0,
