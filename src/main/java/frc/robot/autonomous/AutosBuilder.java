@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 
@@ -1183,20 +1184,29 @@ public class AutosBuilder {
 		double stuckDebounceSeconds,
 		BooleanSupplier returnToMiddle
 	) {
-		return PathFollowingCommandsBuilder
-			.followAdjustedPathThenStop(
-				robot.getSwerve(),
-				() -> robot.getPoseEstimator().getEstimatedPose(),
-				getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				robot.getSwerve().getLogPath()
-			)
-			.andThen(
-				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-			);
+		return new ParallelCommandGroup(
+			returnToMiddle.getAsBoolean()
+				? robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE)
+				: robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED),
+			PathFollowingCommandsBuilder
+				.followAdjustedPathThenStop(
+					robot.getSwerve(),
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
+					pathfindingConstraints,
+					regularIsNearEndOfPathTolerance,
+					stuckIsNearEndOfPathTolerance,
+					stuckDebounceSeconds,
+					robot.getSwerve().getLogPath()
+				)
+				.andThen(
+					returnToMiddle.getAsBoolean()
+						? Commands.none()
+						: robot.getSwerve()
+							.getCommandsBuilder()
+							.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+				)
+		);
 	}
 
 	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide, BooleanSupplier returnToMiddle) {
