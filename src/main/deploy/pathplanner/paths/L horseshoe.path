@@ -112,16 +112,16 @@
     },
     {
       "anchor": {
-        "x": 0.65,
-        "y": 0.69
+        "x": 1.5966215277777782,
+        "y": 1.1719397590361438
       },
       "prevControl": {
-        "x": 2.65,
-        "y": 0.6899999999999997
+        "x": 3.596621527777778,
+        "y": 1.1719397590361436
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost Feed"
     }
   ],
   "rotationTargets": [
