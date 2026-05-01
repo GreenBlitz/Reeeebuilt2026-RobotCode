@@ -887,22 +887,26 @@ public class AutosBuilder {
 											robot.getSwerve()
 												.getCommandsBuilder()
 												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WIGGLE_IN_R_QUARTER_LIGHT))
 										)
 										.andThen(
-											getAllianceSideToStartingLineAuto(
-												robot,
-												startingSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds,
-												returnToMiddle
-											)
+											!returnToMiddle.getAsBoolean() && startingSide == AllianceSide.OUTPOST
+												? robot.getSwerve()
+													.getCommandsBuilder()
+													.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												: getAllianceSideToStartingLineAuto(
+													robot,
+													startingSide,
+													pathfindingConstraints,
+													regularIsNearEndOfPathTolerance,
+													stuckIsNearEndOfPathTolerance,
+													stuckDebounceSeconds,
+													returnToMiddle
+												)
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get())
+										.andThen(closeIntake.get().onlyIf(() -> !returnToMiddle.getAsBoolean()))
 								)
 							)
 					)
@@ -1195,7 +1199,10 @@ public class AutosBuilder {
 				robot.getSwerve().getLogPath()
 			)
 			.andThen(
-				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+				robot.getSwerve()
+					.getCommandsBuilder()
+					.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+					.onlyIf(() -> !returnToMiddle.getAsBoolean())
 			);
 	}
 

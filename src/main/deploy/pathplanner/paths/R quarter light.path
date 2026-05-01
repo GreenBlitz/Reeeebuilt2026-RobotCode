@@ -64,32 +64,16 @@
     },
     {
       "anchor": {
-        "x": 3.395203052662038,
-        "y": 2.399246987951809
+        "x": 3.1662665562913905,
+        "y": 2.5
       },
       "prevControl": {
-        "x": 3.9712359263417323,
-        "y": 2.4873977103985796
-      },
-      "nextControl": {
-        "x": 2.9124407552083342,
-        "y": 2.325369528461068
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.7121616753472226,
-        "y": 1.5634512442129629
-      },
-      "prevControl": {
-        "x": 1.962161666707326,
-        "y": 1.5633855179001563
+        "x": 3.742299429971085,
+        "y": 2.5881507224467706
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [
@@ -112,40 +96,9 @@
     {
       "waypointRelativePos": 3.8888980263157924,
       "rotationDegrees": 45.0
-    },
-    {
-      "waypointRelativePos": 4.5,
-      "rotationDegrees": -0.0
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.76,
-      "maxWaypointRelativePos": 5.0,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 4.85,
-      "maxWaypointRelativePos": 5.5,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -158,7 +111,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": null,

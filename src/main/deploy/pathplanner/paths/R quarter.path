@@ -64,48 +64,16 @@
     },
     {
       "anchor": {
-        "x": 3.395203052662038,
-        "y": 2.342529188588278
+        "x": 3.1662665562913905,
+        "y": 2.5
       },
       "prevControl": {
-        "x": 3.9712359263417323,
-        "y": 2.4306799110350488
-      },
-      "nextControl": {
-        "x": 2.9124407552083342,
-        "y": 2.268651729097537
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.4819999276578297,
-        "y": 0.636
-      },
-      "prevControl": {
-        "x": 1.8625482553348116,
-        "y": 0.636
-      },
-      "nextControl": {
-        "x": 1.190630565238076,
-        "y": 0.636
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.643,
-        "y": 0.736
-      },
-      "prevControl": {
-        "x": 1.2326816465669375,
-        "y": 0.7360000000000001
+        "x": 3.7559482028583275,
+        "y": 2.5
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [
@@ -126,33 +94,15 @@
       "rotationDegrees": 68.48048252063953
     },
     {
-      "waypointRelativePos": 3.4298930921052637,
+      "waypointRelativePos": 3.2,
       "rotationDegrees": 45.0
     },
     {
-      "waypointRelativePos": 3.8888980263157924,
+      "waypointRelativePos": 3.45,
       "rotationDegrees": 45.0
-    },
-    {
-      "waypointRelativePos": 4.983367598684212,
-      "rotationDegrees": 0.0
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.7561513704318967,
-      "maxWaypointRelativePos": 6.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [
     {
       "fieldPosition": {
@@ -176,7 +126,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": null,

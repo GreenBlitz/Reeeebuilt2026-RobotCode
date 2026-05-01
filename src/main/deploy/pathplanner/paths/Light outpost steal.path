@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 1.5966215277777782,
-        "y": 1.1719397590361438
+        "x": 3.253,
+        "y": 2.394
       },
       "prevControl": {
-        "x": 2.882657552083334,
-        "y": 2.298076007820086
+        "x": 4.539036024305556,
+        "y": 3.5201362487839423
       },
       "nextControl": null,
       "isLocked": false,
@@ -146,7 +146,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.0
+    "rotation": 135.0
   },
   "reversed": false,
   "folder": "Steal Auto",
