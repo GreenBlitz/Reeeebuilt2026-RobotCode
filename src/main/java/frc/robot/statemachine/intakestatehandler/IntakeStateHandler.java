@@ -137,19 +137,22 @@ public class IntakeStateHandler {
 
 	private Command forceOpen() {
 		return new ParallelCommandGroup(
-				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
-				new SequentialCommandGroup(
-			fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS).withTimeout(0.5),
-			fourBar.getCommandsBuilder()
-				.setCurrentWithoutLimit(
-					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
-				)
-		));
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
+			new SequentialCommandGroup(
+				fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS).withTimeout(0.5),
+				fourBar.getCommandsBuilder()
+					.setCurrentWithoutLimit(
+						() -> isOpenFourBarHarder.getAsBoolean()
+							? FourBarConstants.SOFT_OPEN_CURRENT_AMP
+							: FourBarConstants.HOLD_OPEN_CURRENT_AMP
+					)
+			)
+		);
 	}
 
 	public Command openFourBarForAutonomous() {
 		return new ParallelCommandGroup(
-				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS)

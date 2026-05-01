@@ -522,7 +522,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -616,7 +617,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -728,7 +730,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -823,7 +826,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -902,7 +906,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -975,7 +980,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -1047,7 +1053,8 @@ public class AutosBuilder {
 										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get()).onlyIf(() -> !returnToMiddle.getAsBoolean())
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
 								)
 							)
 					)
@@ -1195,7 +1202,10 @@ public class AutosBuilder {
 				robot.getSwerve().getLogPath()
 			)
 			.andThen(
-				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS).onlyIf(() -> !returnToMiddle.getAsBoolean())
+				robot.getSwerve()
+					.getCommandsBuilder()
+					.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+					.onlyIf(() -> !returnToMiddle.getAsBoolean())
 			);
 	}
 
