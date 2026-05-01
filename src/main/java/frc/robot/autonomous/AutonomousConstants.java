@@ -25,7 +25,7 @@ public class AutonomousConstants {
 	public static final double TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END = 0.0;
 	public static final double TIME_BETWEEN_WIGGLES_SECONDS = 0.3;
 	public static final double TIME_TO_WAIT_AT_DEPOT = 2;
-	public static final double TIME_TO_WIGGLE_IN_R_QUARTER_LIGHT = 6;
+	public static final double TIME_TO_WIGGLE_IN_R_QUARTER_LIGHT = 8.5;
 	public static final Rotation2d WIGGLE_RANGE = Rotation2d.fromDegrees(5);
 	public static final double TIME_TO_WAIT_TO_START_PASSING_AFTER_PUSH_AUTO_START = 2;
 	public static final double TIME_TO_PASS_IN_PUSH_AUTO = 7;
