@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.643,
-        "y": 0.736
+        "x": 1.5966215277777782,
+        "y": 1.1719397590361438
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4365974392361116,
-        "y": 2.5224803964120373
+        "x": 2.39021896701389,
+        "y": 2.958420155448181
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost Feed"
     },
     {
       "anchor": {
