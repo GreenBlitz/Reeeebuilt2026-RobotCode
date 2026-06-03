@@ -15,7 +15,7 @@ public class CurrentControlArmCommandsBuilder extends ArmCommandBuilder {
 	}
 
 	public Command setCurrent(double current) {
-		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current)), "Set statorCurrent to: " + current);
+		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current)), "Set current to: " + current);
 	}
 
 	public Command setCurrent(Supplier<Double> current) {

@@ -46,7 +46,7 @@ public class SparkMaxRollerBuilder {
 		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
 
 		SuppliedDoubleSignal voltageSignal = new SuppliedDoubleSignal("voltage", sparkMaxWrapper::getVoltage);
-		SuppliedDoubleSignal currentSignal = new SuppliedDoubleSignal("statorCurrent", sparkMaxWrapper::getOutputCurrent);
+		SuppliedDoubleSignal currentSignal = new SuppliedDoubleSignal("current", sparkMaxWrapper::getOutputCurrent);
 		SuppliedAngleSignal positionSignal = new SuppliedAngleSignal(
 			"position",
 			() -> sparkMaxWrapper.getEncoder().getPosition(),

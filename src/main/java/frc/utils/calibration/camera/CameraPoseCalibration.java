@@ -90,7 +90,7 @@ public class CameraPoseCalibration extends Command {
 		currentRobotRelativeCameraPose = calculateRobotRelativeCameraPosition();
 		sumMeasurementsValues();
 
-		Logger.recordOutput(logPath + "/statorCurrent/currentPose", currentRobotRelativeCameraPose);
+		Logger.recordOutput(logPath + "/current/currentPose", currentRobotRelativeCameraPose);
 		currentCycle++;
 	}
 

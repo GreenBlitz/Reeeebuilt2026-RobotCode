@@ -182,6 +182,7 @@ public class IntakeStateHandler {
 		}
 
 		Logger.recordOutput(logPath + "/HasFourBarBeenReset", hasFourBarBeenReset());
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
 	public boolean hasFourBarBeenReset() {
