@@ -6,7 +6,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -21,7 +20,6 @@ import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.utils.HubUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
@@ -100,25 +98,11 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 
-		Trigger preShiftEndJoystickRumble = new Trigger(
-			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
-		).onTrue(preShiftEndJoystickRumble(usedJoystick));
-
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
-		// Shoot & Pass...
-		usedJoystick.R1.onTrue(
-			robot.getRobotCommander()
-				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
-		);
-		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
-			.onTrue(
-				robot.getRobotCommander()
-					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), () -> getPassState(usedJoystick))
-			);
-		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(true)));
-		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));
-
+		usedJoystick.POV_UP.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.kZero));
+		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
+		usedJoystick.POV_UP.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
 		// Intake binds...
 		robot.getRobotCommander()
 			.getIntakeStateHandler()
@@ -127,9 +111,6 @@ public class JoysticksBindings {
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
-		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.POV_UP.whileTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.FORCE_OPEN));
-		usedJoystick.X.onTrue(robot.getRobotCommander().towerAssist());
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

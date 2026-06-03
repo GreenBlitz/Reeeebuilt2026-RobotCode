@@ -1,5 +1,6 @@
 package frc.robot.statemachine;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
@@ -129,6 +130,12 @@ public class RobotCommander extends GBSubsystem {
 	public Command driveWith(RobotState state, Command command) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
+		return asSubsystemCommand(wantedCommand, state);
+	}
+
+	public Command driveWithFriends(RobotState state, Rotation2d turretAngle) {
+		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
+		Command wantedCommand = friendsShoot(turretAngle).deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
 
@@ -309,6 +316,28 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(
 			setState(RobotState.NEUTRAL),
 			swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
+		);
+	}
+
+	private Command friendsShoot(Rotation2d turretAngle) {
+		return new ParallelCommandGroup(
+			shooterStateHandler.friends(turretAngle),
+			new RepeatCommand(
+				new SequentialCommandGroup(
+					new ParallelCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::calibrationIsReadyToScore),
+							RobotState.CALIBRATION_PRE_SCORE
+						)
+					),
+					new ParallelCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !calibrationCanContinueScoring()),
+							RobotState.CALIBRATION_SCORE
+						)
+					)
+				)
+			)
 		);
 	}
 

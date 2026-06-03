@@ -1,5 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.ShootingCalculations;
@@ -112,6 +113,18 @@ public class ShooterStateHandler {
 			turret.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.turretCalibrationAngle.get()),
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
+		);
+	}
+
+	public Command friends(Rotation2d turretAngle) {
+		return new ParallelCommandGroup(
+			new InstantCommand(
+				() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a " + turretAngle.getDegrees() + " degrees angle")
+			),
+			new InstantCommand(() -> currentState = ShooterState.SHOOT),
+			turret.getCommandsBuilder().setTargetPosition(() -> turretAngle),
+			hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(33)),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(40))
 		);
 	}
 
