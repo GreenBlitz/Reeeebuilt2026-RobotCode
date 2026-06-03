@@ -321,7 +321,7 @@ public class RobotCommander extends GBSubsystem {
 
 	private Command friendsShoot(Rotation2d turretAngle) {
 		return asSubsystemCommand(
-			new ParallelCommandGroup(shooterStateHandler.friends(turretAngle), funnelStateHandler.setState(FunnelState.SHOOT)),
+			new ParallelCommandGroup(shooterStateHandler.friends(turretAngle), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
 			RobotState.PASS
 		);
 	}
