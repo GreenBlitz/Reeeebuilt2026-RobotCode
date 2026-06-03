@@ -50,7 +50,7 @@ public class Arm extends GBSubsystem {
 	}
 
 	public double getCurrent() {
-		return signals.current().getLatestValue();
+		return signals.statorCurrent().getLatestValue();
 	}
 
 	public Rotation2d getVelocity() {
@@ -84,7 +84,7 @@ public class Arm extends GBSubsystem {
 	}
 
 	private void updateInputs() {
-		motor.updateInputs(signals.voltage(), signals.current(), signals.velocity(), signals.position(), signals.current2());
+		motor.updateInputs(signals.voltage(), signals.statorCurrent(), signals.velocity(), signals.position(), signals.torqueCurrent());
 	}
 
 	public void log() {

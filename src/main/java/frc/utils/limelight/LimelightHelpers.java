@@ -1234,7 +1234,7 @@ public class LimelightHelpers {
 	}
 
 	/**
-	 * Gets the current neural classifier result class name.
+	 * Gets the statorCurrent neural classifier result class name.
 	 *
 	 * @param limelightName Name of the Limelight camera
 	 * @return Class name string from classifier pipeline
@@ -1284,7 +1284,7 @@ public class LimelightHelpers {
 	}
 
 	/**
-	 * Gets the current pipeline type.
+	 * Gets the statorCurrent pipeline type.
 	 *
 	 * @param limelightName Name of the Limelight camera
 	 * @return Pipeline type string (e.g. "retro", "apriltag", etc)
@@ -1297,7 +1297,7 @@ public class LimelightHelpers {
 	 * Gets the full JSON results dump.
 	 *
 	 * @param limelightName Name of the Limelight camera
-	 * @return JSON string containing all current results
+	 * @return JSON string containing all statorCurrent results
 	 */
 	public static String getJSONDump(String limelightName) {
 		return getLimelightNTString(limelightName, "json");
@@ -1557,11 +1557,11 @@ public class LimelightHelpers {
 	}
 
 	/**
-	 * Gets the current IMU data from NetworkTables. IMU data is formatted as [robotYaw, Roll, Pitch, Yaw, gyroX, gyroY, gyroZ, accelX, accelY,
-	 * accelZ]. Returns all zeros if data is invalid or unavailable.
+	 * Gets the statorCurrent IMU data from NetworkTables. IMU data is formatted as [robotYaw, Roll, Pitch, Yaw, gyroX, gyroY, gyroZ, accelX,
+	 * accelY, accelZ]. Returns all zeros if data is invalid or unavailable.
 	 *
 	 * @param limelightName Name/identifier of the Limelight
-	 * @return IMUData object containing all current IMU data
+	 * @return IMUData object containing all statorCurrent IMU data
 	 */
 	public static IMUData getIMUData(String limelightName) {
 		double[] imuData = getLimelightNTDoubleArray(limelightName, "imu");
@@ -1584,7 +1584,7 @@ public class LimelightHelpers {
 	}
 
 	/**
-	 * Sets LED mode to be controlled by the current pipeline.
+	 * Sets LED mode to be controlled by the statorCurrent pipeline.
 	 *
 	 * @param limelightName Name of the Limelight camera
 	 */
@@ -1888,7 +1888,7 @@ public class LimelightHelpers {
 	 * Gets the latest JSON results output and returns a LimelightResults object.
 	 *
 	 * @param limelightName Name of the Limelight camera
-	 * @return LimelightResults object containing all current target data
+	 * @return LimelightResults object containing all statorCurrent target data
 	 */
 	public static LimelightResults getLatestResults(String limelightName) {
 		long start = System.nanoTime();

@@ -204,7 +204,7 @@ public class Pigeon2Wrapper extends Pigeon2 {
 
 	/**
 	 * @param newAngleDegrees     - the wanted angle in degrees
-	 * @param currentAngleDegrees - the current angle in degrees
+	 * @param currentAngleDegrees - the statorCurrent angle in degrees
 	 * @return the offset
 	 */
 	private double calculateOffset(double newAngleDegrees, double currentAngleDegrees) {
