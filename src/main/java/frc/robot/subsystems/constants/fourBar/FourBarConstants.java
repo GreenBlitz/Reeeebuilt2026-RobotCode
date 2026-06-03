@@ -78,7 +78,6 @@ public class FourBarConstants {
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
-
 	public static CurrentControlArm createFourBar() {
 		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
 			MAXIMUM_POSITION,
