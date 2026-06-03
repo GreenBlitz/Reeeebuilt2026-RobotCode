@@ -7,7 +7,7 @@ public enum DriveSpeed {
 	PASS(0.5, 0.8),
 	BOOST_SHOOT(0.5, 0.8),
 	BOOST_PASS(0.7, 0.8),
-	SLOW(0.4, 0.4);
+	SLOW(0.25, 0.25);
 
 	private final double translationSpeedFactor;
 	private final double rotationSpeedFactor;

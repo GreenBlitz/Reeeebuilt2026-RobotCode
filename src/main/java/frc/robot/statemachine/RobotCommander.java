@@ -320,24 +320,9 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command friendsShoot(Rotation2d turretAngle) {
-		return new ParallelCommandGroup(
-			shooterStateHandler.friends(turretAngle),
-			new RepeatCommand(
-				new SequentialCommandGroup(
-					new ParallelCommandGroup(
-						asSubsystemCommand(
-							funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::calibrationIsReadyToScore),
-							RobotState.CALIBRATION_PRE_SCORE
-						)
-					),
-					new ParallelCommandGroup(
-						asSubsystemCommand(
-							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !calibrationCanContinueScoring()),
-							RobotState.CALIBRATION_SCORE
-						)
-					)
-				)
-			)
+		return asSubsystemCommand(
+			new ParallelCommandGroup(shooterStateHandler.friends(turretAngle), funnelStateHandler.setState(FunnelState.SHOOT)),
+			RobotState.PASS
 		);
 	}
 

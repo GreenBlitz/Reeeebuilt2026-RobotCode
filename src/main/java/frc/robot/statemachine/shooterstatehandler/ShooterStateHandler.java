@@ -122,7 +122,7 @@ public class ShooterStateHandler {
 				() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a " + turretAngle.getDegrees() + " degrees angle")
 			),
 			new InstantCommand(() -> currentState = ShooterState.SHOOT),
-			turret.getCommandsBuilder().setTargetPosition(() -> turretAngle),
+			turret.getCommandsBuilder().setTargetPosition(turretAngle),
 			hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(33)),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(40))
 		);
@@ -145,7 +145,6 @@ public class ShooterStateHandler {
 
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
-		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
 	public boolean hasABallBeenShot() {
