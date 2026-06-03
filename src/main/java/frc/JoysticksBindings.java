@@ -3,6 +3,7 @@ package frc;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.*;
@@ -101,8 +102,11 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		usedJoystick.POV_UP.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.kZero));
-		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
-		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
+		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
+		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
+
+		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(new Pose2d())));
+
 		// Intake binds...
 		robot.getRobotCommander()
 			.getIntakeStateHandler()

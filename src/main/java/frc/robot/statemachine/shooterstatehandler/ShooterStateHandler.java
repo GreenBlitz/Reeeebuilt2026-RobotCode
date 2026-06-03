@@ -123,8 +123,8 @@ public class ShooterStateHandler {
 			),
 			new InstantCommand(() -> currentState = ShooterState.SHOOT),
 			turret.getCommandsBuilder().setTargetPosition(turretAngle),
-			hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(33)),
-			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(40))
+			hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(27)),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(50))
 		);
 	}
 
