@@ -13,6 +13,7 @@ import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
@@ -99,17 +100,17 @@ public class JoysticksBindings {
 
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
-		usedJoystick.B.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.kZero));
-		usedJoystick.X.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
+		usedJoystick.POV_UP.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.kZero));
+		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
+		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
 		// Intake binds...
-//		robot.getRobotCommander()
-//			.getIntakeStateHandler()
-//			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
-//		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
-//		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
-//		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
-//		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
+		robot.getRobotCommander()
+			.getIntakeStateHandler()
+			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
+		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
+		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
+		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
+		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
