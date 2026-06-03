@@ -19,7 +19,7 @@ public class CurrentControlArmCommandsBuilder extends ArmCommandBuilder {
 	}
 
 	public Command setCurrent(Supplier<Double> current) {
-		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current.get())), "Set statorCurrent by supplier");
+		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrent(current.get())), "Set current by supplier");
 	}
 
 	public Command setCurrentWithoutLimit(double current) {
@@ -29,7 +29,7 @@ public class CurrentControlArmCommandsBuilder extends ArmCommandBuilder {
 	public Command setCurrentWithoutLimit(Supplier<Double> current) {
 		return arm.asSubsystemCommand(
 			new RunCommand(() -> arm.setCurrentWithoutLimit(current.get())),
-			"Set statorCurrent without limit by" + " supplier"
+			"Set current without limit by" + " supplier"
 		);
 	}
 
