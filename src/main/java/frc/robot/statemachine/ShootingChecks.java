@@ -1,10 +1,13 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
 import frc.robot.Robot;
+import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.utils.HubUtil;
 import frc.utils.time.TimeUtil;
@@ -76,6 +79,12 @@ public class ShootingChecks {
 		boolean isHoodAtPosition = MathUtil.isNear(targetHoodPosition.getDegrees(), hoodPosition.getDegrees(), hoodTolerance.getDegrees());
 		Logger.recordOutput(logPath + "/IsHoodAtPosition", isHoodAtPosition);
 		return isHoodAtPosition;
+	}
+
+	private static boolean areWeGonnaDoGA(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity){
+		Translation2d fieldRelativeTurretVelocities = ShootingCalculations.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
+		Translation2d currentTurretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
+		Translation2d predictedTurretPositionWhenHoodCloses = new Translation2d(currentTurretPosition.getX()+fieldRelativeTurretVelocities.getX()*,);
 	}
 
 	private static boolean isReadyToShoot(

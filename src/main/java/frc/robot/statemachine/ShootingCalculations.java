@@ -40,18 +40,8 @@ public class ShootingCalculations {
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);
-		// Split Robot's Speeds
-		Translation2d robotTranslationalVelocity = new Translation2d(
-			fieldRelativeSpeeds.vxMetersPerSecond,
-			fieldRelativeSpeeds.vyMetersPerSecond
-		);
 
-		// Turret Field Relative Velocity
-		Translation2d turretTangentialVelocity = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
-			.rotateBy(Rotation2d.kCCW_90deg)
-			.times(gyroYawAngularVelocity.getRadians())
-			.rotateBy(robotPose.getRotation());
-		Translation2d turretFieldRelativeVelocity = robotTranslationalVelocity.plus(turretTangentialVelocity);
+		Translation2d turretFieldRelativeVelocity = calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
 
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
@@ -121,6 +111,21 @@ public class ShootingCalculations {
 			FLYWHEEL_PASSING_INTERPOLATION_MAP,
 			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose))
 		);
+	}
+
+	public static Translation2d calculateFieldRelativeTurretVelocities(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity){
+		// Split Robot's Speeds
+		Translation2d robotTranslationalVelocity = new Translation2d(
+				fieldRelativeSpeeds.vxMetersPerSecond,
+				fieldRelativeSpeeds.vyMetersPerSecond
+		);
+
+		// Turret Field Relative Velocity
+		Translation2d turretTangentialVelocity = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
+				.rotateBy(Rotation2d.kCCW_90deg)
+				.times(gyroYawAngularVelocity.getRadians())
+				.rotateBy(robotPose.getRotation());
+		return robotTranslationalVelocity.plus(turretTangentialVelocity);
 	}
 
 	private static Translation2d getPredictedTurretPoseByFlightTime(
