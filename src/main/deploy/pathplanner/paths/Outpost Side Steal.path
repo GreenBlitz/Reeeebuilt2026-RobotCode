@@ -3,118 +3,102 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.746961483594864,
-        "y": 4.05
+        "x": 7.6,
+        "y": 0.9100000000000001
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.761037567084079,
-        "y": 4.254042933810375
+        "x": 7.725814399108442,
+        "y": 2.334153702692868
       },
       "isLocked": false,
-      "linkedName": "hub wait"
+      "linkedName": "Outpost Side Wait"
     },
     {
       "anchor": {
-        "x": 10.0,
-        "y": 5.15
+        "x": 7.6,
+        "y": 6.274201066684863
       },
       "prevControl": {
-        "x": 9.068455035441623,
-        "y": 6.007552074767108
+        "x": 7.619511471492068,
+        "y": 6.02496362471393
       },
       "nextControl": {
-        "x": 10.303209012730976,
-        "y": 4.870874968092602
+        "x": 7.538418679494178,
+        "y": 7.060834243085881
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.0,
-        "y": 3.15
+        "x": 5.864223924217613,
+        "y": 6.151581036208152
       },
       "prevControl": {
-        "x": 10.780249943070897,
-        "y": 3.4952481507704976
+        "x": 6.226054112739944,
+        "y": 7.083583270223496
       },
       "nextControl": {
-        "x": 9.09854274076988,
-        "y": 2.75111954571516
+        "x": 5.62433715988083,
+        "y": 5.533680685809963
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.3,
-        "y": 4.960114122681883
+        "x": 5.559956958912037,
+        "y": 2.38246752025463
       },
       "prevControl": {
-        "x": 9.488136984473895,
-        "y": 3.997404963665284
+        "x": 6.836278645833332,
+        "y": 2.3511712962962963
       },
       "nextControl": {
-        "x": 7.141006801352596,
-        "y": 5.899209010019191
+        "x": 4.584600171925198,
+        "y": 2.4063838924025114
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.710661896243291,
-        "y": 5.681878354203935
+        "x": 0.67,
+        "y": 0.682763997165132
       },
       "prevControl": {
-        "x": 5.988518499206467,
-        "y": 5.342421211503333
-      },
-      "nextControl": {
-        "x": 1.870783953270819,
-        "y": 5.956065811231225
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.56,
-        "y": 5.975825159143519
-      },
-      "prevControl": {
-        "x": 2.0178902627071142,
-        "y": 5.754394643930405
+        "x": 1.666261180679785,
+        "y": 1.9987119856887297
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot Feed"
+      "linkedName": "Outpost Feed"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6283422459893045,
-      "rotationDegrees": -154.98331581345016
-    },
-    {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 119.99999999999999
+      "rotationDegrees": -90.5336518105933
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": 59.99999999999999
+      "rotationDegrees": 89.30793065567332
     },
     {
-      "waypointRelativePos": 3.411513859275014,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 2.641570723684212,
+      "rotationDegrees": 89.50893249690549
+    },
+    {
+      "waypointRelativePos": 3.4619654605263146,
+      "rotationDegrees": 52.34529936440549
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 4.05,
-      "maxWaypointRelativePos": 5.0,
+      "minWaypointRelativePos": 3.5339493355481753,
+      "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 0.8,
         "maxAcceleration": 2.0,
@@ -140,10 +124,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Steal Auto",
+  "folder": "Side Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

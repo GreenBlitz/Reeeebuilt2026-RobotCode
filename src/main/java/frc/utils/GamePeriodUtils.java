@@ -1,5 +1,6 @@
 package frc.utils;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 
@@ -59,6 +60,27 @@ public class GamePeriodUtils {
 		}
 	}
 
+	private static String getCurrentShift() {
+		if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() > TRANSITION_SHIFT_DURATION_SECONDS
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_1_END_TIME_SINCE_TELEOP_START
+		) {
+			return "Shift 1";
+		} else if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_1_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_2_END_TIME_SINCE_TELEOP_START
+		) {
+			return "Shift 2";
+		} else if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_2_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_3_END_TIME_SINCE_TELEOP_START
+		) {
+			return "Shift 3";
+		} else {
+			return "Shift 4";
+		}
+	}
+
 	public static double getTimeUntilTransitionShiftEnds() {
 		if (!isTransitionShift()) {
 			return -1;
@@ -79,6 +101,18 @@ public class GamePeriodUtils {
 		}
 		return ALLIANCE_SHIFT_DURATION_SECONDS
 			- ((TimeUtil.getTimeSinceTeleopInitSeconds() - TRANSITION_SHIFT_DURATION_SECONDS) % GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS);
+	}
+
+	public static String getCurrentGamePeriod() {
+		if (DriverStation.isAutonomous()) {
+			return "Autonomous";
+		} else if (isTransitionShift()) {
+			return "Transition Shift";
+		} else if (isInEndgame()) {
+			return "Endgame";
+		} else {
+			return getCurrentShift();
+		}
 	}
 
 }
