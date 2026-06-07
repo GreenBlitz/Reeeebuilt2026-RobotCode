@@ -133,7 +133,8 @@ public class SwerveStateHandler {
 					Rotation2d.kCW_90deg,
 					assistTarget,
 					swerveConstants,
-					SwerveState.DEFAULT_DRIVE
+					SwerveState.DEFAULT_DRIVE,
+					SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR
 				),
 				robotPoseSupplier.get().get().getRotation(),
 				robotTowerEnterRotation2d,

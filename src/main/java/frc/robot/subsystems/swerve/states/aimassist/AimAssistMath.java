@@ -88,7 +88,8 @@ public class AimAssistMath {
 		Rotation2d allianceRelativeTargetHeading,
 		Translation2d objectTranslation,
 		SwerveConstants swerveConstants,
-		SwerveState swerveState
+		SwerveState swerveState,
+		double magnitudeCompensationFactor
 	) {
 		Pose2d robotPoseWithTargetHeading = new Pose2d(robotPose.getX(), robotPose.getY(), allianceRelativeTargetHeading);
 		Translation2d objectRelativeToRobot = FieldMath.getRelativeTranslation(robotPoseWithTargetHeading, objectTranslation);
@@ -101,8 +102,8 @@ public class AimAssistMath {
 
 		ChassisSpeeds targetHeadingRelativeSpeeds = SwerveMath.allianceToRobotRelativeSpeeds(speeds, targetHeadingHingeSystemAngle);
 		ChassisSpeeds assistedSpeeds = new ChassisSpeeds(
-			applyMagnitudeCompensation(targetHeadingRelativeSpeeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond),
-			applyMagnitudeCompensation(neededObjectHorizontalVelocityMetersPerSecond, speeds.omegaRadiansPerSecond),
+			applyMagnitudeCompensation(targetHeadingRelativeSpeeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond, magnitudeCompensationFactor),
+			applyMagnitudeCompensation(neededObjectHorizontalVelocityMetersPerSecond, speeds.omegaRadiansPerSecond, magnitudeCompensationFactor),
 			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
 		);
 		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
@@ -112,8 +113,8 @@ public class AimAssistMath {
 		return velocityPerSecond.times(SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR).div(magnitude + SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR);
 	}
 
-	private static double applyMagnitudeCompensation(double velocityPerSecond, double magnitude) {
-		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) / (magnitude + SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR);
+	private static double applyMagnitudeCompensation(double velocityPerSecond, double magnitude,double factor) {
+		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) / (magnitude + SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR);
 	}
 
 }
