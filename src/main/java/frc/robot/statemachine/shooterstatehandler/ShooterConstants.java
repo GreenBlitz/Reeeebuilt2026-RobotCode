@@ -7,6 +7,8 @@ public class ShooterConstants {
 
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
 
+	public static final Double TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC = 0.1;
+
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d(
 		"Tunable/TurretAngle",
 		Rotation2d.fromDegrees(0.0)
