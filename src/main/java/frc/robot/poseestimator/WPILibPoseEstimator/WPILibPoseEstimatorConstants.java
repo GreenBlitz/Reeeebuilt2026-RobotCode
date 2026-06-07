@@ -37,5 +37,4 @@ public class WPILibPoseEstimatorConstants {
 
 	public static Pose2d ESTIMATED_POSE_VELOCITY_TOLERANCE = new Pose2d();
 
-
 }
