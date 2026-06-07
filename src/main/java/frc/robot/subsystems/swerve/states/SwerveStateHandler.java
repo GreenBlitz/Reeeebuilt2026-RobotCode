@@ -15,6 +15,7 @@ import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.robot.subsystems.swerve.states.aimassist.TowerAssistCalculations;
 import frc.utils.alerts.Alert;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -26,6 +27,8 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Pose2d>> robotPoseSupplier;
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
+	private Rotation2d robotTowerEnterRotation2d = Rotation2d.kCW_90deg;
+	public boolean wasAbleToTowerAssist = true;
 	private boolean isAimAssistOn;
 
 	public SwerveStateHandler(Swerve swerve) {
@@ -48,11 +51,18 @@ public class SwerveStateHandler {
 		this.turretAngleSupplier = Optional.of(turretAngleSupplier);
 	}
 
+	public void updateRobotTowerEnter(){
+		this.robotTowerEnterRotation2d = TowerAssistCalculations.getRobotTargetRotation(TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get()),robotPoseSupplier.get().get());
+		this.wasAbleToTowerAssist = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
+				|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
+	}
+
 	public void enableAimAssist(boolean enable) {
 		isAimAssistOn = enable;
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
+		Logger.recordOutput("6767",wasAbleToTowerAssist);
 		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
@@ -60,6 +70,10 @@ public class SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
+		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
+			return handleEnterTowerAimAssist(speeds);
+		}
+		wasAbleToTowerAssist = false;
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
@@ -73,9 +87,7 @@ public class SwerveStateHandler {
 				return handleLookAtTargetAimAssist(speeds);
 			}
 		}
-		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
-			return handleEnterTowerAimAssist(speeds);
-		}
+
 		return speeds;
 	}
 
@@ -114,21 +126,18 @@ public class SwerveStateHandler {
 
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
 		if (
-			!(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
-				|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()))
+			wasAbleToTowerAssist
 		) {
-			Pose2d assistTarget = TowerAssistCalculations.getAssistTarget(robotPoseSupplier.get().get());
-			return AimAssistMath.getRotationAssistedSpeeds(
-				AimAssistMath.getObjectAssistedSpeeds(
+			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
+			return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(
 					speeds,
 					robotPoseSupplier.get().get(),
 					Rotation2d.kCW_90deg,
-					assistTarget.getTranslation(),
+					assistTarget,
 					swerveConstants,
-					SwerveState.DEFAULT_DRIVE
-				),
+					SwerveState.DEFAULT_DRIVE),
 				robotPoseSupplier.get().get().getRotation(),
-				assistTarget.getRotation(),
+				robotTowerEnterRotation2d,
 				swerveConstants
 			);
 		}

@@ -22,9 +22,9 @@ public class AimAssistMath {
 		Rotation2d pidOutputVelocityPerSecond = Rotation2d
 			.fromDegrees(swerveConstants.rotationDegreesPIDController().calculate(robotHeading.getDegrees(), targetHeading.getDegrees()));
 
-		Rotation2d angularVelocityPerSecond = applyMagnitudeCompensation(pidOutputVelocityPerSecond, SwerveMath.getDriveMagnitude(speeds));
+		Rotation2d angularVelocityPerSecond = applyMagnitudeCompensation(pidOutputVelocityPerSecond, 0);
 		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath
-			.clamp(angularVelocityPerSecond, swerveConstants.maxRotationalVelocityPerSecond());
+			.clamp(pidOutputVelocityPerSecond.times(2), swerveConstants.maxRotationalVelocityPerSecond());
 
 		return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, clampedAngularVelocityPerSecond.getRadians());
 	}
@@ -60,8 +60,8 @@ public class AimAssistMath {
 
 		ChassisSpeeds targetHeadingRelativeSpeeds = SwerveMath.allianceToRobotRelativeSpeeds(speeds, targetHeadingHingeSystemAngle);
 		ChassisSpeeds assistedSpeeds = new ChassisSpeeds(
-			targetHeadingRelativeSpeeds.vxMetersPerSecond,
-			neededObjectHorizontalVelocityMetersPerSecond,
+			applyMagnitudeCompensation(targetHeadingRelativeSpeeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond),
+			applyMagnitudeCompensation(neededObjectHorizontalVelocityMetersPerSecond,speeds.omegaRadiansPerSecond),
 			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
 		);
 		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
@@ -69,6 +69,9 @@ public class AimAssistMath {
 
 	private static Rotation2d applyMagnitudeCompensation(Rotation2d velocityPerSecond, double magnitude) {
 		return velocityPerSecond.times(SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR).div(magnitude + SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR);
+	}
+	private static double applyMagnitudeCompensation(double velocityPerSecond, double magnitude) {
+		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) /(magnitude + SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR);
 	}
 
 }
