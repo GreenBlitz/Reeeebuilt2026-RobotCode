@@ -16,7 +16,7 @@ public class TowerAssistCalculations {
 		return isNearBlueTower ? blueTower : redTower;
 	}
 
-	public static Rotation2d getRobotTargetRotation(Translation2d closestTower,Pose2d robotPose){
+	public static Rotation2d getRobotTargetRotation(Translation2d closestTower, Pose2d robotPose) {
 		boolean isOnOutpostSide = robotPose.getY() < closestTower.getY();
 		return isOnOutpostSide ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
 	}

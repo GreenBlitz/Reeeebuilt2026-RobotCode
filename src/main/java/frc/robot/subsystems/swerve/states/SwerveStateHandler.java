@@ -51,10 +51,11 @@ public class SwerveStateHandler {
 		this.turretAngleSupplier = Optional.of(turretAngleSupplier);
 	}
 
-	public void updateRobotTowerEnter(){
-		this.robotTowerEnterRotation2d = TowerAssistCalculations.getRobotTargetRotation(TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get()),robotPoseSupplier.get().get());
+	public void updateRobotTowerEnter() {
+		this.robotTowerEnterRotation2d = TowerAssistCalculations
+			.getRobotTargetRotation(TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get()), robotPoseSupplier.get().get());
 		this.wasAbleToTowerAssist = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
-				|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
+			|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
 	}
 
 	public void enableAimAssist(boolean enable) {
@@ -62,7 +63,7 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		Logger.recordOutput("6767",wasAbleToTowerAssist);
+		Logger.recordOutput(swerve.getLogPath() + "/wasAbleToTowerAssist", wasAbleToTowerAssist);
 		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
@@ -73,7 +74,6 @@ public class SwerveStateHandler {
 		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
 			return handleEnterTowerAimAssist(speeds);
 		}
-		wasAbleToTowerAssist = false;
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
@@ -87,7 +87,6 @@ public class SwerveStateHandler {
 				return handleLookAtTargetAimAssist(speeds);
 			}
 		}
-
 		return speeds;
 	}
 
@@ -125,17 +124,17 @@ public class SwerveStateHandler {
 	}
 
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
-		if (
-			wasAbleToTowerAssist
-		) {
+		if (wasAbleToTowerAssist) {
 			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
-			return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeedsWithMagnitudeCompensation(
+			return AimAssistMath.getRotationAssistedSpeeds(
+				AimAssistMath.getObjectAssistedSpeedsWithMagnitudeCompensation(
 					speeds,
 					robotPoseSupplier.get().get(),
 					Rotation2d.kCW_90deg,
 					assistTarget,
 					swerveConstants,
-					SwerveState.DEFAULT_DRIVE),
+					SwerveState.DEFAULT_DRIVE
+				),
 				robotPoseSupplier.get().get().getRotation(),
 				robotTowerEnterRotation2d,
 				swerveConstants

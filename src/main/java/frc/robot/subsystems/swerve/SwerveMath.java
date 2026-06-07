@@ -63,7 +63,6 @@ public class SwerveMath {
 
 	public static double getDriveMagnitude(ChassisSpeeds chassisSpeeds) {
 		return Math.sqrt(Math.pow(chassisSpeeds.vxMetersPerSecond, 2) + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
-		
 	}
 
 }

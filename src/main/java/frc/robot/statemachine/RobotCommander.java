@@ -11,7 +11,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.robot.subsystems.swerve.states.SwerveStateHandler;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import org.littletonrobotics.junction.Logger;
 
@@ -311,7 +310,8 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command towerAssist() {
-		return new ParallelCommandGroup(new InstantCommand(() -> swerve.getStateHandler().updateRobotTowerEnter()),
+		return new ParallelCommandGroup(
+			new InstantCommand(() -> swerve.getStateHandler().updateRobotTowerEnter()),
 			setState(RobotState.NEUTRAL),
 			swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
 		).until(() -> !swerve.getStateHandler().wasAbleToTowerAssist);

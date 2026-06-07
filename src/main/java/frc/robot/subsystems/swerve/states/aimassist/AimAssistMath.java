@@ -102,7 +102,7 @@ public class AimAssistMath {
 		ChassisSpeeds targetHeadingRelativeSpeeds = SwerveMath.allianceToRobotRelativeSpeeds(speeds, targetHeadingHingeSystemAngle);
 		ChassisSpeeds assistedSpeeds = new ChassisSpeeds(
 			applyMagnitudeCompensation(targetHeadingRelativeSpeeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond),
-			applyMagnitudeCompensation(neededObjectHorizontalVelocityMetersPerSecond,speeds.omegaRadiansPerSecond),
+			applyMagnitudeCompensation(neededObjectHorizontalVelocityMetersPerSecond, speeds.omegaRadiansPerSecond),
 			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
 		);
 		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
