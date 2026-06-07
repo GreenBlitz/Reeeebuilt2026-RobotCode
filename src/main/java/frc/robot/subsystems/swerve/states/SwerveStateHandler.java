@@ -71,9 +71,6 @@ public class SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
-		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
-			return handleEnterTowerAimAssist(speeds);
-		}
 		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
@@ -86,6 +83,9 @@ public class SwerveStateHandler {
 			if (isTurretMoveLegalSupplier.get().get() == false) {
 				return handleLookAtTargetAimAssist(speeds);
 			}
+		}
+		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
+			return handleEnterTowerAimAssist(speeds);
 		}
 		return speeds;
 	}
