@@ -13,6 +13,22 @@ import frc.utils.math.ToleranceMath;
 
 public class AimAssistMath {
 
+	public static ChassisSpeeds getRotationAssistedSpeedsWithMagnitudeCompensation(
+		ChassisSpeeds speeds,
+		Rotation2d robotHeading,
+		Rotation2d targetHeading,
+		SwerveConstants swerveConstants
+	) {
+		Rotation2d pidOutputVelocityPerSecond = Rotation2d
+			.fromDegrees(swerveConstants.rotationDegreesPIDController().calculate(robotHeading.getDegrees(), targetHeading.getDegrees()));
+
+			Rotation2d angularVelocityPerSecond = applyMagnitudeCompensation(pidOutputVelocityPerSecond, SwerveMath.getDriveMagnitude(speeds));
+		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath
+			.clamp(angularVelocityPerSecond, swerveConstants.maxRotationalVelocityPerSecond());
+
+		return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, clampedAngularVelocityPerSecond.getRadians());
+	}
+
 	public static ChassisSpeeds getRotationAssistedSpeeds(
 		ChassisSpeeds speeds,
 		Rotation2d robotHeading,
@@ -22,9 +38,8 @@ public class AimAssistMath {
 		Rotation2d pidOutputVelocityPerSecond = Rotation2d
 			.fromDegrees(swerveConstants.rotationDegreesPIDController().calculate(robotHeading.getDegrees(), targetHeading.getDegrees()));
 
-		Rotation2d angularVelocityPerSecond = applyMagnitudeCompensation(pidOutputVelocityPerSecond, 0);
 		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath
-			.clamp(pidOutputVelocityPerSecond.times(2), swerveConstants.maxRotationalVelocityPerSecond());
+			.clamp(pidOutputVelocityPerSecond, swerveConstants.maxRotationalVelocityPerSecond());
 
 		return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, clampedAngularVelocityPerSecond.getRadians());
 	}

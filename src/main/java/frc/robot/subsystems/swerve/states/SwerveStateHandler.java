@@ -129,7 +129,7 @@ public class SwerveStateHandler {
 			wasAbleToTowerAssist
 		) {
 			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
-			return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeeds(
+			return AimAssistMath.getRotationAssistedSpeeds(AimAssistMath.getObjectAssistedSpeedsWithMagnitudeCompensation(
 					speeds,
 					robotPoseSupplier.get().get(),
 					Rotation2d.kCW_90deg,
