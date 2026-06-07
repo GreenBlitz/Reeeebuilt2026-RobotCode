@@ -78,7 +78,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.lastEstimatedPoseVelocity = new RobotPoseEstimation(initialTimestampSeconds, new Pose2d());
 	}
 
-
 	@Override
 	public Pose2d getEstimatedPose() {
 		return poseEstimator.getEstimatedPosition();
@@ -179,8 +178,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void log() {
-//		Logger.recordOutput(logPath + "estimatedPoseVelocity", getEstimatedPoseVelocity(TimeUtil.getCurrentTimeSeconds()));
-
 		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
 		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
 		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
@@ -296,14 +293,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private RobotPoseEstimation calculateEstimatedVelocity(double timestamp) {
-		double dt = (timestamp - lastEstimatedPoseVelocity.getTimestampSeconds());
-		if (dt != 0) {
+		double deltaTime = (timestamp - lastEstimatedPoseVelocity.getTimestampSeconds());
+		if (deltaTime != 0) {
 			RobotPoseEstimation poseVelocity = new RobotPoseEstimation(
 				timestamp,
 				new Pose2d(
-					(getEstimatedPose().getX() - lastEstimatedPose.getX()) / dt,
-					(getEstimatedPose().getY() - lastEstimatedPose.getY()) / dt,
-					Rotation2d.fromRadians((getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getRotation().getRadians()) / dt)
+					(getEstimatedPose().getX() - lastEstimatedPose.getX()) / deltaTime,
+					(getEstimatedPose().getY() - lastEstimatedPose.getY()) / deltaTime,
+					Rotation2d.fromRadians((getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getRotation().getRadians()) / deltaTime)
 				)
 			);
 			if (
@@ -342,6 +339,5 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE
 		);
 	}
-
 
 }
