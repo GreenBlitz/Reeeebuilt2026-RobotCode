@@ -300,7 +300,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				new Pose2d(
 					(getEstimatedPose().getX() - lastEstimatedPose.getX()) / deltaTime,
 					(getEstimatedPose().getY() - lastEstimatedPose.getY()) / deltaTime,
-					Rotation2d.fromRadians((getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getRotation().getRadians()) / deltaTime)
+					Rotation2d
+						.fromRadians((getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getRotation().getRadians()) / deltaTime)
 				)
 			);
 			if (
