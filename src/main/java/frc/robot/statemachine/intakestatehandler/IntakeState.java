@@ -8,7 +8,6 @@ public enum IntakeState {
 	INTAKE(Rotation2d.fromDegrees(22), 0.9),
 	FORCE_OPEN(Rotation2d.fromDegrees(22), 0.9),
 	OUTTAKE(Rotation2d.fromDegrees(22), -0.9),
-	RESET_FOUR_BAR(Rotation2d.fromRotations(Double.NaN), Double.NaN),
 	CALIBRATION(Rotation2d.fromRotations(Double.NaN), Double.NaN),
 	STAY_IN_PLACE(Rotation2d.fromRotations(Double.NaN), Double.NaN);
 
