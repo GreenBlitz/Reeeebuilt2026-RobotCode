@@ -128,6 +128,7 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
+		usedJoystick.POV_UP.whileTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.FORCE_OPEN));
 		usedJoystick.X.onTrue(robot.getRobotCommander().towerAssist());
 	}
 

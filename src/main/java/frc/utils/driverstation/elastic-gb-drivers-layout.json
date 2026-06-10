@@ -179,6 +179,19 @@
               "true_icon": "None",
               "false_icon": "None"
             }
+          },
+          {
+            "title": "Return To Middle",
+            "x": 1120.0,
+            "y": 600.0,
+            "width": 280.0,
+            "height": 160.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Return To Middle",
+              "period": 0.06,
+              "sort_options": false
+            }
           }
         ]
       }
