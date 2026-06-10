@@ -61,8 +61,8 @@ public class RobotManager extends LoggedRobot {
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
-            if (DriverStationUtil.isMatch())
-                robot.disableAllLimelightTemperatureRegulations();
+			if (DriverStationUtil.isMatch())
+				robot.disableAllLimelightTemperatureRegulations();
 		});
 	}
 
@@ -70,7 +70,6 @@ public class RobotManager extends LoggedRobot {
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
-			robot.enableAllLimelightTemperatureRegulations();
 		}
 	}
 
