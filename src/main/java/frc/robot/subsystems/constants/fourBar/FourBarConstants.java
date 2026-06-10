@@ -72,6 +72,9 @@ public class FourBarConstants {
 	public static final double FOUR_BAR_RESET_VOLTAGE = 2;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
+	public static final double SLOW_CLOSE_VOLTAGE = 2;
+	public static final Rotation2d FOUR_BAR_POSITION_FOR_SLOW_CLOSE = Rotation2d.fromDegrees(85);
+
 	public static final double FOUR_BAR_LENGTH = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();

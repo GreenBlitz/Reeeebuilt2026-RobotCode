@@ -84,16 +84,7 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.HARD_CLOSE_CURRENT_AMP)
-					.withTimeout(FourBarConstants.HARD_CLOSE_TIME_SECONDS),
-				fourBar.getCommandsBuilder()
-					.setVoltageWithoutLimit(
-						FourBarConstants.CLOSE_VOLTAGE,
-						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-					),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.SOFT_CLOSE_CURRENT_AMP)
-					.withTimeout(FourBarConstants.SOFT_CLOSE_TIME_SECONDS),
+					.setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
 				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
 						() -> isCloseFourBarHarder.getAsBoolean()
@@ -108,6 +99,16 @@ public class IntakeStateHandler {
 		);
 	}
 
+	public Command slowClose(){
+		return new ParallelCommandGroup(
+				new SequentialCommandGroup(
+						fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.SLOW_CLOSE_VOLTAGE, () -> fourBar.isPastPosition(FourBarConstants.FOUR_BAR_POSITION_FOR_SLOW_CLOSE)),
+						openFourBar()
+				),
+				rollers.getCommandsBuilder().setPower(IntakeState.SLOW_CLOSE.getIntakePower())
+		);
+	}
+
 	public Command setState(IntakeState intakeState) {
 		return new ParallelCommandGroup(switch (intakeState) {
 			case CALIBRATION -> calibration();
@@ -116,6 +117,7 @@ public class IntakeStateHandler {
 			case OUTTAKE -> outtake();
 			case RESET_FOUR_BAR -> resetFourBar();
 			case CLOSED -> close();
+			case SLOW_CLOSE -> slowClose();
 		},
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", intakeState.name())),
 			new InstantCommand(() -> currentState = intakeState)
@@ -125,8 +127,7 @@ public class IntakeStateHandler {
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
 			fourBar.getCommandsBuilder()
-				.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP)
-				.withTimeout(FourBarConstants.HARD_OPEN_TIME_SECONDS),
+				.setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
 					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
