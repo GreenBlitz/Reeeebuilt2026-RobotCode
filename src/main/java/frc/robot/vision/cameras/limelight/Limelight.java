@@ -1,5 +1,4 @@
 package frc.robot.vision.cameras.limelight;
-
 import edu.wpi.first.math.geometry.*;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
@@ -35,6 +34,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private final LimelightInputsSet inputs;
 
+	private boolean throttleState;
+
 	private RobotPoseObservation mt1PoseObservation;
 	private RobotPoseObservation mt2PoseObservation;
 
@@ -62,6 +63,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.mt2PoseObservation = new RobotPoseObservation();
 
 		this.inputs = new LimelightInputsSet();
+
+		this.throttleState = false;
 
 		this.neuralDetectionFilter = rawDetection -> true;
 		this.colorDetectionFilter = rawTarget -> true;
@@ -166,6 +169,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		inputs.hardwareInputs().connected = LimelightHelpersAdditions.getIsConnected(name);
 		inputs.hardwareInputs().temperatureCelsius = LimelightHelpersAdditions.getTemperatureCelsius(name);
 		Logger.processInputs(logPath, inputs.hardwareInputs());
+		Logger.recordOutput(logPath+"/throttleState", throttleState);
 	}
 
 	public String getName() {
@@ -282,10 +286,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void enableTemperatureRegulation() {
 		LimelightHelpers.SetThrottle(name, THROTTLE_ENABLE_VALUE);
+		throttleState = true;
 	}
 
 	public void disableTemperatureRegulation() {
 		LimelightHelpers.SetThrottle(name, THROTTLE_DISABLE_VALUE);
+		throttleState = false;
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {

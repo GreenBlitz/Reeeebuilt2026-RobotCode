@@ -389,16 +389,16 @@ public class Robot {
 		return 0;
 	}
 
-	public void disableAllLimelightTemperatureRegulations() {
-		this.limelightFront.disableTemperatureRegulation();
-		this.limelightRight.disableTemperatureRegulation();
-		this.limelightLeft.disableTemperatureRegulation();
-	}
-
 	public void enableAllLimelightTemperatureRegulations() {
 		this.limelightFront.enableTemperatureRegulation();
 		this.limelightRight.enableTemperatureRegulation();
 		this.limelightLeft.enableTemperatureRegulation();
+	}
+
+	public void disableAllLimelightTemperatureRegulations() {
+		this.limelightFront.disableTemperatureRegulation();
+		this.limelightRight.disableTemperatureRegulation();
+		this.limelightLeft.disableTemperatureRegulation();
 	}
 
 	public FlyWheel getFlyWheel() {
