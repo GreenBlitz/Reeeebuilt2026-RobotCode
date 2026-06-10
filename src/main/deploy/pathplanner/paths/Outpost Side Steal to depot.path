@@ -52,28 +52,44 @@
         "y": 2.38246752025463
       },
       "prevControl": {
-        "x": 6.836278645833332,
-        "y": 2.3511712962962963
+        "x": 7.121946903940632,
+        "y": 2.3684268663267654
       },
       "nextControl": {
-        "x": 4.584600171925198,
-        "y": 2.4063838924025114
+        "x": 2.2672596148967585,
+        "y": 2.4120654213446224
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.67,
-        "y": 0.682763997165132
+        "x": 1.8121521267361116,
+        "y": 5.975825159143519
       },
       "prevControl": {
-        "x": 1.666261180679785,
-        "y": 1.9987119856887297
+        "x": 2.0621521267361116,
+        "y": 5.975825159143519
+      },
+      "nextControl": {
+        "x": 1.4086241920438773,
+        "y": 5.975825159143519
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.56,
+        "y": 5.975825159143519
+      },
+      "prevControl": {
+        "x": 1.549091118818454,
+        "y": 5.975825159143519
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost Feed"
+      "linkedName": "Depot Feed"
     }
   ],
   "rotationTargets": [
@@ -90,15 +106,19 @@
       "rotationDegrees": 89.50893249690549
     },
     {
-      "waypointRelativePos": 3.4619654605263146,
+      "waypointRelativePos": 3.349455180921051,
       "rotationDegrees": 52.34529936440549
+    },
+    {
+      "waypointRelativePos": 3.998252467105262,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.5339493355481753,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 3.324270660299006,
+      "maxWaypointRelativePos": 5.0,
       "constraints": {
         "maxVelocity": 0.8,
         "maxAcceleration": 2.0,
@@ -109,7 +129,18 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.63,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 3.434385382059797,
+      "maxWaypointRelativePos": 3.7751116071428514,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.2,
