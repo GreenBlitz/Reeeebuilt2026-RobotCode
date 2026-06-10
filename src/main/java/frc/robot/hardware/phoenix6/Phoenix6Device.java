@@ -41,7 +41,8 @@ public abstract class Phoenix6Device implements IDevice {
 	private void reportInvalidSignal(InputSignal<?> invalidSignal) {
 		new Alert(
 			Alert.AlertType.WARNING,
-			logPath + "signal named " + invalidSignal.getName() + " has invalid type " + invalidSignal.getClass().getSimpleName()
+			logPath + "signal named " + invalidSignal.getName() + " has invalid type " + invalidSignal.getClass().getSimpleName(),
+			true
 		).report();
 	}
 

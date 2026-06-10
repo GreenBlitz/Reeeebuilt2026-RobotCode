@@ -115,7 +115,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 		if (talonFXSimulationOptional.isPresent()) {
 			talonFXSimulationOptional.get().applyConfig(motor, configuration);
 		} else if (!motor.applyConfiguration(configuration, APPLY_CONFIG_RETRIES).isOK()) {
-			new Alert(Alert.AlertType.ERROR, getLogPath() + "ConfigurationFailed").report();
+			new Alert(Alert.AlertType.ERROR, getLogPath() + "ConfigurationFailed", true).report();
 		}
 	}
 
@@ -187,7 +187,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 			}
 			motor.setControl(phoenix6Request.getControlRequest());
 		} else {
-			new Alert(Alert.AlertType.WARNING, getLogPath() + "Got invalid type of request " + request.getClass().getSimpleName()).report();
+			new Alert(Alert.AlertType.WARNING, getLogPath() + "Got invalid type of request " + request.getClass().getSimpleName(), true).report();
 		}
 	}
 

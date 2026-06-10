@@ -56,7 +56,7 @@ public enum LimelightPipeline {
 		try {
 			return Optional.of(detectedObjectTypes[index]);
 		} catch (Exception e) {
-			new Alert(Alert.AlertType.WARNING, "ObjectDetections/InvalidObjectID: " + index + "in pipeline " + name()).report();
+			new Alert(Alert.AlertType.WARNING, "ObjectDetections/InvalidObjectID: " + index + "in pipeline " + name(), false).report();
 			return Optional.empty();
 		}
 	}

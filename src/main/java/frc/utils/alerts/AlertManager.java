@@ -16,4 +16,8 @@ public class AlertManager {
 		}
 	}
 
+	public static ArrayList<PeriodicAlert> getAlerts() {
+		return alerts;
+	}
+
 }

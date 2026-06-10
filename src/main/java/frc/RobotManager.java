@@ -14,6 +14,7 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
+import frc.utils.alerts.PeriodicAlert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -24,6 +25,8 @@ import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.ArrayList;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -36,6 +39,7 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
+	private String alertsMessage;
 	private final Field2d field2d;
 
 	public RobotManager() {
@@ -62,6 +66,20 @@ public class RobotManager extends LoggedRobot {
 			this.autonomousCommand = autonomousCommand.get();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
+
+		ArrayList<PeriodicAlert> alerts = AlertManager.getAlerts();
+		if (alerts.isEmpty()) {
+			alertsMessage += "None";
+		}
+		for (int i = 0; i < alerts.size(); i++) {
+			if (alerts.get(i).isDriverRelevant()) {
+				alertsMessage += alerts.get(i).getName();
+				if (i != alerts.size() - 1) {
+					alertsMessage += ", ";
+				}
+			}
+		}
+		Logger.recordOutput("Alerts", alertsMessage);
 	}
 
 	@Override
@@ -134,6 +152,22 @@ public class RobotManager extends LoggedRobot {
 		Logger.recordOutput("IsHubActive", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
 		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
+
+		String newAlertsMessage = "Alerts: ";
+		ArrayList<PeriodicAlert> alerts = AlertManager.getAlerts();
+		if (alerts.isEmpty()) {
+			newAlertsMessage += "None";
+		}
+		for (int i = 0; i < alerts.size(); i++) {
+			newAlertsMessage += alerts.get(i).getName();
+			if (i != alerts.size() - 1) {
+				newAlertsMessage += ", ";
+			}
+		}
+		if (!newAlertsMessage.equals(alertsMessage)) {
+			alertsMessage = newAlertsMessage;
+			Logger.recordOutput("Alerts", alertsMessage);
+		}
 
 		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
 	}
