@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve.states.aimassist;
 public enum AimAssist {
 
 	NONE,
-	LOOK_AT_TARGET;
+	LOOK_AT_TARGET,
+	TOWER_ASSIST;
 
 }

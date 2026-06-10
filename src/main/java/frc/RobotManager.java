@@ -7,7 +7,10 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
@@ -33,6 +36,7 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
+	private final Field2d field2d;
 
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
@@ -51,10 +55,14 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
+		field2d = new Field2d();
+		SmartDashboard.putData(field2d);
+
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
-			if (DriverStationUtil.isMatch())
-				robot.disableAllLimelightTemperatureRegulations();
+			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
+            if (DriverStationUtil.isMatch())
+                robot.disableAllLimelightTemperatureRegulations();
 		});
 	}
 
@@ -91,6 +99,7 @@ public class RobotManager extends LoggedRobot {
 		}
 
 		robot.getSwerve().setIsRunningIndependently(false);
+		Logger.recordOutput("averagePeriodPBS/Autonomous", robot.getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
 	}
 
 	@Override
@@ -122,12 +131,23 @@ public class RobotManager extends LoggedRobot {
 		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
+		logElasticRelatedInfo();
 	}
 
 	private void updateTimeRelatedData() {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
+	}
+
+	private void logElasticRelatedInfo() {
+		Logger.recordOutput("isAutoWinner", HubUtil.isRobotAllianceAutoWinnerForLog());
+		Logger.recordOutput("TimeUntilNextShift", HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
+		Logger.recordOutput("IsHubActive", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
+		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds());
+		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
+
+		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
 	}
 
 }

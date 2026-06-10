@@ -6,4 +6,8 @@ public class LimelightHelpersAdditions {
 		return LimelightHelpers.getLimelightNTTable(limelightName).containsKey("getpipe");
 	}
 
+	public static double getTemperatureCelsius(String limelightName) {
+		return LimelightHelpers.getLimelightNTTable(limelightName).getEntry("temp").getDouble(0);
+	}
+
 }

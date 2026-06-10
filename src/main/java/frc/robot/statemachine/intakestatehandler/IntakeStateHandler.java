@@ -7,6 +7,7 @@ import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
+import frc.utils.driverstation.DriverStationUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class IntakeStateHandler {
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
-	private BooleanSupplier isOpenFourBarLocked;
+	private BooleanSupplier isOpenFourBarHarder;
 	private BooleanSupplier isCloseFourBarHarder;
 
 	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
@@ -31,13 +32,13 @@ public class IntakeStateHandler {
 		this.hasFourBarBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-		this.isOpenFourBarLocked = () -> false;
+		this.isOpenFourBarHarder = () -> false;
 		this.isCloseFourBarHarder = () -> false;
 	}
 
 	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closeFourBarHarder) {
-		this.isOpenFourBarLocked = openFourBarLocked;
-		this.isCloseFourBarHarder = closeFourBarHarder;
+		this.isOpenFourBarHarder = () -> openFourBarLocked.getAsBoolean() || DriverStationUtil.isAutonomous();
+		this.isCloseFourBarHarder = () -> closeFourBarHarder.getAsBoolean() || DriverStationUtil.isAutonomous();
 	}
 
 	public Command calibration() {
@@ -83,18 +84,27 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			new SequentialCommandGroup(
 				fourBar.getCommandsBuilder()
+					.setCurrentWithoutLimit(FourBarConstants.HARD_CLOSE_CURRENT_AMP)
+					.withTimeout(FourBarConstants.HARD_CLOSE_TIME_SECONDS),
+				fourBar.getCommandsBuilder()
 					.setVoltageWithoutLimit(
 						FourBarConstants.CLOSE_VOLTAGE,
 						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
 					),
 				fourBar.getCommandsBuilder()
+					.setCurrentWithoutLimit(FourBarConstants.SOFT_CLOSE_CURRENT_AMP)
+					.withTimeout(FourBarConstants.SOFT_CLOSE_TIME_SECONDS),
+				fourBar.getCommandsBuilder()
 					.setCurrentWithoutLimit(
 						() -> isCloseFourBarHarder.getAsBoolean()
-							? FourBarConstants.CLOSE_HARDER_CURRENT_AMP
-							: FourBarConstants.CLOSED_RELAXED_CURRENT_AMP
+							? FourBarConstants.SOFT_CLOSE_CURRENT_AMP
+							: FourBarConstants.HOLD_CLOSE_CURRENT_AMP
 					)
 			),
-			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+			new SequentialCommandGroup(
+				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()).withTimeout(0.5),
+				rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+			)
 		);
 	}
 
@@ -115,18 +125,17 @@ public class IntakeStateHandler {
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
 			fourBar.getCommandsBuilder()
-				.setVoltageWithoutLimit(FourBarConstants.OPEN_VOLTAGE, () -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT),
+				.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP)
+				.withTimeout(FourBarConstants.HARD_OPEN_TIME_SECONDS),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isOpenFourBarLocked.getAsBoolean()
-						? FourBarConstants.OPEN_LOCKED_CURRENT_AMP
-						: FourBarConstants.OPEN_RELAXED_CURRENT_AMP
+					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
 				)
 		);
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsOpenFourBarLocked", isOpenFourBarLocked.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsOpenFourBarHarder", isOpenFourBarHarder.getAsBoolean());
 		Logger.recordOutput(logPath + "/isCloseFourBarHarder", isCloseFourBarHarder.getAsBoolean());
 
 		if (!hasFourBarBeenReset() && fourBar.getCurrent() > FourBarConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
@@ -138,6 +147,7 @@ public class IntakeStateHandler {
 		}
 
 		Logger.recordOutput(logPath + "/HasFourBarBeenReset", hasFourBarBeenReset());
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
 	public boolean hasFourBarBeenReset() {

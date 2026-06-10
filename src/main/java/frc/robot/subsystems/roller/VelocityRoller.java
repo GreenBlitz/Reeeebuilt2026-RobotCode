@@ -22,7 +22,7 @@ public class VelocityRoller extends Roller {
 		IRequest<Double> voltageRequest,
 		IRequest<Rotation2d> velocityRequest
 	) {
-		super(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest);
+		super(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest);
 		this.velocitySignal = velocitySignal;
 		this.velocityRequest = velocityRequest;
 		this.commandsBuilder = new VelocityRollerCommandBuilder(this);

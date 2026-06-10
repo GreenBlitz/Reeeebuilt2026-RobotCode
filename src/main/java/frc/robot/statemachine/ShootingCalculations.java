@@ -171,9 +171,6 @@ public class ShootingCalculations {
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
-		if (!ShootingChecks.isBehindHubs(turretTranslation)) {
-			return new Translation2d(StateMachineConstants.getTargetXValueForPassing(), turretTranslation.getY());
-		}
 		if (Field.getAllianceRelative(turretTranslation).getY() > Field.WIDTH_METERS / 2) {
 			return StateMachineConstants.getDepotPresetPassingTarget();
 		}
@@ -205,37 +202,56 @@ public class ShootingCalculations {
 		Interpolator.forDouble()
 	);
 
+	public static final InterpolationMap<Double, Double> PASSING_POSITION_INTERPOLATION_MAP = calculatePassingInterpolationMap();
+
 	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
 		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 	}
 
 	static {
-		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.7));
-		HOOD_SCORING_INTERPOLATION_MAP.put(1.435, Rotation2d.fromDegrees(27.6));
-		HOOD_SCORING_INTERPOLATION_MAP.put(2.5, Rotation2d.fromDegrees(37));
-		HOOD_SCORING_INTERPOLATION_MAP.put(4.41, Rotation2d.fromDegrees(43.5));
-		HOOD_SCORING_INTERPOLATION_MAP.put(8.0, Rotation2d.fromDegrees(54.5));
+		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.6));
+		HOOD_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(27.6));
+		HOOD_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(34));
+		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(50));
 
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(14000));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.435, Rotation2d.fromDegrees(15500));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.5, Rotation2d.fromDegrees(17500));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(4.41, Rotation2d.fromDegrees(21000));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(8.0, Rotation2d.fromDegrees(28300));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(-2000.0));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(16800));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17000));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26500));
 
-		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(45));
-		HOOD_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(48));
-		HOOD_PASSING_INTERPOLATION_MAP.put(4.68, Rotation2d.fromDegrees(51));
-		HOOD_PASSING_INTERPOLATION_MAP.put(6.5, Rotation2d.fromDegrees(53));
-		HOOD_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(54));
+		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
+		HOOD_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(54.67));
 
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(14082));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(1.5, Rotation2d.fromDegrees(17000));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(29000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(4.0, Rotation2d.fromDegrees(22000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(35000));
 
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.435, 0.8375);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.5, 0.855);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(4.41, 1.045);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(8.0, 1.315);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.8575);
+		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.0, 1.2);
+	}
+
+	private static Translation2d findPassingTrianglePoint(Translation2d target, Translation2d hubNeutralCorner) {
+		double m = (target.getY() - hubNeutralCorner.getY()) / (target.getX() - hubNeutralCorner.getX());
+		double b = target.getY() - m * target.getX();
+		double x = ((Field.WIDTH_METERS / 2) - b) / m;
+
+		return new Translation2d(x + StateMachineConstants.PASSING_NEAR_HUB_SAFETY_BUFFER_METERS, Field.WIDTH_METERS / 2);
+	}
+
+	private static InterpolationMap<Double, Double> calculatePassingInterpolationMap() {
+		InterpolationMap<Double, Double> interpolationMap = new InterpolationMap<>(InverseInterpolator.forDouble(), Interpolator.forDouble());
+
+		Translation2d depotTarget = StateMachineConstants.DEPOT_PRESET_PASSING_TARGET;
+		Translation2d outpostTarget = StateMachineConstants.OUTPOST_PRESET_PASSING_TARGET;
+
+		Translation2d point = findPassingTrianglePoint(depotTarget, Field.FAR_LEFT_HUB_CORNER);
+
+		interpolationMap.put(depotTarget.getY(), depotTarget.getX());
+		interpolationMap.put(outpostTarget.getY(), outpostTarget.getX());
+		interpolationMap.put(point.getY(), point.getX());
+
+		return interpolationMap;
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {

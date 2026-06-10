@@ -14,4 +14,9 @@ public class RobotConstants {
 	public static final double ROBOT_MOI = 4.5;
 	public static final double WHEEL_COF = 1;
 
+	public static final double MAX_TIME_FOR_BPS_INTERPOLATOR = 35;
+	public static final double TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS = 1;
+
+	public static final double DISTANCE_FROM_ROBOT_CENTER_TO_HOPPER_EDGE_WHEN_OPENED_METERS = 0.65;
+
 }
