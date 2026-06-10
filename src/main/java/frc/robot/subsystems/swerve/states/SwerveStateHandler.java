@@ -126,6 +126,7 @@ public class SwerveStateHandler {
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
 		if (wasAbleToTowerAssist) {
 			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
+			Logger.recordOutput("TARGET", assistTarget);
 			return AimAssistMath.getRotationAssistedSpeeds(
 				AimAssistMath.getObjectAssistedSpeedsWithMagnitudeCompensation(
 					speeds,

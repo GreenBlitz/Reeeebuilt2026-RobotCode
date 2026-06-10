@@ -151,7 +151,7 @@ public class IntakeStateHandler {
 	}
 
 	public boolean hasFourBarBeenReset() {
-		return hasFourBarBeenReset;
+		return hasFourBarBeenReset || true;
 	}
 
 	public IntakeState getCurrentState() {
