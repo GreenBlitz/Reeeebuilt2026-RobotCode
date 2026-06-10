@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.constants.field.Field;
 import frc.robot.Robot;
+import frc.robot.RobotConstants;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
-import frc.utils.alerts.PeriodicAlert;
+import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -67,19 +68,8 @@ public class RobotManager extends LoggedRobot {
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
 
-		ArrayList<PeriodicAlert> alerts = AlertManager.getAlerts();
-		if (alerts.isEmpty()) {
-			alertsMessage += "None";
-		}
-		for (int i = 0; i < alerts.size(); i++) {
-			if (alerts.get(i).isDriverRelevant()) {
-				alertsMessage += alerts.get(i).getName();
-				if (i != alerts.size() - 1) {
-					alertsMessage += ", ";
-				}
-			}
-		}
-		Logger.recordOutput("Alerts", alertsMessage);
+		alertsMessage = "Alerts: None";
+		logDriverAlerts();
 	}
 
 	@Override
@@ -153,8 +143,14 @@ public class RobotManager extends LoggedRobot {
 		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
 
+		logDriverAlerts();
+
+		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
+	}
+
+	private void logDriverAlerts() {
 		String newAlertsMessage = "Alerts: ";
-		ArrayList<PeriodicAlert> alerts = AlertManager.getAlerts();
+		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 		if (alerts.isEmpty()) {
 			newAlertsMessage += "None";
 		}
@@ -169,7 +165,13 @@ public class RobotManager extends LoggedRobot {
 			Logger.recordOutput("Alerts", alertsMessage);
 		}
 
-		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
+		for (int i = 0; i < RobotConstants.ALERT_WARNING_WORDS.length; i++) {
+			if (alertsMessage.contains(RobotConstants.ALERT_WARNING_WORDS[i])) {
+				Logger.recordOutput("AreAlertsOK", false);
+				return;
+			}
+		}
+		Logger.recordOutput("AreAlertsOK", true);
 	}
 
 }

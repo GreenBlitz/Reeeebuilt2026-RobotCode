@@ -19,4 +19,6 @@ public class RobotConstants {
 
 	public static final double DISTANCE_FROM_ROBOT_CENTER_TO_HOPPER_EDGE_WHEN_OPENED_METERS = 0.65;
 
+	public static final String[] ALERT_WARNING_WORDS = {"Disconnected", "disconnected", "ConfigurationFailed",};
+
 }

@@ -52,7 +52,7 @@ public class BrushlessSparkMAXMotor extends SparkMaxMotor implements Controllabl
 					sparkMaxRequest.getFeedforwardGain()
 				);
 		} else {
-			new Alert(Alert.AlertType.WARNING, getLogPath() + "Got invalid type of request " + request.getClass().getSimpleName(), true).report();
+			new Alert(Alert.AlertType.WARNING, getLogPath() + "Got invalid type of request " + request.getClass().getSimpleName()).report();
 		}
 	}
 

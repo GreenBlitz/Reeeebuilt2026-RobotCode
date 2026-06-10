@@ -164,7 +164,7 @@ public class SwerveStateHandler {
 	}
 
 	private void reportMissingSupplier(String supplierName) {
-		new Alert(Alert.AlertType.WARNING, swerve.getLogPath() + "/AimAssist/missing" + supplierName + " supplier", false).report();
+		new Alert(Alert.AlertType.WARNING, swerve.getLogPath() + "/AimAssist/missing" + supplierName + " supplier").report();
 	}
 
 	public RotateAxis getFarRightRotateAxis() {
