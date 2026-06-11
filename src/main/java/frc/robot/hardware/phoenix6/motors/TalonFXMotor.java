@@ -100,7 +100,7 @@ public class TalonFXMotor extends Phoenix6Device implements ControllableMotor {
 					Alert.AlertType.ERROR,
 					followerLogPath + "disconnectedAt",
 					() -> !followerInputsAutoLogged.followerData.connected(),
-						true
+					true
 				)
 			);
 		}

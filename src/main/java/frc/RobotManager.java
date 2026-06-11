@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.constants.field.Field;
 import frc.robot.Robot;
-import frc.robot.RobotConstants;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.alerts.Alert;
@@ -159,8 +158,7 @@ public class RobotManager extends LoggedRobot {
 		if (alerts.isEmpty()) {
 			newAlertsMessage += "None";
 			Logger.recordOutput("AreAlertsOK", true);
-		}
-		else {
+		} else {
 			Logger.recordOutput("AreAlertsOK", false);
 		}
 		for (int i = 0; i < alerts.size(); i++) {
@@ -170,7 +168,6 @@ public class RobotManager extends LoggedRobot {
 			if (i != alerts.size() - 1 && alerts.get(i + 1).isDriverRelevant()) {
 				newAlertsMessage += ", ";
 			}
-
 		}
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;

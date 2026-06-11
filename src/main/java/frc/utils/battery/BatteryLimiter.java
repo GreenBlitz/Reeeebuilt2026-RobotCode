@@ -34,7 +34,7 @@ class BatteryLimiter extends Command {
 				Alert.AlertType.WARNING,
 				BatteryConstants.LOG_PATH + "/LowVoltageAt",
 				() -> averageVoltage <= BatteryUtil.MIN_VOLTAGE,
-					true
+				true
 			)
 		);
 
