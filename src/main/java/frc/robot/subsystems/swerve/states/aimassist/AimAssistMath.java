@@ -118,10 +118,10 @@ public class AimAssistMath {
 	}
 
 	public static ChassisSpeeds getLongTurnRotationAssistedSpeeds(
-			ChassisSpeeds speeds,
-			Rotation2d robotHeading,
-			Rotation2d targetHeading,
-			SwerveConstants swerveConstants
+		ChassisSpeeds speeds,
+		Rotation2d robotHeading,
+		Rotation2d targetHeading,
+		SwerveConstants swerveConstants
 	) {
 		double errorDegrees = targetHeading.minus(robotHeading).getDegrees();
 
@@ -131,20 +131,13 @@ public class AimAssistMath {
 			errorDegrees += 360;
 		}
 
-		Rotation2d pidOutputVelocityPerSecond = Rotation2d.fromDegrees(
-				swerveConstants.rotationDegreesPIDController().calculate(0, errorDegrees)
-		);
+		Rotation2d pidOutputVelocityPerSecond = Rotation2d
+			.fromDegrees(swerveConstants.wraplessRotationDegreesPIDController().calculate(0, errorDegrees));
 
-		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath.clamp(
-				pidOutputVelocityPerSecond,
-				swerveConstants.maxRotationalVelocityPerSecond()
-		);
+		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath
+			.clamp(pidOutputVelocityPerSecond, swerveConstants.maxRotationalVelocityPerSecond());
 
-		return new ChassisSpeeds(
-				speeds.vxMetersPerSecond,
-				speeds.vyMetersPerSecond,
-				clampedAngularVelocityPerSecond.getRadians()
-		);
+		return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, clampedAngularVelocityPerSecond.getRadians());
 	}
 
 }
