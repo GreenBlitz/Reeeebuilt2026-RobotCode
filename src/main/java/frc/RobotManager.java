@@ -27,6 +27,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -155,19 +156,14 @@ public class RobotManager extends LoggedRobot {
 	private void logDriverAlerts() {
 		String newAlertsMessage = "Alerts: ";
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
-		if (alerts.isEmpty()) {
+
+		newAlertsMessage += alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+
+		if (newAlertsMessage.equals("Alerts: ")) {
 			newAlertsMessage += "None";
 			Logger.recordOutput("AreAlertsOK", true);
 		} else {
 			Logger.recordOutput("AreAlertsOK", false);
-		}
-		for (int i = 0; i < alerts.size(); i++) {
-			if (alerts.get(i).isDriverRelevant()) {
-				newAlertsMessage += alerts.get(i).getName();
-			}
-			if (i != alerts.size() - 1 && alerts.get(i + 1).isDriverRelevant()) {
-				newAlertsMessage += ", ";
-			}
 		}
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;

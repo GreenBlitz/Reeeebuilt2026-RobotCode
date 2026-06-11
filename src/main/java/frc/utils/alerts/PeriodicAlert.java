@@ -19,8 +19,7 @@ public class PeriodicAlert extends Alert {
 	public void reportByCondition() {
 		if (reportCondition.getAsBoolean()) {
 			report();
-		}
-		else {
+		} else {
 			AlertManager.getReportedAlerts().remove(this);
 		}
 	}
