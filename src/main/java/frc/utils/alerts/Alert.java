@@ -16,10 +16,18 @@ public class Alert {
 
 	private final String logPath;
 	private final String name;
+	private final boolean isDriverRelevant;
+
+	public Alert(AlertType type, String name, boolean isDriverRelevant) {
+		this.logPath = ALERT_LOG_PATH + "/" + type.toString() + "/" + name;
+		this.name = name;
+		this.isDriverRelevant = isDriverRelevant;
+	}
 
 	public Alert(AlertType type, String name) {
 		this.logPath = ALERT_LOG_PATH + "/" + type.toString() + "/" + name;
 		this.name = name;
+		this.isDriverRelevant = false;
 	}
 
 	public void report() {
@@ -31,6 +39,10 @@ public class Alert {
 
 	public String getName() {
 		return name;
+	}
+
+	public boolean isDriverRelevant() {
+		return isDriverRelevant;
 	}
 
 }

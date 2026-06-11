@@ -158,25 +158,24 @@ public class RobotManager extends LoggedRobot {
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 		if (alerts.isEmpty()) {
 			newAlertsMessage += "None";
+			Logger.recordOutput("AreAlertsOK", true);
+		}
+		else {
+			Logger.recordOutput("AreAlertsOK", false);
 		}
 		for (int i = 0; i < alerts.size(); i++) {
-			newAlertsMessage += alerts.get(i).getName();
-			if (i != alerts.size() - 1) {
+			if (alerts.get(i).isDriverRelevant()) {
+				newAlertsMessage += alerts.get(i).getName();
+			}
+			if (i != alerts.size() - 1 && alerts.get(i + 1).isDriverRelevant()) {
 				newAlertsMessage += ", ";
 			}
+
 		}
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;
 			Logger.recordOutput("Alerts", alertsMessage);
 		}
-
-		for (int i = 0; i < RobotConstants.ALERT_WARNING_WORDS.length; i++) {
-			if (alertsMessage.contains(RobotConstants.ALERT_WARNING_WORDS[i])) {
-				Logger.recordOutput("AreAlertsOK", false);
-				return;
-			}
-		}
-		Logger.recordOutput("AreAlertsOK", true);
 	}
 
 }

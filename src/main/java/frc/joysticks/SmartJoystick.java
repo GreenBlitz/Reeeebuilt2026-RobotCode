@@ -27,10 +27,18 @@ public class SmartJoystick {
 	}
 
 	public SmartJoystick(JoystickPorts joystickPort, double deadzone) {
-		this(new Joystick(joystickPort.getPort()), deadzone);
+		this(new Joystick(joystickPort.getPort()), deadzone, false);
 	}
 
-	private SmartJoystick(Joystick joystick, double deadzone) {
+	public SmartJoystick(JoystickPorts joystickPort, boolean alertOnDisconnect) {
+		this(joystickPort, DEADZONE, alertOnDisconnect);
+	}
+
+	public SmartJoystick(JoystickPorts joystickPort, double deadzone, boolean alertOnDisconnect) {
+		this(new Joystick(joystickPort.getPort()), deadzone, alertOnDisconnect);
+	}
+
+	private SmartJoystick(Joystick joystick, double deadzone, boolean alertOnDisconnect) {
 		this.deadzone = deadzone;
 		this.joystick = joystick;
 		this.logPath = "Joysticks/" + joystick.getPort();
@@ -54,8 +62,8 @@ public class SmartJoystick {
 		this.POV_DOWN = new POVButton(this.joystick, ButtonID.POV_DOWN.getId());
 		this.POV_LEFT = new POVButton(this.joystick, ButtonID.POV_LEFT.getId());
 
-		if (Robot.ROBOT_TYPE.isReal()) {
-			AlertManager.addAlert(new PeriodicAlert(Alert.AlertType.ERROR, logPath + "/DisconnectedAt", () -> !isConnected()));
+		if (Robot.ROBOT_TYPE.isReal() && alertOnDisconnect) {
+			AlertManager.addAlert(new PeriodicAlert(Alert.AlertType.ERROR, logPath + "/DisconnectedAt", () -> !isConnected(), true));
 		}
 	}
 
