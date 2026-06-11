@@ -81,15 +81,45 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
-	private static boolean areWeGonnaDoGA(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity){
-		Translation2d fieldRelativeTurretVelocities = ShootingCalculations.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
+	public static Boolean areWeGonnaDoGA(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity) {
+		Boolean areWeTryingToGoUnderTrench;
+		Translation2d fieldRelativeTurretVelocities = ShootingCalculations
+			.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
 		Translation2d currentTurretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
-		Translation2d predictedAllianceRelativeTurretPositionWhenHoodCloses = Field.getAllianceRelative(new Translation2d(currentTurretPosition.getX()+fieldRelativeTurretVelocities.getX()*ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC,currentTurretPosition.getY()+fieldRelativeTurretVelocities.getY()*ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC));
-		if(Field.getAllianceRelative(currentTurretPosition).getX() < Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX()){
-			return ((predictedAllianceRelativeTurretPositionWhenHoodCloses.getX()>Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX())&&((predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()>Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getY()-(Field.TRENCH_Y_AXIS_LENGTH_METERS/2))||(predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()<Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.OUTPOST)).getY()+(Field.TRENCH_Y_AXIS_LENGTH_METERS/2))));
+		Translation2d predictedAllianceRelativeTurretPositionWhenHoodCloses = Field.getAllianceRelative(
+			new Translation2d(
+				currentTurretPosition.getX() + fieldRelativeTurretVelocities.getX() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC,
+				currentTurretPosition.getY() + fieldRelativeTurretVelocities.getY() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC
+			)
+		);
+		boolean isTurretUnderTrench = MathUtil.isNear(
+			Field.getAllianceRelative(currentTurretPosition).getX(),
+			Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX(),
+			Field.TRENCH_BAR_X_AXIS_LENGTH_METERS / 2
+		);
+		if (isTurretUnderTrench) {
+			areWeTryingToGoUnderTrench = true;
+		} else if (
+			Field.getAllianceRelative(currentTurretPosition).getX() < Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX()
+		) {
+			areWeTryingToGoUnderTrench = (predictedAllianceRelativeTurretPositionWhenHoodCloses.getX()
+				> Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX())
+				&& ((predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()
+					> Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getY() - (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2))
+					|| (predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()
+						< Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.OUTPOST)).getY()
+							+ (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2)));
+		} else {
+			areWeTryingToGoUnderTrench = ((predictedAllianceRelativeTurretPositionWhenHoodCloses.getX()
+				< Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX())
+				&& ((predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()
+					> Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getY() - (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2))
+					|| (predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()
+						< Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.OUTPOST)).getY()
+							+ (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2))));
 		}
-		return ((predictedAllianceRelativeTurretPositionWhenHoodCloses.getX()<Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX())&&((predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()>Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getY()-(Field.TRENCH_Y_AXIS_LENGTH_METERS/2))||(predictedAllianceRelativeTurretPositionWhenHoodCloses.getY()<Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.OUTPOST)).getY()+(Field.TRENCH_Y_AXIS_LENGTH_METERS/2))));
-
+		Logger.recordOutput(shootingChecksLogPath + "/AreWeTryingToGoUnderTrench", areWeTryingToGoUnderTrench);
+		return areWeTryingToGoUnderTrench;
 	}
 
 	private static boolean isReadyToShoot(

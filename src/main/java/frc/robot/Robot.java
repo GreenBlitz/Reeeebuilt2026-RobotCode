@@ -24,7 +24,9 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.ShootingChecks;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
@@ -306,6 +308,10 @@ public class Robot {
 
 		configureBrakeStateChooser();
 		configureAuto();
+		new Trigger(
+			() -> (ShootingChecks
+				.areWeGonnaDoGA(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]))
+		).whileTrue(hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_FOR_PASSING_TRENCH));
 	}
 
 	public RobotConfig getRobotConfig() {

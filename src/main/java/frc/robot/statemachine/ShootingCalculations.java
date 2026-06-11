@@ -41,7 +41,11 @@ public class ShootingCalculations {
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);
 
-		Translation2d turretFieldRelativeVelocity = calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
+		Translation2d turretFieldRelativeVelocity = calculateFieldRelativeTurretVelocities(
+			robotPose,
+			fieldRelativeSpeeds,
+			gyroYawAngularVelocity
+		);
 
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
@@ -113,18 +117,22 @@ public class ShootingCalculations {
 		);
 	}
 
-	public static Translation2d calculateFieldRelativeTurretVelocities(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity){
+	public static Translation2d calculateFieldRelativeTurretVelocities(
+		Pose2d robotPose,
+		ChassisSpeeds fieldRelativeSpeeds,
+		Rotation2d gyroYawAngularVelocity
+	) {
 		// Split Robot's Speeds
 		Translation2d robotTranslationalVelocity = new Translation2d(
-				fieldRelativeSpeeds.vxMetersPerSecond,
-				fieldRelativeSpeeds.vyMetersPerSecond
+			fieldRelativeSpeeds.vxMetersPerSecond,
+			fieldRelativeSpeeds.vyMetersPerSecond
 		);
 
 		// Turret Field Relative Velocity
 		Translation2d turretTangentialVelocity = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
-				.rotateBy(Rotation2d.kCCW_90deg)
-				.times(gyroYawAngularVelocity.getRadians())
-				.rotateBy(robotPose.getRotation());
+			.rotateBy(Rotation2d.kCCW_90deg)
+			.times(gyroYawAngularVelocity.getRadians())
+			.rotateBy(robotPose.getRotation());
 		return robotTranslationalVelocity.plus(turretTangentialVelocity);
 	}
 
