@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.RobotConstants;
 import frc.utils.math.FieldMath;
-import org.littletonrobotics.junction.Logger;
 
 public class TowerAssistCalculations {
 
@@ -50,10 +49,11 @@ public class TowerAssistCalculations {
 		boolean doesIntakeFaceDriverStation = (intakeDirection.getX() * driverStationDirection.getX()
 			+ intakeDirection.getY() * driverStationDirection.getY()
 			< INTAKE_FACING_DRIVER_STATION_POINT_PRODUCT_THRESHOLD);
-		boolean doesIntakeFaceAwayFromTower = robotPose.getY() > Field.WIDTH_METERS/2 ? intakeDirection.getY() > 0 : intakeDirection.getY() < 0;
+		boolean doesIntakeFaceAwayFromTower = robotPose.getY() > Field.WIDTH_METERS / 2
+			? intakeDirection.getY() > 0
+			: intakeDirection.getY() < 0;
 
 		return isCloseToDriverStationWall && doesIntakeFaceDriverStation && doesIntakeFaceAwayFromTower;
-
 	}
 
 }
