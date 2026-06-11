@@ -154,17 +154,16 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	private void logDriverAlerts() {
-		String newAlertsMessage = "Alerts: ";
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 
-		newAlertsMessage += alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+		String newAlertsMessage = alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
 
-		if (newAlertsMessage.equals("Alerts: ")) {
-			newAlertsMessage += "None";
-			Logger.recordOutput("AreAlertsOK", true);
-		} else {
-			Logger.recordOutput("AreAlertsOK", false);
-		}
+		boolean areAlertsOk = newAlertsMessage.isEmpty();
+
+		Logger.recordOutput("AreAlertsOK", areAlertsOk);
+
+		newAlertsMessage = "Alerts: " + (areAlertsOk ? "None" : newAlertsMessage);
+
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;
 			Logger.recordOutput("Alerts", alertsMessage);
