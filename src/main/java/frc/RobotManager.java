@@ -62,6 +62,11 @@ public class RobotManager extends LoggedRobot {
 			this.autonomousCommand = autonomousCommand.get();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
+
+		robot.getReturnToMiddleChooser().onChange((val) -> {
+			this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
+			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
+		});
 	}
 
 	@Override
