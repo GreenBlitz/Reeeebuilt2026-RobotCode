@@ -9,6 +9,9 @@ import frc.utils.math.FieldMath;
 
 public class TowerAssistCalculations {
 
+	private static final double ROBOT_CLOSE_TO_DRIVER_STATION_WALL_THRESHOLD_METERS = 1.2;
+	private static final double INTAKE_FACING_DRIVER_STATION_THRESHOLD = 0.5;
+
 	public static Translation2d getClosestTower(Pose2d robotPose) {
 		Translation2d blueTower = Field.TOWER_MIDDLE;
 		Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE, true, true);
@@ -28,6 +31,35 @@ public class TowerAssistCalculations {
 
 	public static boolean isInNeutralZone(Pose2d robotPose) {
 		return robotPose.getX() > Field.ALLIANCE_START_LINE_X_VALUE && robotPose.getX() < FieldMath.mirrorX(Field.ALLIANCE_START_LINE_X_VALUE);
+	}
+
+	public static boolean shouldTakeLongTurnToAvoidWall(Pose2d robotPose) {
+		Translation2d closestTower = getClosestTower(robotPose);
+
+		boolean isBlueSideTower = closestTower.getX() < Field.LENGTH_METERS / 2;
+
+		double distanceFromDriverStationWall = isBlueSideTower
+				? robotPose.getX()
+				: Field.LENGTH_METERS - robotPose.getX();
+
+		boolean isCloseToDriverStationWall =
+				distanceFromDriverStationWall < ROBOT_CLOSE_TO_DRIVER_STATION_WALL_THRESHOLD_METERS;
+
+		Translation2d driverStationDirection = isBlueSideTower
+				? new Translation2d(-1, 0)
+				: new Translation2d(1, 0);
+
+		Translation2d intakeDirection = new Translation2d(
+				-robotPose.getRotation().getCos(),
+				-robotPose.getRotation().getSin()
+		);
+
+		boolean intakeFacingDriverStation =
+				intakeDirection.getX() * driverStationDirection.getX()
+						+ intakeDirection.getY() * driverStationDirection.getY()
+						> INTAKE_FACING_DRIVER_STATION_THRESHOLD;
+
+		return isCloseToDriverStationWall && intakeFacingDriverStation;
 	}
 
 }
