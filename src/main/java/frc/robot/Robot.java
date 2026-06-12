@@ -380,7 +380,6 @@ public class Robot {
 		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
 		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
 
-		TowerAssistCalculations.shouldTakeLongTurnToAvoidWall(poseEstimator.getEstimatedPose());
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
