@@ -14,6 +14,7 @@ import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
+import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -24,6 +25,9 @@ import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -36,6 +40,7 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
+	private String alertsMessage;
 	private final Field2d field2d;
 
 	public RobotManager() {
@@ -67,6 +72,9 @@ public class RobotManager extends LoggedRobot {
 			this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
+
+		alertsMessage = "Alerts: None";
+		logDriverAlerts();
 	}
 
 	@Override
@@ -140,7 +148,26 @@ public class RobotManager extends LoggedRobot {
 		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
 
+		logDriverAlerts();
+
 		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
+	}
+
+	private void logDriverAlerts() {
+		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
+
+		String newAlertsMessage = alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+
+		boolean areAlertsOk = newAlertsMessage.isEmpty();
+
+		Logger.recordOutput("AreAlertsOK", areAlertsOk);
+
+		newAlertsMessage = "Alerts: " + (areAlertsOk ? "None" : newAlertsMessage);
+
+		if (!newAlertsMessage.equals(alertsMessage)) {
+			alertsMessage = newAlertsMessage;
+			Logger.recordOutput("Alerts", alertsMessage);
+		}
 	}
 
 }
