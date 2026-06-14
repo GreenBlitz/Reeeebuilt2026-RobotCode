@@ -65,9 +65,9 @@
           {
             "title": "isRobotAutoWinningAlliance",
             "x": 1080.0,
-            "y": 240.0,
+            "y": 200.0,
             "width": 400.0,
-            "height": 240.0,
+            "height": 200.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/isRobotAutoWinningAlliance",
@@ -97,7 +97,7 @@
             "x": 1080.0,
             "y": 0.0,
             "width": 400.0,
-            "height": 240.0,
+            "height": 200.0,
             "type": "Large Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/CurrentGamePeriod",
@@ -123,9 +123,9 @@
           },
           {
             "title": "TimeLeftForGame",
-            "x": 520.0,
+            "x": 800.0,
             "y": 400.0,
-            "width": 560.0,
+            "width": 280.0,
             "height": 160.0,
             "type": "Match Time",
             "properties": {
@@ -142,7 +142,7 @@
             "x": 520.0,
             "y": 560.0,
             "width": 560.0,
-            "height": 120.0,
+            "height": 160.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/Autonomous Chooser",
@@ -153,9 +153,9 @@
           {
             "title": "BrakeState",
             "x": 1080.0,
-            "y": 480.0,
+            "y": 400.0,
             "width": 160.0,
-            "height": 120.0,
+            "height": 160.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/BrakeState",
@@ -166,9 +166,9 @@
           {
             "title": "isIMUOffsetCalibrated",
             "x": 1240.0,
-            "y": 480.0,
+            "y": 400.0,
             "width": 120.0,
-            "height": 120.0,
+            "height": 160.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/WPILibPoseEstimator/isIMUOffsetCalibrated",
@@ -183,9 +183,9 @@
           {
             "title": "AreAlertsOK",
             "x": 1360.0,
-            "y": 480.0,
+            "y": 400.0,
             "width": 120.0,
-            "height": 120.0,
+            "height": 160.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/AreAlertsOK",
@@ -200,15 +200,28 @@
           {
             "title": "AlertsMessage",
             "x": 1080.0,
-            "y": 600.0,
+            "y": 560.0,
             "width": 400.0,
-            "height": 120.0,
+            "height": 160.0,
             "type": "Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/AlertsMessage",
               "period": 0.06,
               "data_type": "string",
               "show_submit_button": false
+            }
+          },
+          {
+            "title": "Return To Middle",
+            "x": 520.0,
+            "y": 400.0,
+            "width": 280.0,
+            "height": 160.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Return To Middle",
+              "period": 0.06,
+              "sort_options": false
             }
           }
         ]
