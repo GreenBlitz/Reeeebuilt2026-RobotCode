@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
+import frc.constants.field.AllianceSide;
+import frc.constants.field.Field;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -72,7 +74,23 @@ public class SwerveStateHandler {
 				return handleLookAtTargetAimAssist(speeds);
 			}
 		}
+		if (swerveState.getAimAssist() == AimAssist.PASS_THROUGH_TRENCH) {
+			return handlePassThroughTrenchAimAssist(speeds, swerveState);
+		}
 		return speeds;
+	}
+
+	private ChassisSpeeds handlePassThroughTrenchAimAssist(ChassisSpeeds speeds, SwerveState swerveState) {
+		Pose2d robotPose = robotPoseSupplier.get().get();
+
+		Translation2d depotTrench = Field.getTrenchMiddle(AllianceSide.DEPOT);
+		Translation2d outpostTrench = Field.getTrenchMiddle(AllianceSide.OUTPOST);
+		Translation2d nearestTrench = robotPose.getTranslation().getDistance(depotTrench)
+			<= robotPose.getTranslation().getDistance(outpostTrench) ? depotTrench : outpostTrench;
+
+		Rotation2d nearestSideHeading = Rotation2d.fromDegrees(Math.round(robotPose.getRotation().getDegrees() / 90.0) * 90);
+
+		return AimAssistMath.getObjectAssistedSpeeds(speeds, robotPose, nearestSideHeading, nearestTrench, swerveConstants, swerveState);
 	}
 
 	private ChassisSpeeds handleLookAtTargetAimAssist(ChassisSpeeds speeds) {
@@ -108,7 +126,11 @@ public class SwerveStateHandler {
 		return finalSpeeds;
 	}
 
-	public ChassisSpeeds applyAccelerationLimit(ChassisSpeeds commandedSpeeds, ChassisSpeeds currentSpeeds, AccelerationLimit accelerationLimit) {
+	public ChassisSpeeds applyAccelerationLimit(
+		ChassisSpeeds commandedSpeeds,
+		ChassisSpeeds currentSpeeds,
+		AccelerationLimit accelerationLimit
+	) {
 		if (accelerationLimit == AccelerationLimit.NONE) {
 			return commandedSpeeds;
 		}
