@@ -88,8 +88,8 @@ public class RobotManager extends LoggedRobot {
 	public void autonomousExit() {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
-		if(!DriverStationUtil.isMatch())
-			robot.enableAllLimelightTemperatureRegulations();
+			if (!DriverStationUtil.isMatch())
+				robot.enableAllLimelightTemperatureRegulations();
 		}
 
 		robot.getSwerve().setIsRunningIndependently(false);
