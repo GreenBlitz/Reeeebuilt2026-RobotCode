@@ -114,7 +114,7 @@ public class AimAssistMath {
 	}
 
 	private static double applyMagnitudeCompensation(double velocityPerSecond, double magnitude, double factor) {
-		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) / (magnitude + factor);
+		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) / (Math.abs(magnitude) + factor);
 	}
 
 	public static ChassisSpeeds getLongTurnRotationAssistedSpeeds(
