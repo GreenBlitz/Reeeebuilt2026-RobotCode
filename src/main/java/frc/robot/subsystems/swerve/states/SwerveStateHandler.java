@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.MathConstants;
+import frc.constants.field.AllianceSide;
+import frc.constants.field.Field;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.statemachine.ShootingCalculations;
@@ -73,10 +75,28 @@ public class SwerveStateHandler {
 				return handleLookAtTargetAimAssist(speeds);
 			}
 		}
+<<<<<<< Updated upstream
 		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
 			return handleEnterTowerAimAssist(speeds);
+=======
+		if (swerveState.getAimAssist() == AimAssist.PASS_THROUGH_TRENCH) {
+			return handlePassThroughTrenchAimAssist(speeds, swerveState);
+>>>>>>> Stashed changes
 		}
 		return speeds;
+	}
+
+	private ChassisSpeeds handlePassThroughTrenchAimAssist(ChassisSpeeds speeds, SwerveState swerveState) {
+		Pose2d robotPose = robotPoseSupplier.get().get();
+
+		Translation2d depotTrench = Field.getTrenchMiddle(AllianceSide.DEPOT);
+		Translation2d outpostTrench = Field.getTrenchMiddle(AllianceSide.OUTPOST);
+		Translation2d nearestTrench = robotPose.getTranslation().getDistance(depotTrench)
+			<= robotPose.getTranslation().getDistance(outpostTrench) ? depotTrench : outpostTrench;
+
+		Rotation2d nearestSideHeading = Rotation2d.fromDegrees(Math.round(robotPose.getRotation().getDegrees() / 90.0) * 90);
+
+		return AimAssistMath.getObjectAssistedSpeeds(speeds, robotPose, nearestSideHeading, nearestTrench, swerveConstants, swerveState);
 	}
 
 	private ChassisSpeeds handleLookAtTargetAimAssist(ChassisSpeeds speeds) {
@@ -112,6 +132,7 @@ public class SwerveStateHandler {
 		return finalSpeeds;
 	}
 
+<<<<<<< Updated upstream
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
 		if (
 			!(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
@@ -130,6 +151,36 @@ public class SwerveStateHandler {
 				robotPoseSupplier.get().get().getRotation(),
 				assistTarget.getRotation(),
 				swerveConstants
+=======
+	public ChassisSpeeds applyAccelerationLimit(
+		ChassisSpeeds commandedSpeeds,
+		ChassisSpeeds currentSpeeds,
+		AccelerationLimit accelerationLimit
+	) {
+		if (accelerationLimit == AccelerationLimit.NONE) {
+			return commandedSpeeds;
+		}
+
+		double currentSpeed = Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
+		double commandedSpeed = Math.hypot(commandedSpeeds.vxMetersPerSecond, commandedSpeeds.vyMetersPerSecond);
+
+		if (commandedSpeed <= currentSpeed) {
+			return commandedSpeeds;
+		}
+
+		double dvx = commandedSpeeds.vxMetersPerSecond - currentSpeeds.vxMetersPerSecond;
+		double dvy = commandedSpeeds.vyMetersPerSecond - currentSpeeds.vyMetersPerSecond;
+		double deltaSpeed = Math.hypot(dvx, dvy);
+
+		double maxDelta = accelerationLimit.getMaxAccelerationMetersPerSecondSquared() * 0.02;
+
+		if (deltaSpeed > maxDelta) {
+			double scale = maxDelta / deltaSpeed;
+			return new ChassisSpeeds(
+				currentSpeeds.vxMetersPerSecond + dvx * scale,
+				currentSpeeds.vyMetersPerSecond + dvy * scale,
+				commandedSpeeds.omegaRadiansPerSecond
+>>>>>>> Stashed changes
 			);
 		}
 		return speeds;

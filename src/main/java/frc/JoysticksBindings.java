@@ -25,7 +25,12 @@ import frc.utils.HubUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
+<<<<<<< Updated upstream
 import frc.utils.utilcommands.ExecuteEndCommand;
+=======
+import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
+>>>>>>> Stashed changes
 import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
@@ -125,11 +130,18 @@ public class JoysticksBindings {
 			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
+<<<<<<< Updated upstream
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
 		usedJoystick.POV_UP.whileTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.FORCE_OPEN));
 		usedJoystick.X.onTrue(robot.getRobotCommander().towerAssist());
+=======
+		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
+		usedJoystick.X.whileTrue(
+			robot.getSwerve().getCommandsBuilder().driveByDriversInputs(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.PASS_THROUGH_TRENCH))
+		);
+>>>>>>> Stashed changes
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

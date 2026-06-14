@@ -4,6 +4,10 @@ public enum AimAssist {
 
 	NONE,
 	LOOK_AT_TARGET,
+<<<<<<< Updated upstream
 	TOWER_ASSIST;
+=======
+	PASS_THROUGH_TRENCH;
+>>>>>>> Stashed changes
 
 }

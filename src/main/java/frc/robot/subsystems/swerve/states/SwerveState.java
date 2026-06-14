@@ -36,7 +36,19 @@ public class SwerveState {
 	}
 
 	private SwerveState() {
+<<<<<<< Updated upstream
 		this(DEFAULT_DRIVE_RELATIVE, DEFAULT_DRIVE_SPEED, DEFAULT_LOOP_MODE, DEFAULT_ROTATE_AXIS, DEFAULT_AIM_ASSIST, DEFAULT_HEADING_CONTROL);
+=======
+		this(
+			DEFAULT_DRIVE_RELATIVE,
+			DEFAULT_DRIVE_SPEED,
+			DEFAULT_LOOP_MODE,
+			DEFAULT_ROTATE_AXIS,
+			DEFAULT_AIM_ASSIST,
+			DEFAULT_HEADING_CONTROL,
+			DEFAULT_ACCELERATION_LIMIT
+		);
+>>>>>>> Stashed changes
 	}
 
 	private SwerveState(
