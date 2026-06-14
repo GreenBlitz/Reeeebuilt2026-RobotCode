@@ -15,7 +15,7 @@ public class TowerAssistCalculations {
 
 	public static Translation2d getClosestTower(Pose2d robotPose) {
 		Translation2d blueTower = Field.TOWER_MIDDLE.plus(TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS);
-		Translation2d redTower = FieldMath.mirror(Field.TOWER_MIDDLE.plus(TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS), true, true);
+		Translation2d redTower = FieldMath.mirror(blueTower, true, true);
 		boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
 		return isNearBlueTower ? blueTower : redTower;
 	}

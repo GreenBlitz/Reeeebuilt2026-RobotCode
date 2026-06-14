@@ -125,11 +125,7 @@ public class AimAssistMath {
 	) {
 		double errorDegrees = targetHeading.minus(robotHeading).getDegrees();
 
-		if (errorDegrees > 0) {
-			errorDegrees -= 360;
-		} else {
-			errorDegrees += 360;
-		}
+		errorDegrees += errorDegrees > 0 ? -360 : 360;
 
 		Rotation2d pidOutputVelocityPerSecond = Rotation2d
 			.fromDegrees(swerveConstants.wraplessRotationDegreesPIDController().calculate(0, errorDegrees));

@@ -311,7 +311,7 @@ public class RobotCommander extends GBSubsystem {
 			new InstantCommand(() -> swerve.getStateHandler().updateRobotTowerEnter()),
 			setState(RobotState.NEUTRAL),
 			swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
-		).until(() -> !swerve.getStateHandler().wasAbleToTowerAssist);
+		).until(() -> !swerve.getStateHandler().wasAbleToEnterTower);
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {

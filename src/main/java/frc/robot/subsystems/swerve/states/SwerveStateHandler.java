@@ -28,7 +28,7 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
 	private Rotation2d robotTowerEnterRotation2d = Rotation2d.kCW_90deg;
-	public boolean wasAbleToTowerAssist = true;
+	public boolean wasAbleToEnterTower = true;
 	private boolean isAimAssistOn;
 
 	public SwerveStateHandler(Swerve swerve) {
@@ -54,7 +54,7 @@ public class SwerveStateHandler {
 	public void updateRobotTowerEnter() {
 		this.robotTowerEnterRotation2d = TowerAssistCalculations
 			.getRobotTargetRotation(TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get()), robotPoseSupplier.get().get());
-		this.wasAbleToTowerAssist = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
+		this.wasAbleToEnterTower = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
 			|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
 	}
 
@@ -63,7 +63,7 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		Logger.recordOutput(swerve.getLogPath() + "/wasAbleToTowerAssist", wasAbleToTowerAssist);
+		Logger.recordOutput(swerve.getLogPath() + "/wasAbleToTowerAssist", wasAbleToEnterTower);
 		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
@@ -124,7 +124,7 @@ public class SwerveStateHandler {
 	}
 
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
-		if (wasAbleToTowerAssist) {
+		if (wasAbleToEnterTower) {
 			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
 			Logger.recordOutput("TARGET", assistTarget);
 
