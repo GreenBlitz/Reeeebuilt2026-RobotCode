@@ -292,16 +292,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.recordOutput(logPath + "/isThrottleEnabled", isThrottleEnabled);
 	}
 
-	public void enableTemperatureRegulation() {
-		LimelightHelpers.SetThrottle(name, THROTTLE_ENABLE_VALUE);
-		isThrottleEnabled = true;
-	}
-
-	public void disableTemperatureRegulation() {
-		LimelightHelpers.SetThrottle(name, THROTTLE_DISABLE_VALUE);
-		isThrottleEnabled = false;
-	}
-
 	protected LimelightTarget2dValues getTarget2dValues() {
 		if (pipeline.isNeuralDetecting()) {
 			return inputs.neuralDetectionInputs().target2dValues;
@@ -333,6 +323,16 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	protected LimelightHelpers.PoseEstimate getMT2RawData() {
 		return inputs.mt2Inputs().mtRawData;
+	}
+
+	private void enableTemperatureRegulation() {
+		LimelightHelpers.SetThrottle(name, THROTTLE_ENABLE_VALUE);
+		isThrottleEnabled = true;
+	}
+
+	private void disableTemperatureRegulation() {
+		LimelightHelpers.SetThrottle(name, THROTTLE_DISABLE_VALUE);
+		isThrottleEnabled = false;
 	}
 
 	private void setRobotRelativeCameraPose(Pose3d robotRelativeCameraPose) {
