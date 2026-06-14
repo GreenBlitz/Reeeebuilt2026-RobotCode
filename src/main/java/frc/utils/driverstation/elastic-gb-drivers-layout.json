@@ -11,8 +11,8 @@
             "title": "Field",
             "x": 0.0,
             "y": 400.0,
-            "width": 560.0,
-            "height": 280.0,
+            "width": 520.0,
+            "height": 320.0,
             "type": "Field",
             "properties": {
               "topic": "/SmartDashboard/Field",
@@ -32,7 +32,7 @@
             "title": "IsHubActive",
             "x": 0.0,
             "y": 0.0,
-            "width": 560.0,
+            "width": 520.0,
             "height": 400.0,
             "type": "Boolean Box",
             "properties": {
@@ -64,9 +64,9 @@
           },
           {
             "title": "isRobotAutoWinningAlliance",
-            "x": 1120.0,
+            "x": 1080.0,
             "y": 240.0,
-            "width": 280.0,
+            "width": 400.0,
             "height": 240.0,
             "type": "Boolean Box",
             "properties": {
@@ -94,9 +94,9 @@
           },
           {
             "title": "CurrentGamePeriod",
-            "x": 1120.0,
+            "x": 1080.0,
             "y": 0.0,
-            "width": 280.0,
+            "width": 400.0,
             "height": 240.0,
             "type": "Large Text Display",
             "properties": {
@@ -107,7 +107,7 @@
           },
           {
             "title": "TimeUntilNextShift",
-            "x": 560.0,
+            "x": 520.0,
             "y": 0.0,
             "width": 560.0,
             "height": 400.0,
@@ -123,7 +123,7 @@
           },
           {
             "title": "TimeLeftForGame",
-            "x": 560.0,
+            "x": 520.0,
             "y": 400.0,
             "width": 560.0,
             "height": 160.0,
@@ -139,7 +139,7 @@
           },
           {
             "title": "Autonomous Chooser",
-            "x": 560.0,
+            "x": 520.0,
             "y": 560.0,
             "width": 560.0,
             "height": 120.0,
@@ -152,7 +152,7 @@
           },
           {
             "title": "BrakeState",
-            "x": 1120.0,
+            "x": 1080.0,
             "y": 480.0,
             "width": 160.0,
             "height": 120.0,
@@ -165,7 +165,7 @@
           },
           {
             "title": "isIMUOffsetCalibrated",
-            "x": 1280.0,
+            "x": 1240.0,
             "y": 480.0,
             "width": 120.0,
             "height": 120.0,
@@ -181,16 +181,34 @@
             }
           },
           {
-            "title": "Return To Middle",
-            "x": 1120.0,
-            "y": 600.0,
-            "width": 280.0,
-            "height": 160.0,
-            "type": "ComboBox Chooser",
+            "title": "AreAlertsOK",
+            "x": 1360.0,
+            "y": 480.0,
+            "width": 120.0,
+            "height": 120.0,
+            "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Return To Middle",
+              "topic": "/AdvantageKit/RealOutputs/AreAlertsOK",
               "period": 0.06,
-              "sort_options": false
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "AlertsMessage",
+            "x": 1080.0,
+            "y": 600.0,
+            "width": 400.0,
+            "height": 120.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/AlertsMessage",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
             }
           }
         ]
