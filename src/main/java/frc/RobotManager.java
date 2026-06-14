@@ -103,6 +103,8 @@ public class RobotManager extends LoggedRobot {
 			autonomousCommand.cancel();
 			if (!DriverStationUtil.isMatch())
 				robot.enableAllLimelightTemperatureRegulations();
+			else
+				robot.disableAllLimelightTemperatureRegulations();
 		}
 
 		robot.getSwerve().setIsRunningIndependently(false);
