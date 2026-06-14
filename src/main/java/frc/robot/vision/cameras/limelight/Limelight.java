@@ -170,7 +170,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		inputs.hardwareInputs().connected = LimelightHelpersAdditions.getIsConnected(name);
 		inputs.hardwareInputs().temperatureCelsius = LimelightHelpersAdditions.getTemperatureCelsius(name);
 		Logger.processInputs(logPath, inputs.hardwareInputs());
-		Logger.recordOutput(logPath + "/isThrottleEnabled", isThrottleEnabled);
 	}
 
 	public String getName() {
@@ -283,6 +282,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void captureGivenTime(double secondsToCapture) {
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+	}
+
+	public void changeTemperatureRegulationValue(boolean isThrottleEnabled) {
+		if (isThrottleEnabled)
+			enableTemperatureRegulation();
+		else
+			disableTemperatureRegulation();
+		Logger.recordOutput(logPath + "/isThrottleEnabled", isThrottleEnabled);
 	}
 
 	public void enableTemperatureRegulation() {
