@@ -307,11 +307,13 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command towerAssist() {
-		return new ParallelCommandGroup(
+		return new SequentialCommandGroup(
 			new InstantCommand(() -> swerve.getStateHandler().updateRobotTowerEnter()),
-			setState(RobotState.NEUTRAL),
-			swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
-		).until(() -> !swerve.getStateHandler().wasAbleToEnterTower);
+			new ParallelCommandGroup(
+				setState(RobotState.NEUTRAL),
+				swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
+			).onlyIf(() -> swerve.getStateHandler().isTowerAssistLegal)
+		);
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {

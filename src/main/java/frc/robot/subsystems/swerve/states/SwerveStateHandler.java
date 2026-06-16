@@ -28,7 +28,7 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
 	private Rotation2d robotTowerEnterRotation2d = Rotation2d.kCW_90deg;
-	public boolean wasAbleToEnterTower = true;
+	public boolean isTowerAssistLegal = true;
 	private boolean isAimAssistOn;
 
 	public SwerveStateHandler(Swerve swerve) {
@@ -56,7 +56,7 @@ public class SwerveStateHandler {
 			TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get()),
 			robotPoseSupplier.get().get()
 		);
-		this.wasAbleToEnterTower = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
+		this.isTowerAssistLegal = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
 			|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
 	}
 
@@ -65,7 +65,6 @@ public class SwerveStateHandler {
 	}
 
 	public ChassisSpeeds applyAimAssistOnChassisSpeeds(ChassisSpeeds speeds, SwerveState swerveState) {
-		Logger.recordOutput(swerve.getLogPath() + "/wasAbleToTowerAssist", wasAbleToEnterTower);
 		if (swerveState.getAimAssist() == AimAssist.NONE || !isAimAssistOn) {
 			return speeds;
 		}
@@ -120,18 +119,26 @@ public class SwerveStateHandler {
 			);
 		}
 
-		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		ChassisSpeeds finalSpeeds = AimAssistMath
+			.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, true, swerveConstants);
 		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
 		return finalSpeeds;
 	}
 
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
-		if (wasAbleToEnterTower) {
+		if (isTowerAssistLegal) {
 			Translation2d assistTarget = TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get());
-			Logger.recordOutput(swerve.getLogPath() + "/towerAssistTarget", assistTarget);
 
-			ChassisSpeeds assistedTranslationSpeeds = AimAssistMath
-				.getRotationAssistedSpeeds(speeds, robotPoseSupplier.get().get().getRotation(), robotTowerEnterRotation2d, swerveConstants);
+			Logger.recordOutput(swerve.getLogPath() + "/towerAssistTarget", assistTarget);
+			Logger.recordOutput(swerve.getLogPath() + "/isTowerAssistLegal", isTowerAssistLegal);
+
+			ChassisSpeeds assistedTranslationSpeeds = AimAssistMath.getRotationAssistedSpeeds(
+				speeds,
+				robotPoseSupplier.get().get().getRotation(),
+				robotTowerEnterRotation2d,
+				false,
+				swerveConstants
+			);
 
 			if (TowerAssistCalculations.shouldTakeLongTurnToAvoidWall(robotPoseSupplier.get().get())) {
 				assistedTranslationSpeeds = AimAssistMath.getLongTurnRotationAssistedSpeeds(
@@ -141,14 +148,15 @@ public class SwerveStateHandler {
 					swerveConstants
 				);
 			}
-			return AimAssistMath.getObjectAssistedSpeedsSlowedByRotation(
+			return AimAssistMath.getObjectAssistedSpeedsSlowedDownByRotation(
 				assistedTranslationSpeeds,
 				robotPoseSupplier.get().get(),
 				Rotation2d.kCW_90deg,
 				assistTarget,
 				swerveConstants,
 				SwerveState.DEFAULT_DRIVE,
-				SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR
+				SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR,
+				true
 			);
 		}
 		return speeds;

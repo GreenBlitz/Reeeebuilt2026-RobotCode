@@ -13,30 +13,19 @@ import frc.utils.math.ToleranceMath;
 
 public class AimAssistMath {
 
-	public static ChassisSpeeds getRotationAssistedSpeedsSlowedByDriveMagnitude(
-		ChassisSpeeds speeds,
-		Rotation2d robotHeading,
-		Rotation2d targetHeading,
-		SwerveConstants swerveConstants
-	) {
-		Rotation2d pidOutputVelocityPerSecond = Rotation2d
-			.fromDegrees(swerveConstants.rotationDegreesPIDController().calculate(robotHeading.getDegrees(), targetHeading.getDegrees()));
-
-		Rotation2d angularVelocityPerSecond = applyMagnitudeCompensation(pidOutputVelocityPerSecond, SwerveMath.getDriveMagnitude(speeds));
-		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath
-			.clamp(angularVelocityPerSecond, swerveConstants.maxRotationalVelocityPerSecond());
-
-		return new ChassisSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, clampedAngularVelocityPerSecond.getRadians());
-	}
-
 	public static ChassisSpeeds getRotationAssistedSpeeds(
 		ChassisSpeeds speeds,
 		Rotation2d robotHeading,
 		Rotation2d targetHeading,
+		boolean slowDownByDriveMagnitude,
 		SwerveConstants swerveConstants
 	) {
 		Rotation2d pidOutputVelocityPerSecond = Rotation2d
 			.fromDegrees(swerveConstants.rotationDegreesPIDController().calculate(robotHeading.getDegrees(), targetHeading.getDegrees()));
+
+		if (slowDownByDriveMagnitude) {
+			pidOutputVelocityPerSecond = applyMagnitudeCompensation(pidOutputVelocityPerSecond, SwerveMath.getDriveMagnitude(speeds));
+		}
 
 		Rotation2d clampedAngularVelocityPerSecond = ToleranceMath
 			.clamp(pidOutputVelocityPerSecond, swerveConstants.maxRotationalVelocityPerSecond());
@@ -56,13 +45,15 @@ public class AimAssistMath {
 	 * |                       |   |                       |
 	 * @formatter:on
 	 */
-	public static ChassisSpeeds getObjectAssistedSpeeds(
+	public static ChassisSpeeds getObjectAssistedSpeedsSlowedDownByRotation(
 		ChassisSpeeds speeds,
 		Pose2d robotPose,
 		Rotation2d allianceRelativeTargetHeading,
 		Translation2d objectTranslation,
 		SwerveConstants swerveConstants,
-		SwerveState swerveState
+		SwerveState swerveState,
+		double magnitudeCompensationFactor,
+		boolean slowDownByRotation
 	) {
 		Pose2d robotPoseWithTargetHeading = new Pose2d(robotPose.getX(), robotPose.getY(), allianceRelativeTargetHeading);
 		Translation2d objectRelativeToRobot = FieldMath.getRelativeTranslation(robotPoseWithTargetHeading, objectTranslation);
@@ -80,43 +71,41 @@ public class AimAssistMath {
 			neededHorizontalVelocityRelativeToObjectMetersPerSecond,
 			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
 		);
+
+		if (slowDownByRotation) {
+			assistedSpeeds.vxMetersPerSecond = applyMagnitudeCompensation(
+				targetHeadingRelativeSpeeds.vxMetersPerSecond,
+				Math.abs(speeds.omegaRadiansPerSecond),
+				magnitudeCompensationFactor
+			);
+			assistedSpeeds.vyMetersPerSecond = applyMagnitudeCompensation(
+				neededHorizontalVelocityRelativeToObjectMetersPerSecond,
+				Math.abs(speeds.omegaRadiansPerSecond),
+				magnitudeCompensationFactor
+			);
+		}
+
 		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
 	}
 
-	public static ChassisSpeeds getObjectAssistedSpeedsSlowedByRotation(
+	public static ChassisSpeeds getObjectAssistedSpeeds(
 		ChassisSpeeds speeds,
 		Pose2d robotPose,
 		Rotation2d allianceRelativeTargetHeading,
 		Translation2d objectTranslation,
 		SwerveConstants swerveConstants,
-		SwerveState swerveState,
-		double magnitudeCompensationFactor
+		SwerveState swerveState
 	) {
-		Pose2d robotPoseWithTargetHeading = new Pose2d(robotPose.getX(), robotPose.getY(), allianceRelativeTargetHeading);
-		Translation2d objectRelativeToRobot = FieldMath.getRelativeTranslation(robotPoseWithTargetHeading, objectTranslation);
-		double neededHorizontalVelocityRelativeToObjectMetersPerSecond = swerveConstants.yMetersPIDController()
-			.calculate(0, objectRelativeToRobot.getY());
-
-		Rotation2d targetHeadingHingeSystemAngle = switch (swerveState.getDriveRelative()) {
-			case ALLIANCE_RELATIVE -> Field.getAllianceRelative(allianceRelativeTargetHeading);
-			case ROBOT_RELATIVE -> allianceRelativeTargetHeading.minus(robotPose.getRotation());
-		};
-
-		ChassisSpeeds targetHeadingRelativeSpeeds = SwerveMath.allianceToRobotRelativeSpeeds(speeds, targetHeadingHingeSystemAngle);
-		ChassisSpeeds assistedSpeeds = new ChassisSpeeds(
-			applyMagnitudeCompensation(
-				targetHeadingRelativeSpeeds.vxMetersPerSecond,
-				Math.abs(speeds.omegaRadiansPerSecond),
-				magnitudeCompensationFactor
-			),
-			applyMagnitudeCompensation(
-				neededHorizontalVelocityRelativeToObjectMetersPerSecond,
-				Math.abs(speeds.omegaRadiansPerSecond),
-				magnitudeCompensationFactor
-			),
-			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
+		return getObjectAssistedSpeedsSlowedDownByRotation(
+			speeds,
+			robotPose,
+			allianceRelativeTargetHeading,
+			objectTranslation,
+			swerveConstants,
+			swerveState,
+			0,
+			false
 		);
-		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
 	}
 
 	private static Rotation2d applyMagnitudeCompensation(Rotation2d velocityPerSecond, double magnitude) {
