@@ -47,8 +47,11 @@ public class PivotConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80.15);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(20.85);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(93.47);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(23.41);
+
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 3);
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 3);
 
 	public static final double COLLISION_OPEN_CURRENT_AMP = 6.0;
 	public static final double HOLD_OPEN_CURRENT_AMP = 1.0;
@@ -85,6 +88,8 @@ public class PivotConstants {
 			SIMULATION_SLOT,
 			CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+			FORWARD_SOFTWARE_LIMIT,
+			BACKWARD_SOFTWARE_LIMIT,
 			pivotSimConstant
 		);
 	}

@@ -25,7 +25,6 @@ import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
@@ -79,7 +78,7 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final Arm hood;
 
-	private final CurrentControlArm pivot;
+	private final VelocityPositionArm pivot;
 	private final Roller intakeRoller;
 
 	private final VelocityRoller magazine;
@@ -404,7 +403,7 @@ public class Robot {
 		return hood;
 	}
 
-	public CurrentControlArm getPivot() {
+	public Arm getPivot() {
 		return pivot;
 	}
 
