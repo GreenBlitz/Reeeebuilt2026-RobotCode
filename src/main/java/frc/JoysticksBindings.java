@@ -112,8 +112,8 @@ public class JoysticksBindings {
 				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
 		);
 		usedJoystick.POV_LEFT.onTrue(
-				robot.getRobotCommander()
-						.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
+			robot.getRobotCommander()
+				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
 		);
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
 			.onTrue(
@@ -129,7 +129,12 @@ public class JoysticksBindings {
 			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED));
-		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.SLOW_CLOSE));
+		usedJoystick.POV_RIGHT.onTrue(
+			robot.getRobotCommander()
+				.getIntakeStateHandler()
+				.setState(IntakeState.SLOW_CLOSE)
+				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
+		);
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));

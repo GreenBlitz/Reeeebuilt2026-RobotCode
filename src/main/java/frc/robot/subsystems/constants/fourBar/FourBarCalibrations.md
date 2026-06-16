@@ -6,13 +6,13 @@ FourBar calibrations
 - [x] motor BusChain
 
 #### Motor config
-- [x] Is Inverted
-- [x] Gear ratio
-- [x] Current limit
+- [ ] Is Inverted
+- [ ] Gear ratio
+- [ ] Current limit
 
 #### Limits
-- [x] Max position
-- [x] Min position
+- [ ] Max position
+- [ ] Min position
 
 #### FeedForward
 - [ ] kS

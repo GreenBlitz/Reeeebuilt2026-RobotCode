@@ -82,16 +82,7 @@ public class IntakeStateHandler {
 
 	public Command close() {
 		return new ParallelCommandGroup(
-			new SequentialCommandGroup(
-				fourBar.getCommandsBuilder()
-					.setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(
-						() -> isCloseFourBarHarder.getAsBoolean()
-							? FourBarConstants.SOFT_CLOSE_CURRENT_AMP
-							: FourBarConstants.HOLD_CLOSE_CURRENT_AMP
-					)
-			),
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
 			new SequentialCommandGroup(
 				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()).withTimeout(0.5),
 				rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
@@ -99,13 +90,15 @@ public class IntakeStateHandler {
 		);
 	}
 
-	public Command slowClose(){
-		return new ParallelCommandGroup(
-				new SequentialCommandGroup(
-						fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.SLOW_CLOSE_VOLTAGE, () -> fourBar.isPastPosition(FourBarConstants.FOUR_BAR_POSITION_FOR_SLOW_CLOSE)),
-						openFourBar()
+	public Command slowClose() {
+		return new ParallelDeadlineGroup(
+			fourBar.getCommandsBuilder()
+				.setVoltageWithoutLimit(
+					FourBarConstants.SLOW_CLOSE_VOLTAGE,
+					() -> fourBar.isPastPosition(FourBarConstants.FOUR_BAR_POSITION_FOR_SLOW_CLOSE)
 				),
-				rollers.getCommandsBuilder().setPower(IntakeState.SLOW_CLOSE.getIntakePower())
+			rollers.getCommandsBuilder().setPower(IntakeState.SLOW_CLOSE.getIntakePower())
+
 		);
 	}
 
@@ -126,11 +119,12 @@ public class IntakeStateHandler {
 
 	private Command openFourBar() {
 		return new SequentialCommandGroup(
-			fourBar.getCommandsBuilder()
-				.setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
 			fourBar.getCommandsBuilder()
 				.setCurrentWithoutLimit(
-					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
+					() -> isCloseFourBarHarder.getAsBoolean()
+						? FourBarConstants.COLLISION_OPEN_CURRENT_AMP
+						: FourBarConstants.HOLD_OPEN_CURRENT_AMP
 				)
 		);
 	}

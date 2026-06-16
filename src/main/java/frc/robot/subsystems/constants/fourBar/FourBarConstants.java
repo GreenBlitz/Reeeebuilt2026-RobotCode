@@ -50,24 +50,8 @@ public class FourBarConstants {
 	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(80.15);
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(20.85);
 
-	public static final double CLOSE_VOLTAGE = 7;
-
-	public static final double SOFT_CLOSE_CURRENT_AMP = 6.0;
-	public static final double HARD_CLOSE_CURRENT_AMP = 10.0;
-	public static final double HOLD_CLOSE_CURRENT_AMP = 1.0;
-
-	public static final double SOFT_CLOSE_TIME_SECONDS = 1;
-	public static final double HARD_CLOSE_TIME_SECONDS = 0.25;
-
-
-	public static final double SOFT_OPEN_CURRENT_AMP = -4.0;
-	public static final double HARD_OPEN_CURRENT_AMP = -4.0;
-	public static final double HOLD_OPEN_CURRENT_AMP = 0;
-
-	public static final double HARD_OPEN_TIME_SECONDS = 1;
-
-
-	public static final double COLLISION_STALL_CURRENT = 13;
+	public static final double COLLISION_OPEN_CURRENT_AMP = 6.0;
+	public static final double HOLD_OPEN_CURRENT_AMP = 1.0;
 
 	public static final double FOUR_BAR_RESET_VOLTAGE = 2;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
