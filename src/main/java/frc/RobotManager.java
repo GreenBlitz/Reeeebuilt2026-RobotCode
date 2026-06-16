@@ -74,6 +74,7 @@ public class RobotManager extends LoggedRobot {
 		});
 
 		alertsMessage = "Alerts: None";
+		Logger.recordOutput("AlertsMessage", alertsMessage);
 		logDriverAlerts();
 	}
 
@@ -166,7 +167,7 @@ public class RobotManager extends LoggedRobot {
 
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;
-			Logger.recordOutput("Alerts", alertsMessage);
+			Logger.recordOutput("AlertsMessage", alertsMessage);
 		}
 	}
 
