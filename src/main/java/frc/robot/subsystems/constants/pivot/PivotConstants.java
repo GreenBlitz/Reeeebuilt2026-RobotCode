@@ -54,6 +54,7 @@ public class PivotConstants {
 	public static final double HOLD_OPEN_CURRENT_AMP = 1.0;
 
 	public static final double PIVOT_RESET_VOLTAGE = 2;
+
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
 	public static final double SLOW_CLOSE_VOLTAGE = 2;
