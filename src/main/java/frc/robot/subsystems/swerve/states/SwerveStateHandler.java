@@ -52,8 +52,10 @@ public class SwerveStateHandler {
 	}
 
 	public void updateRobotTowerEnter() {
-		this.robotTowerEnterRotation2d = TowerAssistCalculations
-			.getRobotTargetRotation(TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get()), robotPoseSupplier.get().get());
+		this.robotTowerEnterRotation2d = TowerAssistCalculations.getRobotTargetRotation(
+			TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get()),
+			robotPoseSupplier.get().get()
+		);
 		this.wasAbleToEnterTower = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
 			|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
 	}
