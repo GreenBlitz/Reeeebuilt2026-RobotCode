@@ -37,7 +37,7 @@ public class TowerAssistCalculations {
 	public static boolean shouldTakeLongTurnToAvoidWall(Pose2d robotPose) {
 		Translation2d closestTower = getClosestTower(robotPose);
 
-		boolean isBlueSideTower = closestTower.getX() < Field.LENGTH_METERS / 2;
+		boolean isBlueSideTower = closestTower.getX() < Field.TOWER_MIDDLE.getY();
 
 		double distanceFromDriverStationWall = isBlueSideTower ? robotPose.getX() : Field.LENGTH_METERS - robotPose.getX();
 
@@ -50,7 +50,7 @@ public class TowerAssistCalculations {
 		boolean doesIntakeFaceDriverStation = (intakeDirection.getX() * driverStationDirection.getX()
 			+ intakeDirection.getY() * driverStationDirection.getY()
 			< INTAKE_FACING_DRIVER_STATION_POINT_PRODUCT_THRESHOLD);
-		boolean doesIntakeFaceAwayFromTower = robotPose.getY() > Field.WIDTH_METERS / 2
+		boolean doesIntakeFaceAwayFromTower = robotPose.getY() > Field.TOWER_MIDDLE.getY()
 			? intakeDirection.getY() > 0
 			: intakeDirection.getY() < 0;
 

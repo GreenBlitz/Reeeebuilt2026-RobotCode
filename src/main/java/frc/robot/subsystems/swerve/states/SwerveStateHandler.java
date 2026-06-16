@@ -139,7 +139,7 @@ public class SwerveStateHandler {
 					swerveConstants
 				);
 			}
-			return AimAssistMath.getObjectAssistedSpeedsWithMagnitudeCompensation(
+			return AimAssistMath.getObjectAssistedSpeedsSlowedByRotation(
 				assistedTranslationSpeeds,
 				robotPoseSupplier.get().get(),
 				Rotation2d.kCW_90deg,
