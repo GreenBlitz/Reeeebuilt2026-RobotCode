@@ -13,7 +13,7 @@ public class TowerAssistCalculations {
 	private static final double INTAKE_FACING_DRIVER_STATION_POINT_PRODUCT_THRESHOLD = -0.1;
 	private static final Translation2d TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS = new Translation2d(0.1, 0);
 
-	public static Translation2d getClosestTower(Pose2d robotPose) {
+	public static Translation2d getClosestTowerEntrance(Pose2d robotPose) {
 		Translation2d blueTowerEntrance = Field.TOWER_MIDDLE.plus(TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS);
 		Translation2d redTowerEntrance = FieldMath.mirror(blueTowerEntrance, true, true);
 		boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
@@ -26,7 +26,7 @@ public class TowerAssistCalculations {
 	}
 
 	public static boolean isInFrontOfClosestTower(Pose2d robotPose) {
-		return Math.abs(robotPose.getY() - getClosestTower(robotPose).getY())
+		return Math.abs(robotPose.getY() - getClosestTowerEntrance(robotPose).getY())
 			< Field.TOWER_Y_AXIS_LENGTH_METERS / 2 + RobotConstants.DISTANCE_FROM_ROBOT_CENTER_TO_HOPPER_EDGE_WHEN_OPENED_METERS;
 	}
 
@@ -35,22 +35,22 @@ public class TowerAssistCalculations {
 	}
 
 	public static boolean shouldTakeLongTurnToAvoidWall(Pose2d robotPose) {
-		Translation2d closestTower = getClosestTower(robotPose);
+		Translation2d closestTower = getClosestTowerEntrance(robotPose);
 
-		boolean isBlueSideTower = closestTower.getX() < Field.TOWER_MIDDLE.getY();
+		boolean isTowerBlue = closestTower.getX() < Field.LENGTH_METERS / 2;
 
-		double distanceFromDriverStationWall = isBlueSideTower ? robotPose.getX() : Field.LENGTH_METERS - robotPose.getX();
+		double distanceFromDriverStationWall = isTowerBlue ? robotPose.getX() : Field.LENGTH_METERS - robotPose.getX();
 
 		boolean isCloseToDriverStationWall = distanceFromDriverStationWall < ROBOT_CLOSE_TO_DRIVER_STATION_WALL_THRESHOLD_METERS;
 
-		Translation2d driverStationDirection = isBlueSideTower ? new Translation2d(1, 0) : new Translation2d(-1, 0);
+		Translation2d driverStationDirection = isTowerBlue ? new Translation2d(1, 0) : new Translation2d(-1, 0);
 
 		Translation2d intakeDirection = new Translation2d(-robotPose.getRotation().getCos(), -robotPose.getRotation().getSin());
 
 		boolean doesIntakeFaceDriverStation = (intakeDirection.getX() * driverStationDirection.getX()
 			+ intakeDirection.getY() * driverStationDirection.getY()
 			< INTAKE_FACING_DRIVER_STATION_POINT_PRODUCT_THRESHOLD);
-		boolean doesIntakeFaceAwayFromTower = robotPose.getY() > Field.TOWER_MIDDLE.getY()
+		boolean doesIntakeFaceAwayFromTower = robotPose.getY() > TowerAssistCalculations.getClosestTowerEntrance(robotPose).getY()
 			? intakeDirection.getY() > 0
 			: intakeDirection.getY() < 0;
 

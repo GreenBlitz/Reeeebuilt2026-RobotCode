@@ -53,7 +53,7 @@ public class SwerveStateHandler {
 
 	public void updateRobotTowerEnter() {
 		this.robotTowerEnterRotation2d = TowerAssistCalculations
-			.getRobotTargetRotation(TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get()), robotPoseSupplier.get().get());
+			.getRobotTargetRotation(TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get()), robotPoseSupplier.get().get());
 		this.wasAbleToEnterTower = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
 			|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
 	}
@@ -125,7 +125,7 @@ public class SwerveStateHandler {
 
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
 		if (wasAbleToEnterTower) {
-			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
+			Translation2d assistTarget = TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get());
 			Logger.recordOutput(swerve.getLogPath() + "/towerAssistTarget", assistTarget);
 
 			ChassisSpeeds assistedTranslationSpeeds = AimAssistMath
