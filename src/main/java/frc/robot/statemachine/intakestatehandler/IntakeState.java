@@ -12,16 +12,16 @@ public enum IntakeState {
 	CALIBRATION(Rotation2d.fromRotations(Double.NaN), Double.NaN),
 	STAY_IN_PLACE(Rotation2d.fromRotations(Double.NaN), Double.NaN);
 
-	private final Rotation2d fourBarPosition;
+	private final Rotation2d pivotPosition;
 	private final double intakePower;
 
-	IntakeState(Rotation2d fourBarPosition, double intakePower) {
-		this.fourBarPosition = fourBarPosition;
+	IntakeState(Rotation2d pivotPosition, double intakePower) {
+		this.pivotPosition = pivotPosition;
 		this.intakePower = intakePower;
 	}
 
-	public Rotation2d getFourBarPosition() {
-		return fourBarPosition;
+	public Rotation2d getPivotPosition() {
+		return pivotPosition;
 	}
 
 	public double getIntakePower() {

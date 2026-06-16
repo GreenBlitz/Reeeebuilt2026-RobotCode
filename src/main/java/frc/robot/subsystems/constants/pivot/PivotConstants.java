@@ -1,4 +1,4 @@
-package frc.robot.subsystems.constants.fourBar;
+package frc.robot.subsystems.constants.pivot;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -12,9 +12,9 @@ import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.CurrentControlArm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
 
-public class FourBarConstants {
+public class PivotConstants {
 
-	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/FourBar";
+	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Pivot";
 
 	public static final boolean IS_INVERTED = false;
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
@@ -28,7 +28,7 @@ public class FourBarConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 140;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 81;
 
 		REAL_SLOT.kP = 0;
 		REAL_SLOT.kI = 0;
@@ -53,28 +53,28 @@ public class FourBarConstants {
 	public static final double COLLISION_OPEN_CURRENT_AMP = 6.0;
 	public static final double HOLD_OPEN_CURRENT_AMP = 1.0;
 
-	public static final double FOUR_BAR_RESET_VOLTAGE = 2;
+	public static final double PIVOT_RESET_VOLTAGE = 2;
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
 	public static final double SLOW_CLOSE_VOLTAGE = 2;
 	public static final Rotation2d FOUR_BAR_POSITION_FOR_SLOW_CLOSE = Rotation2d.fromDegrees(85);
 
-	public static final double FOUR_BAR_LENGTH = 0.3;
+	public static final double PIVOT_LENGTH_METERS = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
 
 
-	public static CurrentControlArm createFourBar() {
-		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
+	public static CurrentControlArm createPivot() {
+		ArmSimulationConstants pivotSimConstant = new ArmSimulationConstants(
 			MAXIMUM_POSITION,
 			MINIMUM_POSITION,
 			MAXIMUM_POSITION,
 			MOMENT_OF_INERTIA,
-			FOUR_BAR_LENGTH
+			PIVOT_LENGTH_METERS
 		);
 		return TalonFXArmBuilder.buildCurrentControlArm(
 			LOG_PATH,
-			IDs.TalonFXIDs.FOUR_BAR,
+			IDs.TalonFXIDs.PIVOT,
 			IS_INVERTED,
 			IS_CONTINUOUS_WRAP,
 			TALON_FX_FOLLOWER_CONFIG,
@@ -84,7 +84,7 @@ public class FourBarConstants {
 			SIMULATION_SLOT,
 			CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			fourBarSimConstant
+			pivotSimConstant
 		);
 	}
 

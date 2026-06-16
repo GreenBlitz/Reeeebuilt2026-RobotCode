@@ -8,7 +8,7 @@ import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 
 public class IntakeRollerConstants {
 
-	public final static boolean IS_INVERTED = false;
+	public final static boolean IS_INVERTED = true;
 
 	public final static FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 

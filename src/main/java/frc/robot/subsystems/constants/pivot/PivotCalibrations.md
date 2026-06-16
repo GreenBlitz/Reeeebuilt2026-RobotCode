@@ -1,4 +1,4 @@
-FourBar calibrations
+Pivot calibrations
 --------------------
 
 #### IDs
@@ -40,7 +40,7 @@ FourBar calibrations
 - [x] Current threshold to reset
 
 #### General Constants
-- [x] FourBar length
+- [x] Pivot length
 
 #### Open State Constants
 - [x] Position to switch to lower current
