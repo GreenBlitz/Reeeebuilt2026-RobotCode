@@ -66,7 +66,8 @@ public class AimAssistMath {
 	) {
 		Pose2d robotPoseWithTargetHeading = new Pose2d(robotPose.getX(), robotPose.getY(), allianceRelativeTargetHeading);
 		Translation2d objectRelativeToRobot = FieldMath.getRelativeTranslation(robotPoseWithTargetHeading, objectTranslation);
-		double neededHorizontalVelocityToObjectMetersPerSecond = swerveConstants.yMetersPIDController().calculate(0, objectRelativeToRobot.getY());
+		double neededHorizontalVelocityToObjectMetersPerSecond = swerveConstants.yMetersPIDController()
+			.calculate(0, objectRelativeToRobot.getY());
 
 		Rotation2d targetHeadingHingeSystemAngle = switch (swerveState.getDriveRelative()) {
 			case ALLIANCE_RELATIVE -> Field.getAllianceRelative(allianceRelativeTargetHeading);
@@ -76,7 +77,7 @@ public class AimAssistMath {
 		ChassisSpeeds targetHeadingRelativeSpeeds = SwerveMath.allianceToRobotRelativeSpeeds(speeds, targetHeadingHingeSystemAngle);
 		ChassisSpeeds assistedSpeeds = new ChassisSpeeds(
 			targetHeadingRelativeSpeeds.vxMetersPerSecond,
-                neededHorizontalVelocityToObjectMetersPerSecond,
+			neededHorizontalVelocityToObjectMetersPerSecond,
 			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
 		);
 		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
@@ -93,7 +94,8 @@ public class AimAssistMath {
 	) {
 		Pose2d robotPoseWithTargetHeading = new Pose2d(robotPose.getX(), robotPose.getY(), allianceRelativeTargetHeading);
 		Translation2d objectRelativeToRobot = FieldMath.getRelativeTranslation(robotPoseWithTargetHeading, objectTranslation);
-		double neededHorizontalVelocityToObjectMetersPerSecond = swerveConstants.yMetersPIDController().calculate(0, objectRelativeToRobot.getY());
+		double neededHorizontalVelocityToObjectMetersPerSecond = swerveConstants.yMetersPIDController()
+			.calculate(0, objectRelativeToRobot.getY());
 
 		Rotation2d targetHeadingHingeSystemAngle = switch (swerveState.getDriveRelative()) {
 			case ALLIANCE_RELATIVE -> Field.getAllianceRelative(allianceRelativeTargetHeading);
@@ -108,7 +110,7 @@ public class AimAssistMath {
 				magnitudeCompensationFactor
 			),
 			applyMagnitudeCompensation(
-                neededHorizontalVelocityToObjectMetersPerSecond,
+				neededHorizontalVelocityToObjectMetersPerSecond,
 				Math.abs(speeds.omegaRadiansPerSecond),
 				magnitudeCompensationFactor
 			),
