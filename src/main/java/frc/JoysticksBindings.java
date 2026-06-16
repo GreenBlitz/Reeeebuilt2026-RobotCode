@@ -111,10 +111,6 @@ public class JoysticksBindings {
 			robot.getRobotCommander()
 				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
 		);
-		usedJoystick.POV_LEFT.onTrue(
-			robot.getRobotCommander()
-				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
-		);
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
 			.onTrue(
 				robot.getRobotCommander()
