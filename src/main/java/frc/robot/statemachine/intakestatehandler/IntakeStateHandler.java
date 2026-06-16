@@ -70,11 +70,27 @@ public class IntakeStateHandler {
 	}
 
 	public Command intake() {
-		return new ParallelCommandGroup(openPivot(), rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()));
+		return new ParallelCommandGroup(
+			new SequentialCommandGroup(
+				pivot.getCommandsBuilder()
+					.setTargetPosition(IntakeState.INTAKE.getPivotPosition())
+					.until(() -> pivot.isAtPosition(IntakeState.INTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
+				pivot.getCommandsBuilder().setCurrentWithoutLimit(0)
+			),
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+		);
 	}
 
 	public Command outtake() {
-		return new ParallelCommandGroup(openPivot(), rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower()));
+		return new ParallelCommandGroup(
+			new SequentialCommandGroup(
+				pivot.getCommandsBuilder()
+					.setTargetPosition(IntakeState.OUTTAKE.getPivotPosition())
+					.until(() -> pivot.isAtPosition(IntakeState.OUTTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
+				pivot.getCommandsBuilder().setCurrentWithoutLimit(0)
+			),
+			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
+		);
 	}
 
 	public Command close() {
@@ -98,27 +114,18 @@ public class IntakeStateHandler {
 	}
 
 	public Command setState(IntakeState intakeState) {
-		return new ParallelCommandGroup(switch (intakeState) {
-			case CALIBRATION -> calibration();
-			case STAY_IN_PLACE -> stayInPlace();
-			case INTAKE -> intake();
-			case OUTTAKE -> outtake();
-			case RESET_PIVOT -> resetPivot();
-			case CLOSED -> close();
-			case SLOW_CLOSE -> slowClose();
-		},
+		return new ParallelCommandGroup(
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", intakeState.name())),
-			new InstantCommand(() -> currentState = intakeState)
-		);
-	}
-
-	private Command openPivot() {
-		return new SequentialCommandGroup(
-			pivot.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getPivotPosition()),
-			pivot.getCommandsBuilder()
-				.setCurrent(
-					() -> isOpenPivotHarder.getAsBoolean() ? PivotConstants.COLLISION_OPEN_CURRENT_AMP : PivotConstants.HOLD_OPEN_CURRENT_AMP
-				)
+			new InstantCommand(() -> currentState = intakeState),
+			switch (intakeState) {
+				case CALIBRATION -> calibration();
+				case STAY_IN_PLACE -> stayInPlace();
+				case INTAKE -> intake();
+				case OUTTAKE -> outtake();
+				case RESET_PIVOT -> resetPivot();
+				case CLOSED -> close();
+				case SLOW_CLOSE -> slowClose();
+			}
 		);
 	}
 

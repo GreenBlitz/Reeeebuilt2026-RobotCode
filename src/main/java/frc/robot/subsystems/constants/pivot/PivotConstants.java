@@ -39,7 +39,7 @@ public class PivotConstants {
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 
-		SIMULATION_SLOT.kP = 50;
+		SIMULATION_SLOT.kP = 100;
 		SIMULATION_SLOT.kI = 0;
 		SIMULATION_SLOT.kD = 0;
 		SIMULATION_SLOT.kG = 0;
@@ -51,10 +51,7 @@ public class PivotConstants {
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(23.41);
 
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 3);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 3);
-
-	public static final double COLLISION_OPEN_CURRENT_AMP = 6.0;
-	public static final double HOLD_OPEN_CURRENT_AMP = 1.0;
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 1);
 
 	public static final double PIVOT_RESET_VOLTAGE = 2;
 
@@ -66,6 +63,8 @@ public class PivotConstants {
 	public static final double PIVOT_LENGTH_METERS = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final SysIdRoutine.Config SYS_ID_ROUTINE = new SysIdRoutine.Config();
+
+	public static final Rotation2d POSITION_TOLERANCE_TO_START_REST = Rotation2d.fromDegrees(1);
 
 
 	public static CurrentControlArm createPivot() {
