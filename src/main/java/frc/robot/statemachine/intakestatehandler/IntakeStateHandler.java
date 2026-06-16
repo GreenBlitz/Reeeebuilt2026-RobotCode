@@ -92,7 +92,7 @@ public class IntakeStateHandler {
 			pivot.getCommandsBuilder()
 				.setVoltageWithoutLimit(
 					PivotConstants.SLOW_CLOSE_VOLTAGE,
-					() -> pivot.isPastPosition(PivotConstants.FOUR_BAR_POSITION_FOR_SLOW_CLOSE)
+					() -> pivot.isPastPosition(PivotConstants.PIVOT_POSITION_FOR_SLOW_CLOSE)
 				),
 			rollers.getCommandsBuilder().setPower(IntakeState.SLOW_CLOSE.getIntakePower())
 
@@ -105,7 +105,7 @@ public class IntakeStateHandler {
 			case STAY_IN_PLACE -> stayInPlace();
 			case INTAKE -> intake();
 			case OUTTAKE -> outtake();
-			case RESET_FOUR_BAR -> resetPivot();
+			case RESET_PIVOT -> resetPivot();
 			case CLOSED -> close();
 			case SLOW_CLOSE -> slowClose();
 		},

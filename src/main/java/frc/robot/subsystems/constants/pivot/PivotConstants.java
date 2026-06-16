@@ -57,7 +57,7 @@ public class PivotConstants {
 	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
 
 	public static final double SLOW_CLOSE_VOLTAGE = 2;
-	public static final Rotation2d FOUR_BAR_POSITION_FOR_SLOW_CLOSE = Rotation2d.fromDegrees(85);
+	public static final Rotation2d PIVOT_POSITION_FOR_SLOW_CLOSE = Rotation2d.fromDegrees(85);
 
 	public static final double PIVOT_LENGTH_METERS = 0.3;
 	public static final double MOMENT_OF_INERTIA = 0.001;
