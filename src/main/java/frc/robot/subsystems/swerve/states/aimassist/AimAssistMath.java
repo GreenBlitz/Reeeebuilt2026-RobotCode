@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.constants.MathConstants;
 import frc.constants.field.Field;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.SwerveMath;
@@ -124,7 +125,7 @@ public class AimAssistMath {
 	) {
 		double errorDegrees = targetHeading.minus(robotHeading).getDegrees();
 
-		errorDegrees += errorDegrees > 0 ? -360 : 360;
+		errorDegrees += errorDegrees > 0 ? -MathConstants.FULL_CIRCLE.getDegrees() : MathConstants.FULL_CIRCLE.getDegrees();
 
 		Rotation2d pidOutputVelocityPerSecond = Rotation2d
 			.fromDegrees(swerveConstants.wraplessRotationDegreesPIDController().calculate(0, errorDegrees));
