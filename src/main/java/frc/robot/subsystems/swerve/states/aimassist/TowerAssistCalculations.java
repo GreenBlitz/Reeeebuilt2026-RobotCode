@@ -11,13 +11,13 @@ public class TowerAssistCalculations {
 
 	private static final double ROBOT_CLOSE_TO_DRIVER_STATION_WALL_THRESHOLD_METERS = 1.2;
 	private static final double INTAKE_FACING_DRIVER_STATION_POINT_PRODUCT_THRESHOLD = -0.1;
-	private static final Translation2d TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS = new Translation2d(0.06, 0);
+	private static final Translation2d TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS = new Translation2d(0.1, 0);
 
 	public static Translation2d getClosestTower(Pose2d robotPose) {
-		Translation2d blueTower = Field.TOWER_MIDDLE.plus(TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS);
-		Translation2d redTower = FieldMath.mirror(blueTower, true, true);
+		Translation2d blueTowerEntrance = Field.TOWER_MIDDLE.plus(TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS);
+		Translation2d redTowerEntrance = FieldMath.mirror(blueTowerEntrance, true, true);
 		boolean isNearBlueTower = robotPose.getX() < Field.LENGTH_METERS / 2;
-		return isNearBlueTower ? blueTower : redTower;
+		return isNearBlueTower ? blueTowerEntrance : redTowerEntrance;
 	}
 
 	public static Rotation2d getRobotTargetRotation(Translation2d closestTower, Pose2d robotPose) {

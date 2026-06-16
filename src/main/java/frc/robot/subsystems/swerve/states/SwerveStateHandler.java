@@ -126,14 +126,10 @@ public class SwerveStateHandler {
 	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
 		if (wasAbleToEnterTower) {
 			Translation2d assistTarget = TowerAssistCalculations.getClosestTower(robotPoseSupplier.get().get());
-			Logger.recordOutput("TARGET", assistTarget);
+			Logger.recordOutput(swerve.getLogPath() + "/towerAssistTarget", assistTarget);
 
-			ChassisSpeeds assistedTranslationSpeeds = AimAssistMath.getRotationAssistedSpeeds(
-					speeds,
-					robotPoseSupplier.get().get().getRotation(),
-					robotTowerEnterRotation2d,
-					swerveConstants
-			);
+			ChassisSpeeds assistedTranslationSpeeds = AimAssistMath
+				.getRotationAssistedSpeeds(speeds, robotPoseSupplier.get().get().getRotation(), robotTowerEnterRotation2d, swerveConstants);
 
 			if (TowerAssistCalculations.shouldTakeLongTurnToAvoidWall(robotPoseSupplier.get().get())) {
 				assistedTranslationSpeeds = AimAssistMath.getLongTurnRotationAssistedSpeeds(
@@ -144,13 +140,13 @@ public class SwerveStateHandler {
 				);
 			}
 			return AimAssistMath.getObjectAssistedSpeedsWithMagnitudeCompensation(
-					assistedTranslationSpeeds,
-					robotPoseSupplier.get().get(),
-					Rotation2d.kCW_90deg,
-					assistTarget,
-					swerveConstants,
-					SwerveState.DEFAULT_DRIVE,
-					SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR
+				assistedTranslationSpeeds,
+				robotPoseSupplier.get().get(),
+				Rotation2d.kCW_90deg,
+				assistTarget,
+				swerveConstants,
+				SwerveState.DEFAULT_DRIVE,
+				SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR
 			);
 		}
 		return speeds;

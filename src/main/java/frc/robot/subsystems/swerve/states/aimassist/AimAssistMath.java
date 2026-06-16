@@ -102,8 +102,16 @@ public class AimAssistMath {
 
 		ChassisSpeeds targetHeadingRelativeSpeeds = SwerveMath.allianceToRobotRelativeSpeeds(speeds, targetHeadingHingeSystemAngle);
 		ChassisSpeeds assistedSpeeds = new ChassisSpeeds(
-			applyMagnitudeCompensation(targetHeadingRelativeSpeeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond, magnitudeCompensationFactor),
-			applyMagnitudeCompensation(neededObjectHorizontalVelocityMetersPerSecond, speeds.omegaRadiansPerSecond, magnitudeCompensationFactor),
+			applyMagnitudeCompensation(
+				targetHeadingRelativeSpeeds.vxMetersPerSecond,
+				Math.abs(speeds.omegaRadiansPerSecond),
+				magnitudeCompensationFactor
+			),
+			applyMagnitudeCompensation(
+				neededObjectHorizontalVelocityMetersPerSecond,
+				Math.abs(speeds.omegaRadiansPerSecond),
+				magnitudeCompensationFactor
+			),
 			targetHeadingRelativeSpeeds.omegaRadiansPerSecond
 		);
 		return SwerveMath.robotToAllianceRelativeSpeeds(assistedSpeeds, targetHeadingHingeSystemAngle);
@@ -114,7 +122,7 @@ public class AimAssistMath {
 	}
 
 	private static double applyMagnitudeCompensation(double velocityPerSecond, double magnitude, double factor) {
-		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) / (Math.abs(magnitude) + factor);
+		return velocityPerSecond * (SwerveConstants.AIM_ASSIST_MAGNITUDE_FACTOR) / (magnitude + factor);
 	}
 
 	public static ChassisSpeeds getLongTurnRotationAssistedSpeeds(
