@@ -90,10 +90,8 @@ public class IntakeStateHandler {
 	public Command slowClose() {
 		return new ParallelDeadlineGroup(
 			pivot.getCommandsBuilder()
-				.setVoltageWithoutLimit(
-					PivotConstants.SLOW_CLOSE_VOLTAGE,
-					() -> pivot.isPastPosition(PivotConstants.PIVOT_POSITION_FOR_SLOW_CLOSE)
-				),
+				.setVoltage(PivotConstants.SLOW_CLOSE_VOLTAGE)
+				.until(() -> pivot.isPastPosition(PivotConstants.PIVOT_POSITION_FOR_SLOW_CLOSE)),
 			rollers.getCommandsBuilder().setPower(IntakeState.SLOW_CLOSE.getIntakePower())
 
 		);
@@ -118,7 +116,7 @@ public class IntakeStateHandler {
 		return new SequentialCommandGroup(
 			pivot.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getPivotPosition()),
 			pivot.getCommandsBuilder()
-				.setCurrentWithoutLimit(
+				.setCurrent(
 					() -> isOpenPivotHarder.getAsBoolean() ? PivotConstants.COLLISION_OPEN_CURRENT_AMP : PivotConstants.HOLD_OPEN_CURRENT_AMP
 				)
 		);
