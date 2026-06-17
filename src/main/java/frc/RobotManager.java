@@ -73,10 +73,9 @@ public class RobotManager extends LoggedRobot {
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
 
-		if (DriverStationUtil.isMatch()){
+		if (DriverStationUtil.isMatch()) {
 			robot.disableAllLimelightTemperatureRegulations();
-		}
-		else {
+		} else {
 			robot.enableAllLimelightTemperatureRegulations();
 		}
 
