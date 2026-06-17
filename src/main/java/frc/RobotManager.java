@@ -66,18 +66,19 @@ public class RobotManager extends LoggedRobot {
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
-			if (DriverStationUtil.isMatch()){
-				robot.disableAllLimelightTemperatureRegulations();
-			}
-			else {
-				robot.enableAllLimelightTemperatureRegulations();
-			}
 		});
 
 		robot.getReturnToMiddleChooser().onChange((val) -> {
 			this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
+
+		if (DriverStationUtil.isMatch()){
+			robot.disableAllLimelightTemperatureRegulations();
+		}
+		else {
+			robot.enableAllLimelightTemperatureRegulations();
+		}
 
 		alertsMessage = "Alerts: None";
 		Logger.recordOutput("AlertsMessage", alertsMessage);
