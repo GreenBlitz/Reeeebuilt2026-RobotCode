@@ -396,16 +396,17 @@ public class Robot {
 		return 0;
 	}
 
-	private void goUnderTrenchTrigger(){
+	private void goUnderTrenchTrigger() {
 		new Trigger(
 			() -> (ShootingChecks
-					.areWeGonnaDoGA(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]))
-	).whileTrue(
+				.areWeGonnaDoGA(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]))
+		).whileTrue(
 			new ParallelCommandGroup(
-					new InstantCommand(() -> hood.setIsRunningIndependently(true)),
-					hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_FOR_PASSING_TRENCH)
+				new InstantCommand(() -> hood.setIsRunningIndependently(true)),
+				hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_FOR_PASSING_TRENCH)
 			).andThen(new InstantCommand(() -> hood.setIsRunningIndependently(false)))
-	);}
+		);
+	}
 
 	public void enableAllLimelightTemperatureRegulations() {
 		this.limelightFront.setThrottleState(true);
