@@ -311,8 +311,6 @@ public class Robot {
 
 		configureBrakeStateChooser();
 		configureAuto();
-
-		goUnderTrenchTrigger();
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -394,18 +392,6 @@ public class Robot {
 				/ seconds;
 		}
 		return 0;
-	}
-
-	private void goUnderTrenchTrigger() {
-		new Trigger(
-			() -> (ShootingChecks
-				.areWeGonnaDoGA(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]))
-		).whileTrue(
-			new ParallelCommandGroup(
-				new InstantCommand(() -> hood.setIsRunningIndependently(true)),
-				hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH)
-			).andThen(new InstantCommand(() -> hood.setIsRunningIndependently(false)))
-		);
 	}
 
 	public void enableAllLimelightTemperatureRegulations() {

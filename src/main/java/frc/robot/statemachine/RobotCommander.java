@@ -1,11 +1,13 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
