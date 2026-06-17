@@ -311,10 +311,8 @@ public class Robot {
 
 		configureBrakeStateChooser();
 		configureAuto();
-		new Trigger(
-			() -> (ShootingChecks
-				.areWeGonnaDoGA(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]))
-		).whileTrue(hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_FOR_PASSING_TRENCH));
+
+		goUnderTrenchTrigger();
 	}
 
 	public RobotConfig getRobotConfig() {
@@ -397,6 +395,17 @@ public class Robot {
 		}
 		return 0;
 	}
+
+	private void goUnderTrenchTrigger(){
+		new Trigger(
+			() -> (ShootingChecks
+					.areWeGonnaDoGA(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]))
+	).whileTrue(
+			new ParallelCommandGroup(
+					new InstantCommand(() -> hood.setIsRunningIndependently(true)),
+					hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_FOR_PASSING_TRENCH)
+			).andThen(new InstantCommand(() -> hood.setIsRunningIndependently(false)))
+	);}
 
 	public FlyWheel getFlyWheel() {
 		return flyWheel;
