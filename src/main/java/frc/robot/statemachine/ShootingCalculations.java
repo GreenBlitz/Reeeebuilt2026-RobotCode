@@ -7,6 +7,7 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -67,8 +68,10 @@ public class ShootingCalculations {
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
-		if (ShootingChecks.areWeGonnaDoGA(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity))
-			Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
+		if (ShootingChecks.areWeGonnaDoGA(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)) {
+			hoodTargetPosition = ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH;
+		}
+		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
