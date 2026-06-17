@@ -440,16 +440,16 @@ public class Robot {
 		return limelightFront;
 	}
 
-	public Limelight getLimelightLeft() {
-		return limelightLeft;
-	}
-
 	public Limelight getLimelightRight() {
 		return limelightRight;
 	}
 
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
 	public List<Limelight> getAllLimelights() {
-		return List.of(limelightFront, limelightLeft, limelightRight);
+		return List.of(limelightFront, limelightRight, limelightLeft);
 	}
 
 	public RobotCommander getRobotCommander() {
