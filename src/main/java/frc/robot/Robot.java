@@ -403,7 +403,7 @@ public class Robot {
 		).whileTrue(
 			new ParallelCommandGroup(
 				new InstantCommand(() -> hood.setIsRunningIndependently(true)),
-				hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_FOR_PASSING_TRENCH)
+				hood.getCommandsBuilder().setTargetPosition(ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH)
 			).andThen(new InstantCommand(() -> hood.setIsRunningIndependently(false)))
 		);
 	}
