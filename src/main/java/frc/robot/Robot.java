@@ -407,6 +407,18 @@ public class Robot {
 			).andThen(new InstantCommand(() -> hood.setIsRunningIndependently(false)))
 	);}
 
+	public void enableAllLimelightTemperatureRegulations() {
+		this.limelightFront.setThrottleState(true);
+		this.limelightRight.setThrottleState(true);
+		this.limelightLeft.setThrottleState(true);
+	}
+
+	public void disableAllLimelightTemperatureRegulations() {
+		this.limelightFront.setThrottleState(false);
+		this.limelightRight.setThrottleState(false);
+		this.limelightLeft.setThrottleState(false);
+	}
+
 	public FlyWheel getFlyWheel() {
 		return flyWheel;
 	}
