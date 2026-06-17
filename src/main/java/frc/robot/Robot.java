@@ -392,18 +392,6 @@ public class Robot {
 		return 0;
 	}
 
-	public void enableAllLimelightTemperatureRegulations() {
-		this.limelightFront.setThrottleState(true);
-		this.limelightRight.setThrottleState(true);
-		this.limelightLeft.setThrottleState(true);
-	}
-
-	public void disableAllLimelightTemperatureRegulations() {
-		this.limelightFront.setThrottleState(false);
-		this.limelightRight.setThrottleState(false);
-		this.limelightLeft.setThrottleState(false);
-	}
-
 	public FlyWheel getFlyWheel() {
 		return flyWheel;
 	}
@@ -448,6 +436,22 @@ public class Robot {
 		return poseEstimator;
 	}
 
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
+	public List<Limelight> getAllLimelights() {
+		return List.of(limelightFront, limelightRight, limelightLeft);
+	}
+
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -462,18 +466,6 @@ public class Robot {
 
 	public SendableChooser<Boolean> getReturnToMiddleChooser() {
 		return returnToMiddle;
-	}
-
-	public Limelight getLimelightFront() {
-		return limelightFront;
-	}
-
-	public Limelight getLimelightLeft() {
-		return limelightLeft;
-	}
-
-	public Limelight getLimelightRight() {
-		return limelightRight;
 	}
 
 	public Supplier<Double> getLastBallThrownTimestamp() {
