@@ -436,25 +436,21 @@ public class Robot {
 		return poseEstimator;
 	}
 
-    public Limelight getLimelightFront() {
-        return limelightFront;
-    }
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
 
-    public Limelight getLimelightLeft() {
-        return limelightLeft;
-    }
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
 
-    public Limelight getLimelightRight() {
-        return limelightRight;
-    }
+	public Limelight getLimelightRight() {
+		return limelightRight;
+	}
 
-    public List<Limelight> getAllLimelights() {
-        return List.of(
-                limelightFront,
-                limelightLeft,
-                limelightRight
-        );
-    }
+	public List<Limelight> getAllLimelights() {
+		return List.of(limelightFront, limelightLeft, limelightRight);
+	}
 
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
