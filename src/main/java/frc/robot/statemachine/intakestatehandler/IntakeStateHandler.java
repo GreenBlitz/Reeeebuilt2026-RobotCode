@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.CurrentControlArm;
+import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.pivot.PivotConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
@@ -75,7 +76,7 @@ public class IntakeStateHandler {
 				pivot.getCommandsBuilder()
 					.setTargetPosition(IntakeState.INTAKE.getPivotPosition())
 					.until(() -> pivot.isAtPosition(IntakeState.INTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
-				pivot.getCommandsBuilder().setCurrentWithoutLimit(0)
+				pivot.getCommandsBuilder().setCurrentWithoutLimit(PivotConstants.REST_CURRENT)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
@@ -87,7 +88,7 @@ public class IntakeStateHandler {
 				pivot.getCommandsBuilder()
 					.setTargetPosition(IntakeState.OUTTAKE.getPivotPosition())
 					.until(() -> pivot.isAtPosition(IntakeState.OUTTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
-				pivot.getCommandsBuilder().setCurrentWithoutLimit(0)
+				pivot.getCommandsBuilder().setCurrentWithoutLimit(PivotConstants.REST_CURRENT)
 			),
 			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
 		);
@@ -97,7 +98,9 @@ public class IntakeStateHandler {
 		return new ParallelCommandGroup(
 			pivot.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getPivotPosition()),
 			new SequentialCommandGroup(
-				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()).withTimeout(0.5),
+				rollers.getCommandsBuilder()
+					.setPower(IntakeState.INTAKE.getIntakePower())
+					.withTimeout(IntakeRollerConstants.TIME_TO_INTAKE_WHILE_CLOSING_SECONDS),
 				rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 			)
 		);

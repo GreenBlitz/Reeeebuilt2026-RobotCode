@@ -66,6 +66,7 @@ public class PivotConstants {
 
 	public static final Rotation2d POSITION_TOLERANCE_TO_START_REST = Rotation2d.fromDegrees(7);
 
+	public static final double REST_CURRENT = 0;
 
 	public static CurrentControlArm createPivot() {
 		ArmSimulationConstants pivotSimConstant = new ArmSimulationConstants(

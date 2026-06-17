@@ -27,23 +27,17 @@ Pivot calibrations
 - [ ] kD
 
 #### Sim PID
-- [x] kP
-- [x] kI
-- [x] kD
-
-#### MotionMagic
-- [ ] Default max acceleration per second squared
-- [ ] Default max velocity per second
+- [ ] kP
+- [ ] kI
+- [ ] kD
 
 #### Reset
-- [x] Reset voltage
-- [x] Current threshold to reset
+- [ ] Reset voltage
+- [ ] Current threshold to reset
 
 #### General Constants
 - [x] Pivot length
 
 #### Open State Constants
-- [x] Position to switch to lower current
-- [x] Hold Current
-- [x] Relaxed Current
-- [x] Current to hold intake closed
+- [ ] Position to switch to rest current
+- [ ] Rest Current

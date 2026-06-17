@@ -7,3 +7,6 @@ Intake States Calibration
 
 #### Closed
 - [ ] Position for four bar
+
+#### Slow Closed
+- [ ] Position for four bar
