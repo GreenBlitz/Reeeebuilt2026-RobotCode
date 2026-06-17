@@ -86,6 +86,13 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	@Override
+	public void disabledInit() {
+		if (!DriverStationUtil.isMatch()) {
+			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
+		}
+	}
+
+	@Override
 	public void autonomousInit() {
 		robot.getSwerve().setIsRunningIndependently(true);
 

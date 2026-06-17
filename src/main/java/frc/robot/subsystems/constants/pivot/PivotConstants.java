@@ -20,7 +20,7 @@ public class PivotConstants {
 	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final int CURRENT_LIMIT = 15;
+	public static final int CURRENT_LIMIT = 30;
 
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
@@ -28,13 +28,13 @@ public class PivotConstants {
 
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 135;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 81 + 2.0 / 3.0;
 
-		REAL_SLOT.kP = 0;
+		REAL_SLOT.kP = 60;
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0;
-		REAL_SLOT.kG = 0;
+		REAL_SLOT.kS = 0.05;
+		REAL_SLOT.kG = 0.3 / Math.cos(Rotation2d.fromDegrees(44).getRadians());
 		REAL_SLOT.kV = 0;
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
@@ -47,15 +47,15 @@ public class PivotConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(89.4);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(89.4).plus(Rotation2d.fromDegrees(19));
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(19.35);
 
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MAXIMUM_POSITION.getDegrees() - 3);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(MINIMUM_POSITION.getDegrees() + 1);
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(78).plus(Rotation2d.fromDegrees(19));
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(25);
 
 	public static final double PIVOT_RESET_VOLTAGE = 2;
 
-	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 15;
+	public static final double CURRENT_THRESHOLD_TO_RESET_POSITION = 25;
 
 	public static final double SLOW_CLOSE_VOLTAGE = 2;
 	public static final Rotation2d PIVOT_POSITION_FOR_SLOW_CLOSE = Rotation2d.fromDegrees(85);

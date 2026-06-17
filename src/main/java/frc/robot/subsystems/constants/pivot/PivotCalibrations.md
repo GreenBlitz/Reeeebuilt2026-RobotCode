@@ -6,38 +6,38 @@ Pivot calibrations
 - [x] motor BusChain
 
 #### Motor config
-- [ ] Is Inverted
-- [ ] Gear ratio
-- [ ] Current limit
+- [x] Is Inverted
+- [x] Gear ratio
+- [x] Current limit
 
 #### Limits
-- [ ] Max position
-- [ ] Min position
+- [x] Max position
+- [x] Min position
 
 #### FeedForward
-- [ ] kS
-- [ ] kG
+- [x] kS
+- [x] kG
 - [ ] kA
 - [ ] kV
 ##### (SysId)
 
 #### PID
-- [ ] kP
-- [ ] kI
+- [x] kP
+- [x] kI
 - [ ] kD
 
 #### Sim PID
-- [ ] kP
-- [ ] kI
-- [ ] kD
+- [x] kP
+- [x] kI
+- [x] kD
 
 #### Reset
-- [ ] Reset voltage
-- [ ] Current threshold to reset
+- [x] Reset voltage
+- [x] Current threshold to reset
 
 #### General Constants
 - [x] Pivot length
 
 #### Open State Constants
-- [ ] Position to switch to rest current
+- [x] Position to switch to rest current
 - [ ] Rest Current
