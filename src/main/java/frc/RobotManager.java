@@ -73,6 +73,12 @@ public class RobotManager extends LoggedRobot {
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
 
+		if (DriverStationUtil.isMatch()) {
+			robot.disableAllLimelightTemperatureRegulations();
+		} else {
+			robot.enableAllLimelightTemperatureRegulations();
+		}
+
 		alertsMessage = "Alerts: None";
 		Logger.recordOutput("AlertsMessage", alertsMessage);
 		logDriverAlerts();
@@ -83,6 +89,7 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
 		}
+		robot.disableAllLimelightTemperatureRegulations();
 	}
 
 	@Override
@@ -100,7 +107,9 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-
+		if (!DriverStationUtil.isMatch()) {
+			robot.enableAllLimelightTemperatureRegulations();
+		}
 		robot.getSwerve().setIsRunningIndependently(false);
 		Logger.recordOutput("averagePeriodPBS/Autonomous", robot.getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
 	}
@@ -115,6 +124,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getLimelightFront().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
 		robot.getLimelightLeft().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
 		robot.getLimelightRight().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
+		robot.enableAllLimelightTemperatureRegulations();
 	}
 
 	public static double getTeleopStartTimeSeconds() {
