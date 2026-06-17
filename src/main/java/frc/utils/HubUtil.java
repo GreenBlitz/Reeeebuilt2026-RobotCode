@@ -14,13 +14,18 @@ public class HubUtil {
 	private static Optional<DriverStation.Alliance> autoLosingAlliance = getAutoLosingAlliance();
 	private static final LoggedNetworkBoolean isOurHubActiveTunable = new LoggedNetworkBoolean("Tunable/isOurHubActive", false);
 
+	private static final Alert didNotGetAutoWinningAllianceAlert = new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance");
+	private static final Alert unknownAutoWinningAllianceAlert = new Alert(Alert.AlertType.WARNING, "Unknown auto winner alliance");
+
 	private static Optional<DriverStation.Alliance> getAutoWinningAlliance() {
 		if (!DriverStationUtil.isTeleop()) {
 			return Optional.empty();
 		}
 		String gameData = DriverStation.getGameSpecificMessage();
 		if (gameData.isEmpty()) {
-			new Alert(Alert.AlertType.WARNING, "Didn't get auto winning alliance").report();
+			if (DriverStationUtil.isTeleop()) {
+				didNotGetAutoWinningAllianceAlert.report();
+			}
 			return Optional.empty();
 		}
 		Optional<DriverStation.Alliance> alliance = switch (GameSpecificMessageResponse.fromChar(gameData.charAt(0))) {
@@ -29,7 +34,7 @@ public class HubUtil {
 			case DEFAULT -> Optional.empty();
 		};
 		if (alliance.isEmpty()) {
-			new Alert(Alert.AlertType.WARNING, "Unknown auto winner alliance").report();
+			unknownAutoWinningAllianceAlert.report();
 			return Optional.empty();
 		}
 		return alliance;
@@ -121,6 +126,14 @@ public class HubUtil {
 	}
 
 	public static boolean isRobotAllianceAutoWinner() {
+//		if (autoWinnerAlliance.isEmpty()) {
+//			return false;
+//		}
+//		return DriverStationUtil.getAlliance().equals(autoWinnerAlliance.get());
+		return true;
+	}
+
+	public static boolean isRobotAllianceAutoWinnerForLog() {
 		if (autoWinnerAlliance.isEmpty()) {
 			return false;
 		}

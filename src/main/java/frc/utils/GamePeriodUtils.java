@@ -1,5 +1,6 @@
 package frc.utils;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 
@@ -18,6 +19,11 @@ public class GamePeriodUtils {
 		+ TELEOP_AUTONOMOUS_TRANSITION_DURATION_SECONDS
 		+ TELEOP_DURATION_SECONDS;
 
+	public static final int ACTIVE_1_END_TIME_SINCE_TELEOP_START = TRANSITION_SHIFT_DURATION_SECONDS + ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_2_END_TIME_SINCE_TELEOP_START = ACTIVE_1_END_TIME_SINCE_TELEOP_START + ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_3_END_TIME_SINCE_TELEOP_START = ACTIVE_2_END_TIME_SINCE_TELEOP_START + ALLIANCE_SHIFT_DURATION_SECONDS;
+	public static final int ACTIVE_4_END_TIME_SINCE_TELEOP_START = ACTIVE_3_END_TIME_SINCE_TELEOP_START + ALLIANCE_SHIFT_DURATION_SECONDS;
+
 	public static boolean isTransitionShift() {
 		if (!DriverStationUtil.isTeleop()) {
 			return false;
@@ -32,6 +38,47 @@ public class GamePeriodUtils {
 	public static boolean isInEndgame() {
 		return TimeUtil.getTimeSinceTeleopInitSeconds() >= ENDGAME_START_TIME_SECONDS
 			&& TimeUtil.getTimeSinceTeleopInitSeconds() <= ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS;
+	}
+
+	public static boolean isInActive1() {
+		if (HubUtil.isRobotAllianceAutoWinner()) {
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_1_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_2_END_TIME_SINCE_TELEOP_START;
+		} else {
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > TRANSITION_SHIFT_DURATION_SECONDS
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_1_END_TIME_SINCE_TELEOP_START;
+		}
+	}
+
+	public static boolean isInActive2() {
+		if (HubUtil.isRobotAllianceAutoWinner()) {
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_3_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ENDGAME_START_TIME_SECONDS;
+		} else {
+			return TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_2_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_3_END_TIME_SINCE_TELEOP_START;
+		}
+	}
+
+	private static String getCurrentShift() {
+		if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() > TRANSITION_SHIFT_DURATION_SECONDS
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_1_END_TIME_SINCE_TELEOP_START
+		) {
+			return "Shift 1";
+		} else if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_1_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_2_END_TIME_SINCE_TELEOP_START
+		) {
+			return "Shift 2";
+		} else if (
+			TimeUtil.getTimeSinceTeleopInitSeconds() > ACTIVE_2_END_TIME_SINCE_TELEOP_START
+				&& TimeUtil.getTimeSinceTeleopInitSeconds() < ACTIVE_3_END_TIME_SINCE_TELEOP_START
+		) {
+			return "Shift 3";
+		} else {
+			return "Shift 4";
+		}
 	}
 
 	public static double getTimeUntilTransitionShiftEnds() {
@@ -54,6 +101,18 @@ public class GamePeriodUtils {
 		}
 		return ALLIANCE_SHIFT_DURATION_SECONDS
 			- ((TimeUtil.getTimeSinceTeleopInitSeconds() - TRANSITION_SHIFT_DURATION_SECONDS) % GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS);
+	}
+
+	public static String getCurrentGamePeriod() {
+		if (DriverStation.isAutonomous()) {
+			return "Autonomous";
+		} else if (isTransitionShift()) {
+			return "Transition Shift";
+		} else if (isInEndgame()) {
+			return "Endgame";
+		} else {
+			return getCurrentShift();
+		}
 	}
 
 }

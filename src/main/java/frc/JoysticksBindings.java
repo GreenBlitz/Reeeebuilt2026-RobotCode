@@ -4,9 +4,9 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -19,21 +19,36 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
+import frc.robot.subsystems.swerve.states.DriveSpeed;
+import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.utils.HubUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
+import frc.utils.utilcommands.ExecuteEndCommand;
 import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
-	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
-	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
+	private static final double PRE_SHIFT_END_RUMBLE_TIME = 1.0;
+	private static final double PRE_SHIFT_END_RUMBLE_POWER = 0.5;
+	private static final double TIME_BEFORE_SHIFT_END_TO_RUMBLE = 5.0;
+
+	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN, true);
+	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND, true);
 	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD);
 	private static final SmartJoystick FOURTH_JOYSTICK = new SmartJoystick(JoystickPorts.FOURTH);
 	private static final SmartJoystick FIFTH_JOYSTICK = new SmartJoystick(JoystickPorts.FIFTH);
 	private static final SmartJoystick SIXTH_JOYSTICK = new SmartJoystick(JoystickPorts.SIXTH);
 
 	private static final ChassisPowers chassisDriverInputs = new ChassisPowers();
+
+	private static Command preShiftEndJoystickRumble(SmartJoystick joystick) {
+		return new ExecuteEndCommand(
+			() -> joystick.setRumble(GenericHID.RumbleType.kBothRumble, PRE_SHIFT_END_RUMBLE_POWER),
+			() -> joystick.stopRumble(GenericHID.RumbleType.kBothRumble)
+		).withTimeout(PRE_SHIFT_END_RUMBLE_TIME);
+	}
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
@@ -62,14 +77,47 @@ public class JoysticksBindings {
 		}
 	}
 
+	public static SwerveState getScoringState(SmartJoystick joystick) {
+		return RobotState.SCORE.getSwerveState().withDriveSpeed(joystick.R1.getAsBoolean() ? DriveSpeed.BOOST_SHOOT : DriveSpeed.SHOOT);
+	}
+
+	public static SwerveState getPassState(SmartJoystick joystick) {
+		return RobotState.PASS.getSwerveState()
+			.withDriveSpeed(joystick.getAxisAsButton(Axis.RIGHT_TRIGGER).getAsBoolean() ? DriveSpeed.BOOST_PASS : DriveSpeed.PASS);
+	}
+
+	private static Command driveActionChooser(Robot robot) {
+		return new InstantCommand(() -> {
+			Command intakeCommand = Commands.none();
+			if (robot.getRobotCommander().getCurrentState() == RobotState.OUTTAKE) {
+				intakeCommand = robot.getRobotCommander().getIntakeStateHandler().intake();
+			}
+			CommandScheduler.getInstance()
+				.schedule(new ParallelCommandGroup(robot.getRobotCommander().driveWith(RobotState.NEUTRAL), intakeCommand));
+		});
+	}
+
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+
+		Trigger preShiftEndJoystickRumble = new Trigger(
+			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
+		).onTrue(preShiftEndJoystickRumble(usedJoystick));
+
+		usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		// Shoot & Pass...
-		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence()));
+		usedJoystick.R1.onTrue(
+			robot.getRobotCommander()
+				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().scoreSequence(), () -> getScoringState(usedJoystick))
+		);
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
-			.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_PASS, robot.getRobotCommander().passSequence()));
+			.onTrue(
+				robot.getRobotCommander()
+					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().passSequence(), () -> getPassState(usedJoystick))
+			);
+		usedJoystick.START.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(true)));
+		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));
 
 		// Intake binds...
 		robot.getRobotCommander()
@@ -77,7 +125,11 @@ public class JoysticksBindings {
 			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
-		usedJoystick.B.onTrue(robot.getRobotCommander().setState(RobotState.OUTTAKE));
+		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
+		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
+		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
+		usedJoystick.POV_UP.whileTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.FORCE_OPEN));
+		usedJoystick.X.onTrue(robot.getRobotCommander().towerAssist());
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

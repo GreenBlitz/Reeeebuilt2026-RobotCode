@@ -7,8 +7,12 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.interpolation.Interpolator;
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
@@ -34,6 +38,7 @@ import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.magazine.MagazineConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
+import frc.robot.subsystems.constants.upperRoller.UpperRollerConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
@@ -42,6 +47,7 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -49,10 +55,15 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
+import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -63,21 +74,28 @@ import java.util.function.Supplier;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final VelocityPositionArm turret;
+
 	private final FlyWheel flyWheel;
-	private final Roller intakeRoller;
-	private final CurrentControlArm fourBar;
+	private final VelocityPositionArm turret;
 	private final Arm hood;
+
+	private final CurrentControlArm fourBar;
+	private final Roller intakeRoller;
+
 	private final VelocityRoller magazine;
-	private final IDigitalInput magazineBallSensor;
-	private final SimulationManager simulationManager;
 	private final Roller conveyor;
+	private final Roller upperRoller;
+
+	private final IDigitalInput magazineBallSensor;
+
+	private final Swerve swerve;
+
+	private final SimulationManager simulationManager;
 
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
-
-	private final Swerve swerve;
+	private SendableChooser<Boolean> returnToMiddle;
 
 	private final IPoseEstimator poseEstimator;
 
@@ -85,32 +103,51 @@ public class Robot {
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
 
+	private static double ballCounterIncludingPassing;
+	private static double ballCounterWithoutPassing;
+
+	private final TimeInterpolatableBuffer<Double> ballsBufferIncludingPassing;
+	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
+	private final Supplier<Double> lastBallThrownTimestamp;
+
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
+
+		this.flyWheel = FlywheelConstants.createFlyWheel();
+
+		ballsBufferIncludingPassing = TimeInterpolatableBuffer
+			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+		ballsBufferWithoutPassing = TimeInterpolatableBuffer
+			.createBuffer(Interpolator.forDouble(), RobotConstants.MAX_TIME_FOR_BPS_INTERPOLATOR);
+		this.lastBallThrownTimestamp = () -> ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
+			? TimeUtil.getCurrentTimeSeconds()
+			: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds());
 
 		this.turret = TurretConstants.createTurret();
 		turret.setPosition(TurretConstants.MAX_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
-		this.flyWheel = FlywheelConstants.createFlyWheel();
+		this.hood = HoodConstants.createHood();
+		hood.setPosition(HoodConstants.MINIMUM_POSITION);
+		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
 		this.fourBar = FourBarConstants.createFourBar();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
-		this.hood = HoodConstants.createHood();
-		hood.setPosition(HoodConstants.MINIMUM_POSITION);
-		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
-
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.magazine = MagazineConstant.createMagazine();
-		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 		BrakeStateManager.add(() -> magazine.setBrake(true), () -> magazine.setBrake(false));
 
 		this.conveyor = ConveyorConstants.createConveyor();
 		BrakeStateManager.add(() -> conveyor.setBrake(true), () -> conveyor.setBrake(false));
+
+		this.upperRoller = UpperRollerConstants.createUpperRoller();
+		BrakeStateManager.add(() -> upperRoller.setBrake(true), () -> upperRoller.setBrake(false));
+
+		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -146,9 +183,9 @@ public class Robot {
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.15),
 				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
 			)
 		);
@@ -176,9 +213,9 @@ public class Robot {
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightRight,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.15),
 				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
 			)
 		);
@@ -196,8 +233,8 @@ public class Robot {
 			"limelight-two",
 			"Vision",
 			new Pose3d(
-					new Translation3d(-0.255, 5.5, 0.18),
-					new Rotation3d(Math.toRadians(0), Math.toRadians(-11), Math.toRadians(4))
+				new Translation3d(-0.125, -0.37, 0.481),
+				new Rotation3d(Math.toRadians(-179.25), Math.toRadians(20.05), Math.toRadians(90.35))
 			),
 			LimelightPipeline.APRIL_TAG,
 			Rotation2d.fromDegrees(62.5),
@@ -206,9 +243,9 @@ public class Robot {
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.15),
 				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
 			)
 		);
@@ -234,6 +271,49 @@ public class Robot {
 		new Trigger(DriverStation::isTeleopEnabled)
 			.onTrue(robotCommander.setState(RobotState.RESET_SUBSYSTEMS).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+		ballCounterIncludingPassing = 0;
+		ballCounterWithoutPassing = 0;
+
+		new Trigger(() -> robotCommander.getShooterStateHandler().hasABallBeenShot()).onTrue(new InstantCommand(() -> {
+			ballCounterIncludingPassing++;
+			ballsBufferIncludingPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterIncludingPassing);
+		}));
+
+		new Trigger(
+			() -> robotCommander.getShooterStateHandler().hasABallBeenShot()
+				&& (robotCommander.getCurrentState() == RobotState.SCORE || robotCommander.getCurrentState() == RobotState.CALIBRATION_SCORE)
+		).onTrue(new InstantCommand(() -> {
+			ballCounterWithoutPassing++;
+			ballsBufferIncludingPassing.addSample(TimeUtil.getCurrentTimeSeconds(), ballCounterWithoutPassing);
+		}));
+
+		new Trigger(GamePeriodUtils::isTransitionShift).onFalse(
+			new InstantCommand(
+				() -> Logger.recordOutput(
+					"averagePeriodPBS/TransitionShift",
+					getAverageBPSForLastXSeconds(GamePeriodUtils.TRANSITION_SHIFT_DURATION_SECONDS)
+				)
+			)
+		);
+		new Trigger(GamePeriodUtils::isInEndgame).onFalse(
+			new InstantCommand(
+				() -> Logger.recordOutput("averagePeriodPBS/Endgame", getAverageBPSForLastXSeconds(GamePeriodUtils.ENDGAME_DURATION_SECONDS))
+			)
+		);
+		new Trigger(GamePeriodUtils::isInActive1).onFalse(
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/Active1", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
+			)
+		);
+		new Trigger(GamePeriodUtils::isInActive2).onFalse(
+			new InstantCommand(
+				() -> Logger
+					.recordOutput("averagePeriodPBS/Active2", getAverageBPSForLastXSeconds(GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS))
+			)
+		);
+
+		configureBrakeStateChooser();
 		configureAuto();
 	}
 
@@ -255,14 +335,15 @@ public class Robot {
 	}
 
 	private void updateAllSubsystems() {
-		swerve.update();
-		fourBar.update();
-		intakeRoller.update();
-		conveyor.update();
-		magazine.update();
+		flyWheel.update();
 		turret.update();
 		hood.update();
-		flyWheel.update();
+		fourBar.update();
+		intakeRoller.update();
+		magazine.update();
+		conveyor.update();
+		upperRoller.update();
+		swerve.update();
 	}
 
 	public boolean isTurretMoveLegal() {
@@ -276,9 +357,9 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		limelightFront.updateIsConnected();
-		limelightRight.updateIsConnected();
-		limelightLeft.updateIsConnected();
+		limelightFront.updateHardwareInputs();
+		limelightRight.updateHardwareInputs();
+		limelightLeft.updateHardwareInputs();
 
 		limelightFront.updateMT1();
 		limelightRight.updateMT1();
@@ -293,25 +374,61 @@ public class Robot {
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
+		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
+		Logger.recordOutput(
+			"TimeSinceLastBall",
+			TimeUtil.getCurrentTimeSeconds()
+				- (ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()) == null
+					? TimeUtil.getCurrentTimeSeconds()
+					: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()))
+		);
+		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
+		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
+		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
+
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	public Roller getIntakeRoller() {
-		return intakeRoller;
+	public double getAverageBPSForLastXSeconds(double seconds) {
+		if (ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).isPresent()) {
+			return (ballCounterIncludingPassing - ballsBufferIncludingPassing.getSample(TimeUtil.getCurrentTimeSeconds() - seconds).get())
+				/ seconds;
+		}
+		return 0;
 	}
 
-	public VelocityPositionArm getTurret() {
-		return turret;
+	public void enableAllLimelightTemperatureRegulations() {
+		this.limelightFront.setThrottleState(true);
+		this.limelightRight.setThrottleState(true);
+		this.limelightLeft.setThrottleState(true);
+	}
+
+	public void disableAllLimelightTemperatureRegulations() {
+		this.limelightFront.setThrottleState(false);
+		this.limelightRight.setThrottleState(false);
+		this.limelightLeft.setThrottleState(false);
 	}
 
 	public FlyWheel getFlyWheel() {
 		return flyWheel;
 	}
 
+	public VelocityPositionArm getTurret() {
+		return turret;
+	}
+
+	public Arm getHood() {
+		return hood;
+	}
+
 	public CurrentControlArm getFourBar() {
 		return fourBar;
+	}
+
+	public Roller getIntakeRoller() {
+		return intakeRoller;
 	}
 
 	public VelocityRoller getMagazine() {
@@ -322,20 +439,20 @@ public class Robot {
 		return conveyor;
 	}
 
-	public Arm getHood() {
-		return hood;
+	public Roller getUpperRoller() {
+		return upperRoller;
 	}
 
 	public IDigitalInput getMagazineBallSensor() {
 		return magazineBallSensor;
 	}
 
-	public IPoseEstimator getPoseEstimator() {
-		return poseEstimator;
-	}
-
 	public Swerve getSwerve() {
 		return swerve;
+	}
+
+	public IPoseEstimator getPoseEstimator() {
+		return poseEstimator;
 	}
 
 	public RobotCommander getRobotCommander() {
@@ -350,6 +467,10 @@ public class Robot {
 		return autonomousChooser;
 	}
 
+	public SendableChooser<Boolean> getReturnToMiddleChooser() {
+		return returnToMiddle;
+	}
+
 	public Limelight getLimelightFront() {
 		return limelightFront;
 	}
@@ -362,30 +483,60 @@ public class Robot {
 		return limelightRight;
 	}
 
+	public Supplier<Double> getLastBallThrownTimestamp() {
+		return lastBallThrownTimestamp;
+	}
+
+	public TimeInterpolatableBuffer<Double> getBallsBufferIncludingPassing() {
+		return ballsBufferIncludingPassing;
+	}
+
+	public TimeInterpolatableBuffer<Double> getBallsBufferWithoutPassing() {
+		return ballsBufferWithoutPassing;
+	}
+
+	private void configureBrakeStateChooser() {
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Coast", BrakeMode.COAST);
+		brakeStateChooser.addOption("Brake", BrakeMode.BRAKE);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
+	}
+
 	private void configureAuto() {
-		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().openFourBarForAutonomous();
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
+		Supplier<Command> autonomousPassSequenceCommand = () -> getRobotCommander().passSequence();
 
 		Supplier<Command> autonomousResetSubsystemsCommand = () -> getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS);
 
+		Supplier<Command> autonomousOuttakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE);
+
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				this,
-				autonomousResetSubsystemsCommand,
-				autonomousOpenIntakeCommand,
-				autonomousCloseIntakeCommand,
-				autonomousScoringSequenceCommand,
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS
-			)
+		this.returnToMiddle = new SendableChooser<>();
+		returnToMiddle.setDefaultOption("Don't Return To Middle", false);
+		returnToMiddle.addOption("Return To Middle", true);
+		SmartDashboard.putData("Return To Middle", returnToMiddle);
+
+		List<Supplier<PathPlannerAutoWrapper>> autos = AutosBuilder.getAutoList(
+			this,
+			autonomousResetSubsystemsCommand,
+			autonomousOpenIntakeCommand,
+			autonomousCloseIntakeCommand,
+			autonomousScoringSequenceCommand,
+			autonomousPassSequenceCommand,
+			autonomousOuttakeCommand,
+			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+			AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS,
+			() -> returnToMiddle.getSelected() != null && returnToMiddle.getSelected()
 		);
+
+		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
 	}
 
 }

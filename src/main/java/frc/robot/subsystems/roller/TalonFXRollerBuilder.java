@@ -119,10 +119,13 @@ public class TalonFXRollerBuilder {
 			AngleUnit.ROTATIONS,
 			id.busChain()
 		);
+		InputSignal<Rotation2d> velocitySignal = Phoenix6SignalBuilder
+			.build(roller.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, id.busChain());
+
 
 		Phoenix6Request<Double> VoltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
 
-		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, VoltageRequest);
+		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, VoltageRequest);
 	}
 
 	public static TalonFXConfiguration buildConfiguration(
@@ -133,8 +136,8 @@ public class TalonFXRollerBuilder {
 	) {
 		TalonFXConfiguration configs = new TalonFXConfiguration();
 		configs.Slot0 = velocityControlConfig;
-		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
-		configs.CurrentLimits.StatorCurrentLimitEnable = true;
+		configs.CurrentLimits.SupplyCurrentLimit = currentLimit;
+		configs.CurrentLimits.SupplyCurrentLimitEnable = true;
 		configs.Feedback = feedbackConfigs;
 		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		return (configs);

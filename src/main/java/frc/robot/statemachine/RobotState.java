@@ -9,10 +9,11 @@ public enum RobotState {
 	STAY_IN_PLACE,
 	NEUTRAL,
 	OUTTAKE,
+	CONVEYOR_OUTTAKE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
 	PRE_SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
 	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET).withDriveSpeed(DriveSpeed.SHOOT)),
-	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
-	PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	PRE_PASS(SwerveState.DEFAULT_DRIVE.withDriveSpeed(DriveSpeed.PASS)),
+	PASS(SwerveState.DEFAULT_DRIVE.withDriveSpeed(DriveSpeed.PASS)),
 	RESET_SUBSYSTEMS,
 	CALIBRATION_PRE_SCORE,
 	CALIBRATION_SCORE;

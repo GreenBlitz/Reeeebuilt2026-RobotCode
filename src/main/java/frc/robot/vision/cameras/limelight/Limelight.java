@@ -27,6 +27,9 @@ import static frc.robot.vision.cameras.limelight.ObjectDetectionMath.*;
 
 public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, OrientationRequiringRobotPoseSupplier {
 
+	private static final int THROTTLE_ENABLE_VALUE = 200;
+	private static final int THROTTLE_DISABLE_VALUE = 0;
+
 	private final String name;
 	private final String logPath;
 	private final Pose3d robotRelativeCameraPose;
@@ -39,6 +42,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private final Rotation2d verticalFOV;
 
 	private final LimelightInputsSet inputs;
+
+	private boolean isThrottleEnabled;
 
 	private RobotPoseObservation mt1PoseObservation;
 	private RobotPoseObservation mt2PoseObservation;
@@ -78,6 +83,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.mt2PoseObservation = new RobotPoseObservation();
 
 		this.inputs = new LimelightInputsSet();
+
+		setThrottleState(false);
 
 		this.neuralDetectionFilter = rawDetection -> true;
 		this.colorDetectionFilter = rawTarget -> true;
@@ -178,7 +185,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), getMT1RawData().pose(), calculateMT1StdDevs.get());
 			if (doesObservationExist(mt1PoseObservation)) {
-				Logger.recordOutput(logPath + "/megaTag1PoseObservation", mt1PoseObservation);
+				Logger.recordOutput(logPath + "/mt1/poseObservation", mt1PoseObservation);
 			}
 		}
 	}
@@ -191,14 +198,15 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 			mt2PoseObservation = new RobotPoseObservation(getMT2RawData().timestampSeconds(), getMT2RawData().pose(), calculateMT2StdDevs.get());
 			if (doesObservationExist(mt2PoseObservation)) {
-				Logger.recordOutput(logPath + "/megaTag2PoseObservation", mt2PoseObservation);
+				Logger.recordOutput(logPath + "/mt2/poseObservation", mt2PoseObservation);
 			}
 		}
 	}
 
-	public void updateIsConnected() {
-		inputs.connectedInput().connected = LimelightHelpersAdditions.getIsConnected(name);
-		Logger.processInputs(logPath, inputs.connectedInput());
+	public void updateHardwareInputs() {
+		inputs.hardwareInputs().connected = LimelightHelpersAdditions.getIsConnected(name);
+		inputs.hardwareInputs().temperatureCelsius = LimelightHelpersAdditions.getTemperatureCelsius(name);
+		Logger.processInputs(logPath, inputs.hardwareInputs());
 	}
 
 	public String getName() {
@@ -221,6 +229,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	@Override
 	public Optional<RobotPoseObservation> getIndependentRobotPose() {
+		Logger.recordOutput(logPath + "/mt1/passesFilter", mt1PoseFilter.passesFilter());
 		if (pipeline.isUsingMT() && doesObservationExist(mt1PoseObservation) && mt1PoseFilter.passesFilter()) {
 			return Optional.of(mt1PoseObservation);
 		}
@@ -229,6 +238,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	@Override
 	public Optional<RobotPoseObservation> getOrientationRequiringRobotPose() {
+		Logger.recordOutput(logPath + "/mt2/passesFilter", mt2PoseFilter.passesFilter());
 		if (pipeline.isUsingMT() && doesObservationExist(mt2PoseObservation) && mt2PoseFilter.passesFilter()) {
 			return Optional.of(mt2PoseObservation);
 		}
@@ -309,6 +319,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void captureGivenTime(double secondsToCapture) {
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+	}
+
+	public void setThrottleState(boolean enableThrottle) {
+		LimelightHelpers.SetThrottle(name, enableThrottle ? THROTTLE_ENABLE_VALUE : THROTTLE_DISABLE_VALUE);
+		isThrottleEnabled = enableThrottle;
+		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
