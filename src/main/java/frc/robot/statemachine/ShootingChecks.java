@@ -81,15 +81,15 @@ public class ShootingChecks {
 		return isHoodAtPosition;
 	}
 
-	private static boolean isPositionAlignedWithTrenchOnTAxis(Translation2d allianceRelativeTurretPosition) {
+	private static boolean isPositionAlignedWithTrenchOnYAxis(Translation2d allianceRelativeTurretPosition) {
 		return allianceRelativeTurretPosition.getY()
-			<= Field.getTrenchMiddle(AllianceSide.OUTPOST).getY() + Field.TRENCH_Y_AXIS_LENGTH_METERS / 2
+			<= Field.getTrenchMiddle(AllianceSide.OUTPOST).getY() + (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2)
 			|| allianceRelativeTurretPosition.getY()
-				>= Field.getTrenchMiddle(AllianceSide.OUTPOST).getY() - Field.TRENCH_Y_AXIS_LENGTH_METERS / 2;
+				>= Field.getTrenchMiddle(AllianceSide.OUTPOST).getY() - (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2);
 	}
 
 	public static Boolean areWeGonnaDoGA(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity) {
-		Boolean areWeTryingToGoUnderTrench;
+		Boolean isRobotTryingToGoUnderTrench;
 		Translation2d fieldRelativeTurretVelocities = ShootingCalculations
 			.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
 		Translation2d currentTurretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
@@ -105,18 +105,18 @@ public class ShootingChecks {
 
 		boolean isTurretUnderTrench = (MathUtil
 			.isNear(allianceRelativeTurretPosition.getX(), allianceRelativeDepotTrenchMiddle.getX(), Field.TRENCH_BAR_X_AXIS_LENGTH_METERS / 2)
-			&& isPositionAlignedWithTrenchOnTAxis(allianceRelativeTurretPosition));
+			&& isPositionAlignedWithTrenchOnYAxis(allianceRelativeTurretPosition));
 		if (isTurretUnderTrench) {
-			areWeTryingToGoUnderTrench = true;
+			isRobotTryingToGoUnderTrench = true;
 		} else if (allianceRelativeTurretPosition.getX() < allianceRelativeOutpostTrenchMiddle.getX()) {
-			areWeTryingToGoUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() > allianceRelativeDepotTrenchMiddle.getX()
-				&& isPositionAlignedWithTrenchOnTAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
+			isRobotTryingToGoUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() > allianceRelativeDepotTrenchMiddle.getX()
+				&& isPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
 		} else {
-			areWeTryingToGoUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() < allianceRelativeDepotTrenchMiddle.getX()
-				&& isPositionAlignedWithTrenchOnTAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
+			isRobotTryingToGoUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() < allianceRelativeDepotTrenchMiddle.getX()
+				&& isPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
 		}
-		Logger.recordOutput(shootingChecksLogPath + "/AreWeTryingToGoUnderTrench", areWeTryingToGoUnderTrench);
-		return areWeTryingToGoUnderTrench;
+		Logger.recordOutput(shootingChecksLogPath + "/AreWeTryingToGoUnderTrench", isRobotTryingToGoUnderTrench);
+		return isRobotTryingToGoUnderTrench;
 	}
 
 	private static boolean isReadyToShoot(
