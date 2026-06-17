@@ -71,6 +71,7 @@ public class ShootingCalculations {
 		if (ShootingChecks.areWeGonnaDoGA(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)) {
 			hoodTargetPosition = ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH;
 		}
+
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
