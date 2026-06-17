@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.DetectedObjectObservation;
+import frc.robot.vision.DetectedObjectType;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
 import frc.robot.vision.interfaces.ObjectDetector;
@@ -129,15 +130,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public void updateHeatMapObjectDetection() {
-		// figure out how to get the result from the python (ny)
 
 		double tx = LimelightHelpers.getTX(name);
 		double ty = LimelightHelpers.getTY(name);
 
 		Rotation2d yawOffset = Rotation2d.fromDegrees(tx);
 		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
-		double objectRelativeToCameraX = getCameraRelativeObjectXR(robotRelativeCameraPose, ObjectDetectionMath.heightOfFuelToMiddleMeters, pitchOffset);
-		double objectRelativeToCameraY = getCameraRelativeObjectYR(yawOffset, objectRelativeToCameraX);
+		double objectRelativeToCameraX = getCameraRelativeObjectX(robotRelativeCameraPose, DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(), pitchOffset);
+		double objectRelativeToCameraY = getCameraRelativeObjectY(robotRelativeCameraPose, DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(), yawOffset, objectRelativeToCameraX);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
 		Logger.recordOutput(logPath + "/objectRelativeToCamera", objectRelativeToCamera);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());

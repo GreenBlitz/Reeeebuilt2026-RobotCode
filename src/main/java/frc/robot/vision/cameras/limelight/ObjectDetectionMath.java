@@ -9,8 +9,6 @@ import frc.utils.math.FieldMath;
 
 public class ObjectDetectionMath {
 
-	public static double heightOfFuelToMiddleMeters = 0.075;
-
 	public static DetectedObjectObservation getDetectedObjectObservation(
 		Pose3d cameraPose,
 		DetectedObjectType objectType,
