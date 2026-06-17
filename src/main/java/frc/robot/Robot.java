@@ -253,8 +253,6 @@ public class Robot {
 			)
 		);
 
-		disableAllLimelightTemperatureRegulations();
-
 		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
