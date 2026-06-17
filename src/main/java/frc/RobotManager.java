@@ -66,8 +66,9 @@ public class RobotManager extends LoggedRobot {
 		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
 			this.autonomousCommand = autonomousCommand.get();
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
-			if (DriverStationUtil.isMatch())
+			if (DriverStationUtil.isMatch()){
 				robot.disableAllLimelightTemperatureRegulations();
+			}
 			else {
 				robot.enableAllLimelightTemperatureRegulations();
 			}
@@ -109,7 +110,6 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			robot.enableAllLimelightTemperatureRegulations();
 		}
-
 		robot.getSwerve().setIsRunningIndependently(false);
 		Logger.recordOutput("averagePeriodPBS/Autonomous", robot.getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
 	}
