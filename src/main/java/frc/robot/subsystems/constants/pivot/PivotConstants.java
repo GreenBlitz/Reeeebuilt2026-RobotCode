@@ -47,7 +47,8 @@ public class PivotConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 	}
 
-	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(89.4).plus(Rotation2d.fromDegrees(19));
+	public static final Rotation2d BACKLASH_OFFSET = Rotation2d.fromDegrees(19);
+	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(89.4).plus(BACKLASH_OFFSET);
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(19.35);
 
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(78).plus(Rotation2d.fromDegrees(19));
