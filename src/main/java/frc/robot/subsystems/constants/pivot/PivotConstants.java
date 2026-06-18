@@ -34,7 +34,7 @@ public class PivotConstants {
 		REAL_SLOT.kI = 0;
 		REAL_SLOT.kD = 0;
 		REAL_SLOT.kS = 0.05;
-		REAL_SLOT.kG = 0.3 / Math.cos(Rotation2d.fromDegrees(44).getRadians());
+		REAL_SLOT.kG = 0.3 / Rotation2d.fromDegrees(44).getCos();
 		REAL_SLOT.kV = 0;
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
@@ -51,7 +51,7 @@ public class PivotConstants {
 	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(89.4).plus(BACKLASH_OFFSET);
 	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(19.35);
 
-	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(78).plus(Rotation2d.fromDegrees(19));
+	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(78).plus(BACKLASH_OFFSET);
 	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(25);
 
 	public static final double PIVOT_RESET_VOLTAGE = 2;
