@@ -36,7 +36,6 @@ public class PivotConstants {
 		REAL_SLOT.kS = 0.05;
 		REAL_SLOT.kG = 0.3 / Rotation2d.fromDegrees(44).getCos();
 		REAL_SLOT.kV = 0;
-
 		REAL_SLOT.kA = 0;
 		REAL_SLOT.GravityType = GravityTypeValue.Arm_Cosine;
 
