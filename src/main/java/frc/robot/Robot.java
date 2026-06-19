@@ -349,7 +349,6 @@ public class Robot {
 		robotCommander.update();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
-		poseEstimator.updateLastEstimatedPose();
 
 		limelightFront.updateIsConnected();
 		limelightRight.updateIsConnected();
@@ -363,17 +362,13 @@ public class Robot {
 		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
+		poseEstimator.updateLastEstimatedPose();
 		poseEstimator.log();
-		Pose2d currentEstimatedVelocity = poseEstimator.getLastEstimatedPoseVelocity();
-		ShootingCalculations.updateShootingParams(
-			poseEstimator.getEstimatedPose(),
-			new ChassisSpeeds(
-				currentEstimatedVelocity.getX(),
-				currentEstimatedVelocity.getY(),
-				currentEstimatedVelocity.getRotation().getRadians()
-			),
-			swerve.getIMUAngularVelocityRPS()[2]
-		);
+
+		ChassisSpeeds currentEstimatedVelocity = poseEstimator.getFieldRelativeEstimatedVelocity(swerve.getFieldRelativeVelocity());
+
+		ShootingCalculations
+			.updateShootingParams(poseEstimator.getEstimatedPose(), currentEstimatedVelocity, swerve.getIMUAngularVelocityRPS()[2]);
 
 		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());

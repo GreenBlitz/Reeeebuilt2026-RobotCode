@@ -18,10 +18,10 @@ public interface IPoseEstimator extends IVisionEstimator, IOdometryEstimator {
 
 	void log();
 
-	Pose2d getLastEstimatedPoseVelocity();
+	ChassisSpeeds getLastEstimatedVelocity();
 
 	void updateLastEstimatedPose();
 
-	RobotPoseEstimation getFieldRelativeEstimatedPoseVelocity(double timestamp, ChassisSpeeds swerveVelocity);
+	ChassisSpeeds getFieldRelativeEstimatedVelocity(ChassisSpeeds swerveVelocity);
 
 }

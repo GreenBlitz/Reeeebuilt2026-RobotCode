@@ -11,10 +11,10 @@ import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.poseestimator.RobotPoseEstimation;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
+import frc.utils.TimedValue;
 import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
 import frc.utils.math.ToleranceMath;
@@ -35,8 +35,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final TimeInterpolatableBuffer<Translation2d> imuXYAccelerationGBuffer;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
-	private final RobotPoseEstimation lastEstimatedPose;
-	private RobotPoseEstimation lastEstimatedPoseVelocity;
+	private final TimedValue<Pose2d> lastEstimatedPose;
+	private final TimedValue<ChassisSpeeds> lastEstimatedVelocity;
 	private boolean isIMUOffsetCalibrated;
 
 	public WPILibPoseEstimatorWrapper(
@@ -74,8 +74,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuXYAccelerationGBuffer = TimeInterpolatableBuffer
 			.createBuffer(WPILibPoseEstimatorConstants.IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS);
-		this.lastEstimatedPose = new RobotPoseEstimation(initialTimestampSeconds, new Pose2d());
-		this.lastEstimatedPoseVelocity = new RobotPoseEstimation(initialTimestampSeconds, new Pose2d());
+		this.lastEstimatedPose = new TimedValue<>(new Pose2d(), initialTimestampSeconds);
+		this.lastEstimatedVelocity = new TimedValue<>(new ChassisSpeeds(), initialTimestampSeconds);
 	}
 
 	@Override
@@ -115,8 +115,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			);
 		}
 
-		lastEstimatedPoseVelocity = calculateEstimatedVelocity(TimeUtil.getCurrentTimeSeconds());
-
 		poseEstimator
 			.updateWithTime(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()), data.getWheelPositions());
 		imuYawBuffer.addSample(data.getTimestampSeconds(), Rotation2d.fromRadians(data.getIMUOrientation().get().getZ()));
@@ -138,8 +136,34 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	@Override
 	public void updateLastEstimatedPose() {
-		lastEstimatedPose.setTimestampSeconds(TimeUtil.getCurrentTimeSeconds());
-		lastEstimatedPose.setEstimatedPose(getEstimatedPose());
+		double timestamp = TimeUtil.getCurrentTimeSeconds();
+		double deltaTime = timestamp - lastEstimatedVelocity.getTimestamp();
+		if (deltaTime > 0) {
+			Pose2d currentPose = getEstimatedPose();
+			ChassisSpeeds rawVelocity = new ChassisSpeeds(
+				(currentPose.getX() - lastEstimatedPose.getValue().getX()) / deltaTime,
+				(currentPose.getY() - lastEstimatedPose.getValue().getY()) / deltaTime,
+				(currentPose.getRotation().getRadians() - lastEstimatedPose.getValue().getRotation().getRadians()) / deltaTime
+			);
+
+			if (ToleranceMath.isNear(new ChassisSpeeds(), rawVelocity, WPILibPoseEstimatorConstants.ESTIMATED_VELOCITY_TOLERANCE)) {
+				lastEstimatedVelocity.setValue(new ChassisSpeeds());
+			} else if (
+				ToleranceMath.isNear(lastEstimatedVelocity.getValue(), rawVelocity, WPILibPoseEstimatorConstants.ESTIMATED_VELOCITY_TOLERANCE)
+			) {
+				lastEstimatedVelocity.setValue(
+					new ChassisSpeeds(
+						(rawVelocity.vxMetersPerSecond + lastEstimatedVelocity.getValue().vxMetersPerSecond) / 2.0,
+						(rawVelocity.vyMetersPerSecond + lastEstimatedVelocity.getValue().vyMetersPerSecond) / 2.0,
+						(rawVelocity.omegaRadiansPerSecond + lastEstimatedVelocity.getValue().omegaRadiansPerSecond) / 2.0
+					)
+				);
+			}
+			// If neither condition is met, it is a massive vision spike. We do NOT update the value, preserving the safe velocity.
+			lastEstimatedVelocity.setTimestamp(timestamp);
+		}
+		lastEstimatedPose.setTimestamp(timestamp);
+		lastEstimatedPose.setValue(getEstimatedPose());
 	}
 
 	@Override
@@ -237,8 +261,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		});
 	}
 
-	public Pose2d getLastEstimatedPoseVelocity() {
-		return lastEstimatedPoseVelocity.getEstimatedPose();
+	public ChassisSpeeds getLastEstimatedVelocity() {
+		return lastEstimatedVelocity.getValue();
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
@@ -278,67 +302,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
-	public RobotPoseEstimation getFieldRelativeEstimatedPoseVelocity(double timestamp, ChassisSpeeds swerveVelocity) {
-		RobotPoseEstimation estimatedVelocity = calculateEstimatedVelocity(timestamp);
-		if (useEstimatedVelocity(swerveVelocity, estimatedVelocity))
-			return estimatedVelocity;
-		return new RobotPoseEstimation(
-			timestamp,
-			new Pose2d(
-				swerveVelocity.vxMetersPerSecond,
-				swerveVelocity.vyMetersPerSecond,
-				Rotation2d.fromRadians(swerveVelocity.omegaRadiansPerSecond)
-			)
-		);
-	}
-
-	private RobotPoseEstimation calculateEstimatedVelocity(double timestamp) {
-		double deltaTime = (timestamp - lastEstimatedPoseVelocity.getTimestampSeconds());
-		if (deltaTime != 0) {
-			RobotPoseEstimation poseVelocity = new RobotPoseEstimation(
-				timestamp,
-				new Pose2d(
-					(getEstimatedPose().getX() - lastEstimatedPose.getX()) / deltaTime,
-					(getEstimatedPose().getY() - lastEstimatedPose.getY()) / deltaTime,
-					Rotation2d
-						.fromRadians((getEstimatedPose().getRotation().getRadians() - lastEstimatedPose.getRotation().getRadians()) / deltaTime)
-				)
-			);
-			if (
-				ToleranceMath
-					.isPoseNear(new Pose2d(), poseVelocity.getEstimatedPose(), WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE)
-			)
-				return new RobotPoseEstimation(timestamp);
-			if (
-				ToleranceMath.isPoseNear(
-					lastEstimatedPoseVelocity.getEstimatedPose(),
-					poseVelocity.getEstimatedPose(),
-					WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE
-				)
-			)
-				return new RobotPoseEstimation(
-					timestamp,
-					new Pose2d(
-						((poseVelocity.getX() + lastEstimatedPoseVelocity.getX()) / 2),
-						((poseVelocity.getY() + lastEstimatedPoseVelocity.getY()) / 2),
-						Rotation2d
-							.fromRadians((poseVelocity.getRotation().getRadians() + lastEstimatedPoseVelocity.getRotation().getRadians()) / 2)
-					)
-				);
+	public ChassisSpeeds getFieldRelativeEstimatedVelocity(ChassisSpeeds swerveVelocity) {
+		if (useEstimatedVelocity(swerveVelocity, lastEstimatedVelocity.getValue())) {
+			return lastEstimatedVelocity.getValue();
 		}
-		return lastEstimatedPoseVelocity;
+		return swerveVelocity;
 	}
 
-	private boolean useEstimatedVelocity(ChassisSpeeds swerveVelocity, RobotPoseEstimation estimatedVelocity) {
-		return !ToleranceMath.isPoseNear(
-			new Pose2d(
-				swerveVelocity.vxMetersPerSecond,
-				swerveVelocity.vyMetersPerSecond,
-				Rotation2d.fromRadians(swerveVelocity.omegaRadiansPerSecond)
-			),
-			estimatedVelocity.getEstimatedPose(),
-			WPILibPoseEstimatorConstants.ESTIMATED_POSE_VELOCITY_TOLERANCE
-		);
+	private boolean useEstimatedVelocity(ChassisSpeeds swerveVelocity, ChassisSpeeds estimatedVelocity) {
+		return !ToleranceMath.isNear(swerveVelocity, estimatedVelocity, WPILibPoseEstimatorConstants.ESTIMATED_VELOCITY_TOLERANCE);
 	}
 
 }
