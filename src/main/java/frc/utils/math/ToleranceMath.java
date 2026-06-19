@@ -35,14 +35,6 @@ public class ToleranceMath {
 		return Math.abs(wanted - actual) <= tolerance;
 	}
 
-	public static boolean isPoseNear(Pose2d pose1, Pose2d pose2, Pose2d poseTolerance) {
-		boolean isXNear = ToleranceMath.isNear(pose1.getX(), pose2.getX(), poseTolerance.getX());
-		boolean isYNear = ToleranceMath.isNear(pose1.getY(), pose2.getY(), poseTolerance.getY());
-		boolean isRotationNear = ToleranceMath
-			.isNear(pose1.getRotation().getRadians(), pose2.getRotation().getRadians(), poseTolerance.getRotation().getRadians());
-		return isXNear && isYNear && isRotationNear;
-	}
-
 	public static boolean isInRange(double value, double min, double max, double tolerance) {
 		return (min - tolerance) <= value && value <= (max + tolerance);
 	}
@@ -63,10 +55,10 @@ public class ToleranceMath {
 		return Rotation2d.fromRadians(MathUtil.clamp(angle.getRadians(), minAngle.getRadians(), maxAngle.getRadians()));
 	}
 
-	public static boolean isNear(ChassisSpeeds wanted, ChassisSpeeds actual, ChassisSpeeds tolerance) {
-		return isNear(wanted.vxMetersPerSecond, actual.vxMetersPerSecond, tolerance.vxMetersPerSecond)
-			&& isNear(wanted.vyMetersPerSecond, actual.vyMetersPerSecond, tolerance.vyMetersPerSecond)
-			&& isNear(wanted.omegaRadiansPerSecond, actual.omegaRadiansPerSecond, tolerance.omegaRadiansPerSecond);
+	public static boolean isNear(ChassisSpeeds wantedSpeed, ChassisSpeeds actualSpeed, ChassisSpeeds tolerance) {
+		return isNear(wantedSpeed.vxMetersPerSecond, actualSpeed.vxMetersPerSecond, tolerance.vxMetersPerSecond)
+			&& isNear(wantedSpeed.vyMetersPerSecond, actualSpeed.vyMetersPerSecond, tolerance.vyMetersPerSecond)
+			&& isNear(wantedSpeed.omegaRadiansPerSecond, actualSpeed.omegaRadiansPerSecond, tolerance.omegaRadiansPerSecond);
 	}
 
 }
