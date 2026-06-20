@@ -23,6 +23,9 @@ import java.util.function.Supplier;
 
 public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, OrientationRequiringRobotPoseSupplier {
 
+	private static final int THROTTLE_ENABLE_VALUE = 200;
+	private static final int THROTTLE_DISABLE_VALUE = 0;
+
 	private final String name;
 	private final String logPath;
 	private final Pose3d robotRelativeCameraPose;
@@ -31,6 +34,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private final ArrayList<DetectedObjectObservation> colorDetections;
 
 	private final LimelightInputsSet inputs;
+
+	private boolean isThrottleEnabled;
 
 	private RobotPoseObservation mt1PoseObservation;
 	private RobotPoseObservation mt2PoseObservation;
@@ -59,6 +64,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.mt2PoseObservation = new RobotPoseObservation();
 
 		this.inputs = new LimelightInputsSet();
+
+		setThrottleState(false);
 
 		this.neuralDetectionFilter = rawDetection -> true;
 		this.colorDetectionFilter = rawTarget -> true;
@@ -159,9 +166,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
-	public void updateIsConnected() {
-		inputs.connectedInput().connected = LimelightHelpersAdditions.getIsConnected(name);
-		Logger.processInputs(logPath, inputs.connectedInput());
+	public void updateHardwareInputs() {
+		inputs.hardwareInputs().connected = LimelightHelpersAdditions.getIsConnected(name);
+		inputs.hardwareInputs().temperatureCelsius = LimelightHelpersAdditions.getTemperatureCelsius(name);
+		Logger.processInputs(logPath, inputs.hardwareInputs());
 	}
 
 	public String getName() {
@@ -274,6 +282,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void captureGivenTime(double secondsToCapture) {
 		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
+	}
+
+	public void setThrottleState(boolean enableThrottle) {
+		LimelightHelpers.SetThrottle(name, enableThrottle ? THROTTLE_ENABLE_VALUE : THROTTLE_DISABLE_VALUE);
+		isThrottleEnabled = enableThrottle;
+		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {

@@ -13,7 +13,9 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
+import frc.robot.subsystems.swerve.states.aimassist.TowerAssistCalculations;
 import frc.utils.alerts.Alert;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -25,6 +27,8 @@ public class SwerveStateHandler {
 	private Optional<Supplier<Pose2d>> robotPoseSupplier;
 	private Optional<Supplier<Boolean>> isTurretMoveLegalSupplier;
 	private Optional<Supplier<Rotation2d>> turretAngleSupplier;
+	private Rotation2d robotTowerEnterRotation2d = Rotation2d.kCW_90deg;
+	public boolean isTowerAssistLegal = true;
 	private boolean isAimAssistOn;
 
 	public SwerveStateHandler(Swerve swerve) {
@@ -45,6 +49,15 @@ public class SwerveStateHandler {
 
 	public void setTurretAngleSupplier(Supplier<Rotation2d> turretAngleSupplier) {
 		this.turretAngleSupplier = Optional.of(turretAngleSupplier);
+	}
+
+	public void updateRobotTowerEnter() {
+		this.robotTowerEnterRotation2d = TowerAssistCalculations.getRobotTargetRotation(
+			TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get()),
+			robotPoseSupplier.get().get()
+		);
+		this.isTowerAssistLegal = !(TowerAssistCalculations.isInFrontOfClosestTower(robotPoseSupplier.get().get())
+			|| TowerAssistCalculations.isInNeutralZone(robotPoseSupplier.get().get()));
 	}
 
 	public void enableAimAssist(boolean enable) {
@@ -71,6 +84,9 @@ public class SwerveStateHandler {
 			if (isTurretMoveLegalSupplier.get().get() == false) {
 				return handleLookAtTargetAimAssist(speeds);
 			}
+		}
+		if (swerveState.getAimAssist() == AimAssist.TOWER_ASSIST) {
+			return handleEnterTowerAimAssist(speeds);
 		}
 		return speeds;
 	}
@@ -103,9 +119,47 @@ public class SwerveStateHandler {
 			);
 		}
 
-		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		ChassisSpeeds finalSpeeds = AimAssistMath
+			.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, true, swerveConstants);
 		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
 		return finalSpeeds;
+	}
+
+	private ChassisSpeeds handleEnterTowerAimAssist(ChassisSpeeds speeds) {
+		if (isTowerAssistLegal) {
+			Translation2d assistTarget = TowerAssistCalculations.getClosestTowerEntrance(robotPoseSupplier.get().get());
+
+			Logger.recordOutput(swerve.getLogPath() + "/towerAssistTarget", assistTarget);
+			Logger.recordOutput(swerve.getLogPath() + "/isTowerAssistLegal", isTowerAssistLegal);
+
+			ChassisSpeeds assistedTranslationSpeeds = AimAssistMath.getRotationAssistedSpeeds(
+				speeds,
+				robotPoseSupplier.get().get().getRotation(),
+				robotTowerEnterRotation2d,
+				false,
+				swerveConstants
+			);
+
+			if (TowerAssistCalculations.shouldTakeLongTurnToAvoidWall(robotPoseSupplier.get().get())) {
+				assistedTranslationSpeeds = AimAssistMath.getLongTurnRotationAssistedSpeeds(
+					speeds,
+					robotPoseSupplier.get().get().getRotation(),
+					robotTowerEnterRotation2d,
+					swerveConstants
+				);
+			}
+			return AimAssistMath.getObjectAssistedSpeedsSlowedDownByRotation(
+				assistedTranslationSpeeds,
+				robotPoseSupplier.get().get(),
+				Rotation2d.kCW_90deg,
+				assistTarget,
+				swerveConstants,
+				SwerveState.DEFAULT_DRIVE,
+				SwerveConstants.TOWER_ASSIST_MAGNITUDE_FACTOR,
+				true
+			);
+		}
+		return speeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {

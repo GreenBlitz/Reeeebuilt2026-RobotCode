@@ -49,7 +49,6 @@ import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.GamePeriodUtils;
-import frc.utils.HubUtil;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
@@ -57,6 +56,7 @@ import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
+import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
@@ -64,6 +64,7 @@ import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -95,6 +96,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private AutonomousChooser autonomousChooser;
+	private SendableChooser<Boolean> returnToMiddle;
 
 	private final IPoseEstimator poseEstimator;
 
@@ -180,9 +182,9 @@ public class Robot {
 		limelightFront.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightFront,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.15),
 				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
 			)
 		);
@@ -208,9 +210,9 @@ public class Robot {
 		limelightRight.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightRight,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.15),
 				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
 			)
 		);
@@ -236,9 +238,9 @@ public class Robot {
 		limelightLeft.setMT1StdDevsCalculation(
 			LimelightStdDevCalculations.getMT1StdDevsCalculation(
 				limelightLeft,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.15),
 				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.07),
-				new StandardDeviations2D(0.7),
 				new StandardDeviations2D(0.011)
 			)
 		);
@@ -350,9 +352,9 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		limelightFront.updateIsConnected();
-		limelightRight.updateIsConnected();
-		limelightLeft.updateIsConnected();
+		limelightFront.updateHardwareInputs();
+		limelightRight.updateHardwareInputs();
+		limelightLeft.updateHardwareInputs();
 
 		limelightFront.updateMT1();
 		limelightRight.updateMT1();
@@ -370,7 +372,6 @@ public class Robot {
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), currentEstimatedVelocity, swerve.getIMUAngularVelocityRPS()[2]);
 
-		Logger.recordOutput("isRobotAutoWinningAlliance", HubUtil.isRobotAllianceAutoWinnerForLog());
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(
 			"TimeSinceLastBall",
@@ -440,6 +441,22 @@ public class Robot {
 		return poseEstimator;
 	}
 
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
+	public List<Limelight> getAllLimelights() {
+		return List.of(limelightFront, limelightRight, limelightLeft);
+	}
+
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -452,16 +469,8 @@ public class Robot {
 		return autonomousChooser;
 	}
 
-	public Limelight getLimelightFront() {
-		return limelightFront;
-	}
-
-	public Limelight getLimelightLeft() {
-		return limelightLeft;
-	}
-
-	public Limelight getLimelightRight() {
-		return limelightRight;
+	public SendableChooser<Boolean> getReturnToMiddleChooser() {
+		return returnToMiddle;
 	}
 
 	public Supplier<Double> getLastBallThrownTimestamp() {
@@ -485,7 +494,7 @@ public class Robot {
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().openFourBarForAutonomous();
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();
@@ -497,22 +506,27 @@ public class Robot {
 
 		getSwerve().configPathPlanner(() -> getPoseEstimator().getEstimatedPose(), (pose) -> {}, getRobotConfig());
 
-		this.autonomousChooser = new AutonomousChooser(
-			"Autonomous Chooser",
-			AutosBuilder.getAutoList(
-				this,
-				autonomousResetSubsystemsCommand,
-				autonomousOpenIntakeCommand,
-				autonomousCloseIntakeCommand,
-				autonomousScoringSequenceCommand,
-				autonomousPassSequenceCommand,
-				autonomousOuttakeCommand,
-				AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
-				AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
-				AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS
-			)
+		this.returnToMiddle = new SendableChooser<>();
+		returnToMiddle.setDefaultOption("Don't Return To Middle", false);
+		returnToMiddle.addOption("Return To Middle", true);
+		SmartDashboard.putData("Return To Middle", returnToMiddle);
+
+		List<Supplier<PathPlannerAutoWrapper>> autos = AutosBuilder.getAutoList(
+			this,
+			autonomousResetSubsystemsCommand,
+			autonomousOpenIntakeCommand,
+			autonomousCloseIntakeCommand,
+			autonomousScoringSequenceCommand,
+			autonomousPassSequenceCommand,
+			autonomousOuttakeCommand,
+			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
+			AutonomousConstants.DEFAULT_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_IS_NEAR_END_OF_PATH_TOLERANCE,
+			AutonomousConstants.DEFAULT_STUCK_DEBOUNCE_SECONDS,
+			() -> returnToMiddle.getSelected() != null && returnToMiddle.getSelected()
 		);
+
+		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
 	}
 
 }

@@ -7,11 +7,14 @@ package frc;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.*;
+import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
+import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
@@ -22,6 +25,9 @@ import frc.utils.logger.LoggerFactory;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
@@ -34,6 +40,8 @@ public class RobotManager extends LoggedRobot {
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
 	private static double teleopStartTimeSeconds = -1;
+	private String alertsMessage;
+	private final Field2d field2d;
 
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
@@ -52,7 +60,24 @@ public class RobotManager extends LoggedRobot {
 
 		Threads.setCurrentThreadPriority(true, 10);
 
-		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> this.autonomousCommand = autonomousCommand.get());
+		field2d = new Field2d();
+		SmartDashboard.putData(field2d);
+
+		robot.getAutonomousChooser().getChooser().onChange((autonomousCommand) -> {
+			this.autonomousCommand = autonomousCommand.get();
+			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
+		});
+
+		robot.getReturnToMiddleChooser().onChange((val) -> {
+			this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
+			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
+		});
+
+		robot.getAllLimelights().forEach(limelight -> limelight.setThrottleState(!DriverStationUtil.isMatch()));
+
+		alertsMessage = "Alerts: None";
+		Logger.recordOutput("AlertsMessage", alertsMessage);
+		logDriverAlerts();
 	}
 
 	@Override
@@ -60,6 +85,7 @@ public class RobotManager extends LoggedRobot {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
 		}
+		robot.getAllLimelights().forEach(limelight -> limelight.setThrottleState(false));
 	}
 
 	@Override
@@ -77,7 +103,9 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-
+		if (!DriverStationUtil.isMatch()) {
+			robot.getAllLimelights().forEach(limelight -> limelight.setThrottleState(true));
+		}
 		robot.getSwerve().setIsRunningIndependently(false);
 		Logger.recordOutput("averagePeriodPBS/Autonomous", robot.getAverageBPSForLastXSeconds(GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS));
 	}
@@ -89,9 +117,8 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void teleopExit() {
-		robot.getLimelightFront().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
-		robot.getLimelightLeft().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
-		robot.getLimelightRight().captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS);
+		robot.getAllLimelights().forEach(limelight -> limelight.captureGivenTime(GamePeriodUtils.COMPLETE_GAME_TIME_SECONDS));
+		robot.getAllLimelights().forEach(limelight -> limelight.setThrottleState(true));
 	}
 
 	public static double getTeleopStartTimeSeconds() {
@@ -110,12 +137,42 @@ public class RobotManager extends LoggedRobot {
 		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
+		logElasticRelatedInfo();
 	}
 
 	private void updateTimeRelatedData() {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
 		TimeUtil.updateCycleTime(roborioCycles);
+	}
+
+	private void logElasticRelatedInfo() {
+		Logger.recordOutput("isAutoWinner", HubUtil.isRobotAllianceAutoWinnerForLog());
+		Logger.recordOutput("TimeUntilNextShift", HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
+		Logger.recordOutput("IsHubActive", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
+		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds());
+		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
+
+		logDriverAlerts();
+
+		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
+	}
+
+	private void logDriverAlerts() {
+		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
+
+		String newAlertsMessage = alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+
+		boolean areAlertsOk = newAlertsMessage.isEmpty();
+
+		Logger.recordOutput("AreAlertsOK", areAlertsOk);
+
+		newAlertsMessage = "Alerts: " + (areAlertsOk ? "None" : newAlertsMessage);
+
+		if (!newAlertsMessage.equals(alertsMessage)) {
+			alertsMessage = newAlertsMessage;
+			Logger.recordOutput("AlertsMessage", alertsMessage);
+		}
 	}
 
 }
