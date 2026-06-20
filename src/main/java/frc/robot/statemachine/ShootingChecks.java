@@ -165,7 +165,13 @@ public class ShootingChecks {
 			logPath
 		);
 
-		boolean isReadyToShoot = isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition && isTurretWithinDistance
+		boolean isHoodPositionCorrect = ShootingCalculations.getShootingParams().isTargetHoodPositionCorrect();
+
+		boolean isReadyToShoot = isAtTurretAtTarget
+			&& isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isTurretWithinDistance
+			&& isHoodPositionCorrect
 		/* && isPoseReliable */;
 		Logger.recordOutput(shootingChecksLogPath + "/IsReadyToShoot", isReadyToShoot);
 
@@ -206,10 +212,14 @@ public class ShootingChecks {
 		);
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
+		boolean isHoodPositionCorrect = ShootingCalculations.getShootingParams().isTargetHoodPositionCorrect();
+
+
 		boolean canContinueShooting = isAtTurretAtTarget
 			&& isFlywheelReadyToShoot
 			&& isHoodAtPosition
-			&& isTurretWithinDistance /* && isPoseReliable */;
+			&& isTurretWithinDistance
+			&& isHoodPositionCorrect/* && isPoseReliable */;
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinueShooting", canContinueShooting);
 
 		return canContinueShooting;

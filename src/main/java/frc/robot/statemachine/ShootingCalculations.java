@@ -22,6 +22,7 @@ public class ShootingCalculations {
 		HoodConstants.MINIMUM_POSITION,
 		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
+		false,
 		new Translation2d(),
 		Field.getHubMiddle()
 	);
@@ -68,14 +69,21 @@ public class ShootingCalculations {
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
 
-		if (ShootingChecks.areWeGonnaDoGA(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)) {
+		boolean isHoodTargetCorrect = true;
+
+		if (
+			ShootingChecks.areWeGonnaDoGA(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)
+				&& hoodTargetPosition.getDegrees() < ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH.getDegrees()
+		) {
 			hoodTargetPosition = ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH;
+			isHoodTargetCorrect = false;
 		}
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/isHoodTargetCorrect", isHoodTargetCorrect);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
 		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToHub);
@@ -87,6 +95,7 @@ public class ShootingCalculations {
 			hoodTargetPosition,
 			turretTargetPosition,
 			turretTargetVelocityRPS,
+			isHoodTargetCorrect,
 			turretPredictedPose,
 			targetTranslation
 		);
