@@ -8,18 +8,20 @@ import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 
 public class IntakeRollerConstants {
 
-	public final static boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 
-	public final static FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
+	public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs();
 
 	static {
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 1;
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 	}
 
-	public final static int CURRENT_LIMIT = 60;
+	public static final int CURRENT_LIMIT = 60;
 
-	public final static double MOMENT_OF_INERTIA = 0.0001;
+	public static final double MOMENT_OF_INERTIA = 0.0001;
+
+	public static final double TIME_TO_INTAKE_WHILE_CLOSING_SECONDS = 0.5;
 
 	public static Roller createIntakeRollers() {
 		return TalonFXRollerBuilder.build(
