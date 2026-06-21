@@ -88,10 +88,8 @@ public class ShootingChecks {
 				>= Field.getTrenchMiddle(AllianceSide.DEPOT).getY() - (Field.TRENCH_Y_AXIS_LENGTH_METERS / 2);
 	}
 
-	public static Boolean areWeGonnaDoGA(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity) {
+	private static Boolean isRobotHeadingTowardsTrench(Pose2d robotPose, Translation2d fieldRelativeTurretVelocities) {
 		Boolean isRobotTryingToGoUnderTrench;
-		Translation2d fieldRelativeTurretVelocities = ShootingCalculations
-			.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
 		Translation2d currentTurretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
 		Translation2d allianceRelativePredictedTurretPositionWhenHoodCloses = Field.getAllianceRelative(
 			new Translation2d(
@@ -123,6 +121,19 @@ public class ShootingChecks {
 			new Pose2d(allianceRelativePredictedTurretPositionWhenHoodCloses, Rotation2d.k180deg)
 		);
 		return isRobotTryingToGoUnderTrench;
+	}
+
+	public static Boolean areWeGonnaDoGA(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity) {
+		Translation2d fieldRelativeTurretVelocities = ShootingCalculations
+			.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
+		Boolean isRobotHeadingTowardsOurAllianceTrench = isRobotHeadingTowardsTrench(robotPose, fieldRelativeTurretVelocities);
+		Pose2d robotPoseReversed = Field.getAllianceRelative(robotPose);
+		Translation2d fieldRelativeTurretVelocitiesReversed = new Translation2d().minus(fieldRelativeTurretVelocities);
+		Boolean isRobotHeadingTowardsOpposingAllianceTrench = isRobotHeadingTowardsTrench(
+			robotPoseReversed,
+			fieldRelativeTurretVelocitiesReversed
+		);
+		return (isRobotHeadingTowardsOurAllianceTrench || isRobotHeadingTowardsOpposingAllianceTrench);
 	}
 
 	private static boolean isReadyToShoot(
