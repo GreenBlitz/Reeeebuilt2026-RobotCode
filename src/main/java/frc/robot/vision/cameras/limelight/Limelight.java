@@ -1,8 +1,6 @@
 package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.DetectedObjectType;
 import frc.robot.vision.RobotPoseObservation;
@@ -130,20 +128,28 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public void updateHeatMapObjectDetection() {
-
 		double tx = LimelightHelpers.getTX(name);
 		double ty = LimelightHelpers.getTY(name);
 
 		Rotation2d yawOffset = Rotation2d.fromDegrees(tx);
 		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
-		double objectRelativeToCameraX = getCameraRelativeObjectX(robotRelativeCameraPose, DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(), pitchOffset);
-		double objectRelativeToCameraY = getCameraRelativeObjectY(robotRelativeCameraPose, DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(), yawOffset, objectRelativeToCameraX);
+		double objectRelativeToCameraX = getCameraRelativeObjectX(
+			robotRelativeCameraPose,
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(),
+			pitchOffset
+		);
+		double objectRelativeToCameraY = getCameraRelativeObjectY(
+			robotRelativeCameraPose,
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(),
+			yawOffset,
+			objectRelativeToCameraX
+		);
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
 		Logger.recordOutput(logPath + "/objectRelativeToCamera", objectRelativeToCamera);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
 		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
-		Logger.recordOutput(logPath+"/tx", tx);
-		Logger.recordOutput(logPath+"/ty", ty);
+		Logger.recordOutput(logPath + "/tx", tx);
+		Logger.recordOutput(logPath + "/ty", ty);
 	}
 
 	public void updateColorDetection() {

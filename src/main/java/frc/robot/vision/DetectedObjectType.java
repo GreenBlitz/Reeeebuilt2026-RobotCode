@@ -3,6 +3,7 @@ package frc.robot.vision;
 import java.util.Optional;
 
 public enum DetectedObjectType {
+
 	FUEL("Fuel", 0.075);
 
 	private final String name;
