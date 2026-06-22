@@ -459,6 +459,32 @@ public class AutosBuilder {
 				AllianceSide.OUTPOST,
 				true,
 				returnToMiddle
+			),
+			getOrbitDoubleSwipeAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.DEPOT,
+				returnToMiddle
+			),
+			getOrbitDoubleSwipeAuto(
+				robot,
+				resetSubsystems,
+				openIntake,
+				closeIntake,
+				scoreSequence,
+				pathfindingConstraints,
+				regularIsNearEndOfPathTolerance,
+				stuckIsNearEndOfPathTolerance,
+				stuckDebounceSeconds,
+				AllianceSide.OUTPOST,
+				returnToMiddle
 			)
 		);
 	}
@@ -994,30 +1020,77 @@ public class AutosBuilder {
 		);
 	}
 
-	public static Supplier<PathPlannerAutoWrapper> getOrbitDoubleSwipeAuto(
-			Robot robot,
-			PathConstraints pathfindingConstraints,
-			Pose2d regularIsNearEndOfPathTolerance,
-			Pose2d stuckIsNearEndOfPathTolerance,
-			double stuckDebounceSeconds,
-			AllianceSide startingSide
-			) {
+	private static Supplier<PathPlannerAutoWrapper> getOrbitDoubleSwipeAuto(
+		Robot robot,
+		Supplier<Command> resetSubsystems,
+		Supplier<Command> openIntake,
+		Supplier<Command> closeIntake,
+		Supplier<Command> scoreSequence,
+		PathConstraints pathfindingConstraints,
+		Pose2d regularIsNearEndOfPathTolerance,
+		Pose2d stuckIsNearEndOfPathTolerance,
+		double stuckDebounceSeconds,
+		AllianceSide startingSide,
+		BooleanSupplier returnToMiddle
+	) {
 		return () -> new PathPlannerAutoWrapper(
-				new ParallelCommandGroup(
-						PathFollowingCommandsBuilder.followAdjustedPathThenStop(
-								robot.getSwerve(),
-								() -> robot.getPoseEstimator().getEstimatedPose(),
-								startingSide == AllianceSide.DEPOT
-								? PathHelper.PATH_PLANNER_PATHS.get("Depot Orbit Double Swipe")
-										: PathHelper.PATH_PLANNER_PATHS.get("Outpost Orbit Double Swipe"),
-								pathfindingConstraints,
-								regularIsNearEndOfPathTolerance,
-								stuckIsNearEndOfPathTolerance,
-								stuckDebounceSeconds,
-								robot.getSwerve().getLogPath()
-						).asProxy()
+			new ParallelCommandGroup(
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						startingSide == AllianceSide.DEPOT
+							? PathHelper.PATH_PLANNER_PATHS.get("Depot Orbit Double Swipe")
+							: PathHelper.PATH_PLANNER_PATHS.get("Outpost Orbit Double Swipe"),
+						pathfindingConstraints,
+						regularIsNearEndOfPathTolerance,
+						stuckIsNearEndOfPathTolerance,
+						stuckDebounceSeconds,
+						robot.getSwerve().getLogPath()
+					)
+					.asProxy()
+					.alongWith(new InstantCommand(() -> hasPathEnded = false))
+					.andThen(new InstantCommand(() -> hasPathEnded = true)),
+				new SequentialCommandGroup(
+					resetSubsystems.get(),
+					new ParallelCommandGroup(
+						new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_SHOOTING_AFTER_AUTO_START).andThen(scoreSequence.get()),
+						openIntake.get()
+							.until(() -> hasPathEnded)
+							.andThen(
+								new ParallelCommandGroup(
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
+										.andThen(
+											robot.getSwerve()
+												.getCommandsBuilder()
+												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
+										)
+										.andThen(
+											getAllianceSideToStartingLineAuto(
+												robot,
+												startingSide,
+												pathfindingConstraints,
+												regularIsNearEndOfPathTolerance,
+												stuckIsNearEndOfPathTolerance,
+												stuckDebounceSeconds,
+												returnToMiddle
+											)
+										)
+										.asProxy(),
+									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+										.andThen(closeIntake.get())
+										.onlyIf(() -> !returnToMiddle.getAsBoolean())
+								)
+							)
+					)
 				)
-		)
+			),
+			new Pose2d(),
+			startingSide == AllianceSide.DEPOT ? "Depot Orbit Double Swipe" : "Outpost Orbit Double Swipe",
+			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("Depot Orbit Double Swipe") : PathHelper.PATH_PLANNER_PATHS.get("Outpost Orbit Double Swipe"),
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+		);
 	}
 
 	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
