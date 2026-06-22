@@ -53,6 +53,7 @@ public class ShootingCalculations {
 			.rotateBy(robotPose.getRotation());
 		Translation2d turretFieldRelativeVelocity = robotTranslationalVelocity.plus(turretTangentialVelocity);
 
+		Logger.recordOutput("aaaaaaaaaaaaaaa", turretFieldRelativeVelocity);
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
 			turretFieldRelativeVelocity,
@@ -60,18 +61,19 @@ public class ShootingCalculations {
 		);
 
 		Rotation2d predictedAngleToTarget = targetTranslation.minus(turretPredictedPose).getAngle();
-		double distanceFromTurretPredictedPoseToHub = getDistanceFromHub(turretPredictedPose);
+		double distanceFromTurretPredictedPoseToTarget = ShootingChecks.isInAllianceZone(robotPose.getTranslation()) ?
+				getDistanceFromHub(turretPredictedPose) : getDistanceFromPassingTarget(turretPredictedPose);
 
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(predictedAngleToTarget.unaryMinus());
 		Rotation2d targetTurretVelocityCausedByTranslation = Rotation2d
-			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretPredictedPoseToHub);
+			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretPredictedPoseToTarget);
 		Rotation2d turretTargetVelocityRPS = Rotation2d
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
-		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
-		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
+		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToTarget);
+		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToTarget);
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
@@ -79,7 +81,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
-		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToHub);
+		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToTarget);
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 
@@ -134,9 +136,9 @@ public class ShootingCalculations {
 		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
 	}
 
-	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
+	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromTargetMeters) {
 		Translation2d predictedTurretPose = turretPose;
-		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromTargetMeters);
 
 		for (int i = 0; i < StateMachineConstants.MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME; i++) {
 			predictedTurretPose = getPredictedTurretPoseByFlightTime(turretPose, turretVelocities, ballFlightTime);
@@ -168,6 +170,10 @@ public class ShootingCalculations {
 
 	public static double getDistanceFromHub(Translation2d pose) {
 		return Field.getHubMiddle().getDistance(pose);
+	}
+
+	public static double getDistanceFromPassingTarget(Translation2d pose) {
+		return getOptimalPassingPosition(pose).getDistance(pose);
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
@@ -220,11 +226,11 @@ public class ShootingCalculations {
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26500));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
-		HOOD_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(54.67));
+		HOOD_PASSING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(54.5));
 		HOOD_PASSING_INTERPOLATION_MAP.put(15.0, Rotation2d.fromDegrees(45.0));
 
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(4.0, Rotation2d.fromDegrees(20000));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(35000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(4.0, Rotation2d.fromDegrees(18000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(25000));
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(15.0, Rotation2d.fromDegrees(50000));
 
 		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
