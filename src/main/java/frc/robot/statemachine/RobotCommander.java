@@ -35,7 +35,7 @@ public class RobotCommander extends GBSubsystem {
 
 		this.logPath = logPath;
 
-		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
+		this.intakeStateHandler = new IntakeStateHandler(robot.getPivot(), robot.getIntakeRoller(), logPath);
 
 		this.funnelStateHandler = new FunnelStateHandler(
 			robot.getMagazine(),
@@ -160,7 +160,10 @@ public class RobotCommander extends GBSubsystem {
 
 	private Command resetSubsystems() {
 		return new ParallelDeadlineGroup(
-			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+			new ParallelCommandGroup(
+				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+				intakeStateHandler.setState(IntakeState.RESET_PIVOT)
+			),
 			funnelStateHandler.setState(FunnelState.STOP)
 		);
 	}

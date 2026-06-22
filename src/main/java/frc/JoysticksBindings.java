@@ -120,15 +120,18 @@ public class JoysticksBindings {
 		usedJoystick.BACK.onTrue(new InstantCommand(() -> robot.getSwerve().getStateHandler().enableAimAssist(false)));
 
 		// Intake binds...
-		robot.getRobotCommander()
-			.getIntakeStateHandler()
-			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
+		robot.getRobotCommander().getIntakeStateHandler().setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
-		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
+		usedJoystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED));
+		usedJoystick.POV_RIGHT.onTrue(
+			robot.getRobotCommander()
+				.getIntakeStateHandler()
+				.setState(IntakeState.SLOW_CLOSE)
+				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
+		);
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.POV_UP.whileTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.FORCE_OPEN));
 		usedJoystick.X.onTrue(robot.getRobotCommander().towerAssist());
 	}
 
@@ -238,14 +241,14 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(turret.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
 	}
 
-	private static void applyFourBarCalibrationBindings(Arm fourBar, SmartJoystick joystick, double calibrationMaxPower) {
+	private static void applyPivotCalibrationBindings(Arm pivot, SmartJoystick joystick, double calibrationMaxPower) {
 		// Check limits
-		joystick.R1.whileTrue(fourBar.getCommandsBuilder().setPower(() -> joystick.getAxisValue(Axis.LEFT_Y) * calibrationMaxPower));
+		joystick.R1.whileTrue(pivot.getCommandsBuilder().setPower(() -> joystick.getAxisValue(Axis.LEFT_Y) * calibrationMaxPower));
 
-		fourBar.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
+		pivot.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
 
-		joystick.POV_RIGHT.onTrue(fourBar.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(20)));
-		joystick.POV_LEFT.onTrue(fourBar.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
+		joystick.POV_RIGHT.onTrue(pivot.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(20)));
+		joystick.POV_LEFT.onTrue(pivot.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
 	}
 
 	private static void applyHoodCalibrationBindings(Arm hood, SmartJoystick joystick, double calibrationMaxPower) {
