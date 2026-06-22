@@ -994,6 +994,32 @@ public class AutosBuilder {
 		);
 	}
 
+	public static Supplier<PathPlannerAutoWrapper> getOrbitDoubleSwipeAuto(
+			Robot robot,
+			PathConstraints pathfindingConstraints,
+			Pose2d regularIsNearEndOfPathTolerance,
+			Pose2d stuckIsNearEndOfPathTolerance,
+			double stuckDebounceSeconds,
+			AllianceSide startingSide
+			) {
+		return () -> new PathPlannerAutoWrapper(
+				new ParallelCommandGroup(
+						PathFollowingCommandsBuilder.followAdjustedPathThenStop(
+								robot.getSwerve(),
+								() -> robot.getPoseEstimator().getEstimatedPose(),
+								startingSide == AllianceSide.DEPOT
+								? PathHelper.PATH_PLANNER_PATHS.get("Depot Orbit Double Swipe")
+										: PathHelper.PATH_PLANNER_PATHS.get("Outpost Orbit Double Swipe"),
+								pathfindingConstraints,
+								regularIsNearEndOfPathTolerance,
+								stuckIsNearEndOfPathTolerance,
+								stuckDebounceSeconds,
+								robot.getSwerve().getLogPath()
+						).asProxy()
+				)
+		)
+	}
+
 	private static Supplier<PathPlannerAutoWrapper> getHorseshoeAuto(
 		Robot robot,
 		Supplier<Command> resetSubsystems,
