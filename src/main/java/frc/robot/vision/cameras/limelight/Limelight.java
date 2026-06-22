@@ -28,6 +28,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private static final int THROTTLE_ENABLE_VALUE = 200;
 	private static final int THROTTLE_DISABLE_VALUE = 0;
+	private static final double THREE_FOURTHS_OBJECT_FACTOR = 1.5;
 
 	private final String name;
 	private final String logPath;
@@ -135,12 +136,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
 		double objectRelativeToCameraX = getCameraRelativeObjectX(
 			robotRelativeCameraPose,
-			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(),
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters()*THREE_FOURTHS_OBJECT_FACTOR,
 			pitchOffset
 		);
 		double objectRelativeToCameraY = getCameraRelativeObjectY(
 			robotRelativeCameraPose,
-			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters(),
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters()*THREE_FOURTHS_OBJECT_FACTOR,
 			yawOffset,
 			objectRelativeToCameraX
 		);
