@@ -61,8 +61,9 @@ public class ShootingCalculations {
 		);
 
 		Rotation2d predictedAngleToTarget = targetTranslation.minus(turretPredictedPose).getAngle();
-		double distanceFromTurretPredictedPoseToTarget = ShootingChecks.isInAllianceZone(robotPose.getTranslation()) ?
-				getDistanceFromHub(turretPredictedPose) : getDistanceFromPassingTarget(turretPredictedPose);
+		double distanceFromTurretPredictedPoseToTarget = ShootingChecks.isInAllianceZone(robotPose.getTranslation())
+			? getDistanceFromHub(turretPredictedPose)
+			: getDistanceFromPassingTarget(turretPredictedPose);
 
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(predictedAngleToTarget.unaryMinus());
@@ -136,7 +137,11 @@ public class ShootingCalculations {
 		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
 	}
 
-	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromTargetMeters) {
+	private static Translation2d getPredictedTurretPose(
+		Translation2d turretPose,
+		Translation2d turretVelocities,
+		double distanceFromTargetMeters
+	) {
 		Translation2d predictedTurretPose = turretPose;
 		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromTargetMeters);
 
