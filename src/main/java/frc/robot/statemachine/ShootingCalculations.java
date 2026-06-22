@@ -193,10 +193,13 @@ public class ShootingCalculations {
 		);
 	}
 
-	public static Translation2d getTurretPositionWhenHoodCloses(Translation2d currentTurretPosition, Translation2d fieldRelativeTurretVelocities){
+	public static Translation2d getTurretPositionWhenHoodCloses(
+		Translation2d currentTurretPosition,
+		Translation2d fieldRelativeTurretVelocities
+	) {
 		return new Translation2d(
-				currentTurretPosition.getX() + fieldRelativeTurretVelocities.getX() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC,
-				currentTurretPosition.getY() + fieldRelativeTurretVelocities.getY() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC
+			currentTurretPosition.getX() + fieldRelativeTurretVelocities.getX() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC,
+			currentTurretPosition.getY() + fieldRelativeTurretVelocities.getY() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC
 		);
 	}
 
