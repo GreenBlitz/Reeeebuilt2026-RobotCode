@@ -72,7 +72,7 @@ public class ShootingCalculations {
 		boolean isHoodTargetCorrect = true;
 
 		if (
-			ShootingChecks.areWeGonnaDoGA(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)
+			ShootingChecks.isHoodInDangerOfCrushing(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)
 				&& hoodTargetPosition.getDegrees() < ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH.getDegrees()
 		) {
 			hoodTargetPosition = ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH;
@@ -190,6 +190,13 @@ public class ShootingCalculations {
 		return new Translation2d(
 			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
 			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
+		);
+	}
+
+	public static Translation2d getTurretPositionWhenHoodCloses(Translation2d currentTurretPosition, Translation2d fieldRelativeTurretVelocities){
+		return new Translation2d(
+				currentTurretPosition.getX() + fieldRelativeTurretVelocities.getX() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC,
+				currentTurretPosition.getY() + fieldRelativeTurretVelocities.getY() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC
 		);
 	}
 
