@@ -98,8 +98,8 @@ public class ShootingChecks {
 		) && isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativeTurretPosition));
 	}
 
-	private static Boolean isRobotHeadingTowardsTrench(Pose2d robotPose, Translation2d fieldRelativeTurretVelocities) {
-		Boolean isRobotPredictedUnderTrench;
+	private static Boolean isRobotGoingUnderTrench(Pose2d robotPose, Translation2d fieldRelativeTurretVelocities) {
+		Boolean isPredictedTurretPoseUnderTrench;
 		Translation2d currentTurretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
 		Translation2d allianceRelativePredictedTurretPositionWhenHoodCloses = ShootingCalculations
 			.getTurretPositionWhenHoodCloses(currentTurretPosition, fieldRelativeTurretVelocities);
@@ -108,30 +108,29 @@ public class ShootingChecks {
 		Translation2d allianceRelativeTurretPosition = Field.getAllianceRelative(currentTurretPosition);
 
 		boolean isTurretUnderTrench = isTurretUnderTrench(allianceRelativeTurretPosition);
-		if (isTurretUnderTrench) {
-			isRobotPredictedUnderTrench = true;
-		} else if (allianceRelativeTurretPosition.getX() < allianceRelativeOutpostTrenchMiddle.getX()) {
-			isRobotPredictedUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() > allianceRelativeDepotTrenchMiddle.getX()
+
+		if (allianceRelativeTurretPosition.getX() < allianceRelativeOutpostTrenchMiddle.getX()) {
+			isPredictedTurretPoseUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() > allianceRelativeDepotTrenchMiddle.getX()
 				&& isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
 		} else {
-			isRobotPredictedUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() < allianceRelativeDepotTrenchMiddle.getX()
+			isPredictedTurretPoseUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX() < allianceRelativeDepotTrenchMiddle.getX()
 				&& isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
 		}
-		Logger.recordOutput(shootingChecksLogPath + "/AreWeTryingToGoUnderTrench", isRobotPredictedUnderTrench);
+		Logger.recordOutput(shootingChecksLogPath + "/AreWeTryingToGoUnderTrench", isPredictedTurretPoseUnderTrench);
 		Logger.recordOutput(
-			shootingChecksLogPath + "/allianceRelativePredictedTurretPositionWhenHoodCloses",
+				shootingChecksLogPath + "/allianceRelativePredictedTurretPositionWhenHoodCloses",
 			new Pose2d(allianceRelativePredictedTurretPositionWhenHoodCloses, Rotation2d.k180deg)
 		);
-		return isRobotPredictedUnderTrench;
+		return isPredictedTurretPoseUnderTrench;
 	}
 
 	public static Boolean isHoodInDangerOfCrushing(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity) {
 		Translation2d fieldRelativeTurretVelocities = ShootingCalculations
 			.calculateFieldRelativeTurretVelocities(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity);
-		Boolean isRobotHeadingTowardsOurAllianceTrench = isRobotHeadingTowardsTrench(robotPose, fieldRelativeTurretVelocities);
+		Boolean isRobotHeadingTowardsOurAllianceTrench = isRobotGoingUnderTrench(robotPose, fieldRelativeTurretVelocities);
 		Pose2d robotPoseReversed = FieldMath.mirror(robotPose, true, true, AngleTransform.INVERT);
 		Translation2d fieldRelativeTurretVelocitiesReversed = new Translation2d().minus(fieldRelativeTurretVelocities);
-		Boolean isRobotHeadingTowardsOpposingAllianceTrench = isRobotHeadingTowardsTrench(
+		Boolean isRobotHeadingTowardsOpposingAllianceTrench = isRobotGoingUnderTrench(
 			robotPoseReversed,
 			fieldRelativeTurretVelocitiesReversed
 		);
@@ -226,7 +225,6 @@ public class ShootingChecks {
 		boolean isTurretWithinDistance = isWithinDistance(predictedTurretPosition, maxShootingDistanceFromTargetMeters, target, logPath);
 
 		boolean isHoodPositionCorrect = ShootingCalculations.getShootingParams().isTargetHoodPositionCorrect();
-
 
 		boolean canContinueShooting = isAtTurretAtTarget
 			&& isFlywheelReadyToShoot
