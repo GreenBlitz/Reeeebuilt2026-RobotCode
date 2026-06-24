@@ -123,7 +123,7 @@ public class ShootingChecks {
 			shootingChecksLogPath + "/allianceRelativePredictedTurretPositionWhenHoodCloses",
 			new Pose2d(allianceRelativePredictedTurretPositionWhenHoodCloses, Rotation2d.k180deg)
 		);
-		return isPredictedTurretPoseUnderTrench;
+		return isPredictedTurretPoseUnderTrench || isTurretUnderTrench;
 	}
 
 	public static Boolean isHoodInDangerOfCrushing(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d gyroYawAngularVelocity) {
