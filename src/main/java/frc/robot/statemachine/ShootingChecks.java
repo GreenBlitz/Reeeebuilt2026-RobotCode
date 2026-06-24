@@ -108,15 +108,17 @@ public class ShootingChecks {
 		Translation2d allianceRelativeTurretPosition = Field.getAllianceRelative(currentTurretPosition);
 
 		boolean isTurretUnderTrench = isTurretUnderTrench(allianceRelativeTurretPosition);
+		boolean DoesTurretAlignWithTrenchOnYAxisUntilHoodCloses = isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativeTurretPosition)
+			|| isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
 
 		if (allianceRelativeTurretPosition.getX() < allianceRelativeOutpostTrenchMiddle.getX()) {
 			isPredictedTurretPoseUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX()
 				> allianceRelativeDepotTrenchMiddle.getX()
-				&& isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
+				&& DoesTurretAlignWithTrenchOnYAxisUntilHoodCloses;
 		} else {
 			isPredictedTurretPoseUnderTrench = allianceRelativePredictedTurretPositionWhenHoodCloses.getX()
 				< allianceRelativeDepotTrenchMiddle.getX()
-				&& isTurretPositionAlignedWithTrenchOnYAxis(allianceRelativePredictedTurretPositionWhenHoodCloses);
+				&& DoesTurretAlignWithTrenchOnYAxisUntilHoodCloses;
 		}
 		Logger.recordOutput(shootingChecksLogPath + "/AreWeTryingToGoUnderTrench", isPredictedTurretPoseUnderTrench);
 		Logger.recordOutput(
