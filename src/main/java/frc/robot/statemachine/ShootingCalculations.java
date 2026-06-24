@@ -53,7 +53,6 @@ public class ShootingCalculations {
 			.rotateBy(robotPose.getRotation());
 		Translation2d turretFieldRelativeVelocity = robotTranslationalVelocity.plus(turretTangentialVelocity);
 
-		Logger.recordOutput("aaaaaaaaaaaaaaa", turretFieldRelativeVelocity);
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
 			turretFieldRelativeVelocity,
