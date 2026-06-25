@@ -34,7 +34,7 @@ public class IDs {
 
 		public static final Phoenix6DeviceID INTAKE_ROLLERS = new Phoenix6DeviceID(50, BusChain.CHASSIS);
 
-		public static final Phoenix6DeviceID FOUR_BAR = new Phoenix6DeviceID(51, BusChain.CHASSIS);
+		public static final Phoenix6DeviceID PIVOT = new Phoenix6DeviceID(51, BusChain.CHASSIS);
 
 	}
 

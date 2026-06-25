@@ -33,7 +33,7 @@ import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.conveyor.ConveyorConstants;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
-import frc.robot.subsystems.constants.fourBar.FourBarConstants;
+import frc.robot.subsystems.constants.pivot.PivotConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.magazine.MagazineConstant;
@@ -79,7 +79,7 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final Arm hood;
 
-	private final CurrentControlArm fourBar;
+	private final CurrentControlArm pivot;
 	private final Roller intakeRoller;
 
 	private final VelocityRoller magazine;
@@ -131,9 +131,9 @@ public class Robot {
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		this.fourBar = FourBarConstants.createFourBar();
-		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
+		this.pivot = PivotConstants.createPivot();
+		pivot.setPosition(PivotConstants.MAXIMUM_POSITION);
+		BrakeStateManager.add(() -> pivot.setBrake(true), () -> pivot.setBrake(false));
 
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
@@ -338,7 +338,7 @@ public class Robot {
 		flyWheel.update();
 		turret.update();
 		hood.update();
-		fourBar.update();
+		pivot.update();
 		intakeRoller.update();
 		magazine.update();
 		conveyor.update();
@@ -411,8 +411,8 @@ public class Robot {
 		return hood;
 	}
 
-	public CurrentControlArm getFourBar() {
-		return fourBar;
+	public CurrentControlArm getPivot() {
+		return pivot;
 	}
 
 	public Roller getIntakeRoller() {
@@ -496,7 +496,7 @@ public class Robot {
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().openFourBarForAutonomous();
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();

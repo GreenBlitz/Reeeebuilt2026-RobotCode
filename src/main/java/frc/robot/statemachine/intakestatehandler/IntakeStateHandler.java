@@ -2,8 +2,10 @@ package frc.robot.statemachine.intakestatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Robot;
 import frc.robot.subsystems.arm.CurrentControlArm;
-import frc.robot.subsystems.constants.fourBar.FourBarConstants;
+import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
+import frc.robot.subsystems.constants.pivot.PivotConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
 import frc.utils.driverstation.DriverStationUtil;
@@ -14,39 +16,42 @@ import java.util.function.BooleanSupplier;
 
 public class IntakeStateHandler {
 
-	private final CurrentControlArm fourBar;
+	private final CurrentControlArm pivot;
 	private final Roller rollers;
+	private boolean hasPivotBeenReset;
 	private final String logPath;
 	private final LoggedNetworkNumber rollersCalibrationPower = new LoggedNetworkNumber("Tunable/IntakeRollerPower");
-	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
+	private final LoggedNetworkRotation2d pivotCalibrationPosition = new LoggedNetworkRotation2d("Tunable/PivotPosition", new Rotation2d());
 
 	private IntakeState currentState;
-	private BooleanSupplier isOpenFourBarHarder;
-	private BooleanSupplier isCloseFourBarHarder;
+	private BooleanSupplier isOpenPivotHarder;
 
-	public IntakeStateHandler(CurrentControlArm fourBar, Roller rollers, String logPath) {
-		this.fourBar = fourBar;
+	public IntakeStateHandler(CurrentControlArm pivot, Roller rollers, String logPath) {
+		this.pivot = pivot;
 		this.rollers = rollers;
+		this.hasPivotBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-		this.isOpenFourBarHarder = () -> false;
-		this.isCloseFourBarHarder = () -> false;
+		this.isOpenPivotHarder = () -> false;
 	}
 
-	public void setIntakeButtonsSuppliers(BooleanSupplier openFourBarLocked, BooleanSupplier closeFourBarHarder) {
-		this.isOpenFourBarHarder = () -> openFourBarLocked.getAsBoolean() || DriverStationUtil.isAutonomous();
-		this.isCloseFourBarHarder = () -> closeFourBarHarder.getAsBoolean() || DriverStationUtil.isAutonomous();
+	public void setIntakeButtonsSuppliers(BooleanSupplier openPivotLocked) {
+		this.isOpenPivotHarder = () -> openPivotLocked.getAsBoolean() || DriverStationUtil.isAutonomous();
 	}
 
 	public Command calibration() {
 		return new ParallelCommandGroup(
-			fourBar.getCommandsBuilder().setTargetPosition(fourBarCalibrationPosition::get),
+			pivot.getCommandsBuilder().setTargetPosition(pivotCalibrationPosition::get),
 			rollers.getCommandsBuilder().setPower(rollersCalibrationPower::get)
 		);
 	}
 
 	public Command stayInPlace() {
-		return new ParallelCommandGroup(fourBar.getCommandsBuilder().stayInPlace(), rollers.getCommandsBuilder().stop());
+		return new ParallelCommandGroup(pivot.getCommandsBuilder().stayInPlace(), rollers.getCommandsBuilder().stop());
+	}
+
+	public Command resetPivot() {
+		return pivot.getCommandsBuilder().setVoltageWithoutLimit(PivotConstants.PIVOT_RESET_VOLTAGE, () -> hasPivotBeenReset());
 	}
 
 	public Command toggleState() {
@@ -59,113 +64,91 @@ public class IntakeStateHandler {
 							setState(IntakeState.CLOSED),
 							() -> currentState != IntakeState.INTAKE
 						),
-						Set.of(fourBar, rollers)
+						Set.of(pivot, rollers)
 					)
 				)
 		);
 	}
 
 	public Command intake() {
-		return new ParallelCommandGroup(openFourBar(), rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()));
+		return new ParallelCommandGroup(
+			new SequentialCommandGroup(
+				pivot.getCommandsBuilder()
+					.setTargetPosition(IntakeState.INTAKE.getPivotPosition())
+					.until(() -> pivot.isAtPosition(IntakeState.INTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
+				pivot.getCommandsBuilder().setCurrentWithoutLimit(PivotConstants.REST_CURRENT)
+			),
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+		);
 	}
 
 	public Command outtake() {
-		return new ParallelCommandGroup(openFourBar(), rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower()));
+		return new ParallelCommandGroup(
+			new SequentialCommandGroup(
+				pivot.getCommandsBuilder()
+					.setTargetPosition(IntakeState.OUTTAKE.getPivotPosition())
+					.until(() -> pivot.isAtPosition(IntakeState.OUTTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
+				pivot.getCommandsBuilder().setCurrentWithoutLimit(PivotConstants.REST_CURRENT)
+			),
+			rollers.getCommandsBuilder().setPower(IntakeState.OUTTAKE.getIntakePower())
+		);
 	}
 
 	public Command close() {
 		return new ParallelCommandGroup(
+			pivot.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getPivotPosition()),
 			new SequentialCommandGroup(
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.HARD_CLOSE_CURRENT_AMP)
-					.withTimeout(FourBarConstants.HARD_CLOSE_TIME_SECONDS),
-				fourBar.getCommandsBuilder()
-					.setVoltageWithoutLimit(
-						FourBarConstants.CLOSE_VOLTAGE,
-						() -> fourBar.getCurrent() > FourBarConstants.COLLISION_STALL_CURRENT
-					),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.SOFT_CLOSE_CURRENT_AMP)
-					.withTimeout(FourBarConstants.SOFT_CLOSE_TIME_SECONDS),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(
-						() -> isCloseFourBarHarder.getAsBoolean()
-							? FourBarConstants.SOFT_CLOSE_CURRENT_AMP
-							: FourBarConstants.HOLD_CLOSE_CURRENT_AMP
-					)
-			),
-			new SequentialCommandGroup(
-				rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()).withTimeout(0.5),
+				rollers.getCommandsBuilder()
+					.setPower(IntakeState.INTAKE.getIntakePower())
+					.withTimeout(IntakeRollerConstants.TIME_TO_INTAKE_WHILE_CLOSING_SECONDS),
 				rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
 			)
 		);
 	}
 
+	public Command slowClose() {
+		return new ParallelDeadlineGroup(
+			pivot.getCommandsBuilder()
+				.setVoltage(PivotConstants.SLOW_CLOSE_VOLTAGE)
+				.until(() -> pivot.isPastPosition(PivotConstants.PIVOT_POSITION_FOR_SLOW_CLOSE)),
+			rollers.getCommandsBuilder().setPower(IntakeState.SLOW_CLOSE.getIntakePower())
+
+		);
+	}
+
 	public Command setState(IntakeState intakeState) {
-		return new ParallelCommandGroup(switch (intakeState) {
-			case CALIBRATION -> calibration();
-			case STAY_IN_PLACE -> stayInPlace();
-			case INTAKE -> intake();
-			case FORCE_OPEN -> forceOpen();
-			case OUTTAKE -> outtake();
-			case CLOSED -> close();
-		},
+		return new ParallelCommandGroup(
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", intakeState.name())),
-			new InstantCommand(() -> currentState = intakeState)
-		);
-	}
-
-	private Command openFourBar() {
-		return new SequentialCommandGroup(
-			fourBar.getCommandsBuilder()
-				.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP)
-				.withTimeout(FourBarConstants.HARD_OPEN_TIME_SECONDS),
-			fourBar.getCommandsBuilder()
-				.setCurrentWithoutLimit(
-					() -> isOpenFourBarHarder.getAsBoolean() ? FourBarConstants.SOFT_OPEN_CURRENT_AMP : FourBarConstants.HOLD_OPEN_CURRENT_AMP
-				)
-		);
-	}
-
-	private Command forceOpen() {
-		return new ParallelCommandGroup(
-			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
-			new SequentialCommandGroup(
-				fourBar.getCommandsBuilder().setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS).withTimeout(0.5),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(
-						() -> isOpenFourBarHarder.getAsBoolean()
-							? FourBarConstants.SOFT_OPEN_CURRENT_AMP
-							: FourBarConstants.HOLD_OPEN_CURRENT_AMP
-					)
-			)
-		);
-	}
-
-	public Command openFourBarForAutonomous() {
-		return new ParallelCommandGroup(
-			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower()),
-			new SequentialCommandGroup(
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(FourBarConstants.HARD_OPEN_CURRENT_AMP_FOR_AUTONOMOUS)
-					.withTimeout(FourBarConstants.HARD_OPEN_TIME_SECONDS_FOR_AUTONOMOUS),
-				fourBar.getCommandsBuilder()
-					.setCurrentWithoutLimit(
-						() -> isOpenFourBarHarder.getAsBoolean()
-							? FourBarConstants.SOFT_OPEN_CURRENT_AMP
-							: FourBarConstants.HOLD_OPEN_CURRENT_AMP
-					)
-			),
-			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "Open intake for autonomous")),
-			new InstantCommand(() -> currentState = IntakeState.INTAKE)
+			new InstantCommand(() -> currentState = intakeState),
+			switch (intakeState) {
+				case CALIBRATION -> calibration();
+				case STAY_IN_PLACE -> stayInPlace();
+				case INTAKE -> intake();
+				case OUTTAKE -> outtake();
+				case RESET_PIVOT -> resetPivot();
+				case CLOSED -> close();
+				case SLOW_CLOSE -> slowClose();
+			}
 		);
 	}
 
 	public void periodic() {
-		Logger.recordOutput(logPath + "/IsOpenFourBarHarder", isOpenFourBarHarder.getAsBoolean());
-		Logger.recordOutput(logPath + "/isCloseFourBarHarder", isCloseFourBarHarder.getAsBoolean());
+		Logger.recordOutput(logPath + "/IsOpenPivotHarder", isOpenPivotHarder.getAsBoolean());
 
+		if (!hasPivotBeenReset() && pivot.getCurrent() > PivotConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+			hasPivotBeenReset = true;
+		}
+
+		if (PivotConstants.MAXIMUM_POSITION.getRadians() < pivot.getPosition().getRadians() && !hasPivotBeenReset()) {
+			pivot.setPosition(PivotConstants.MAXIMUM_POSITION);
+		}
+
+		Logger.recordOutput(logPath + "/HasPivotBeenReset", hasPivotBeenReset());
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
+	}
+
+	public boolean hasPivotBeenReset() {
+		return hasPivotBeenReset;
 	}
 
 	public IntakeState getCurrentState() {
