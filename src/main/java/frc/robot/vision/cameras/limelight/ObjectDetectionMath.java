@@ -43,19 +43,6 @@ public class ObjectDetectionMath {
 		return objectAndCameraHeightDifferenceMeters / objectAndCameraTotalPitch.getTan();
 	}
 
-	public static double getCameraRelativeObjectYR(Rotation2d yawOffset, double forwardDistance) {
-		return Math.tan(yawOffset.getRadians()) * forwardDistance;
-	}
-
-	public static double getCameraRelativeObjectXR(Pose3d cameraPose, double objectCenterHeightMeters, Rotation2d pitchOffset) {
-		double heightDiff = objectCenterHeightMeters - cameraPose.getZ();
-		double cameraPitch = cameraPose.getRotation().getY();
-		double totalPitch = cameraPitch + pitchOffset.getRadians();
-
-		return heightDiff / Math.tan(totalPitch);
-	}
-
-
 	public static double getCameraRelativeObjectY(
 		Pose3d cameraPose,
 		double objectCenterHeightMeters,

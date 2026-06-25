@@ -139,15 +139,18 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters() * THREE_FOURTHS_OBJECT_FACTOR,
 			pitchOffset
 		);
+
 		double objectRelativeToCameraY = getCameraRelativeObjectY(
 			robotRelativeCameraPose,
 			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters() * THREE_FOURTHS_OBJECT_FACTOR,
 			yawOffset,
 			objectRelativeToCameraX
 		);
+
 		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
-		Logger.recordOutput(logPath + "/objectRelativeToCamera", objectRelativeToCamera);
 		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
+
+		Logger.recordOutput(logPath + "/objectRelativeToCamera", objectRelativeToCamera);
 		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
 		Logger.recordOutput(logPath + "/tx", tx);
 		Logger.recordOutput(logPath + "/ty", ty);
