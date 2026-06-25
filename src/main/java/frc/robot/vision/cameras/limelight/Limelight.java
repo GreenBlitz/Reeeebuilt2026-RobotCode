@@ -136,12 +136,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
 		double objectRelativeToCameraX = getCameraRelativeObjectX(
 			robotRelativeCameraPose,
-			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters()*THREE_FOURTHS_OBJECT_FACTOR,
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters() * THREE_FOURTHS_OBJECT_FACTOR,
 			pitchOffset
 		);
 		double objectRelativeToCameraY = getCameraRelativeObjectY(
 			robotRelativeCameraPose,
-			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters()*THREE_FOURTHS_OBJECT_FACTOR,
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters() * THREE_FOURTHS_OBJECT_FACTOR,
 			yawOffset,
 			objectRelativeToCameraX
 		);
