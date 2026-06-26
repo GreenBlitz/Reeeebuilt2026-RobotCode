@@ -8,6 +8,7 @@ import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.time.TimeUtil;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -532,7 +533,8 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide),
+			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
 		);
 	}
 
@@ -743,7 +745,8 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
 			getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
-			getAllianceSideToStartingLinePath(actualReturnSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide),
+			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
 		);
 	}
 
@@ -920,7 +923,8 @@ public class AutosBuilder {
 					? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
 					: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 				: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide),
+			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
 		);
 	}
 
@@ -1065,7 +1069,8 @@ public class AutosBuilder {
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
 				: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide),
+			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
 		);
 	}
 
@@ -1194,7 +1199,7 @@ public class AutosBuilder {
 			.followAdjustedPathThenStop(
 				robot.getSwerve(),
 				() -> robot.getPoseEstimator().getEstimatedPose(),
-				getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
+				getAllianceSideToStartingLinePath(allianceSide),
 				pathfindingConstraints,
 				regularIsNearEndOfPathTolerance,
 				stuckIsNearEndOfPathTolerance,
@@ -1202,22 +1207,38 @@ public class AutosBuilder {
 				robot.getSwerve().getLogPath()
 			)
 			.andThen(
-				robot.getSwerve()
-					.getCommandsBuilder()
-					.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-					.onlyIf(() -> !returnToMiddle.getAsBoolean())
+				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+			)
+			.until(
+				() -> TimeUtil.getCurrentTimeSeconds() - robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry().getKey()
+					< AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS
+			)
+			.andThen(
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						getStartingLineToMiddlePath(allianceSide),
+						pathfindingConstraints,
+						regularIsNearEndOfPathTolerance,
+						stuckIsNearEndOfPathTolerance,
+						stuckDebounceSeconds,
+						robot.getSwerve().getLogPath()
+					)
+					.onlyIf(returnToMiddle)
 			);
 	}
 
-	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide, BooleanSupplier returnToMiddle) {
-		if (returnToMiddle.getAsBoolean()) {
-			return allianceSide == AllianceSide.DEPOT
-				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
-				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
-		}
+	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide) {
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
 			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
+	}
+
+	private static PathPlannerPath getStartingLineToMiddlePath(AllianceSide allianceSide) {
+		return allianceSide == AllianceSide.DEPOT
+			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
+			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
 	}
 
 }
