@@ -75,7 +75,7 @@ public class IntakeStateHandler {
 			new SequentialCommandGroup(
 				pivot.getCommandsBuilder()
 					.setTargetPosition(IntakeState.INTAKE.getPivotPosition())
-//					.until(() -> pivot.isAtPosition(IntakeState.INTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST))
+					.until(() -> pivot.isAtPosition(IntakeState.INTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST))
 					,
 				pivot.getCommandsBuilder().setCurrentWithoutLimit(PivotConstants.REST_CURRENT)
 			),
@@ -88,7 +88,7 @@ public class IntakeStateHandler {
 			new SequentialCommandGroup(
 				pivot.getCommandsBuilder()
 					.setTargetPosition(IntakeState.OUTTAKE.getPivotPosition())
-//					.until(() -> pivot.isAtPosition(IntakeState.OUTTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST))
+					.until(() -> pivot.isAtPosition(IntakeState.OUTTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST))
 					,
 				pivot.getCommandsBuilder().setCurrentWithoutLimit(PivotConstants.REST_CURRENT)
 			),
