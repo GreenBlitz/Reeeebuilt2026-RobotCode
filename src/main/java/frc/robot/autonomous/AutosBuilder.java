@@ -10,6 +10,7 @@ import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.time.TimeUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -533,8 +534,7 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-			getAllianceSideToStartingLinePath(startingSide),
-			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
+			getNonStealAutosAdditionalPaths(startingSide, returnToMiddle)
 		);
 	}
 
@@ -744,9 +744,7 @@ public class AutosBuilder {
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
-			getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
-			getAllianceSideToStartingLinePath(startingSide),
-			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
+			getStealAutosAdditionalPaths(returnToMiddle, firstOpponentBumpSide, returnSide, skipOutpost)
 		);
 	}
 
@@ -923,8 +921,7 @@ public class AutosBuilder {
 					? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
 					: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 				: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
-			getAllianceSideToStartingLinePath(startingSide),
-			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
+			getNonStealAutosAdditionalPaths(startingSide, returnToMiddle)
 		);
 	}
 
@@ -1069,8 +1066,7 @@ public class AutosBuilder {
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
 				: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
-			getAllianceSideToStartingLinePath(startingSide),
-			(returnToMiddle.getAsBoolean() ? getStartingLineToMiddlePath(startingSide) : null)
+			getNonStealAutosAdditionalPaths((startingSide == AllianceSide.DEPOT ? AllianceSide.OUTPOST : AllianceSide.DEPOT), returnToMiddle)
 		);
 	}
 
@@ -1209,10 +1205,7 @@ public class AutosBuilder {
 			.andThen(
 				robot.getSwerve().getCommandsBuilder().wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
 			)
-			.until(
-				() -> TimeUtil.getCurrentTimeSeconds() - robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry().getKey()
-					< AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS
-			)
+			.until(() -> hasStoppedThrowingBalls(robot))
 			.andThen(
 				PathFollowingCommandsBuilder
 					.followAdjustedPathThenStop(
@@ -1237,8 +1230,44 @@ public class AutosBuilder {
 
 	private static PathPlannerPath getStartingLineToMiddlePath(AllianceSide allianceSide) {
 		return allianceSide == AllianceSide.DEPOT
-			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
-			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
+			? PathHelper.PATH_PLANNER_PATHS.get("Depot starting line - Middle")
+			: PathHelper.PATH_PLANNER_PATHS.get("Outpost staring line - Middle");
+	}
+
+	private static boolean hasStoppedThrowingBalls(Robot robot) {
+		double lastBallTimestamp = robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry() != null
+			? robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry().getKey()
+			: TimeUtil.getCurrentTimeSeconds();
+		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp < AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
+	}
+
+	private static PathPlannerPath[] getNonStealAutosAdditionalPaths(AllianceSide startingSide, BooleanSupplier returnToMiddle) {
+		List<PathPlannerPath> paths = new ArrayList<>();
+		paths.add(getAllianceSideToStartingLinePath(startingSide));
+
+		if (returnToMiddle.getAsBoolean()) {
+			paths.add(getStartingLineToMiddlePath(startingSide));
+		}
+
+		return paths.toArray(new PathPlannerPath[0]);
+	}
+
+
+	private static PathPlannerPath[] getStealAutosAdditionalPaths(
+		BooleanSupplier returnToMiddle,
+		AllianceSide firstOpponentBumpSide,
+		AllianceSide returnSide,
+		boolean skipOutpost
+	) {
+		List<PathPlannerPath> paths = new ArrayList<>();
+		paths.add(getStealPath(firstOpponentBumpSide, returnSide, skipOutpost));
+		paths.add(getAllianceSideToStartingLinePath(skipOutpost ? AllianceSide.DEPOT : returnSide));
+
+		if (returnToMiddle.getAsBoolean()) {
+			paths.add(getStartingLineToMiddlePath(skipOutpost ? AllianceSide.DEPOT : returnSide));
+		}
+
+		return paths.toArray(new PathPlannerPath[0]);
 	}
 
 }
