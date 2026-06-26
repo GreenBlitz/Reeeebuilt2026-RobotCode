@@ -13,6 +13,8 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.Function;
+
 public class ShootingCalculations {
 
 	private static final String LOG_PATH = "ShootingCalculations";
@@ -35,7 +37,8 @@ public class ShootingCalculations {
 		Rotation2d gyroYawAngularVelocity,
 		InterpolationMap<Double, Rotation2d> hoodInterpolation,
 		InterpolationMap<Double, Rotation2d> flywheelInterpolation,
-		Translation2d targetTranslation
+		Translation2d targetTranslation,
+		Function<Translation2d, Double> distanceCalculator
 	) {
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
@@ -60,9 +63,7 @@ public class ShootingCalculations {
 		);
 
 		Rotation2d predictedAngleToTarget = targetTranslation.minus(turretPredictedPose).getAngle();
-		double distanceFromTurretPredictedPoseToTarget = ShootingChecks.isInAllianceZone(robotPose.getTranslation())
-			? getDistanceFromHub(turretPredictedPose)
-			: getDistanceFromPassingTarget(turretPredictedPose);
+		double distanceFromTurretPredictedPoseToTarget = distanceCalculator.apply(turretPredictedPose);
 
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(predictedAngleToTarget.unaryMinus());
@@ -106,7 +107,8 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_SCORING_INTERPOLATION_MAP,
 			FLYWHEEL_SCORING_INTERPOLATION_MAP,
-			Field.getHubMiddle()
+			Field.getHubMiddle(),
+			ShootingCalculations::getDistanceFromHub
 		);
 	}
 
@@ -121,7 +123,8 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_PASSING_INTERPOLATION_MAP,
 			FLYWHEEL_PASSING_INTERPOLATION_MAP,
-			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose))
+			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose)),
+			ShootingCalculations::getDistanceFromPassingTarget
 		);
 	}
 

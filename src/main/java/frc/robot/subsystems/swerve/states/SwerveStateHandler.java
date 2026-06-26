@@ -140,7 +140,6 @@ public class SwerveStateHandler {
 				swerveConstants
 			);
 
-			Logger.recordOutput("aaaaa", TowerAssistCalculations.shouldTakeLongTurnToAvoidWall(robotPoseSupplier.get().get()));
 			if (TowerAssistCalculations.shouldTakeLongTurnToAvoidWall(robotPoseSupplier.get().get())) {
 				assistedTranslationSpeeds = AimAssistMath.getLongTurnRotationAssistedSpeeds(
 					speeds,
