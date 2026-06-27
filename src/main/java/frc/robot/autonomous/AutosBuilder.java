@@ -6,9 +6,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
+import frc.utils.HubUtil;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -503,14 +505,6 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
 											getAllianceSideToStartingLineAuto(
 												robot,
 												startingSide,
@@ -520,9 +514,8 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
-													true
-											)
-										)
+												true
+											).until(() -> returnToMiddle.getAsBoolean() && TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds() < AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -1207,9 +1200,10 @@ public class AutosBuilder {
 		Supplier<Command> scoreSequence,
 		boolean isQuarter
 	) {
-		return scoreSequence.get()
-			.until(() -> hasStoppedThrowingBalls(robot))
-			.andThen(
+		return new ParallelDeadlineGroup(
+				new WaitCommand(1.0).andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
+				scoreSequence.get()
+		).andThen(
 				PathFollowingCommandsBuilder
 					.followAdjustedPathThenStop(
 						robot.getSwerve(),
@@ -1237,7 +1231,7 @@ public class AutosBuilder {
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
 		}
 		if (isQuarter && allianceSide == AllianceSide.OUTPOST){
-			return PathHelper.PATH_PLANNER_PATHS.get("L alliance stay");
+			return PathHelper.PATH_PLANNER_PATHS.get("R alliance stay");
 		}
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
@@ -1246,10 +1240,12 @@ public class AutosBuilder {
 
 
 	private static boolean hasStoppedThrowingBalls(Robot robot) {
-		double lastBallTimestamp = robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry() != null
-			? robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry().getKey()
-			: TimeUtil.getCurrentTimeSeconds();
-		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp < AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
+		double lastBallTimestamp = robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry() != null
+			? robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry().getKey()
+			: 0;
+		Logger.recordOutput("aaaaaaaaaaaa", lastBallTimestamp);
+		Logger.recordOutput("bbbbbbbbbbb", TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp);
+		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp > AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
 	}
 
 }
