@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.548534866898149,
-        "y": 2.9583311631944444
+        "x": 3.2239229671897287,
+        "y": 3.1745791726105557
       },
       "isLocked": false,
       "linkedName": "Outpost alliance wait"
@@ -20,8 +20,8 @@
         "y": 3.147420717592593
       },
       "prevControl": {
-        "x": 2.9764110243055555,
-        "y": 2.4621843171296294
+        "x": 5.902225392296718,
+        "y": 1.8548359486447927
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +30,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5653268914473685,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 0.26652452025586415,
+      "rotationDegrees": -131.73598713098087
+    },
+    {
+      "waypointRelativePos": 0.707889125799577,
+      "rotationDegrees": -131.3261560906847
     }
   ],
   "constraintZones": [
@@ -61,7 +65,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -118.43316905249607
   },
   "reversed": false,
   "folder": null,

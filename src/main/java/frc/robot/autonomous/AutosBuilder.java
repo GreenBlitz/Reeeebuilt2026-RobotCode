@@ -519,7 +519,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													true
 											)
 										)
 										.asProxy(),
@@ -534,7 +535,7 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle, true)
 		);
 	}
 
@@ -615,7 +616,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													false
 											)
 										)
 										.asProxy(),
@@ -729,7 +731,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													false
 											)
 										)
 										.asProxy(),
@@ -747,7 +750,7 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
 			getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
-			getAllianceSideToStartingLinePath(actualReturnSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(actualReturnSide, returnToMiddle, false)
 		);
 	}
 
@@ -826,7 +829,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													false
 											)
 										)
 										.asProxy(),
@@ -907,7 +911,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													true
 											)
 										)
 										.asProxy(),
@@ -926,7 +931,7 @@ public class AutosBuilder {
 					? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
 					: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 				: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle, true)
 		);
 	}
 
@@ -982,7 +987,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													false
 											)
 										)
 										.asProxy(),
@@ -1056,7 +1062,8 @@ public class AutosBuilder {
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
 												returnToMiddle,
-												scoreSequence
+												scoreSequence,
+													false
 											)
 										)
 										.asProxy(),
@@ -1073,7 +1080,7 @@ public class AutosBuilder {
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
 				: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle, false)
 		);
 	}
 
@@ -1197,7 +1204,8 @@ public class AutosBuilder {
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
 		BooleanSupplier returnToMiddle,
-		Supplier<Command> scoreSequence
+		Supplier<Command> scoreSequence,
+		boolean isQuarter
 	) {
 		return scoreSequence.get()
 			.until(() -> hasStoppedThrowingBalls(robot))
@@ -1206,7 +1214,7 @@ public class AutosBuilder {
 					.followAdjustedPathThenStop(
 						robot.getSwerve(),
 						() -> robot.getPoseEstimator().getEstimatedPose(),
-						getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
+						getAllianceSideToStartingLinePath(allianceSide, returnToMiddle, isQuarter),
 						pathfindingConstraints,
 						regularIsNearEndOfPathTolerance,
 						stuckIsNearEndOfPathTolerance,
@@ -1222,11 +1230,14 @@ public class AutosBuilder {
 			);
 	}
 
-	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide, BooleanSupplier returnToMiddle) {
+	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide, BooleanSupplier returnToMiddle, boolean isQuarter) {
 		if (returnToMiddle.getAsBoolean()) {
 			return allianceSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
+		}
+		if (isQuarter && allianceSide == AllianceSide.OUTPOST){
+			return PathHelper.PATH_PLANNER_PATHS.get("L alliance stay");
 		}
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
