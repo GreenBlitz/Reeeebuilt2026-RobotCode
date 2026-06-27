@@ -34,6 +34,7 @@ public class AutonomousConstants {
 	public static final double TIME_FOR_SECOND_OUTTAKE_IN_PUSH_AUTO = 1.75;
 	public static final double STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
 	public static final double SIDE_STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
+	public static final double TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS = 1.0;
 
 	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 

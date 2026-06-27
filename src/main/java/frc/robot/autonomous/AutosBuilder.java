@@ -8,6 +8,7 @@ import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.time.TimeUtil;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -517,7 +518,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -612,7 +614,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -725,7 +728,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -821,7 +825,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -901,7 +906,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -975,7 +981,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -1048,7 +1055,8 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence
 											)
 										)
 										.asProxy(),
@@ -1188,24 +1196,29 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		BooleanSupplier returnToMiddle
+		BooleanSupplier returnToMiddle,
+		Supplier<Command> scoreSequence
 	) {
-		return PathFollowingCommandsBuilder
-			.followAdjustedPathThenStop(
-				robot.getSwerve(),
-				() -> robot.getPoseEstimator().getEstimatedPose(),
-				getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				robot.getSwerve().getLogPath()
-			)
+		return scoreSequence.get()
+			.until(() -> hasStoppedThrowingBalls(robot))
 			.andThen(
-				robot.getSwerve()
-					.getCommandsBuilder()
-					.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-					.onlyIf(() -> !returnToMiddle.getAsBoolean())
+				PathFollowingCommandsBuilder
+					.followAdjustedPathThenStop(
+						robot.getSwerve(),
+						() -> robot.getPoseEstimator().getEstimatedPose(),
+						getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
+						pathfindingConstraints,
+						regularIsNearEndOfPathTolerance,
+						stuckIsNearEndOfPathTolerance,
+						stuckDebounceSeconds,
+						robot.getSwerve().getLogPath()
+					)
+					.andThen(
+						robot.getSwerve()
+							.getCommandsBuilder()
+							.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+							.onlyIf(() -> !returnToMiddle.getAsBoolean())
+					)
 			);
 	}
 
@@ -1218,6 +1231,14 @@ public class AutosBuilder {
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
 			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
+	}
+
+
+	private static boolean hasStoppedThrowingBalls(Robot robot) {
+		double lastBallTimestamp = robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry() != null
+			? robot.getBallsBufferWithoutPassing().getInternalBuffer().lastEntry().getKey()
+			: TimeUtil.getCurrentTimeSeconds();
+		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp < AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
 	}
 
 }

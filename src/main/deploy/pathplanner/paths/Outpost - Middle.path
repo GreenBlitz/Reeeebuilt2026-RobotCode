@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.643,
-        "y": 0.736
+        "x": 2.2803488859953704,
+        "y": 1.591007667824074
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4365974392361116,
-        "y": 2.5224803964120373
+        "x": 3.548534866898149,
+        "y": 2.9583311631944444
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost alliance wait"
     },
     {
       "anchor": {
@@ -67,7 +67,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 121.4951194991867
   },
   "useDefaultConstraints": true
 }
