@@ -155,8 +155,7 @@ public class ShootingCalculations {
 
 		for (int i = 0; i < StateMachineConstants.MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME; i++) {
 			predictedTurretPose = getPredictedTurretPoseByFlightTime(turretPose, turretVelocities, ballFlightTime);
-			double newBallFlightTime = distanceToFlightTime
-				.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
+			double newBallFlightTime = distanceToFlightTime.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
 
 			if (
 				Math.abs(newBallFlightTime - ballFlightTime)
@@ -222,8 +221,8 @@ public class ShootingCalculations {
 	);
 
 	private static final InterpolationMap<Double, Double> PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
-			InverseInterpolator.forDouble(),
-			Interpolator.forDouble()
+		InverseInterpolator.forDouble(),
+		Interpolator.forDouble()
 	);
 
 	public static final InterpolationMap<Double, Double> PASSING_POSITION_INTERPOLATION_MAP = calculatePassingInterpolationMap();
