@@ -15,6 +15,7 @@ import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -24,6 +25,7 @@ public class RobotCommander extends GBSubsystem {
 	private final IntakeStateHandler intakeStateHandler;
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
+	private BooleanSupplier defence;
 
 	private RobotState currentState;
 	private final String logPath;
@@ -83,6 +85,10 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public void setDefence(BooleanSupplier defence) {
+		this.defence = defence;
+	}
+
 	public FunnelStateHandler getFunnelStateHandler() {
 		return funnelStateHandler;
 	}
@@ -132,6 +138,19 @@ public class RobotCommander extends GBSubsystem {
 		return asSubsystemCommand(wantedCommand, state);
 	}
 
+	public Command defenceWith(RobotState state, Command command, Supplier<SwerveState> swerveState) {
+		Command swerveDriveCommand = new RunCommand(() -> {
+			if(defence.getAsBoolean()) {
+				CommandScheduler.getInstance().schedule(swerve.getCommandsBuilder().pointWheelsInX());
+			}
+			else {
+				CommandScheduler.getInstance().schedule(swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get()));
+			}});
+		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
+		return asSubsystemCommand(wantedCommand, state);
+	}
+
+
 	public Command driveWithChangingState(RobotState state, Command command, Supplier<SwerveState> swerveState) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get());
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
@@ -141,6 +160,7 @@ public class RobotCommander extends GBSubsystem {
 	public Command driveWith(RobotState state) {
 		return driveWith(state, setState(state));
 	}
+
 
 	private Command stayInPlace() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.STAY_IN_PLACE), funnelStateHandler.setState(FunnelState.STOP));

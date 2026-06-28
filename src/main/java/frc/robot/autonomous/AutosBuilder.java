@@ -512,11 +512,12 @@ public class AutosBuilder {
 										stuckDebounceSeconds,
 										returnToMiddle,
 										scoreSequence,
+										closeIntake,
 										true
 									).until(
 										() -> returnToMiddle.getAsBoolean()
 											&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
-												< AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS
+												< (startingSide == AllianceSide.OUTPOST ? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS : 6)
 									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -611,6 +612,7 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
+												closeIntake,
 												false
 											)
 										)
@@ -726,6 +728,7 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
+												closeIntake,
 												false
 											)
 										)
@@ -824,6 +827,7 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
+												closeIntake,
 												false
 											)
 										)
@@ -899,6 +903,7 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
+												closeIntake,
 												true
 											)
 										.asProxy(),
@@ -974,6 +979,7 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
+												closeIntake,
 												false
 											)
 										)
@@ -1049,6 +1055,7 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
+												closeIntake,
 												false
 											)
 										)
@@ -1191,12 +1198,19 @@ public class AutosBuilder {
 		double stuckDebounceSeconds,
 		BooleanSupplier returnToMiddle,
 		Supplier<Command> scoreSequence,
+		Supplier<Command> closeIntake,
 		boolean isQuarter
 	) {
 		return new ParallelDeadlineGroup(
 			new WaitCommand(1.0).andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
 			scoreSequence.get()
-		).andThen(
+		)
+				.andThen(new ParallelDeadlineGroup(
+				new WaitCommand(1.0),
+				scoreSequence.get(),
+				closeIntake.get()
+		))
+				.andThen(
 			PathFollowingCommandsBuilder
 				.followAdjustedPathThenStop(
 					robot.getSwerve(),

@@ -52,6 +52,7 @@ public class JoysticksBindings {
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
+		robot.getRobotCommander().setDefence(MAIN_JOYSTICK.R1);
 
 		mainJoystickButtons(robot);
 		secondJoystickButtons(robot);
@@ -129,6 +130,7 @@ public class JoysticksBindings {
 				.setState(IntakeState.SLOW_CLOSE)
 				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
 		);
+
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));

@@ -120,7 +120,7 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void teleopInit() {
-		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds() + 3;
+		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds() + 5;
 	}
 
 	@Override
