@@ -100,28 +100,28 @@
         "y": 2.3
       },
       "prevControl": {
-        "x": 3.930941512125534,
-        "y": 2.3
+        "x": 3.8681505898504325,
+        "y": 2.54258652550161
       },
       "nextControl": {
-        "x": 2.430941512125534,
-        "y": 2.3
+        "x": 2.50965769675926,
+        "y": 1.7888234230324076
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.65,
-        "y": 0.69
+        "x": 1.904179743223965,
+        "y": 2.500000000000001
       },
       "prevControl": {
-        "x": 2.65,
-        "y": 0.6899999999999997
+        "x": 2.4666588375526692,
+        "y": 3.0030359519675933
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost alliance wait"
     }
   ],
   "rotationTargets": [
@@ -148,10 +148,6 @@
     {
       "waypointRelativePos": 5.997867803837968,
       "rotationDegrees": -45.0
-    },
-    {
-      "waypointRelativePos": 6.776119402985068,
-      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
@@ -181,7 +177,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0
+    "rotation": 121.4951194991867
   },
   "reversed": false,
   "folder": null,

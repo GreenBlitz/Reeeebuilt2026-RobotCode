@@ -98,6 +98,7 @@ public class RobotManager extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		robot.getSwerve().setIsRunningIndependently(true);
+		TimeUtil.setAutonomousStartTimeSeconds(TimeUtil.getCurrentTimeSeconds());
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
