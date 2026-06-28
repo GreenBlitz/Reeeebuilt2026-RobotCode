@@ -11,7 +11,7 @@ public class TowerAssistCalculations {
 
 	private static final double ROBOT_CLOSE_TO_DRIVER_STATION_WALL_THRESHOLD_METERS = 1.2;
 	private static final double INTAKE_FACING_DRIVER_STATION_POINT_PRODUCT_THRESHOLD = -0.1;
-	private static final Translation2d TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS = new Translation2d(0.02, 0);
+	private static final Translation2d TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS = new Translation2d(-0.01, 0);
 
 	public static Translation2d getClosestTowerEntrance(Pose2d robotPose) {
 		Translation2d blueTowerEntrance = Field.TOWER_MIDDLE.plus(TOWER_ENTRANCE_OFFSET_FROM_TOWER_MIDDLE_METERS);

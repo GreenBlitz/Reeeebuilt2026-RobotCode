@@ -889,14 +889,7 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
+
 											getAllianceSideToStartingLineAuto(
 												robot,
 												startingSide,
@@ -908,7 +901,6 @@ public class AutosBuilder {
 												scoreSequence,
 												true
 											)
-										)
 										.asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
