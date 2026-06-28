@@ -9,7 +9,6 @@ import frc.robot.Robot;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.time.TimeUtil;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -1249,8 +1248,7 @@ public class AutosBuilder {
 		double lastBallTimestamp = robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry() != null
 			? robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry().getKey()
 			: 0;
-		Logger.recordOutput("aaaaaaaaaaaa", lastBallTimestamp);
-		Logger.recordOutput("bbbbbbbbbbb", TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp);
+
 		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp > AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
 	}
 
