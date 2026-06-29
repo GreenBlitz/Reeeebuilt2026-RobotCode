@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.JoysticksBindings;
 import frc.constants.MathConstants;
 import frc.constants.field.Field;
 import frc.joysticks.Axis;
@@ -280,6 +281,10 @@ public class Swerve extends GBSubsystem {
 	protected void driveByState(ChassisSpeeds speeds, SwerveState swerveState) {
 		this.currentState = swerveState;
 
+		if (JoysticksBindings.MAIN_JOYSTICK.R1.getAsBoolean() || JoysticksBindings.MAIN_JOYSTICK.getAxisAsButton(Axis.RIGHT_TRIGGER).getAsBoolean()){
+			modules.pointWheelsInX();
+			return;
+		}
 		speeds = stateHandler.applyAimAssistOnChassisSpeeds(speeds, swerveState);
 		speeds = handleHeadingControl(speeds, swerveState);
 		if (SwerveMath.isStill(speeds, SwerveConstants.DEADBANDS)) {
