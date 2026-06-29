@@ -30,6 +30,7 @@ import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -56,6 +57,7 @@ public class Swerve extends GBSubsystem {
 	private Supplier<Rotation2d> headingSupplier;
 	private ChassisPowers driversPowerInputs;
 
+	boolean aaaaa = false;
 	public Swerve(SwerveConstants constants, Modules modules, IIMU imu, IMUSignals imuSignals) {
 		super(constants.logPath());
 		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
@@ -281,10 +283,16 @@ public class Swerve extends GBSubsystem {
 	protected void driveByState(ChassisSpeeds speeds, SwerveState swerveState) {
 		this.currentState = swerveState;
 
-		if (JoysticksBindings.MAIN_JOYSTICK.R1.getAsBoolean() || JoysticksBindings.MAIN_JOYSTICK.getAxisAsButton(Axis.RIGHT_TRIGGER).getAsBoolean()){
+		if ((JoysticksBindings.MAIN_JOYSTICK.X.getAsBoolean())){
+			if (!aaaaa) {
+				modules.stop();
+			}
 			modules.pointWheelsInX();
+			Logger.recordOutput("aaaaaa", TimeUtil.getCurrentTimeSeconds());
+			aaaaa = true;
 			return;
 		}
+		aaaaa = false;
 		speeds = stateHandler.applyAimAssistOnChassisSpeeds(speeds, swerveState);
 		speeds = handleHeadingControl(speeds, swerveState);
 		if (SwerveMath.isStill(speeds, SwerveConstants.DEADBANDS)) {
