@@ -7,7 +7,7 @@ public class LimelightHelpersAdditions {
 	}
 
 	public static double getTemperatureCelsius(String limelightName) {
-		return LimelightHelpers.getLimelightNTTable(limelightName).getEntry("temp").getDouble(0);
+		return LimelightHelpers.getLimelightNTTable(limelightName).getEntry("hw").getDoubleArray(new double[] {0})[0];
 	}
 
 }
