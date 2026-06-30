@@ -319,17 +319,9 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		limelightFront.updateHardwareInputs();
-		limelightRight.updateHardwareInputs();
-		limelightLeft.updateHardwareInputs();
-
-		limelightFront.updateMT1();
-		limelightRight.updateMT1();
-		limelightLeft.updateMT1();
-
-		limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
+		getLimelights().forEach(Limelight::updateHardwareInputs);
+		getLimelights().forEach(Limelight::updateMT1);
+		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
 		poseEstimator.log();
 		ShootingCalculations
