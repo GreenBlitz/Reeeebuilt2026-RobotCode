@@ -58,6 +58,7 @@ public class Swerve extends GBSubsystem {
 	private ChassisPowers driversPowerInputs;
 
 	boolean aaaaa = false;
+
 	public Swerve(SwerveConstants constants, Modules modules, IIMU imu, IMUSignals imuSignals) {
 		super(constants.logPath());
 		this.currentState = new SwerveState(SwerveState.DEFAULT_DRIVE);
@@ -283,7 +284,7 @@ public class Swerve extends GBSubsystem {
 	protected void driveByState(ChassisSpeeds speeds, SwerveState swerveState) {
 		this.currentState = swerveState;
 
-		if ((JoysticksBindings.MAIN_JOYSTICK.X.getAsBoolean())){
+		if ((JoysticksBindings.MAIN_JOYSTICK.X.getAsBoolean())) {
 			if (!aaaaa) {
 				modules.stop();
 			}

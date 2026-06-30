@@ -76,7 +76,9 @@ public class IntakeStateHandler {
 				pivot.getCommandsBuilder()
 					.setTargetPosition(IntakeState.INTAKE.getPivotPosition())
 					.until(() -> pivot.isAtPosition(IntakeState.INTAKE.getPivotPosition(), PivotConstants.POSITION_TOLERANCE_TO_START_REST)),
-					pivot.getCommandsBuilder().setCurrentWithoutLimit(() -> isOpenPivotHarder.getAsBoolean() ? PivotConstants.HARD_OPEN : PivotConstants.REST_CURRENT)			),
+				pivot.getCommandsBuilder()
+					.setCurrentWithoutLimit(() -> isOpenPivotHarder.getAsBoolean() ? PivotConstants.HARD_OPEN : PivotConstants.REST_CURRENT)
+			),
 			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
 		);
 	}
