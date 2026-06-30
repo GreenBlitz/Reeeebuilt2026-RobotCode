@@ -103,6 +103,7 @@ public class Robot {
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+	private final List<Limelight> limelights;
 
 	private static double ballCounterIncludingPassing;
 	private static double ballCounterWithoutPassing;
@@ -178,26 +179,6 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
-
-		limelightFront.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightFront,
-				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.15),
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.011)
-			)
-		);
-		limelightFront.setMT1PoseFilter(
-			LimelightFilters.megaTag1Filter(
-				limelightFront,
-				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(0.1, 0.1),
-				Rotation2d.fromDegrees(10)
-			)
-		);
-
 		this.limelightRight = new Limelight(
 			"limelight-right",
 			"Vision",
@@ -207,25 +188,6 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
-		limelightRight.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightRight,
-				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.15),
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.011)
-			)
-		);
-		limelightRight.setMT1PoseFilter(
-			LimelightFilters.megaTag1Filter(
-				limelightRight,
-				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(0.1, 0.1),
-				Rotation2d.fromDegrees(10)
-			)
-		);
-
 		this.limelightLeft = new Limelight(
 			"limelight-left",
 			"Vision",
@@ -235,22 +197,28 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
-		limelightLeft.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightLeft,
-				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.15),
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.011)
+
+		this.limelights = List.of(limelightFront, limelightRight, limelightLeft);
+		limelights.forEach(
+			limelight -> limelight.setMT1StdDevsCalculation(
+				LimelightStdDevCalculations.getMT1StdDevsCalculation(
+					limelight,
+					new StandardDeviations2D(0.5),
+					new StandardDeviations2D(0.15),
+					new StandardDeviations2D(0.4),
+					new StandardDeviations2D(0.011)
+				)
 			)
 		);
-		limelightLeft.setMT1PoseFilter(
-			LimelightFilters.megaTag1Filter(
-				limelightLeft,
-				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(0.1, 0.1),
-				Rotation2d.fromDegrees(10)
+		limelights.forEach(
+			limelight -> limelight.setMT1PoseFilter(
+				LimelightFilters.megaTag1Filter(
+					limelight,
+					timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+					poseEstimator::isIMUOffsetCalibrated,
+					new Translation2d(0.1, 0.1),
+					Rotation2d.fromDegrees(10)
+				)
 			)
 		);
 
@@ -352,10 +320,10 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		getAllLimelights().forEach(Limelight::updateHardwareInputs);
-		getAllLimelights().forEach(Limelight::updateMT1);
-		getAllLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
-		getAllLimelights().forEach(limelight -> {
+		getLimelights().forEach(Limelight::updateHardwareInputs);
+		getLimelights().forEach(Limelight::updateMT1);
+		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+		getLimelights().forEach(limelight -> {
 			if (!DriverStationUtil.isMatch() || !limelight.getIsThrottleEnabled()) {
 				limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
 			}
@@ -447,8 +415,8 @@ public class Robot {
 		return limelightLeft;
 	}
 
-	public List<Limelight> getAllLimelights() {
-		return List.of(limelightFront, limelightRight, limelightLeft);
+	public List<Limelight> getLimelights() {
+		return limelights;
 	}
 
 	public RobotCommander getRobotCommander() {
