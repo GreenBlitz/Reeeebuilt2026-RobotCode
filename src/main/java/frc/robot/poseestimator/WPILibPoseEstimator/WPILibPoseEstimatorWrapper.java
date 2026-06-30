@@ -33,9 +33,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Translation2d> imuXYAccelerationGBuffer;
-	private Pose2d predictedOdometryPose;
 	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
+    private Pose2d predictedOdometryPose;
 	private boolean isIMUOffsetCalibrated;
 
 	public WPILibPoseEstimatorWrapper(
