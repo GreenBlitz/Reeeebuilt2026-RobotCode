@@ -363,6 +363,16 @@ public class Robot {
 		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
+		if (!limelightFront.getIsThrottleEnabled()) {
+			limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
+		}
+		if (!limelightRight.getIsThrottleEnabled()) {
+			limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
+		}
+		if (!limelightLeft.getIsThrottleEnabled()) {
+			limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
+		}
+
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);

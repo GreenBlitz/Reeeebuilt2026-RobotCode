@@ -132,6 +132,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
+	public void updateIMUOffsetCalibration(RobotPoseObservation... visionRobotPoseObservations) {
+		for (RobotPoseObservation visionRobotPoseObservation : visionRobotPoseObservations) {
+			updateIMUOffsetCalibration(visionRobotPoseObservation);
+		}
+	}
+
+	@Override
 	public void resetPose(OdometryData odometryData, Pose2d poseMeters) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
 
@@ -213,17 +220,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
 		addVisionMeasurement(visionRobotPoseObservation);
-
-		getEstimatedPoseToIMUYawDifference(
-			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
-			visionRobotPoseObservation.timestampSeconds()
-		).ifPresent(yawDifference -> {
-			poseToIMUYawDifferenceBuffer.insert(yawDifference);
-
-			if (!isIMUOffsetCalibrated) {
-				updateIsIMUOffsetCalibrated();
-			}
-		});
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
@@ -248,6 +244,19 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				.asColumnVector()
 				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
 			: visionObservation.stdDevs().asColumnVector();
+	}
+
+	private void updateIMUOffsetCalibration(RobotPoseObservation visionRobotPoseObservation) {
+		getEstimatedPoseToIMUYawDifference(
+			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
+			visionRobotPoseObservation.timestampSeconds()
+		).ifPresent(yawDifference -> {
+			poseToIMUYawDifferenceBuffer.insert(yawDifference);
+
+			if (!isIMUOffsetCalibrated) {
+				updateIsIMUOffsetCalibrated();
+			}
+		});
 	}
 
 	private void updateIsIMUOffsetCalibrated() {

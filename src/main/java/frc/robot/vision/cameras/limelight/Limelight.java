@@ -290,6 +290,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
 
+	public boolean getIsThrottleEnabled() {
+		return isThrottleEnabled;
+	}
+
 	protected LimelightTarget2dValues getTarget2dValues() {
 		if (pipeline.isNeuralDetecting()) {
 			return inputs.neuralDetectionInputs().target2dValues;
