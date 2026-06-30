@@ -1202,30 +1202,30 @@ public class AutosBuilder {
 		Supplier<Command> closeIntake,
 		boolean isQuarter
 	) {
-		return new ParallelDeadlineGroup(
+		return new ParallelRaceGroup(
 			new WaitCommand(AutonomousConstants.MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE)
 				.andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
 			scoreSequence.get()
-		).andThen(new ParallelDeadlineGroup(scoreSequence.get(), closeIntake.get()))
-			.andThen(
-				PathFollowingCommandsBuilder
-					.followAdjustedPathThenStop(
-						robot.getSwerve(),
-						() -> robot.getPoseEstimator().getEstimatedPose(),
-						getAllianceSideToStartingLinePath(allianceSide, returnToMiddle, isQuarter),
-						pathfindingConstraints,
-						regularIsNearEndOfPathTolerance,
-						stuckIsNearEndOfPathTolerance,
-						stuckDebounceSeconds,
-						robot.getSwerve().getLogPath()
-					)
-					.andThen(
-						robot.getSwerve()
-							.getCommandsBuilder()
-							.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-							.onlyIf(() -> !returnToMiddle.getAsBoolean())
-					)
-			);
+		).andThen(
+			new ParallelDeadlineGroup(scoreSequence.get(), closeIntake.get()),
+			PathFollowingCommandsBuilder
+				.followAdjustedPathThenStop(
+					robot.getSwerve(),
+					() -> robot.getPoseEstimator().getEstimatedPose(),
+					getAllianceSideToStartingLinePath(allianceSide, returnToMiddle, isQuarter),
+					pathfindingConstraints,
+					regularIsNearEndOfPathTolerance,
+					stuckIsNearEndOfPathTolerance,
+					stuckDebounceSeconds,
+					robot.getSwerve().getLogPath()
+				)
+				.andThen(
+					robot.getSwerve()
+						.getCommandsBuilder()
+						.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+						.onlyIf(() -> !returnToMiddle.getAsBoolean())
+				)
+		);
 	}
 
 	private static PathPlannerPath getAllianceSideToStartingLinePath(
