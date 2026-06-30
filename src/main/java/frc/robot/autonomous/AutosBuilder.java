@@ -1198,34 +1198,35 @@ public class AutosBuilder {
 				.andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
 			scoreSequence.get()
 		).until(
-                () -> returnToMiddle.getAsBoolean()
-                        && TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
-                        < (allianceSide == AllianceSide.OUTPOST
-                        ? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
-                        : AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)
-        ).andThen(
-			new ParallelCommandGroup(
-				scoreSequence.get(),
-				closeIntake.get(),
-				PathFollowingCommandsBuilder
-					.followAdjustedPathThenStop(
-						robot.getSwerve(),
-						() -> robot.getPoseEstimator().getEstimatedPose(),
-						getAllianceSideToStartingLinePath(allianceSide, returnToMiddle, isQuarter),
-						pathfindingConstraints,
-						regularIsNearEndOfPathTolerance,
-						stuckIsNearEndOfPathTolerance,
-						stuckDebounceSeconds,
-						robot.getSwerve().getLogPath()
-					)
-					.andThen(
-						robot.getSwerve()
-							.getCommandsBuilder()
-							.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-							.onlyIf(() -> !returnToMiddle.getAsBoolean())
-					)
-			)
-		);
+			() -> returnToMiddle.getAsBoolean()
+				&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
+					< (allianceSide == AllianceSide.OUTPOST
+						? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
+						: AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)
+		)
+			.andThen(
+				new ParallelCommandGroup(
+					scoreSequence.get(),
+					closeIntake.get(),
+					PathFollowingCommandsBuilder
+						.followAdjustedPathThenStop(
+							robot.getSwerve(),
+							() -> robot.getPoseEstimator().getEstimatedPose(),
+							getAllianceSideToStartingLinePath(allianceSide, returnToMiddle, isQuarter),
+							pathfindingConstraints,
+							regularIsNearEndOfPathTolerance,
+							stuckIsNearEndOfPathTolerance,
+							stuckDebounceSeconds,
+							robot.getSwerve().getLogPath()
+						)
+						.andThen(
+							robot.getSwerve()
+								.getCommandsBuilder()
+								.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+								.onlyIf(() -> !returnToMiddle.getAsBoolean())
+						)
+				)
+			);
 	}
 
 	private static PathPlannerPath getAllianceSideToStartingLinePath(
