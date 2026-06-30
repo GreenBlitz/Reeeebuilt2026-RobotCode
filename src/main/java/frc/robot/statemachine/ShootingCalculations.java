@@ -7,6 +7,7 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
+import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -23,6 +24,7 @@ public class ShootingCalculations {
 		HoodConstants.MINIMUM_POSITION,
 		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
+		false,
 		new Translation2d(),
 		Field.getHubMiddle()
 	);
@@ -44,18 +46,12 @@ public class ShootingCalculations {
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);
-		// Split Robot's Speeds
-		Translation2d robotTranslationalVelocity = new Translation2d(
-			fieldRelativeSpeeds.vxMetersPerSecond,
-			fieldRelativeSpeeds.vyMetersPerSecond
-		);
 
-		// Turret Field Relative Velocity
-		Translation2d turretTangentialVelocity = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
-			.rotateBy(Rotation2d.kCCW_90deg)
-			.times(gyroYawAngularVelocity.getRadians())
-			.rotateBy(robotPose.getRotation());
-		Translation2d turretFieldRelativeVelocity = robotTranslationalVelocity.plus(turretTangentialVelocity);
+		Translation2d turretFieldRelativeVelocity = calculateFieldRelativeTurretVelocities(
+			robotPose,
+			fieldRelativeSpeeds,
+			gyroYawAngularVelocity
+		);
 
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
@@ -78,10 +74,21 @@ public class ShootingCalculations {
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToTarget);
 		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToTarget);
 
+		boolean isHoodTargetCorrect = true;
+
+		if (
+			ShootingChecks.isHoodInDangerOfCrushing(robotPose, fieldRelativeSpeeds, gyroYawAngularVelocity)
+				&& hoodTargetPosition.getDegrees() < ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH.getDegrees()
+		) {
+			hoodTargetPosition = ShooterConstants.MIN_HOOD_POSITION_TO_GO_UNDER_TRENCH;
+			isHoodTargetCorrect = false;
+		}
+
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/turretTargetVelocityRPS", turretTargetVelocityRPS);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/isHoodTargetCorrect", isHoodTargetCorrect);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
 		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToTarget);
@@ -93,6 +100,7 @@ public class ShootingCalculations {
 			hoodTargetPosition,
 			turretTargetPosition,
 			turretTargetVelocityRPS,
+			isHoodTargetCorrect,
 			turretPredictedPose,
 			targetTranslation
 		);
@@ -130,6 +138,25 @@ public class ShootingCalculations {
 			ShootingCalculations::getDistanceFromPassingTarget,
 			PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 		);
+	}
+
+	public static Translation2d calculateFieldRelativeTurretVelocities(
+		Pose2d robotPose,
+		ChassisSpeeds fieldRelativeSpeeds,
+		Rotation2d gyroYawAngularVelocity
+	) {
+		// Split Robot's Speeds
+		Translation2d robotTranslationalVelocity = new Translation2d(
+			fieldRelativeSpeeds.vxMetersPerSecond,
+			fieldRelativeSpeeds.vyMetersPerSecond
+		);
+
+		// Turret Field Relative Velocity
+		Translation2d turretTangentialVelocity = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
+			.rotateBy(Rotation2d.kCCW_90deg)
+			.times(gyroYawAngularVelocity.getRadians())
+			.rotateBy(robotPose.getRotation());
+		return robotTranslationalVelocity.plus(turretTangentialVelocity);
 	}
 
 	private static Translation2d getPredictedTurretPoseByFlightTime(
@@ -177,6 +204,16 @@ public class ShootingCalculations {
 		return new Translation2d(
 			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
 			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
+		);
+	}
+
+	public static Translation2d getTurretPositionWhenHoodCloses(
+		Translation2d currentTurretPosition,
+		Translation2d fieldRelativeTurretVelocities
+	) {
+		return new Translation2d(
+			currentTurretPosition.getX() + fieldRelativeTurretVelocities.getX() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC,
+			currentTurretPosition.getY() + fieldRelativeTurretVelocities.getY() * ShooterConstants.TIME_TO_CLOSE_HOOD_WITH_BUFFER_SEC
 		);
 	}
 
