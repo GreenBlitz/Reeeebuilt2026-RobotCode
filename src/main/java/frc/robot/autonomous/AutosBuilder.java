@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
+import frc.utils.GamePeriodUtils;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.time.TimeUtil;
@@ -1201,9 +1202,10 @@ public class AutosBuilder {
 		).until(
 			() -> returnToMiddle.getAsBoolean()
 				&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
-					< (allianceSide == AllianceSide.OUTPOST
-						? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
-						: AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)
+					> GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS
+						- (allianceSide == AllianceSide.OUTPOST
+							? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
+							: AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)
 		)
 			.andThen(
 				new ParallelCommandGroup(
