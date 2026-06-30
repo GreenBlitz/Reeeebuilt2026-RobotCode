@@ -15,7 +15,6 @@ import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -25,7 +24,6 @@ public class RobotCommander extends GBSubsystem {
 	private final IntakeStateHandler intakeStateHandler;
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
-	private BooleanSupplier defence;
 
 	private RobotState currentState;
 	private final String logPath;
@@ -83,10 +81,6 @@ public class RobotCommander extends GBSubsystem {
 				this::isRunningIndependently
 			)
 		);
-	}
-
-	public void setDefence(BooleanSupplier defence) {
-		this.defence = defence;
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {

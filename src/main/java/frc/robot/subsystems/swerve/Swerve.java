@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.JoysticksBindings;
 import frc.constants.MathConstants;
 import frc.constants.field.Field;
 import frc.joysticks.Axis;
@@ -30,7 +29,6 @@ import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.TimedValue;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
-import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -56,8 +54,6 @@ public class Swerve extends GBSubsystem {
 	private SwerveState currentState;
 	private Supplier<Rotation2d> headingSupplier;
 	private ChassisPowers driversPowerInputs;
-
-	boolean aaaaa = false;
 
 	public Swerve(SwerveConstants constants, Modules modules, IIMU imu, IMUSignals imuSignals) {
 		super(constants.logPath());
@@ -284,16 +280,6 @@ public class Swerve extends GBSubsystem {
 	protected void driveByState(ChassisSpeeds speeds, SwerveState swerveState) {
 		this.currentState = swerveState;
 
-		if ((JoysticksBindings.MAIN_JOYSTICK.X.getAsBoolean())) {
-			if (!aaaaa) {
-				modules.stop();
-			}
-			modules.pointWheelsInX();
-			Logger.recordOutput("aaaaaa", TimeUtil.getCurrentTimeSeconds());
-			aaaaa = true;
-			return;
-		}
-		aaaaa = false;
 		speeds = stateHandler.applyAimAssistOnChassisSpeeds(speeds, swerveState);
 		speeds = handleHeadingControl(speeds, swerveState);
 		if (SwerveMath.isStill(speeds, SwerveConstants.DEADBANDS)) {

@@ -518,8 +518,8 @@ public class AutosBuilder {
 										() -> returnToMiddle.getAsBoolean()
 											&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
 												< (startingSide == AllianceSide.OUTPOST
-													? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS
-													: 6)
+													? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
+													: AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)
 									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
@@ -1203,9 +1203,10 @@ public class AutosBuilder {
 		boolean isQuarter
 	) {
 		return new ParallelDeadlineGroup(
-			new WaitCommand(1.0).andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
+			new WaitCommand(AutonomousConstants.MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE)
+				.andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
 			scoreSequence.get()
-		).andThen(new ParallelDeadlineGroup(new WaitCommand(1.0), scoreSequence.get(), closeIntake.get()))
+		).andThen(new ParallelDeadlineGroup(scoreSequence.get(), closeIntake.get()))
 			.andThen(
 				PathFollowingCommandsBuilder
 					.followAdjustedPathThenStop(
@@ -1251,7 +1252,7 @@ public class AutosBuilder {
 			? robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry().getKey()
 			: 0;
 
-		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp > AutonomousConstants.TIME_TO_WAIT_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
+		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp > AutonomousConstants.TIME_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
 	}
 
 }
