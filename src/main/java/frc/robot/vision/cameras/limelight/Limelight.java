@@ -238,6 +238,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return mt2PoseFilter;
 	}
 
+	public boolean getIsThrottleEnabled() {
+		return isThrottleEnabled;
+	}
+
 	@Override
 	public void setRobotOrientation(Rotation3d robotOrientation) {
 		LimelightHelpers.SetRobotOrientation(
@@ -288,10 +292,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.SetThrottle(name, enableThrottle ? THROTTLE_ENABLE_VALUE : THROTTLE_DISABLE_VALUE);
 		isThrottleEnabled = enableThrottle;
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
-	}
-
-	public boolean getIsThrottleEnabled() {
-		return isThrottleEnabled;
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
