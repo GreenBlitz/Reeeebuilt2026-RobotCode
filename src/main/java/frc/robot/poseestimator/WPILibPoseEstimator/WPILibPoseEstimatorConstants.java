@@ -2,6 +2,7 @@ package frc.robot.poseestimator.WPILibPoseEstimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.utils.math.StandardDeviations2D;
 
 
@@ -34,5 +35,11 @@ public class WPILibPoseEstimatorConstants {
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
 	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
+
+	/**
+	 * Tolerance for detecting swerve wheel slip and smoothing noise. 0.5 m/s matches the skid tolerance threshold. If the difference between raw
+	 * swerve velocity and estimated velocity exceeds this, the wheels are slipping.
+	 */
+	public static final ChassisSpeeds ESTIMATED_VELOCITY_TOLERANCE = new ChassisSpeeds(0.5, 0.5, Math.toRadians(15.0));
 
 }

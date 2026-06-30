@@ -55,4 +55,10 @@ public class ToleranceMath {
 		return Rotation2d.fromRadians(MathUtil.clamp(angle.getRadians(), minAngle.getRadians(), maxAngle.getRadians()));
 	}
 
+	public static boolean isNear(ChassisSpeeds wantedSpeed, ChassisSpeeds actualSpeed, ChassisSpeeds tolerance) {
+		return isNear(wantedSpeed.vxMetersPerSecond, actualSpeed.vxMetersPerSecond, tolerance.vxMetersPerSecond)
+			&& isNear(wantedSpeed.vyMetersPerSecond, actualSpeed.vyMetersPerSecond, tolerance.vyMetersPerSecond)
+			&& isNear(wantedSpeed.omegaRadiansPerSecond, actualSpeed.omegaRadiansPerSecond, tolerance.omegaRadiansPerSecond);
+	}
+
 }

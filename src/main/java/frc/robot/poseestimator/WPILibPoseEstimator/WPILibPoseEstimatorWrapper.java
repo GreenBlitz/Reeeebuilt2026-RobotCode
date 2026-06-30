@@ -8,18 +8,18 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.Odometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
+import frc.utils.TimedValue;
 import frc.utils.buffers.RingBuffer.RingBuffer;
 import frc.utils.math.StatisticsMath;
+import frc.utils.math.ToleranceMath;
 import frc.utils.pose.PoseUtil;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
@@ -33,7 +33,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Translation2d> imuXYAccelerationGBuffer;
-	private RobotPoseObservation lastVisionObservation;
+    private final TimedValue<Pose2d> lastEstimatedPose;
+    private final TimedValue<ChassisSpeeds> lastEstimatedVelocity;
+    private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
 	private boolean isIMUOffsetCalibrated;
 
@@ -72,8 +74,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuXYAccelerationGBuffer = TimeInterpolatableBuffer
 			.createBuffer(WPILibPoseEstimatorConstants.IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS);
+		this.lastEstimatedPose = new TimedValue<>(new Pose2d(), initialTimestampSeconds);
+		this.lastEstimatedVelocity = new TimedValue<>(new ChassisSpeeds(), initialTimestampSeconds);
 	}
-
 
 	@Override
 	public Pose2d getEstimatedPose() {
@@ -129,6 +132,38 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		for (RobotPoseObservation visionRobotPoseObservation : visionRobotPoseObservations) {
 			updateVision(visionRobotPoseObservation);
 		}
+	}
+
+	@Override
+	public void updateLastEstimatedPose() {
+		double timestamp = TimeUtil.getCurrentTimeSeconds();
+		double deltaTime = timestamp - lastEstimatedVelocity.getTimestamp();
+		if (deltaTime > 0) {
+			Pose2d currentPose = getEstimatedPose();
+			ChassisSpeeds rawVelocity = new ChassisSpeeds(
+				(currentPose.getX() - lastEstimatedPose.getValue().getX()) / deltaTime,
+				(currentPose.getY() - lastEstimatedPose.getValue().getY()) / deltaTime,
+				(currentPose.getRotation().getRadians() - lastEstimatedPose.getValue().getRotation().getRadians()) / deltaTime
+			);
+
+			if (ToleranceMath.isNear(new ChassisSpeeds(), rawVelocity, WPILibPoseEstimatorConstants.ESTIMATED_VELOCITY_TOLERANCE)) {
+				lastEstimatedVelocity.setValue(new ChassisSpeeds());
+			} else if (
+				ToleranceMath.isNear(lastEstimatedVelocity.getValue(), rawVelocity, WPILibPoseEstimatorConstants.ESTIMATED_VELOCITY_TOLERANCE)
+			) {
+				lastEstimatedVelocity.setValue(
+					new ChassisSpeeds(
+						(rawVelocity.vxMetersPerSecond + lastEstimatedVelocity.getValue().vxMetersPerSecond) / 2.0,
+						(rawVelocity.vyMetersPerSecond + lastEstimatedVelocity.getValue().vyMetersPerSecond) / 2.0,
+						(rawVelocity.omegaRadiansPerSecond + lastEstimatedVelocity.getValue().omegaRadiansPerSecond) / 2.0
+					)
+				);
+			}
+			// If neither condition is met, it is a massive vision spike. We do NOT update the value, preserving the safe velocity.
+			lastEstimatedVelocity.setTimestamp(timestamp);
+		}
+		lastEstimatedPose.setTimestamp(timestamp);
+		lastEstimatedPose.setValue(getEstimatedPose());
 	}
 
 	@Override
@@ -226,6 +261,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		});
 	}
 
+	public ChassisSpeeds getLastEstimatedVelocity() {
+		return lastEstimatedVelocity.getValue();
+	}
+
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
@@ -260,6 +299,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private Optional<Rotation2d> getEstimatedPoseToIMUYawDifference(Optional<Rotation2d> gyroYaw, double timestampSeconds) {
 		return getEstimatedPoseAtTimestamp(timestampSeconds)
 			.flatMap(estimatedPose -> gyroYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
+	}
+
+	@Override
+	public ChassisSpeeds getFieldRelativeEstimatedVelocity(ChassisSpeeds swerveVelocity) {
+		if (useEstimatedVelocity(swerveVelocity, lastEstimatedVelocity.getValue())) {
+			return lastEstimatedVelocity.getValue();
+		}
+		return swerveVelocity;
+	}
+
+	private boolean useEstimatedVelocity(ChassisSpeeds swerveVelocity, ChassisSpeeds estimatedVelocity) {
+		return !ToleranceMath.isNear(swerveVelocity, estimatedVelocity, WPILibPoseEstimatorConstants.ESTIMATED_VELOCITY_TOLERANCE);
 	}
 
 }

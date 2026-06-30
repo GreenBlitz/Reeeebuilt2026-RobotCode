@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -363,9 +364,13 @@ public class Robot {
 		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
+		poseEstimator.updateLastEstimatedPose();
 		poseEstimator.log();
+
+		ChassisSpeeds currentEstimatedVelocity = poseEstimator.getFieldRelativeEstimatedVelocity(swerve.getFieldRelativeVelocity());
+
 		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+			.updateShootingParams(poseEstimator.getEstimatedPose(), currentEstimatedVelocity, swerve.getIMUAngularVelocityRPS()[2]);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(
