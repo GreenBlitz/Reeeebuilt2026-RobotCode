@@ -14,7 +14,7 @@ public interface IPoseEstimator extends IVisionEstimator, IOdometryEstimator {
 
 	Optional<Pose2d> getEstimatedPoseAtTimestamp(double timestampSeconds);
 
-	void updateIMUOffsetCalibration(RobotPoseObservation... visionRobotPoseObservations);
+	void updateIMUOffset(RobotPoseObservation... visionRobotPoseObservations);
 
 	boolean isIMUOffsetCalibrated();
 

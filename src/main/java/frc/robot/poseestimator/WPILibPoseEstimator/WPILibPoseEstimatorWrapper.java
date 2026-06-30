@@ -132,9 +132,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
-	public void updateIMUOffsetCalibration(RobotPoseObservation... visionRobotPoseObservations) {
+	public void updateIMUOffset(RobotPoseObservation... visionRobotPoseObservations) {
 		for (RobotPoseObservation visionRobotPoseObservation : visionRobotPoseObservations) {
-			updateIMUOffsetCalibration(visionRobotPoseObservation);
+			updateIMUOffset(visionRobotPoseObservation);
 		}
 	}
 
@@ -246,7 +246,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	private void updateIMUOffsetCalibration(RobotPoseObservation visionRobotPoseObservation) {
+	private void updateIMUOffset(RobotPoseObservation visionRobotPoseObservation) {
 		getEstimatedPoseToIMUYawDifference(
 			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
 			visionRobotPoseObservation.timestampSeconds()

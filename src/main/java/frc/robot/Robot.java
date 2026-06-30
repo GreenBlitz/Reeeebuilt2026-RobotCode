@@ -325,7 +325,7 @@ public class Robot {
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 		getLimelights().forEach(limelight -> {
 			if (!DriverStationUtil.isMatch() || !limelight.getIsThrottleEnabled()) {
-				limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
+				limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffset);
 			}
 		});
 
