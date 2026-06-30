@@ -1195,7 +1195,7 @@ public class AutosBuilder {
 	) {
 		return new ParallelDeadlineGroup(
 			new WaitCommand(AutonomousConstants.MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE)
-				.andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))),
+				.andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot))).andThen(closeIntake.get()),
 			scoreSequence.get()
 		).until(
 			() -> returnToMiddle.getAsBoolean()
@@ -1207,7 +1207,7 @@ public class AutosBuilder {
 			.andThen(
 				new ParallelCommandGroup(
 					scoreSequence.get(),
-					closeIntake.get(),
+                    closeIntake.get(),
 					PathFollowingCommandsBuilder
 						.followAdjustedPathThenStop(
 							robot.getSwerve(),
