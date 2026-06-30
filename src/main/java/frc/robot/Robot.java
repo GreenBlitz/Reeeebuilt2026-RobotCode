@@ -59,6 +59,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -351,29 +352,17 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		limelightFront.updateHardwareInputs();
-		limelightRight.updateHardwareInputs();
-		limelightLeft.updateHardwareInputs();
-
-		limelightFront.updateMT1();
-		limelightRight.updateMT1();
-		limelightLeft.updateMT1();
-
-		limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-
-		if (!limelightFront.getIsThrottleEnabled()) {
-			limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
-		}
-		if (!limelightRight.getIsThrottleEnabled()) {
-			limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
-		}
-		if (!limelightLeft.getIsThrottleEnabled()) {
-			limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
-		}
+		getAllLimelights().forEach(Limelight::updateHardwareInputs);
+		getAllLimelights().forEach(Limelight::updateMT1);
+		getAllLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+		getAllLimelights().forEach(limelight -> {
+			if (!DriverStationUtil.isMatch() || !limelight.getIsThrottleEnabled()) {
+				limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateIMUOffsetCalibration);
+			}
+		});
 
 		poseEstimator.log();
+
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
