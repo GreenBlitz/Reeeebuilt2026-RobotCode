@@ -130,7 +130,6 @@ public class JoysticksBindings {
 				.setState(IntakeState.SLOW_CLOSE)
 				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
 		);
-
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));

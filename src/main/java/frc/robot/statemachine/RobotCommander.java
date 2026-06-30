@@ -138,7 +138,6 @@ public class RobotCommander extends GBSubsystem {
 		return asSubsystemCommand(wantedCommand, state);
 	}
 
-
 	public Command driveWithChangingState(RobotState state, Command command, Supplier<SwerveState> swerveState) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get());
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
@@ -148,7 +147,6 @@ public class RobotCommander extends GBSubsystem {
 	public Command driveWith(RobotState state) {
 		return driveWith(state, setState(state));
 	}
-
 
 	private Command stayInPlace() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.STAY_IN_PLACE), funnelStateHandler.setState(FunnelState.STOP));
