@@ -58,7 +58,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.logPath = logPathPrefix + "/" + name;
 
 		this.robotRelativeCameraPose = robotRelativeCameraPose;
-		setRobotRelativeCameraPose(robotRelativeCameraPose);
 
 		this.neuralDetections = new ArrayList<>();
 		this.colorDetections = new ArrayList<>();
@@ -76,9 +75,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT1StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 		this.calculateMT2StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 
-		setPipeline(pipeline);
-
 		this.pendingConnectedRequests = new ArrayList<>();
+		addPendingConnectedRequest(limelight -> limelight.setRobotRelativeCameraPose(robotRelativeCameraPose));
+		addPendingConnectedRequest(limelight -> limelight.setPipeline(pipeline));
+
 	}
 
 	public void updateNeuralDetection() {
