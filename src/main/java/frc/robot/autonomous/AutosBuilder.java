@@ -503,19 +503,19 @@ public class AutosBuilder {
 						openIntake.get()
 							.until(() -> hasPathEnded)
 							.andThen(
-									getAllianceSideToStartingLineAuto(
-										robot,
-										startingSide,
-										pathfindingConstraints,
-										regularIsNearEndOfPathTolerance,
-										stuckIsNearEndOfPathTolerance,
-										stuckDebounceSeconds,
-										returnToMiddle,
-										scoreSequence,
-										closeIntake,
-										openIntake,
-										true
-									).asProxy()
+								getAllianceSideToStartingLineAuto(
+									robot,
+									startingSide,
+									pathfindingConstraints,
+									regularIsNearEndOfPathTolerance,
+									stuckIsNearEndOfPathTolerance,
+									stuckDebounceSeconds,
+									returnToMiddle,
+									scoreSequence,
+									closeIntake,
+									openIntake,
+									true
+								).asProxy()
 							)
 					)
 				)
