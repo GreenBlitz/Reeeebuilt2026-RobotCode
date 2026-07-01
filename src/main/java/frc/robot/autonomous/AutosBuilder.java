@@ -503,20 +503,19 @@ public class AutosBuilder {
 						openIntake.get()
 							.until(() -> hasPathEnded)
 							.andThen(
-								new ParallelCommandGroup(
-									getAllianceSideToStartingLineAuto(
-										robot,
-										startingSide,
-										pathfindingConstraints,
-										regularIsNearEndOfPathTolerance,
-										stuckIsNearEndOfPathTolerance,
-										stuckDebounceSeconds,
-										returnToMiddle,
-										scoreSequence,
-										closeIntake,
-										true
-									).asProxy()
-								)
+								getAllianceSideToStartingLineAuto(
+									robot,
+									startingSide,
+									pathfindingConstraints,
+									regularIsNearEndOfPathTolerance,
+									stuckIsNearEndOfPathTolerance,
+									stuckDebounceSeconds,
+									returnToMiddle,
+									scoreSequence,
+									closeIntake,
+									openIntake,
+									true
+								).asProxy()
 							)
 					)
 				)
@@ -607,6 +606,7 @@ public class AutosBuilder {
 												returnToMiddle,
 												scoreSequence,
 												closeIntake,
+												openIntake,
 												false
 											)
 										)
@@ -723,6 +723,7 @@ public class AutosBuilder {
 												returnToMiddle,
 												scoreSequence,
 												closeIntake,
+												openIntake,
 												false
 											)
 										)
@@ -822,6 +823,7 @@ public class AutosBuilder {
 												returnToMiddle,
 												scoreSequence,
 												closeIntake,
+												openIntake,
 												false
 											)
 										)
@@ -898,6 +900,7 @@ public class AutosBuilder {
 										returnToMiddle,
 										scoreSequence,
 										closeIntake,
+										openIntake,
 										true
 									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
@@ -973,6 +976,7 @@ public class AutosBuilder {
 												returnToMiddle,
 												scoreSequence,
 												closeIntake,
+												openIntake,
 												false
 											)
 										)
@@ -1049,6 +1053,7 @@ public class AutosBuilder {
 												returnToMiddle,
 												scoreSequence,
 												closeIntake,
+												openIntake,
 												false
 											)
 										)
@@ -1192,6 +1197,7 @@ public class AutosBuilder {
 		BooleanSupplier returnToMiddle,
 		Supplier<Command> scoreSequence,
 		Supplier<Command> closeIntake,
+		Supplier<Command> openIntake,
 		boolean isQuarter
 	) {
 		return new ParallelCommandGroup(
@@ -1210,7 +1216,7 @@ public class AutosBuilder {
 			.andThen(
 				new ParallelCommandGroup(
 					scoreSequence.get(),
-					closeIntake.get(),
+					openIntake.get(),
 					PathFollowingCommandsBuilder
 						.followAdjustedPathThenStop(
 							robot.getSwerve(),
@@ -1242,9 +1248,9 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
 		}
-//		if (isQuarter && allianceSide == AllianceSide.OUTPOST) {
-//			return PathHelper.PATH_PLANNER_PATHS.get("R alliance stay");
-//		}
+		if (isQuarter && allianceSide == AllianceSide.OUTPOST) {
+			return PathHelper.PATH_PLANNER_PATHS.get("R alliance stay");
+		}
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
 			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
