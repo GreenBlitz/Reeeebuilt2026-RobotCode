@@ -200,10 +200,10 @@ public class RobotCommander extends GBSubsystem {
 
 	public boolean isReadyToDumbScore() {
 		return ShootingChecks.isReadyToDumbScore(
-				robot,
-				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
-				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
-				StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING
 		);
 	}
 
@@ -219,12 +219,13 @@ public class RobotCommander extends GBSubsystem {
 
 	public boolean isReadyToDumbPass() {
 		return ShootingChecks.isReadyToDumbPass(
-				robot,
-				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
-				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
-				StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING
 		);
 	}
+
 	public boolean canContinueScoring() {
 		return ShootingChecks.canContinueScoring(
 			robot,
@@ -237,10 +238,10 @@ public class RobotCommander extends GBSubsystem {
 
 	public boolean canContinueDumbScoring() {
 		return ShootingChecks.canContinueDumbScoring(
-				robot,
-				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
-				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
-				StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING
 		);
 	}
 
@@ -253,12 +254,13 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
 		);
 	}
+
 	public boolean canContinueDumbPassing() {
 		return ShootingChecks.canContinueDumbPassing(
-				robot,
-				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
-				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
-				StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING
 		);
 	}
 
@@ -307,16 +309,22 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command dumbScoreSequence() {
 		return new ParallelCommandGroup(
-				shooterStateHandler.setState(ShooterState.SHOOT),
-				new SequentialCommandGroup(
-						asSubsystemCommand(funnelStateHandler.setState(FunnelState.STOP), RobotState.PRE_SCORE).until(this::isReadyToDumbScore),
-						new RepeatCommand(
-								new SequentialCommandGroup(
-										asSubsystemCommand(funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToDumbScore), RobotState.PRE_SCORE),
-										asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueDumbScoring()), RobotState.SCORE)
-								)
+			shooterStateHandler.setState(ShooterState.SHOOT),
+			new SequentialCommandGroup(
+				asSubsystemCommand(funnelStateHandler.setState(FunnelState.STOP), RobotState.PRE_SCORE).until(this::isReadyToDumbScore),
+				new RepeatCommand(
+					new SequentialCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToDumbScore),
+							RobotState.PRE_SCORE
+						),
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueDumbScoring()),
+							RobotState.SCORE
 						)
+					)
 				)
+			)
 		);
 	}
 
@@ -338,17 +346,23 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command dumbPassSequence() {
 		return new ParallelCommandGroup(
-				shooterStateHandler.setState(ShooterState.SHOOT),
-				new RepeatCommand(
-						new SequentialCommandGroup(
-								new ParallelCommandGroup(
-										asSubsystemCommand(funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToDumbPass), RobotState.PRE_PASS)
-								),
-								new ParallelCommandGroup(
-										asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueDumbPassing()), RobotState.PASS)
-								)
+			shooterStateHandler.setState(ShooterState.SHOOT),
+			new RepeatCommand(
+				new SequentialCommandGroup(
+					new ParallelCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToDumbPass),
+							RobotState.PRE_PASS
 						)
+					),
+					new ParallelCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueDumbPassing()),
+							RobotState.PASS
+						)
+					)
 				)
+			)
 		);
 	}
 
