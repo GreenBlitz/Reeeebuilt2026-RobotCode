@@ -339,8 +339,6 @@ public class Robot {
 		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
 		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
 
-		Logger.recordOutput("TimeSinceTeleopStart6767", TimeUtil.getTimeSinceTeleopInitSeconds());
-
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
