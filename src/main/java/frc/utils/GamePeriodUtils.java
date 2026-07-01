@@ -1,6 +1,7 @@
 package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Robot;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 
@@ -90,10 +91,10 @@ public class GamePeriodUtils {
 	}
 
 	public static double getTimeUntilGameEnds() {
-		if (DriverStation.isDSAttached()) {
+		if (Robot.ROBOT_TYPE.isReal()) {
 			return DriverStation.getMatchTime();
 		}
-		if (DriverStationUtil.isAutonomous()) {
+		if (DriverStationUtil.isAutonomousEnabled()) {
 			return TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds();
 		}
 		if (DriverStationUtil.isTeleop())
