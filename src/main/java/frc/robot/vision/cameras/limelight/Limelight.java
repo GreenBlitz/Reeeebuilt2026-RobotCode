@@ -294,7 +294,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public void doWhileOn(Consumer<Limelight> limelightConsumer) {
-		if(!hasCameraBeenDetectedOn&&inputs.hardwareInputs().connected) {
+		if (!hasCameraBeenDetectedOn && inputs.hardwareInputs().connected) {
 			limelightConsumer.accept(this);
 			hasCameraBeenDetectedOn = true;
 		}
