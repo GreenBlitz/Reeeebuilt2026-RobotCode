@@ -73,16 +73,11 @@ public class RobotManager extends LoggedRobot {
 			field2d.getObject("path").setPoses(robot.getAutonomousChooser().getChosenValue().getPath(!Field.isFieldConventionAlliance()));
 		});
 
-		robot.getLimelights().forEach(limelight -> limelight.setThrottleState(!DriverStationUtil.isMatch()));
+		robot.getLimelights().forEach(limelight -> limelight.addPendingConnectedRequest(limelight1 -> limelight1.setThrottleState(!DriverStationUtil.isMatch())));
 
 		alertsMessage = "Alerts: None";
 		Logger.recordOutput("AlertsMessage", alertsMessage);
 		logDriverAlerts();
-	}
-
-	@Override
-	public void robotInit() {
-		robot.getLimelights().forEach(limelight -> limelight.addRequestToList(limelight1 -> limelight1.setThrottleState(false)));
 	}
 
 	@Override
