@@ -13,6 +13,8 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.Function;
+
 public class ShootingCalculations {
 
 	private static final String LOG_PATH = "ShootingCalculations";
@@ -35,7 +37,9 @@ public class ShootingCalculations {
 		Rotation2d gyroYawAngularVelocity,
 		InterpolationMap<Double, Rotation2d> hoodInterpolation,
 		InterpolationMap<Double, Rotation2d> flywheelInterpolation,
-		Translation2d targetTranslation
+		Translation2d targetTranslation,
+		Function<Translation2d, Double> distanceCalculator,
+		InterpolationMap<Double, Double> distanceToFlightTime
 	) {
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
@@ -56,22 +60,23 @@ public class ShootingCalculations {
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
 			turretFieldRelativeVelocity,
-			distanceFromTurretToTargetMeters
+			distanceFromTurretToTargetMeters,
+			distanceToFlightTime
 		);
 
 		Rotation2d predictedAngleToTarget = targetTranslation.minus(turretPredictedPose).getAngle();
-		double distanceFromTurretPredictedPoseToHub = getDistanceFromHub(turretPredictedPose);
+		double distanceFromTurretPredictedPoseToTarget = distanceCalculator.apply(turretPredictedPose);
 
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(predictedAngleToTarget.unaryMinus());
 		Rotation2d targetTurretVelocityCausedByTranslation = Rotation2d
-			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretPredictedPoseToHub);
+			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretPredictedPoseToTarget);
 		Rotation2d turretTargetVelocityRPS = Rotation2d
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
-		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToHub);
-		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToHub);
+		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToTarget);
+		Rotation2d flywheelTargetRPS = flywheelInterpolation.get(distanceFromTurretPredictedPoseToTarget);
 
 		Logger.recordOutput(LOG_PATH + "/turretFieldRelativePose", new Pose2d(fieldRelativeTurretTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
@@ -79,7 +84,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
-		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToHub);
+		Logger.recordOutput(LOG_PATH + "/distanceFromTargetPredict", distanceFromTurretPredictedPoseToTarget);
 		Logger.recordOutput(LOG_PATH + "/ShootingTarget", new Pose2d(targetTranslation, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 
@@ -104,7 +109,9 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_SCORING_INTERPOLATION_MAP,
 			FLYWHEEL_SCORING_INTERPOLATION_MAP,
-			Field.getHubMiddle()
+			Field.getHubMiddle(),
+			ShootingCalculations::getDistanceFromHub,
+			SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 		);
 	}
 
@@ -119,7 +126,9 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_PASSING_INTERPOLATION_MAP,
 			FLYWHEEL_PASSING_INTERPOLATION_MAP,
-			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose))
+			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose)),
+			ShootingCalculations::getDistanceFromPassingTarget,
+			PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 		);
 	}
 
@@ -134,14 +143,19 @@ public class ShootingCalculations {
 		return new Translation2d(turretPosePredictionX, turretPosePredictionY);
 	}
 
-	private static Translation2d getPredictedTurretPose(Translation2d turretPose, Translation2d turretVelocities, double distanceFromHubMeters) {
+	private static Translation2d getPredictedTurretPose(
+		Translation2d turretPose,
+		Translation2d turretVelocities,
+		double distanceFromTargetMeters,
+		InterpolationMap<Double, Double> distanceToFlightTime
+
+	) {
 		Translation2d predictedTurretPose = turretPose;
-		double ballFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+		double ballFlightTime = distanceToFlightTime.get(distanceFromTargetMeters);
 
 		for (int i = 0; i < StateMachineConstants.MAX_TIMES_TO_CALCULATE_PREDICTED_TURRET_POSE_BY_FLIGHT_TIME; i++) {
 			predictedTurretPose = getPredictedTurretPoseByFlightTime(turretPose, turretVelocities, ballFlightTime);
-			double newBallFlightTime = DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
-				.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
+			double newBallFlightTime = distanceToFlightTime.get(ShootingCalculations.getDistanceFromHub(predictedTurretPose));
 
 			if (
 				Math.abs(newBallFlightTime - ballFlightTime)
@@ -168,6 +182,10 @@ public class ShootingCalculations {
 
 	public static double getDistanceFromHub(Translation2d pose) {
 		return Field.getHubMiddle().getDistance(pose);
+	}
+
+	public static double getDistanceFromPassingTarget(Translation2d pose) {
+		return getOptimalPassingPosition(pose).getDistance(pose);
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
@@ -197,7 +215,12 @@ public class ShootingCalculations {
 		InterpolationMap.interpolatorForRotation2d()
 	);
 
-	private static final InterpolationMap<Double, Double> DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
+	private static final InterpolationMap<Double, Double> SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
+		InverseInterpolator.forDouble(),
+		Interpolator.forDouble()
+	);
+
+	private static final InterpolationMap<Double, Double> PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP = new InterpolationMap<Double, Double>(
 		InverseInterpolator.forDouble(),
 		Interpolator.forDouble()
 	);
@@ -205,7 +228,7 @@ public class ShootingCalculations {
 	public static final InterpolationMap<Double, Double> PASSING_POSITION_INTERPOLATION_MAP = calculatePassingInterpolationMap();
 
 	public static double getDistanceToBallFlightTime(double distanceFromHubMeters) {
-		return DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
+		return SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.get(distanceFromHubMeters);
 	}
 
 	static {
@@ -220,17 +243,22 @@ public class ShootingCalculations {
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26500));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
-		HOOD_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(54.67));
+		HOOD_PASSING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(54.5));
 		HOOD_PASSING_INTERPOLATION_MAP.put(15.0, Rotation2d.fromDegrees(45.0));
 
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(4.0, Rotation2d.fromDegrees(20000));
-		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(8.08, Rotation2d.fromDegrees(35000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(4.0, Rotation2d.fromDegrees(18000));
+		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(25000));
 		FLYWHEEL_PASSING_INTERPOLATION_MAP.put(15.0, Rotation2d.fromDegrees(50000));
 
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.8575);
-		DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.0, 1.2);
+		SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
+		SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
+		SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.8575);
+		SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.0, 1.2);
+
+		PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(0.0, 2.0);
+		PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(1.19, 0.9125);
+		PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(2.02, 0.8575);
+		PASSING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP.put(7.0, 1.2);
 	}
 
 	private static Translation2d findPassingTrianglePoint(Translation2d target, Translation2d hubNeutralCorner) {
