@@ -16,7 +16,6 @@ import frc.utils.utilcommands.CommandUtils;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -29,12 +28,13 @@ public class RobotCommander extends GBSubsystem {
 
 	private RobotState currentState;
 	private final String logPath;
-	private BooleanSupplier isInDefenceMode;
+	private Boolean isInDefenceMode;
 
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
+		this.isInDefenceMode = false;
 
 		this.logPath = logPath;
 
@@ -131,7 +131,7 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command driveWith(RobotState state, Command command) {
 		Command swerveDriveCommand = CommandUtils.dynamicCommandChooser(
-			isInDefenceMode,
+			() -> isInDefenceMode,
 			swerve.getCommandsBuilder().pointWheelsInX(),
 			swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState())
 		);
@@ -344,7 +344,7 @@ public class RobotCommander extends GBSubsystem {
 		};
 	}
 
-	public void setIsInDefenceMode(BooleanSupplier isInDefenceMode) {
+	public void setIsInDefenceMode(Boolean isInDefenceMode) {
 		this.isInDefenceMode = isInDefenceMode;
 	}
 
