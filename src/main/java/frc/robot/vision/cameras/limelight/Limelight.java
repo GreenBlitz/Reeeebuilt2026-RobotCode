@@ -302,6 +302,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public static void checkAndTriggerAllCamerasOn(List<Limelight> limelights) {
 		limelights.forEach(limelight -> limelight.setThrottleState(false));
+		hasCameraBeenDetectedOn = true;
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
