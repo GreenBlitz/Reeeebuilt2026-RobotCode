@@ -18,11 +18,9 @@ import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.calibration.swervecalibration.WheelRadiusCharacterization;
 import frc.utils.calibration.sysid.SysIdCalibrator;
-import frc.utils.utilcommands.CommandUtils;
 import frc.utils.utilcommands.InitExecuteCommand;
 
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class SwerveCommandsBuilder {
@@ -148,16 +146,6 @@ public class SwerveCommandsBuilder {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByState(chassisPowersSupplier.get(), state)),
 			"Drive by chassis powers supplier and state"
-		);
-	}
-
-	public Command handleDefenceMode(BooleanSupplier isDefenceModeOn, SwerveState swerveState) {
-		BooleanSupplier isDefenceModeOff = () -> !isDefenceModeOn.getAsBoolean();
-		return CommandUtils.dynamicCommandChooser(
-			isDefenceModeOn,
-			isDefenceModeOff,
-			swerve.getCommandsBuilder().pointWheelsInX(),
-			swerve.getCommandsBuilder().driveByDriversInputs(swerveState)
 		);
 	}
 

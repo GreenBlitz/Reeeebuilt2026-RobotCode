@@ -19,4 +19,8 @@ public class CommandUtils {
 		);
 	}
 
+	public static Command dynamicCommandChooser(BooleanSupplier commandCondition, Command conditionedCommand, Command defultCommand) {
+		return dynamicCommandChooser(commandCondition, () -> !commandCondition.getAsBoolean(), conditionedCommand, defultCommand);
+	}
+
 }

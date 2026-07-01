@@ -12,6 +12,7 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
+import frc.utils.utilcommands.CommandUtils;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -28,7 +29,7 @@ public class RobotCommander extends GBSubsystem {
 
 	private RobotState currentState;
 	private final String logPath;
-	private BooleanSupplier isDefenceModeOn;
+	private BooleanSupplier isInDefenceMode;
 
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
@@ -129,7 +130,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command driveWith(RobotState state, Command command) {
-		Command swerveDriveCommand = swerve.getCommandsBuilder().handleDefenceMode(isDefenceModeOn, state.getSwerveState());
+		Command swerveDriveCommand = CommandUtils.dynamicCommandChooser(
+			isInDefenceMode,
+			swerve.getCommandsBuilder().pointWheelsInX(),
+			swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState())
+		);
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
@@ -339,8 +344,8 @@ public class RobotCommander extends GBSubsystem {
 		};
 	}
 
-	public void setIsDefenceModeOn(BooleanSupplier isDefenceModeOn) {
-		this.isDefenceModeOn = isDefenceModeOn;
+	public void setIsInDefenceMode(BooleanSupplier isInDefenceMode) {
+		this.isInDefenceMode = isInDefenceMode;
 	}
 
 	public IntakeStateHandler getIntakeStateHandler() {

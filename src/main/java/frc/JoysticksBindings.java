@@ -44,7 +44,7 @@ public class JoysticksBindings {
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
-		robot.getRobotCommander().setIsDefenceModeOn(MAIN_JOYSTICK.X);
+		robot.getRobotCommander().setIsInDefenceMode(MAIN_JOYSTICK.X);
 
 		mainJoystickButtons(robot);
 		secondJoystickButtons(robot);
