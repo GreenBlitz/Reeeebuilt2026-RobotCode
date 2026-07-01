@@ -515,7 +515,7 @@ public class AutosBuilder {
 										scoreSequence,
 										closeIntake,
 										true
-									)
+									).asProxy()
 								)
 							)
 					)
