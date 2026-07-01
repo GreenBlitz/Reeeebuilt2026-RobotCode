@@ -80,7 +80,7 @@ public class SwerveCommandsBuilder {
 	}
 
 	public Command pointWheelsInX() {
-		return swerve.asSubsystemCommand(new InitExecuteCommand(modules::stop, modules::pointWheelsInX), "Point wheels in X");
+		return swerve.asSubsystemCommand(new RunCommand(modules::pointWheelsInX), "Point wheels in X");
 	}
 
 

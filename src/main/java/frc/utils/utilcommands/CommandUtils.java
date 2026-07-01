@@ -8,7 +8,7 @@ import java.util.function.BooleanSupplier;
 
 public class CommandUtils {
 
-	public static Command dynamicCommandChooser(
+	public static Command dynamicChooseBetweenTwoCommands(
 		BooleanSupplier firstCommandCondition,
 		BooleanSupplier secondCommandCondition,
 		Command firstCommand,
@@ -19,8 +19,8 @@ public class CommandUtils {
 		);
 	}
 
-	public static Command dynamicCommandChooser(BooleanSupplier commandCondition, Command conditionedCommand, Command defultCommand) {
-		return dynamicCommandChooser(commandCondition, () -> !commandCondition.getAsBoolean(), conditionedCommand, defultCommand);
+	public static Command dynamicChooseBetweenTwoCommands(BooleanSupplier commandCondition, Command conditionedCommand, Command defultCommand) {
+		return dynamicChooseBetweenTwoCommands(commandCondition, () -> !commandCondition.getAsBoolean(), conditionedCommand, defultCommand);
 	}
 
 }
