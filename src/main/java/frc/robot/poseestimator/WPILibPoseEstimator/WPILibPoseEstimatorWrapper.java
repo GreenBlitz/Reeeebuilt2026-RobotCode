@@ -169,10 +169,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void log() {
 		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
 		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
-		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
+		Logger.recordOutput(logPath + "/predictedOdometryPose", getPredictedOdometryPose());
 		if (lastVisionObservation != null) {
 			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
 		}
+		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
 
 		lastOdometryData.getIMUXYAccelerationG()
@@ -206,11 +207,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		);
 	}
 
-	public void resetIsIMUOffsetCalibrated() {
-		poseToIMUYawDifferenceBuffer.clear();
-		isIMUOffsetCalibrated = false;
-	}
-
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
 		addVisionMeasurement(visionRobotPoseObservation);
 
@@ -224,6 +220,18 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				updateIsIMUOffsetCalibrated();
 			}
 		});
+	}
+
+	private void updateIsIMUOffsetCalibrated() {
+		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
+		isIMUOffsetCalibrated = poseToIMUYawDifferenceStdDev < WPILibPoseEstimatorConstants.MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV
+			&& poseToIMUYawDifferenceBuffer.isFull();
+		Logger.recordOutput(logPath + "/poseToIMUOffsetStdDev", poseToIMUYawDifferenceStdDev);
+	}
+
+	public void resetIsIMUOffsetCalibrated() {
+		poseToIMUYawDifferenceBuffer.clear();
+		isIMUOffsetCalibrated = false;
 	}
 
 	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
@@ -250,16 +258,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	private void updateIsIMUOffsetCalibrated() {
-		double poseToIMUYawDifferenceStdDev = StatisticsMath.calculateStandardDeviations(poseToIMUYawDifferenceBuffer, Rotation2d::getRadians);
-		isIMUOffsetCalibrated = poseToIMUYawDifferenceStdDev < WPILibPoseEstimatorConstants.MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV
-			&& poseToIMUYawDifferenceBuffer.isFull();
-		Logger.recordOutput(logPath + "/poseToIMUOffsetStdDev", poseToIMUYawDifferenceStdDev);
-	}
-
 	private Optional<Rotation2d> getEstimatedPoseToIMUYawDifference(Optional<Rotation2d> gyroYaw, double timestampSeconds) {
 		return getEstimatedPoseAtTimestamp(timestampSeconds)
 			.flatMap(estimatedPose -> gyroYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
+	}
+
+	private Pose2d getPredictedOdometryPose() {
+		return poseEstimator.getEstimatedPosition()
+			.exp(
+				kinematics.toChassisSpeeds(lastOdometryData.getWheelStates())
+					.toTwist2d(WPILibPoseEstimatorConstants.ODOMETRY_POSE_PREDICTION_TIME_SECONDS)
+			);
 	}
 
 }
