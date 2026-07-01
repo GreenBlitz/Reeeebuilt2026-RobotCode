@@ -52,6 +52,7 @@ public class JoysticksBindings {
 
 	public static void configureBindings(Robot robot) {
 		robot.getSwerve().setDriversPowerInputs(chassisDriverInputs);
+		robot.getRobotCommander().setIsDefenceModeOn(MAIN_JOYSTICK.X);
 
 		mainJoystickButtons(robot);
 		secondJoystickButtons(robot);
@@ -132,7 +133,6 @@ public class JoysticksBindings {
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		robot.getRobotCommander().setIsDefenceModeOn(usedJoystick.X);
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -161,57 +161,57 @@ public class JoysticksBindings {
 		// bindings...
 	}
 
-	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
-
-		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.STOP).asProxy());
-		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
-
-		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
-		usedJoystick.B.onTrue(
-			new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindToPose(
-					depotToOutpost.flipPath().getStartingHolonomicPose().get(),
-					new PathConstraints(
-						RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
-						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
-						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
-						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					),
-					robot.getSwerve().getLogPath()
-				),
-				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
-						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-					robot.getRobotCommander().scoreSequence()
-				)
-			)
-		);
-
-		PathPlannerPath outpostToDepot = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
-		usedJoystick.X.onTrue(
-			new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindToPose(
-					outpostToDepot.flipPath().getStartingHolonomicPose().get(),
-					new PathConstraints(
-						RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
-						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
-						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
-						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					),
-					robot.getSwerve().getLogPath()
-				),
-				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(outpostToDepot, robot.getSwerve().getLogPath())
-						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-					robot.getRobotCommander().scoreSequence()
-				)
-			)
-		);
-	}
+//	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
+//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+//		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
+//
+//		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.STOP).asProxy());
+//		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
+//
+//		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
+//		usedJoystick.B.onTrue(
+//			new SequentialCommandGroup(
+//				PathFollowingCommandsBuilder.pathfindToPose(
+//					depotToOutpost.flipPath().getStartingHolonomicPose().get(),
+//					new PathConstraints(
+//						RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
+//						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
+//						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
+//						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
+//					),
+//					robot.getSwerve().getLogPath()
+//				),
+//				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+//				new ParallelCommandGroup(
+//					PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
+//						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
+//					robot.getRobotCommander().scoreSequence()
+//				)
+//			)
+//		);
+//
+//		PathPlannerPath outpostToDepot = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
+//		usedJoystick.X.onTrue(
+//			new SequentialCommandGroup(
+//				PathFollowingCommandsBuilder.pathfindToPose(
+//					outpostToDepot.flipPath().getStartingHolonomicPose().get(),
+//					new PathConstraints(
+//						RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
+//						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
+//						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
+//						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
+//					),
+//					robot.getSwerve().getLogPath()
+//				),
+//				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
+//				new ParallelCommandGroup(
+//					PathFollowingCommandsBuilder.followPath(outpostToDepot, robot.getSwerve().getLogPath())
+//						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
+//					robot.getRobotCommander().scoreSequence()
+//				)
+//			)
+//		);
+//	}
 
 	private static void applyInterpolationCalibrationBindings(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
