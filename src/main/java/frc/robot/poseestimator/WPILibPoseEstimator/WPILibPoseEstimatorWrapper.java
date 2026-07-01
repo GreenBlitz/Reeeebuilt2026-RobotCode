@@ -68,13 +68,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			Optional.of(initialIMUOrientation),
 			Optional.of(initialIMUXYAccelerationG)
 		);
+		this.predictedOdometryPose = WPILibPoseEstimatorConstants.STARTING_ODOMETRY_POSE
+			.exp(kinematics.toChassisSpeeds(initialModuleStates).toTwist2d(WPILibPoseEstimatorConstants.ODOMETRY_POSE_PREDICTION_TIME_SECONDS));
 		this.isIMUOffsetCalibrated = false;
 		this.poseToIMUYawDifferenceBuffer = new RingBuffer<>(WPILibPoseEstimatorConstants.POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE);
 		this.imuYawBuffer = TimeInterpolatableBuffer.createBuffer(WPILibPoseEstimatorConstants.IMU_YAW_BUFFER_SIZE_SECONDS);
 		this.imuXYAccelerationGBuffer = TimeInterpolatableBuffer
 			.createBuffer(WPILibPoseEstimatorConstants.IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS);
-		this.predictedOdometryPose = WPILibPoseEstimatorConstants.STARTING_ODOMETRY_POSE
-			.exp(kinematics.toChassisSpeeds(initialModuleStates).toTwist2d(WPILibPoseEstimatorConstants.ODOMETRY_POSE_PREDICTION_TIME_SECONDS));
 	}
 
 
@@ -178,10 +178,10 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
 		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
 		Logger.recordOutput(logPath + "/predictedOdometryPose", predictedOdometryPose);
-		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		if (lastVisionObservation != null) {
 			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
 		}
+		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
 
 		lastOdometryData.getIMUXYAccelerationG()
