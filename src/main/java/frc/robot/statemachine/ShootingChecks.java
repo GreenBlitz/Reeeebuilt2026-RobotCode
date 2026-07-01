@@ -220,7 +220,7 @@ public class ShootingChecks {
 			Rotation2d turretTargetPosition,
 			String actionLogPath
 	) {
-		String logPath = shootingChecksLogPath + "/CanContinue" + actionLogPath;
+		String logPath = shootingChecksLogPath + "/CanContinueDumb" + actionLogPath;
 
 		boolean isAtTurretAtTarget = isTurretAtTargetPosition(
 				robot.getTurret().getPosition(),
@@ -471,6 +471,28 @@ public class ShootingChecks {
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinuePassing", canContinuePassing);
 
 		return canContinuePassing;
+	}
+
+	public static boolean canContinueDumbPassing(
+			Robot robot,
+			Rotation2d flywheelVelocityToleranceRPS,
+			Rotation2d hoodPositionTolerance,
+			Rotation2d headingTolerance
+	) {
+		boolean canContinueDumbShooting = canContinueDumbShooting(
+				robot,
+				flywheelVelocityToleranceRPS,
+				FlywheelConstants.DUMB_MODE_FLYWHEEL_PASS_VELOCITY,
+				hoodPositionTolerance,
+				HoodConstants.DUMB_MODE_HOOD_PASS_POSITION,
+				headingTolerance,
+				TurretConstants.DUMB_MODE_TURRET_PASS_POSITION,
+				"Passing"
+		);
+
+		Logger.recordOutput(shootingChecksLogPath + "/CanContinueDumbPassing", canContinueDumbShooting);
+
+		return canContinueDumbShooting;
 	}
 
 	public static boolean isOurHubReadyToStartShooting(double distanceFromHubMeters) {
