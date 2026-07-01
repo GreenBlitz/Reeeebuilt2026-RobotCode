@@ -81,6 +81,11 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	@Override
+	public void robotInit(){
+		robot.getLimelights().forEach(limelight -> limelight.addRequestToList(limelight1 -> limelight1.setThrottleState(false)));
+	}
+
+	@Override
 	public void disabledExit() {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);

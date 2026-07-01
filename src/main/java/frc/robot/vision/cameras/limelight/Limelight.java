@@ -1,5 +1,6 @@
 package frc.robot.vision.cameras.limelight;
 
+import com.sun.net.httpserver.Request;
 import edu.wpi.first.math.geometry.*;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
@@ -27,8 +28,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private static final int THROTTLE_ENABLE_VALUE = 200;
 	private static final int THROTTLE_DISABLE_VALUE = 0;
 
-	private static boolean hasCameraBeenDetectedOn = false;
-
 	private final String name;
 	private final String logPath;
 	private final Pose3d robotRelativeCameraPose;
@@ -36,9 +35,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private final ArrayList<DetectedObjectObservation> neuralDetections;
 	private final ArrayList<DetectedObjectObservation> colorDetections;
 
+	private final List<Consumer<Limelight>> pendingRequests;
+
 	private final LimelightInputsSet inputs;
 
 	private boolean isThrottleEnabled;
+
+	private boolean hasProcessedRequests = false;
 
 	private RobotPoseObservation mt1PoseObservation;
 	private RobotPoseObservation mt2PoseObservation;
@@ -65,6 +68,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		this.mt1PoseObservation = new RobotPoseObservation();
 		this.mt2PoseObservation = new RobotPoseObservation();
+
+		this.pendingRequests = new ArrayList<>();
 
 		this.inputs = new LimelightInputsSet();
 
@@ -173,6 +178,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.processInputs(logPath, inputs.hardwareInputs());
 	}
 
+	public void updatePendingRequests(){
+		if(!hasProcessedRequests&&inputs.hardwareInputs().connected){
+			pendingRequests.forEach(consumer -> consumer.accept(this));
+		}
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -279,6 +290,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void setMT2StdDevsCalculation(Supplier<StandardDeviations2D> calculateMT2StdDevs) {
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
+	}
+
+	public void addRequestToList(Consumer<Limelight> request){
+		this.pendingRequests.add(request);
 	}
 
 	public void captureGivenTime(double secondsToCapture) {
