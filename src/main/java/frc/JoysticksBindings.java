@@ -12,6 +12,7 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.autonomous.PathFollowingCommandsBuilder;
+import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -137,6 +138,17 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
+		// Shoot & Pass...
+		usedJoystick.R1.onTrue(
+				robot.getRobotCommander()
+						.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().dumbScoreSequence(), () -> getScoringState(usedJoystick))
+		);
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
+				.onTrue(
+						robot.getRobotCommander()
+								.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().dumbPassSequence(), () -> getPassState(usedJoystick))
+				);
+		usedJoystick.X.onTrue(robot.getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS));
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
