@@ -57,7 +57,6 @@ public class Modules {
 
 	public void pointWheelsInX() {
 		Arrays.stream(modules).forEach(Module::pointToCenter);
-		stop();
 	}
 
 
