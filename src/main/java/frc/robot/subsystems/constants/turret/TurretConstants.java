@@ -29,6 +29,10 @@ public class TurretConstants {
 	public static final Slot0Configs REAL_SLOTS_CONFIG = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOTS_CONFIG = new Slot0Configs();
 
+	public static final Rotation2d DUMB_MODE_TURRET_SCORE_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d DUMB_MODE_TURRET_PASS_POSITION = Rotation2d.fromDegrees(0);
+
+
 	static {
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 70;
 

@@ -137,6 +137,17 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
+		// Shoot & Pass...
+		usedJoystick.R1.onTrue(
+			robot.getRobotCommander()
+				.driveWithChangingState(RobotState.PRE_SCORE, robot.getRobotCommander().dumbScoreSequence(), () -> getScoringState(usedJoystick))
+		);
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER)
+			.onTrue(
+				robot.getRobotCommander()
+					.driveWithChangingState(RobotState.PRE_PASS, robot.getRobotCommander().dumbPassSequence(), () -> getPassState(usedJoystick))
+			);
+		usedJoystick.X.onTrue(robot.getRobotCommander().setState(RobotState.RESET_SUBSYSTEMS));
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {

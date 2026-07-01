@@ -6,6 +6,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
+import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.HubUtil;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -125,6 +128,35 @@ public class ShootingChecks {
 		return isReadyToShoot;
 	}
 
+	private static boolean isReadyToDumbShoot(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d flywheelTargetVelocityRPS,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d hoodTargetPosition,
+		Rotation2d turretTolerance,
+		Rotation2d targetTurretPosition,
+		String actionLogPath
+	) {
+		String logPath = shootingChecksLogPath + "/IsReadyToDumb" + actionLogPath;
+
+		boolean isAtTurretAtTarget = isTurretAtTargetPosition(robot.getTurret().getPosition(), targetTurretPosition, turretTolerance, logPath);
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+			robot.getFlyWheel().getVelocity(),
+			flywheelTargetVelocityRPS,
+			flywheelVelocityToleranceRPS,
+			logPath
+		);
+
+		boolean isHoodAtPosition = isHoodAtPosition(robot.getHood().getPosition(), hoodTargetPosition, hoodPositionTolerance, logPath);
+
+		boolean isReadyToDumbShoot = isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition;
+		Logger.recordOutput(shootingChecksLogPath + "/IsReadyToDumbShoot", isReadyToDumbShoot);
+
+		return isReadyToDumbShoot;
+	}
+
 	private static boolean canContinueShooting(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
@@ -166,6 +198,36 @@ public class ShootingChecks {
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinueShooting", canContinueShooting);
 
 		return canContinueShooting;
+	}
+
+	private static boolean canContinueDumbShooting(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d flywheelTargetVelocityRPS,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d hoodTargetPosition,
+		Rotation2d turretTolerance,
+		Rotation2d turretTargetPosition,
+		String actionLogPath
+	) {
+		String logPath = shootingChecksLogPath + "/CanContinueDumb" + actionLogPath;
+
+		boolean isAtTurretAtTarget = isTurretAtTargetPosition(robot.getTurret().getPosition(), turretTargetPosition, turretTolerance, logPath);
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+			robot.getFlyWheel().getVelocity(),
+			flywheelTargetVelocityRPS,
+			flywheelVelocityToleranceRPS,
+			logPath
+		);
+
+		boolean isHoodAtPosition = isHoodAtPosition(robot.getHood().getPosition(), hoodTargetPosition, hoodPositionTolerance, logPath);
+
+		boolean canContinueDumbShooting = isAtTurretAtTarget && isFlywheelReadyToShoot && isHoodAtPosition;
+
+		Logger.recordOutput(shootingChecksLogPath + "/CanContinueDumbShooting", canContinueDumbShooting);
+
+		return canContinueDumbShooting;
 	}
 
 	public static boolean calibrationIsReadyToShoot(
@@ -245,6 +307,28 @@ public class ShootingChecks {
 		return isReadyToScore;
 	}
 
+	public static boolean isReadyToDumbScore(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d turretTolerance
+	) {
+		boolean isReadyToDumbShoot = isReadyToDumbShoot(
+			robot,
+			flywheelVelocityToleranceRPS,
+			FlywheelConstants.DUMB_MODE_FLYWHEEL_SCORE_VELOCITY,
+			hoodPositionTolerance,
+			HoodConstants.DUMB_MODE_HOOD_SCORE_POSITION,
+			turretTolerance,
+			TurretConstants.DUMB_MODE_TURRET_SCORE_POSITION,
+			"Score"
+		);
+
+		Logger.recordOutput(shootingChecksLogPath + "isReadyToDumbScore", isReadyToDumbShoot);
+
+		return isReadyToDumbShoot;
+	}
+
 	public static boolean isReadyToPass(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
@@ -269,6 +353,28 @@ public class ShootingChecks {
 		Logger.recordOutput(shootingChecksLogPath + "/IsReadyToPass", isReadyToPass);
 
 		return isReadyToPass;
+	}
+
+	public static boolean isReadyToDumbPass(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d turretTolerance
+	) {
+		boolean isReadyToDumbShoot = isReadyToDumbShoot(
+			robot,
+			flywheelVelocityToleranceRPS,
+			FlywheelConstants.DUMB_MODE_FLYWHEEL_PASS_VELOCITY,
+			hoodPositionTolerance,
+			HoodConstants.DUMB_MODE_HOOD_PASS_POSITION,
+			turretTolerance,
+			TurretConstants.DUMB_MODE_TURRET_PASS_POSITION,
+			"Pass"
+		);
+
+		Logger.recordOutput(shootingChecksLogPath + "/IsReadyToDumbPass", isReadyToDumbShoot);
+
+		return isReadyToDumbShoot;
 	}
 
 	public static boolean canContinueScoring(
@@ -300,6 +406,28 @@ public class ShootingChecks {
 		return canContinueScoring;
 	}
 
+	public static boolean canContinueDumbScoring(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d turretTolerance
+	) {
+		boolean canContinueDumbShooting = canContinueDumbShooting(
+			robot,
+			flywheelVelocityToleranceRPS,
+			FlywheelConstants.DUMB_MODE_FLYWHEEL_SCORE_VELOCITY,
+			hoodPositionTolerance,
+			HoodConstants.DUMB_MODE_HOOD_SCORE_POSITION,
+			turretTolerance,
+			TurretConstants.DUMB_MODE_TURRET_SCORE_POSITION,
+			"Scoring"
+		);
+
+		Logger.recordOutput(shootingChecksLogPath + "/CanContinueDumbScoring", canContinueDumbShooting);
+
+		return canContinueDumbShooting;
+	}
+
 	public static boolean canContinuePassing(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRPS,
@@ -322,6 +450,28 @@ public class ShootingChecks {
 		Logger.recordOutput(shootingChecksLogPath + "/CanContinuePassing", canContinuePassing);
 
 		return canContinuePassing;
+	}
+
+	public static boolean canContinueDumbPassing(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRPS,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d headingTolerance
+	) {
+		boolean canContinueDumbShooting = canContinueDumbShooting(
+			robot,
+			flywheelVelocityToleranceRPS,
+			FlywheelConstants.DUMB_MODE_FLYWHEEL_PASS_VELOCITY,
+			hoodPositionTolerance,
+			HoodConstants.DUMB_MODE_HOOD_PASS_POSITION,
+			headingTolerance,
+			TurretConstants.DUMB_MODE_TURRET_PASS_POSITION,
+			"Passing"
+		);
+
+		Logger.recordOutput(shootingChecksLogPath + "/CanContinueDumbPassing", canContinueDumbShooting);
+
+		return canContinueDumbShooting;
 	}
 
 	public static boolean isOurHubReadyToStartShooting(double distanceFromHubMeters) {

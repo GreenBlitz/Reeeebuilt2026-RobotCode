@@ -40,6 +40,10 @@ public class Arm extends GBSubsystem {
 		commandBuilder = new ArmCommandBuilder(this);
 		setDefaultCommand(commandBuilder.stayInPlace());
 	}
+ 
+	public IFeedForwardRequest getPositionRequest() {
+		return positionRequest;
+	}
 
 	public ArmCommandBuilder getCommandsBuilder() {
 		return commandBuilder;

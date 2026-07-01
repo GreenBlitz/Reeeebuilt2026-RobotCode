@@ -22,6 +22,9 @@ public class HoodConstants {
 	public static final Slot0Configs REAL_SLOT = new Slot0Configs();
 	public static final Slot0Configs SIMULATION_SLOT = new Slot0Configs();
 
+	public static final Rotation2d DUMB_MODE_HOOD_SCORE_POSITION = Rotation2d.fromDegrees(0);
+	public static final Rotation2d DUMB_MODE_HOOD_PASS_POSITION = Rotation2d.fromDegrees(0);
+
 	static {
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
 		FEEDBACK_CONFIGS.SensorToMechanismRatio = 30.0;

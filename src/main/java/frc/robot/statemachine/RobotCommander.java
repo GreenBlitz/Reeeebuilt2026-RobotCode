@@ -12,6 +12,11 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
+
+
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
+import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -198,6 +203,15 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public boolean isReadyToDumbScore() {
+		return ShootingChecks.isReadyToDumbScore(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SCORING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_START_SCORING
+		);
+	}
+
 	public boolean isReadyToPass() {
 		return ShootingChecks.isReadyToPass(
 			robot,
@@ -205,6 +219,15 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
+		);
+	}
+
+	public boolean isReadyToDumbPass() {
+		return ShootingChecks.isReadyToDumbPass(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_START_PASSING
 		);
 	}
 
@@ -218,6 +241,15 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public boolean canContinueDumbScoring() {
+		return ShootingChecks.canContinueDumbScoring(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SCORING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SCORING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_SCORING
+		);
+	}
+
 	public boolean canContinuePassing() {
 		return ShootingChecks.canContinuePassing(
 			robot,
@@ -225,6 +257,15 @@ public class RobotCommander extends GBSubsystem {
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING,
 			StateMachineConstants.MAX_DISTANCE_TO_PASS_METERS
+		);
+	}
+
+	public boolean canContinueDumbPassing() {
+		return ShootingChecks.canContinueDumbPassing(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
+			StateMachineConstants.TURRET_TOLERANCE_TO_CONTINUE_PASSING
 		);
 	}
 
@@ -271,6 +312,31 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	public Command dumbScoreSequence() {
+		return new ParallelCommandGroup(
+			shooterStateHandler.setDumbState(
+				TurretConstants.DUMB_MODE_TURRET_SCORE_POSITION,
+				HoodConstants.DUMB_MODE_HOOD_SCORE_POSITION,
+				FlywheelConstants.DUMB_MODE_FLYWHEEL_SCORE_VELOCITY
+			),
+			new SequentialCommandGroup(
+				asSubsystemCommand(funnelStateHandler.setState(FunnelState.STOP), RobotState.PRE_SCORE).until(this::isReadyToDumbScore),
+				new RepeatCommand(
+					new SequentialCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToDumbScore),
+							RobotState.PRE_SCORE
+						),
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueDumbScoring()),
+							RobotState.SCORE
+						)
+					)
+				)
+			)
+		);
+	}
+
 	public Command passSequence() {
 		return new ParallelCommandGroup(
 			shooterStateHandler.setState(ShooterState.SHOOT),
@@ -281,6 +347,32 @@ public class RobotCommander extends GBSubsystem {
 					),
 					new ParallelCommandGroup(
 						asSubsystemCommand(funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinuePassing()), RobotState.PASS)
+					)
+				)
+			)
+		);
+	}
+
+	public Command dumbPassSequence() {
+		return new ParallelCommandGroup(
+			shooterStateHandler.setDumbState(
+				TurretConstants.DUMB_MODE_TURRET_PASS_POSITION,
+				HoodConstants.DUMB_MODE_HOOD_PASS_POSITION,
+				FlywheelConstants.DUMB_MODE_FLYWHEEL_PASS_VELOCITY
+			),
+			new RepeatCommand(
+				new SequentialCommandGroup(
+					new ParallelCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.PRE_SHOOT).until(this::isReadyToDumbPass),
+							RobotState.PRE_PASS
+						)
+					),
+					new ParallelCommandGroup(
+						asSubsystemCommand(
+							funnelStateHandler.setState(FunnelState.SHOOT).until(() -> !canContinueDumbPassing()),
+							RobotState.PASS
+						)
 					)
 				)
 			)
