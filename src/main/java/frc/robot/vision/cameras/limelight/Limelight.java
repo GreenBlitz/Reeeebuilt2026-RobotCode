@@ -183,10 +183,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return robotRelativeCameraPose;
 	}
 
-	public boolean getHasCameraTurnedOn() {
-		return inputs.hardwareInputs().connected;
-	}
-
 	@Override
 	public List<DetectedObjectObservation> getRobotRelativeObjectTranslations() {
 		if (pipeline.isNeuralDetecting()) {
@@ -243,10 +239,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public Filter getMt2PoseFilter() {
 		return mt2PoseFilter;
-	}
-
-	public static boolean getHasCameraBeenDetectedOn() {
-		return hasCameraBeenDetectedOn;
 	}
 
 	@Override
