@@ -49,7 +49,7 @@ public class TimeUtil {
 	}
 
 	public static double getTimeSinceTeleopInitSeconds() {
-		if (DriverStation.isDSAttached()){
+		if (DriverStation.isDSAttached()) {
 			return GamePeriodUtils.TELEOP_DURATION_SECONDS - DriverStation.getMatchTime();
 		}
 		if (RobotManager.getTeleopStartTimeSeconds() == -1) {
