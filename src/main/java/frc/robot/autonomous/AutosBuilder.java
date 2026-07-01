@@ -1248,9 +1248,6 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
 		}
-		if (isQuarter && allianceSide == AllianceSide.OUTPOST) {
-			return PathHelper.PATH_PLANNER_PATHS.get("R alliance stay");
-		}
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
 			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
