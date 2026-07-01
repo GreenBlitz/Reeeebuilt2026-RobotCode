@@ -323,6 +323,10 @@ public class Robot {
 		getLimelights().forEach(Limelight::updateMT1);
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
+		if (getLimelights().stream().allMatch(Limelight::getHasCameraTurnedOn)&&!Limelight.getHasCameraBeenDetectedOn()) {
+			Limelight.checkAndTriggerAllCamerasOn(getLimelights());
+		}
+
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);

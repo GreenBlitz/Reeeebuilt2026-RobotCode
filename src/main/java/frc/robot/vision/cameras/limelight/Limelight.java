@@ -26,6 +26,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private static final int THROTTLE_ENABLE_VALUE = 200;
 	private static final int THROTTLE_DISABLE_VALUE = 0;
 
+	private static boolean hasCameraBeenDetectedOn = false;
+
 	private final String name;
 	private final String logPath;
 	private final Pose3d robotRelativeCameraPose;
@@ -180,6 +182,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return robotRelativeCameraPose;
 	}
 
+	public boolean getHasCameraTurnedOn() {
+		return LimelightHelpers.getHeartbeat(name) > 0;
+	}
+
 	@Override
 	public List<DetectedObjectObservation> getRobotRelativeObjectTranslations() {
 		if (pipeline.isNeuralDetecting()) {
@@ -238,6 +244,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return mt2PoseFilter;
 	}
 
+	public static boolean getHasCameraBeenDetectedOn() {
+		return hasCameraBeenDetectedOn;
+	}
+
 	@Override
 	public void setRobotOrientation(Rotation3d robotOrientation) {
 		LimelightHelpers.SetRobotOrientation(
@@ -288,6 +298,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.SetThrottle(name, enableThrottle ? THROTTLE_ENABLE_VALUE : THROTTLE_DISABLE_VALUE);
 		isThrottleEnabled = enableThrottle;
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
+	}
+
+	public static void checkAndTriggerAllCamerasOn(List<Limelight> limelights) {
+		limelights.forEach(limelight -> limelight.setThrottleState(false));
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
