@@ -180,6 +180,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		return robotRelativeCameraPose;
 	}
 
+	public boolean getIsThrottleEnabled() {
+		return isThrottleEnabled;
+	}
+
 	@Override
 	public List<DetectedObjectObservation> getRobotRelativeObjectTranslations() {
 		if (pipeline.isNeuralDetecting()) {
@@ -236,10 +240,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public Filter getMt2PoseFilter() {
 		return mt2PoseFilter;
-	}
-
-	public boolean getIsThrottleEnabled() {
-		return isThrottleEnabled;
 	}
 
 	@Override
