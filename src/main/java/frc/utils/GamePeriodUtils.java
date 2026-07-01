@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 
+
 public class GamePeriodUtils {
 
 	public static final int TRANSITION_SHIFT_DURATION_SECONDS = 10;
@@ -89,10 +90,15 @@ public class GamePeriodUtils {
 	}
 
 	public static double getTimeUntilGameEnds() {
-		if (!DriverStationUtil.isTeleop()) {
-			return -1;
+		if (DriverStation.isDSAttached()) {
+			return DriverStation.getMatchTime();
 		}
-		return TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds();
+		if (DriverStationUtil.isAutonomous()) {
+			return TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds();
+		}
+		if (DriverStationUtil.isTeleop())
+			return TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds();
+		return -1;
 	}
 
 	public static double getTimeUntilShiftEnds() {
