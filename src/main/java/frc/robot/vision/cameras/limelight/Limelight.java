@@ -183,7 +183,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public boolean getHasCameraTurnedOn() {
-		return LimelightHelpers.getHeartbeat(name) > 0;
+		return inputs.hardwareInputs().connected;
 	}
 
 	@Override
