@@ -300,7 +300,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
 
-	public static void checkAndTriggerAllCamerasOn(List<Limelight> limelights) {
+	public static void updateThrottleAllCamerasOn(List<Limelight> limelights) {
 		limelights.forEach(limelight -> limelight.setThrottleState(false));
 		hasCameraBeenDetectedOn = true;
 	}
