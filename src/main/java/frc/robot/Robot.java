@@ -73,7 +73,7 @@ import java.util.function.Supplier;
  */
 public class Robot {
 
-	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
+	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(true);
 
 	private final FlyWheel flyWheel;
 	private final VelocityPositionArm turret;
@@ -321,7 +321,8 @@ public class Robot {
 
 		getLimelights().forEach(Limelight::updateHardwareInputs);
 		getLimelights().forEach(Limelight::updateMT1);
-		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+		getLimelights()
+			.forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poses -> poseEstimator.updateVision(limelight, poses)));
 
 		poseEstimator.log();
 		ShootingCalculations
