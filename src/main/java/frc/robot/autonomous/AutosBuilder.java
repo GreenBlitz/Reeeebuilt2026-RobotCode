@@ -6,8 +6,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.constants.field.AllianceSide;
 import frc.robot.Robot;
+import frc.utils.GamePeriodUtils;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.time.TimeUtil;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -502,28 +504,18 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
-											getAllianceSideToStartingLineAuto(
-												robot,
-												startingSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds,
-												returnToMiddle
-											)
-										)
-										.asProxy(),
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get())
-										.onlyIf(() -> !returnToMiddle.getAsBoolean())
+									getAllianceSideToStartingLineAuto(
+										robot,
+										startingSide,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds,
+										returnToMiddle,
+										scoreSequence,
+										closeIntake,
+										true
+									)
 								)
 							)
 					)
@@ -532,7 +524,7 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle, true)
 		);
 	}
 
@@ -612,7 +604,10 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence,
+												closeIntake,
+												false
 											)
 										)
 										.asProxy(),
@@ -725,7 +720,10 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence,
+												closeIntake,
+												false
 											)
 										)
 										.asProxy(),
@@ -743,7 +741,7 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
 			getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
-			getAllianceSideToStartingLinePath(actualReturnSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(actualReturnSide, returnToMiddle, false)
 		);
 	}
 
@@ -821,7 +819,10 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence,
+												closeIntake,
+												false
 											)
 										)
 										.asProxy(),
@@ -886,25 +887,19 @@ public class AutosBuilder {
 							.until(() -> hasPathEnded)
 							.andThen(
 								new ParallelCommandGroup(
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_START_WIGGLE_AFTER_PATH_END)
-										.andThen(
-											robot.getSwerve()
-												.getCommandsBuilder()
-												.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-												.withDeadline(new WaitCommand(AutonomousConstants.TIME_TO_WAIT_AT_DEPOT))
-										)
-										.andThen(
-											getAllianceSideToStartingLineAuto(
-												robot,
-												startingSide,
-												pathfindingConstraints,
-												regularIsNearEndOfPathTolerance,
-												stuckIsNearEndOfPathTolerance,
-												stuckDebounceSeconds,
-												returnToMiddle
-											)
-										)
-										.asProxy(),
+
+									getAllianceSideToStartingLineAuto(
+										robot,
+										startingSide,
+										pathfindingConstraints,
+										regularIsNearEndOfPathTolerance,
+										stuckIsNearEndOfPathTolerance,
+										stuckDebounceSeconds,
+										returnToMiddle,
+										scoreSequence,
+										closeIntake,
+										true
+									).asProxy(),
 									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
 										.andThen(closeIntake.get())
 										.onlyIf(() -> !returnToMiddle.getAsBoolean())
@@ -920,7 +915,7 @@ public class AutosBuilder {
 					? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
 					: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 				: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle, true)
 		);
 	}
 
@@ -975,7 +970,10 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence,
+												closeIntake,
+												false
 											)
 										)
 										.asProxy(),
@@ -1048,7 +1046,10 @@ public class AutosBuilder {
 												regularIsNearEndOfPathTolerance,
 												stuckIsNearEndOfPathTolerance,
 												stuckDebounceSeconds,
-												returnToMiddle
+												returnToMiddle,
+												scoreSequence,
+												closeIntake,
+												false
 											)
 										)
 										.asProxy(),
@@ -1065,7 +1066,7 @@ public class AutosBuilder {
 			startingSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("L horseshoe")
 				: PathHelper.PATH_PLANNER_PATHS.get("R horseshoe"),
-			getAllianceSideToStartingLinePath(startingSide, returnToMiddle)
+			getAllianceSideToStartingLinePath(startingSide, returnToMiddle, false)
 		);
 	}
 
@@ -1188,36 +1189,74 @@ public class AutosBuilder {
 		Pose2d regularIsNearEndOfPathTolerance,
 		Pose2d stuckIsNearEndOfPathTolerance,
 		double stuckDebounceSeconds,
-		BooleanSupplier returnToMiddle
+		BooleanSupplier returnToMiddle,
+		Supplier<Command> scoreSequence,
+		Supplier<Command> closeIntake,
+		boolean isQuarter
 	) {
-		return PathFollowingCommandsBuilder
-			.followAdjustedPathThenStop(
-				robot.getSwerve(),
-				() -> robot.getPoseEstimator().getEstimatedPose(),
-				getAllianceSideToStartingLinePath(allianceSide, returnToMiddle),
-				pathfindingConstraints,
-				regularIsNearEndOfPathTolerance,
-				stuckIsNearEndOfPathTolerance,
-				stuckDebounceSeconds,
-				robot.getSwerve().getLogPath()
-			)
+		return new ParallelCommandGroup(
+			new WaitCommand(AutonomousConstants.MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE)
+				.andThen(new RunCommand(() -> {}).until(() -> hasStoppedThrowingBalls(robot)))
+				.andThen(closeIntake.get()),
+			scoreSequence.get()
+		).until(
+			() -> returnToMiddle.getAsBoolean()
+				&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
+					> GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS
+						- (allianceSide == AllianceSide.OUTPOST
+							? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
+							: AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)
+		)
 			.andThen(
-				robot.getSwerve()
-					.getCommandsBuilder()
-					.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
-					.onlyIf(() -> !returnToMiddle.getAsBoolean())
+				new ParallelCommandGroup(
+					scoreSequence.get(),
+					closeIntake.get(),
+					PathFollowingCommandsBuilder
+						.followAdjustedPathThenStop(
+							robot.getSwerve(),
+							() -> robot.getPoseEstimator().getEstimatedPose(),
+							getAllianceSideToStartingLinePath(allianceSide, returnToMiddle, isQuarter),
+							pathfindingConstraints,
+							regularIsNearEndOfPathTolerance,
+							stuckIsNearEndOfPathTolerance,
+							stuckDebounceSeconds,
+							robot.getSwerve().getLogPath()
+						)
+						.andThen(
+							robot.getSwerve()
+								.getCommandsBuilder()
+								.wiggle(AutonomousConstants.WIGGLE_RANGE, AutonomousConstants.TIME_BETWEEN_WIGGLES_SECONDS)
+								.onlyIf(() -> !returnToMiddle.getAsBoolean())
+						)
+				)
 			);
 	}
 
-	private static PathPlannerPath getAllianceSideToStartingLinePath(AllianceSide allianceSide, BooleanSupplier returnToMiddle) {
+	private static PathPlannerPath getAllianceSideToStartingLinePath(
+		AllianceSide allianceSide,
+		BooleanSupplier returnToMiddle,
+		boolean isQuarter
+	) {
 		if (returnToMiddle.getAsBoolean()) {
 			return allianceSide == AllianceSide.DEPOT
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot - Middle")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Middle");
 		}
+		if (isQuarter && allianceSide == AllianceSide.OUTPOST) {
+			return PathHelper.PATH_PLANNER_PATHS.get("R alliance stay");
+		}
 		return allianceSide == AllianceSide.DEPOT
 			? PathHelper.PATH_PLANNER_PATHS.get("Depot - Starting line")
 			: PathHelper.PATH_PLANNER_PATHS.get("Outpost - Starting line");
+	}
+
+
+	private static boolean hasStoppedThrowingBalls(Robot robot) {
+		double lastBallTimestamp = robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry() != null
+			? robot.getBallsBufferIncludingPassing().getInternalBuffer().lastEntry().getKey()
+			: 0;
+
+		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp > AutonomousConstants.TIME_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS;
 	}
 
 }
