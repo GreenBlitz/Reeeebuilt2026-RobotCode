@@ -1,6 +1,5 @@
 package frc.robot.vision.cameras.limelight;
 
-import com.sun.net.httpserver.Request;
 import edu.wpi.first.math.geometry.*;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
@@ -178,8 +177,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.processInputs(logPath, inputs.hardwareInputs());
 	}
 
-	public void updatePendingRequests(){
-		if(!hasProcessedRequests&&inputs.hardwareInputs().connected){
+	public void updatePendingRequests() {
+		if (!hasProcessedRequests && inputs.hardwareInputs().connected) {
 			pendingRequests.forEach(consumer -> consumer.accept(this));
 		}
 	}
@@ -292,7 +291,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
 	}
 
-	public void addRequestToList(Consumer<Limelight> request){
+	public void addRequestToList(Consumer<Limelight> request) {
 		this.pendingRequests.add(request);
 	}
 
@@ -304,13 +303,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		LimelightHelpers.SetThrottle(name, enableThrottle ? THROTTLE_ENABLE_VALUE : THROTTLE_DISABLE_VALUE);
 		isThrottleEnabled = enableThrottle;
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
-	}
-
-	public void doWhileOn(Consumer<Limelight> limelightConsumer) {
-		if (!hasCameraBeenDetectedOn && inputs.hardwareInputs().connected) {
-			limelightConsumer.accept(this);
-			hasCameraBeenDetectedOn = true;
-		}
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {

@@ -81,7 +81,7 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	@Override
-	public void robotInit(){
+	public void robotInit() {
 		robot.getLimelights().forEach(limelight -> limelight.addRequestToList(limelight1 -> limelight1.setThrottleState(false)));
 	}
 

@@ -322,7 +322,7 @@ public class Robot {
 		getLimelights().forEach(Limelight::updateHardwareInputs);
 		getLimelights().forEach(Limelight::updateMT1);
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
-		getLimelights().forEach(limelight -> limelight.doWhileOn((limelight1) -> limelight1.setThrottleState(false)));
+		getLimelights().forEach(limelight -> limelight.updatePendingRequests());
 
 		poseEstimator.log();
 		ShootingCalculations
