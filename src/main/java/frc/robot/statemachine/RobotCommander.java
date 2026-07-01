@@ -12,6 +12,11 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
+
+
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
+import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.turret.TurretConstants;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -309,7 +314,11 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command dumbScoreSequence() {
 		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.SHOOT),
+			shooterStateHandler.setDumbState(
+				TurretConstants.DUMB_MODE_TURRET_SCORE_POSITION,
+				HoodConstants.DUMB_MODE_HOOD_SCORE_POSITION,
+				FlywheelConstants.DUMB_MODE_FLYWHEEL_SCORE_VELOCITY
+			),
 			new SequentialCommandGroup(
 				asSubsystemCommand(funnelStateHandler.setState(FunnelState.STOP), RobotState.PRE_SCORE).until(this::isReadyToDumbScore),
 				new RepeatCommand(
@@ -346,7 +355,11 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command dumbPassSequence() {
 		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.SHOOT),
+			shooterStateHandler.setDumbState(
+				TurretConstants.DUMB_MODE_TURRET_PASS_POSITION,
+				HoodConstants.DUMB_MODE_HOOD_PASS_POSITION,
+				FlywheelConstants.DUMB_MODE_FLYWHEEL_PASS_VELOCITY
+			),
 			new RepeatCommand(
 				new SequentialCommandGroup(
 					new ParallelCommandGroup(
