@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -300,9 +301,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
 
-	public static void updateThrottleAllCamerasOn(List<Limelight> limelights) {
-			limelights.forEach(limelight -> limelight.setThrottleState(false));
+	public void doWhileOn(Consumer<Limelight> limelightConsumer) {
+		if(!hasCameraBeenDetectedOn&&inputs.hardwareInputs().connected) {
+			limelightConsumer.accept(this);
 			hasCameraBeenDetectedOn = true;
+		}
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
