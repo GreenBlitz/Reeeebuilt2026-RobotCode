@@ -13,6 +13,7 @@ public class TimeUtil {
 
 	private static double lastCycleStartingTimeSeconds = 0;
 	private static double currentCycleStartingTimeSeconds = 0;
+	private static double autonomousStartTimeSeconds = 0;
 
 	static {
 		AlertManager.addAlert(
@@ -50,6 +51,14 @@ public class TimeUtil {
 			return -1;
 		}
 		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
+	}
+
+	public static double getAutonomousStartTimeSeconds() {
+		return autonomousStartTimeSeconds;
+	}
+
+	public static void setAutonomousStartTimeSeconds(double autonomousStartTimeSeconds) {
+		TimeUtil.autonomousStartTimeSeconds = autonomousStartTimeSeconds;
 	}
 
 }
