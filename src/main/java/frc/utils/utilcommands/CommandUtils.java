@@ -8,7 +8,15 @@ import java.util.function.BooleanSupplier;
 
 public class CommandUtils {
 
-    public static Command dynamicCommandChooser(BooleanSupplier firstCommandCondition, BooleanSupplier secondCommandCondition, Command firstCommand, Command secondCommand){
-        return new RepeatCommand(new SequentialCommandGroup(firstCommand.until(secondCommandCondition), secondCommand.until(firstCommandCondition)));
-    }
+	public static Command dynamicCommandChooser(
+		BooleanSupplier firstCommandCondition,
+		BooleanSupplier secondCommandCondition,
+		Command firstCommand,
+		Command secondCommand
+	) {
+		return new RepeatCommand(
+			new SequentialCommandGroup(firstCommand.until(secondCommandCondition), secondCommand.until(firstCommandCondition))
+		);
+	}
+
 }

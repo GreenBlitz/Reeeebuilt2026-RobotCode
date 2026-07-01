@@ -10,7 +10,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.swerve.SwerveCommandsBuilder;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 import frc.utils.utilcommands.CommandUtils;
@@ -132,7 +131,12 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command driveWith(RobotState state, Command command) {
 		BooleanSupplier isDefenceModeOff = () -> !isDefenceModeOn.getAsBoolean();
-		Command swerveDriveCommand = CommandUtils.dynamicCommandChooser(isDefenceModeOn, isDefenceModeOff, swerve.getCommandsBuilder().pointWheelsInX(), swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState()));
+		Command swerveDriveCommand = CommandUtils.dynamicCommandChooser(
+			isDefenceModeOn,
+			isDefenceModeOff,
+			swerve.getCommandsBuilder().pointWheelsInX(),
+			swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState())
+		);
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
@@ -342,7 +346,7 @@ public class RobotCommander extends GBSubsystem {
 		};
 	}
 
-	public void setIsDefenceModeOn(BooleanSupplier isDefenceModeOn){
+	public void setIsDefenceModeOn(BooleanSupplier isDefenceModeOn) {
 		this.isDefenceModeOn = isDefenceModeOn;
 	}
 
