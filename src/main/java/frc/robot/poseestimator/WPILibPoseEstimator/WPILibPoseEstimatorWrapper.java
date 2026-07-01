@@ -177,8 +177,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public void log() {
 		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
 		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
-		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		Logger.recordOutput(logPath + "/predictedOdometryPose", predictedOdometryPose);
+		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		if (lastVisionObservation != null) {
 			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
 		}
