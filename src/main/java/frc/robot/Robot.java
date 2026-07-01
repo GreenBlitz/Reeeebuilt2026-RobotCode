@@ -323,7 +323,7 @@ public class Robot {
 		getLimelights().forEach(Limelight::updateMT1);
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
-		if (!Limelight.getHasCameraBeenDetectedOn()) {
+		if (!Limelight.getHasCameraBeenDetectedOn()&&limelights.stream().allMatch(Limelight::getHasCameraTurnedOn)){
 			Limelight.updateThrottleAllCamerasOn(getLimelights());
 		}
 
