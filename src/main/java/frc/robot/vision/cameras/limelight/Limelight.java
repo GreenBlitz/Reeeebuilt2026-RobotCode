@@ -52,7 +52,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private LimelightPipeline pipeline;
 
 	private final List<Consumer<Limelight>> pendingConnectedRequests;
-	private boolean hasProcessedConnectedRequests;
 
 	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
 		this.name = name;
@@ -80,7 +79,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		setPipeline(pipeline);
 
 		this.pendingConnectedRequests = new ArrayList<>();
-		this.hasProcessedConnectedRequests = false;
 	}
 
 	public void updateNeuralDetection() {
@@ -178,9 +176,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public void updatePendingRequests() {
-		if (!hasProcessedConnectedRequests && inputs.hardwareInputs().connected) {
+		if (!pendingConnectedRequests.isEmpty() && inputs.hardwareInputs().connected) {
 			pendingConnectedRequests.forEach(consumer -> consumer.accept(this));
-			hasProcessedConnectedRequests = true;
+			pendingConnectedRequests.clear();
 		}
 	}
 
