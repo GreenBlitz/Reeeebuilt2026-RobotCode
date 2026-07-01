@@ -78,7 +78,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.pendingConnectedRequests = new ArrayList<>();
 		addPendingConnectedRequest(limelight -> limelight.setRobotRelativeCameraPose(robotRelativeCameraPose));
 		addPendingConnectedRequest(limelight -> limelight.setPipeline(pipeline));
-
 	}
 
 	public void updateNeuralDetection() {
