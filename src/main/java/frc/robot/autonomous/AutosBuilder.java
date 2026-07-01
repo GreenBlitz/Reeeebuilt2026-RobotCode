@@ -500,7 +500,8 @@ public class AutosBuilder {
 									stuckDebounceSeconds,
 									returnToMiddle,
 									scoreSequence,
-									closeIntake
+									closeIntake,
+									openIntake
 								).asProxy()
 							)
 					)
@@ -509,8 +510,8 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-				getAllianceSideToStartingLinePath(startingSide),
-				getAllianceSideToMiddlePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide),
+			getAllianceSideToMiddlePath(startingSide)
 		);
 	}
 
@@ -561,7 +562,8 @@ public class AutosBuilder {
 									stuckDebounceSeconds,
 									returnToMiddle,
 									scoreSequence,
-									closeIntake
+									closeIntake,
+									openIntake
 								).asProxy()
 							)
 					)
@@ -570,8 +572,8 @@ public class AutosBuilder {
 			new Pose2d(),
 			startingSide == AllianceSide.DEPOT ? "L quarter" : "R quarter",
 			startingSide == AllianceSide.DEPOT ? PathHelper.PATH_PLANNER_PATHS.get("L quarter") : PathHelper.PATH_PLANNER_PATHS.get("R quarter"),
-				getAllianceSideToStartingLinePath(startingSide),
-				getAllianceSideToMiddlePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide),
+			getAllianceSideToMiddlePath(startingSide)
 		);
 	}
 
@@ -654,7 +656,8 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
-												closeIntake
+												closeIntake,
+												openIntake
 											)
 										)
 										.asProxy(),
@@ -768,7 +771,8 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
-												closeIntake
+												closeIntake,
+												openIntake
 											)
 										)
 										.asProxy(),
@@ -785,8 +789,8 @@ public class AutosBuilder {
 				? PathHelper.PATH_PLANNER_PATHS.get("Depot Hub Wait")
 				: PathHelper.PATH_PLANNER_PATHS.get("Outpost Hub Wait"),
 			getStealPath(firstOpponentBumpSide, returnSide, skipOutpost),
-				getAllianceSideToStartingLinePath(startingSide),
-				getAllianceSideToMiddlePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide),
+			getAllianceSideToMiddlePath(startingSide)
 		);
 	}
 
@@ -866,7 +870,8 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
-												closeIntake
+												closeIntake,
+												openIntake
 											)
 										)
 										.asProxy(),
@@ -929,19 +934,21 @@ public class AutosBuilder {
 						openIntake.get()
 							.until(() -> hasPathEnded)
 							.andThen(
-									getAllianceSideToStartingLineAuto(
-										robot,
-										startingSide,
-										pathfindingConstraints,
-										regularIsNearEndOfPathTolerance,
-										stuckIsNearEndOfPathTolerance,
-										stuckDebounceSeconds,
-										returnToMiddle,
-										scoreSequence,
-										closeIntake
-									).asProxy(),
-									new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
-										.andThen(closeIntake.get())
+								getAllianceSideToStartingLineAuto(
+									robot,
+									startingSide,
+									pathfindingConstraints,
+									regularIsNearEndOfPathTolerance,
+									stuckIsNearEndOfPathTolerance,
+									stuckDebounceSeconds,
+									returnToMiddle,
+									scoreSequence,
+									closeIntake,
+									openIntake
+
+								).asProxy(),
+								new WaitCommand(AutonomousConstants.TIME_TO_WAIT_TO_CLOSE_INTAKE_AFTER_PATH_END_SECONDS)
+									.andThen(closeIntake.get())
 
 							)
 					)
@@ -954,8 +961,8 @@ public class AutosBuilder {
 					? PathHelper.PATH_PLANNER_PATHS.get("L quarter light to outpost")
 					: PathHelper.PATH_PLANNER_PATHS.get("L quarter light")
 				: PathHelper.PATH_PLANNER_PATHS.get("R quarter light"),
-				getAllianceSideToStartingLinePath(startingSide),
-				getAllianceSideToMiddlePath(startingSide)
+			getAllianceSideToStartingLinePath(startingSide),
+			getAllianceSideToMiddlePath(startingSide)
 		);
 	}
 
@@ -1015,7 +1022,8 @@ public class AutosBuilder {
 												stuckDebounceSeconds,
 												returnToMiddle,
 												scoreSequence,
-												closeIntake
+												closeIntake,
+												openIntake
 											)
 										)
 										.asProxy(),
@@ -1157,7 +1165,8 @@ public class AutosBuilder {
 		double stuckDebounceSeconds,
 		BooleanSupplier returnToMiddle,
 		Supplier<Command> scoreSequence,
-		Supplier<Command> closeIntake
+		Supplier<Command> closeIntake,
+		Supplier<Command> openIntake
 	) {
 		return new ParallelCommandGroup(
 			new WaitCommand(AutonomousConstants.MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE)
@@ -1180,7 +1189,7 @@ public class AutosBuilder {
 			.andThen(
 				new ParallelCommandGroup(
 					scoreSequence.get(),
-					closeIntake.get(),
+					openIntake.get(),
 					PathFollowingCommandsBuilder
 						.followAdjustedPathThenStop(
 							robot.getSwerve(),
