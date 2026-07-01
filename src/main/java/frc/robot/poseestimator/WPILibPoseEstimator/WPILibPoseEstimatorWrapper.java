@@ -247,16 +247,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void updateIMUOffset(RobotPoseObservation visionRobotPoseObservation) {
-		getEstimatedPoseToIMUYawDifference(
-			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
-			visionRobotPoseObservation.timestampSeconds()
-		).ifPresent(yawDifference -> {
-			poseToIMUYawDifferenceBuffer.insert(yawDifference);
-
-			if (!isIMUOffsetCalibrated) {
+		if (!isIMUOffsetCalibrated) {
+			getEstimatedPoseToIMUYawDifference(
+				imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
+				visionRobotPoseObservation.timestampSeconds()
+			).ifPresent(yawDifference -> {
+				poseToIMUYawDifferenceBuffer.insert(yawDifference);
 				updateIsIMUOffsetCalibrated();
-			}
-		});
+			});
+		}
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
