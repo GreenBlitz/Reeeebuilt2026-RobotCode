@@ -68,8 +68,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		this.inputs = new LimelightInputsSet();
 
-		setThrottleState(false);
-
 		this.neuralDetectionFilter = rawDetection -> true;
 		this.colorDetectionFilter = rawTarget -> true;
 		this.mt1PoseFilter = Filter.nonFilteringFilter();
@@ -292,7 +290,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		isThrottleEnabled = enableThrottle;
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
-	public void
 
 	public void doWhileOn(Consumer<Limelight> limelightConsumer) {
 		if (!hasCameraBeenDetectedOn && inputs.hardwareInputs().connected) {
