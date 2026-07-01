@@ -35,6 +35,7 @@ public class AutonomousConstants {
 	public static final double STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
 	public static final double SIDE_STEAL_START_SECOND_SINCE_AUTO_BEGAN = 3.5;
 	public static final double TIME_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS = 1.0;
+	public static final double TIME_BETWEEN_BALLS_TO_CLOSE_INTAKE_SECONDS = 1.0;
 	public static final double TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START = 4.0;
 	public static final double TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START = 6.0;
 	public static final double MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE = 1.0;
