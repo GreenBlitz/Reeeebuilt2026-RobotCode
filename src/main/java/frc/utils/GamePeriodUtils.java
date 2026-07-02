@@ -95,7 +95,7 @@ public class GamePeriodUtils {
 			return DriverStation.getMatchTime();
 		}
 		if (DriverStationUtil.isAutonomousEnabled()) {
-			return TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds();
+			return getTimeUntilAutonomousEnds();
 		}
 		if (DriverStationUtil.isTeleop())
 			return TELEOP_DURATION_SECONDS - TimeUtil.getTimeSinceTeleopInitSeconds();
@@ -108,6 +108,10 @@ public class GamePeriodUtils {
 		}
 		return ALLIANCE_SHIFT_DURATION_SECONDS
 			- ((TimeUtil.getTimeSinceTeleopInitSeconds() - TRANSITION_SHIFT_DURATION_SECONDS) % GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS);
+	}
+
+	public static double getTimeUntilAutonomousEnds() {
+		return AUTONOMOUS_DURATION_SECONDS - (TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds());
 	}
 
 	public static String getCurrentGamePeriod() {
