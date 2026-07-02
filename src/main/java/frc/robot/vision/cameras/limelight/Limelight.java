@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -50,12 +51,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private LimelightPipeline pipeline;
 
+	private final List<Consumer<Limelight>> pendingConnectedRequests;
+
 	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
 
 		this.robotRelativeCameraPose = robotRelativeCameraPose;
-		setRobotRelativeCameraPose(robotRelativeCameraPose);
 
 		this.neuralDetections = new ArrayList<>();
 		this.colorDetections = new ArrayList<>();
@@ -65,8 +67,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		this.inputs = new LimelightInputsSet();
 
-		setThrottleState(false);
-
 		this.neuralDetectionFilter = rawDetection -> true;
 		this.colorDetectionFilter = rawTarget -> true;
 		this.mt1PoseFilter = Filter.nonFilteringFilter();
@@ -75,7 +75,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT1StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 		this.calculateMT2StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 
-		setPipeline(pipeline);
+		this.pendingConnectedRequests = new ArrayList<>();
+		addPendingConnectedRequest(limelight -> limelight.setRobotRelativeCameraPose(robotRelativeCameraPose));
+		addPendingConnectedRequest(limelight -> limelight.setPipeline(pipeline));
 	}
 
 	public void updateNeuralDetection() {
@@ -170,6 +172,13 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		inputs.hardwareInputs().connected = LimelightHelpersAdditions.getIsConnected(name);
 		inputs.hardwareInputs().temperatureCelsius = LimelightHelpersAdditions.getTemperatureCelsius(name);
 		Logger.processInputs(logPath, inputs.hardwareInputs());
+	}
+
+	public void updatePendingRequests() {
+		if (!pendingConnectedRequests.isEmpty() && inputs.hardwareInputs().connected) {
+			pendingConnectedRequests.forEach(consumer -> consumer.accept(this));
+			pendingConnectedRequests.clear();
+		}
 	}
 
 	public String getName() {
@@ -280,14 +289,18 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT2StdDevs = calculateMT2StdDevs;
 	}
 
-	public void captureGivenTime(double secondsToCapture) {
-		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
-	}
-
 	public void setThrottleState(boolean enableThrottle) {
 		LimelightHelpers.SetThrottle(name, enableThrottle ? THROTTLE_ENABLE_VALUE : THROTTLE_DISABLE_VALUE);
 		isThrottleEnabled = enableThrottle;
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
+	}
+
+	public void addPendingConnectedRequest(Consumer<Limelight> request) {
+		pendingConnectedRequests.add(request);
+	}
+
+	public void captureGivenTime(double secondsToCapture) {
+		LimelightHelpers.triggerRewindCapture(name, secondsToCapture);
 	}
 
 	protected LimelightTarget2dValues getTarget2dValues() {
