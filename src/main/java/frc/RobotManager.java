@@ -160,8 +160,6 @@ public class RobotManager extends LoggedRobot {
 		Logger.recordOutput("IsHubActive", HubUtil.isOurHubActive(TimeUtil.getTimeSinceTeleopInitSeconds()));
 		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.getTimeUntilGameEnds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
-		Logger.recordOutput("TimeSinceTeleopInit", TimeUtil.getTimeSinceTeleopInitSeconds());
-		Logger.recordOutput("TeleopStartTimeSeconds", teleopStartTimeSeconds);
 
 		logDriverAlerts();
 

@@ -1,10 +1,11 @@
 package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.RobotManager;
 import frc.robot.Robot;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
-
+import org.littletonrobotics.junction.Logger;
 
 public class GamePeriodUtils {
 
@@ -125,5 +126,11 @@ public class GamePeriodUtils {
 			return getCurrentShift();
 		}
 	}
+
+    public static void log(){
+        Logger.recordOutput("TimeSinceTeleopInit", TimeUtil.getTimeSinceTeleopInitSeconds());
+        Logger.recordOutput("TeleopStartTimeSeconds", RobotManager.getTeleopStartTimeSeconds());
+        Logger.recordOutput("AutonomousStartTimeSeconds", TimeUtil.getAutonomousStartTimeSeconds());
+    }
 
 }
