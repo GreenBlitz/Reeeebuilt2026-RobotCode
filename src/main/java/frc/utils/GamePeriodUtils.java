@@ -127,10 +127,10 @@ public class GamePeriodUtils {
 		}
 	}
 
-    public static void log(){
-        Logger.recordOutput("TimeSinceTeleopInit", TimeUtil.getTimeSinceTeleopInitSeconds());
-        Logger.recordOutput("TeleopStartTimeSeconds", RobotManager.getTeleopStartTimeSeconds());
-        Logger.recordOutput("AutonomousStartTimeSeconds", TimeUtil.getAutonomousStartTimeSeconds());
-    }
+	public static void log() {
+		Logger.recordOutput("TimeSinceTeleopInit", TimeUtil.getTimeSinceTeleopInitSeconds());
+		Logger.recordOutput("TeleopStartTimeSeconds", RobotManager.getTeleopStartTimeSeconds());
+		Logger.recordOutput("AutonomousStartTimeSeconds", TimeUtil.getAutonomousStartTimeSeconds());
+	}
 
 }
