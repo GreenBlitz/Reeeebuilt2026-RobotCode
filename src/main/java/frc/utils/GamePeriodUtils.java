@@ -95,7 +95,7 @@ public class GamePeriodUtils {
 		if (Robot.ROBOT_TYPE.isReal()) {
 			return DriverStation.getMatchTime();
 		}
-		if (DriverStationUtil.isAutonomousEnabled()) {
+		if (DriverStationUtil.isAutonomous()) {
 			return getTimeUntilAutonomousEnds();
 		}
 		if (DriverStationUtil.isTeleop())
