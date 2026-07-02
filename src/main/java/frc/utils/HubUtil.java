@@ -1,6 +1,7 @@
 package frc.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Robot;
 import frc.utils.driverstation.GameSpecificMessageResponse;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.Alert;
@@ -101,7 +102,7 @@ public class HubUtil {
 
 	public static double timeUntilCurrentShiftEndsSeconds(double timeSinceTeleopInitSeconds) {
 		if (DriverStationUtil.isAutonomous()) {
-			return GamePeriodUtils.getTimeUntilAutonomousEnds();
+			return Robot.ROBOT_TYPE.isReal() ? DriverStation.getMatchTime() : GamePeriodUtils.getTimeUntilAutonomousEnds();
 		}
 		if (timeSinceTeleopInitSeconds >= GamePeriodUtils.ACTIVE_HUB_TIME_AFTER_GAME_ENDS_SECONDS || timeSinceTeleopInitSeconds == -1) {
 			return 0;
