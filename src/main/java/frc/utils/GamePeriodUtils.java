@@ -112,7 +112,12 @@ public class GamePeriodUtils {
 	}
 
 	public static double getTimeUntilAutonomousEnds() {
-		return AUTONOMOUS_DURATION_SECONDS - (TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds());
+		if (!DriverStationUtil.isAutonomous()) {
+			return -1;
+		}
+		return Robot.ROBOT_TYPE.isReal()
+			? DriverStation.getMatchTime()
+			: AUTONOMOUS_DURATION_SECONDS - (TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds());
 	}
 
 	public static String getCurrentGamePeriod() {
