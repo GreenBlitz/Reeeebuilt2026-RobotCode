@@ -15,6 +15,9 @@ public class FlywheelConstants {
 	public static final InvertedValue IS_MASTER_INVERTED = InvertedValue.CounterClockwise_Positive;
 	public static final InvertedValue IS_FOLLOWER_INVERTED = InvertedValue.Clockwise_Positive;
 
+	public static Rotation2d DUMB_MODE_FLYWHEEL_SCORE_VELOCITY = Rotation2d.fromRotations(60);
+	public static Rotation2d DUMB_MODE_FLYWHEEL_PASS_VELOCITY = Rotation2d.fromRotations(60);
+
 	public static final double kP = 0.3;
 	public static final double kI = 0;
 	public static final double kD = 0;

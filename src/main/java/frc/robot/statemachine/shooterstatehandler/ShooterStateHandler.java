@@ -1,5 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.ShootingCalculations;
@@ -104,6 +105,27 @@ public class ShooterStateHandler {
 		return new ParallelCommandGroup(
 			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE, () -> hasHoodBeenReset()),
 			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, () -> hasTurretBeenReset())
+		);
+	}
+
+	public Command setDumbState(Rotation2d turretTargetPosition, Rotation2d hoodTargetPosition, Rotation2d flywheelTargetVelocityRPS) {
+		Command command = new ParallelCommandGroup(
+			turret.asSubsystemCommand(
+				new TurretSafeMoveToPosition(
+					turret,
+					() -> turretTargetPosition,
+					() -> Rotation2d.kZero,
+					logPath
+				),
+				"Safe move to position"
+			),
+			hood.getCommandsBuilder().setTargetPosition(() -> hoodTargetPosition),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> flywheelTargetVelocityRPS)
+		);
+		return new ParallelCommandGroup(
+			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", ShooterState.SHOOT.name())),
+			new InstantCommand(() -> currentState = ShooterState.SHOOT),
+			command
 		);
 	}
 
