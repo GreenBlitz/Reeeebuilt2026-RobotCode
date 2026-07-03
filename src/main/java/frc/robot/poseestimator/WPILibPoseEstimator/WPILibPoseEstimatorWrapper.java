@@ -41,6 +41,9 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public boolean[] areSame = new boolean[3];
 	public RobotPoseObservation[] goodPoses = new RobotPoseObservation[3];
 	public Pose2d bestPose = new Pose2d();
+	public String[] cams = {"limelight-front", "limelight-right", "limelight-left"};
+	public RobotPoseObservation[] poses = new RobotPoseObservation[3];
+	public boolean[] wasUpdated = new boolean[3];
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -215,52 +218,65 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation, Limelight ll) {
 		addVisionMeasurement(visionRobotPoseObservation);
 
-		double xdiff = Math.abs(lastVisionObservation.robotPose().getX() - getEstimatedPose().getX());
-		double ydiff = Math.abs(lastVisionObservation.robotPose().getY() - getEstimatedPose().getY());
-		double angdiff = Math.abs(lastVisionObservation.robotPose().getRotation().getDegrees() - getEstimatedPose().getRotation().getDegrees());
+//		double xdiff = Math.abs(lastVisionObservation.robotPose().getX() - getEstimatedPose().getX());
+//		double ydiff = Math.abs(lastVisionObservation.robotPose().getY() - getEstimatedPose().getY());
+//		double angdiff = Math.abs(lastVisionObservation.robotPose().getRotation().getDegrees() - getEstimatedPose().getRotation().getDegrees());
+
+//		if (ll.getName().equals("limelight-front")) {
+//			areSame[0] = xdiff + ydiff < 1;
+//			if (areSame[0]) {
+//				goodPoses[0] = lastVisionObservation;
+//			} else {
+//				goodPoses[0] = null;
+//			}
+//		}
+//		if (ll.getName().equals("limelight-right")) {
+//			areSame[1] = xdiff + ydiff < 1;
+//			if (areSame[1]) {
+//				goodPoses[1] = lastVisionObservation;
+//			} else {
+//				goodPoses[1] = null;
+//			}
+//		}
+//		if (ll.getName().equals("limelight-left")) {
+//			areSame[2] = xdiff + ydiff < 1;
+//			if (areSame[2]) {
+//				goodPoses[2] = lastVisionObservation;
+//			} else {
+//				goodPoses[2] = null;
+//			}
+//		}
+//		Logger.recordOutput("areSame", areSame);
+//
+//		int c = 0;
+//		Pose2d maybeBest = new Pose2d();
+//		for (int i = 0; i < goodPoses.length; i++) {
+//			if (goodPoses[i] != null) {
+//				c++;
+//				maybeBest = new Pose2d(
+//					maybeBest.getX() + goodPoses[i].robotPose().getX(),
+//					maybeBest.getY() + goodPoses[i].robotPose().getY(),
+//					maybeBest.getRotation().plus(goodPoses[i].robotPose().getRotation())
+//				);
+//			}
+//		}
+//		if (c > 1) {
+//			bestPose = new Pose2d(maybeBest.getX() / c, maybeBest.getY() / c, maybeBest.getRotation().div(c));
+//		}
+//		Logger.recordOutput("bestPose", bestPose);
 
 		if (ll.getName().equals("limelight-front")) {
-			areSame[0] = xdiff + ydiff < 1;
-			if (areSame[0]) {
-				goodPoses[0] = lastVisionObservation;
-			} else {
-				goodPoses[0] = null;
-			}
+			poses[0] = lastVisionObservation;
+			wasUpdated[0] = true;
 		}
 		if (ll.getName().equals("limelight-right")) {
-			areSame[1] = xdiff + ydiff < 1;
-			if (areSame[1]) {
-				goodPoses[1] = lastVisionObservation;
-			} else {
-				goodPoses[1] = null;
-			}
+			poses[1] = lastVisionObservation;
+			wasUpdated[1] = true;
 		}
 		if (ll.getName().equals("limelight-left")) {
-			areSame[2] = xdiff + ydiff < 1;
-			if (areSame[2]) {
-				goodPoses[2] = lastVisionObservation;
-			} else {
-				goodPoses[2] = null;
-			}
+			poses[2] = lastVisionObservation;
+			wasUpdated[2] = true;
 		}
-		Logger.recordOutput("areSame", areSame);
-
-		int c = 0;
-		Pose2d maybeBest = new Pose2d();
-		for (int i = 0; i < goodPoses.length; i++) {
-			if (goodPoses[i] != null) {
-				c++;
-				maybeBest = new Pose2d(
-					maybeBest.getX() + goodPoses[i].robotPose().getX(),
-					maybeBest.getY() + goodPoses[i].robotPose().getY(),
-					maybeBest.getRotation().plus(goodPoses[i].robotPose().getRotation())
-				);
-			}
-		}
-		if (c > 1) {
-			bestPose = new Pose2d(maybeBest.getX() / c, maybeBest.getY() / c, maybeBest.getRotation().div(c));
-		}
-		Logger.recordOutput("bestPose", bestPose);
 
 		getEstimatedPoseToIMUYawDifference(
 			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
@@ -272,6 +288,59 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				updateIsIMUOffsetCalibrated();
 			}
 		});
+	}
+
+	@Override
+	public void updateVisionPoses() {
+		boolean a = true;
+		for (int i = 0; i < poses.length; i++) {
+			if (poses[i] == null) {
+				a = false;
+			}
+		}
+
+		if (a) {
+			areSame[0] = false;
+			areSame[1] = false;
+			areSame[2] = false;
+			for (int i = 0; i < poses.length; i++) {
+				for (int j = 0; j < poses.length; j++) {
+					if (wasUpdated[i]) {
+						if (i != j && wasUpdated[j]) {
+							double xdiff = Math.abs(poses[i].robotPose().getX() - poses[j].robotPose().getX());
+							double ydiff = Math.abs(poses[i].robotPose().getY() - poses[j].robotPose().getY());
+
+							if (xdiff + ydiff < 1) {
+								areSame[i] = true;
+								areSame[j] = true;
+							}
+						}
+					} else {
+						areSame[i] = false;
+					}
+				}
+			}
+			Logger.recordOutput("areSame", areSame);
+
+			int c = 0;
+			Pose2d total = new Pose2d();
+			for (int i = 0; i < areSame.length; i++) {
+				if (areSame[i]) {
+					c++;
+					total = new Pose2d(
+						total.getX() + poses[i].robotPose().getX(),
+						total.getY() + poses[i].robotPose().getY(),
+						total.getRotation().plus(poses[i].robotPose().getRotation())
+					);
+				}
+			}
+			bestPose = new Pose2d(total.getX() / c, total.getY() / c, total.getRotation().div(c));
+			Logger.recordOutput("bestPose", bestPose);
+		}
+		Logger.recordOutput("wasUpdated", wasUpdated);
+		wasUpdated[0] = false;
+		wasUpdated[1] = false;
+		wasUpdated[2] = false;
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
