@@ -1,7 +1,9 @@
 package frc.robot.poseestimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.vision.cameras.limelight.Limelight;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,5 +20,7 @@ public interface IPoseEstimator extends IVisionEstimator, IOdometryEstimator {
 	void log();
 
 	void updateVisionPoses();
+
+	void updateByBestPose(List<Limelight> lls);
 
 }

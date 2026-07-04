@@ -19,10 +19,12 @@ import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
 import frc.robot.vision.cameras.limelight.Limelight;
 import frc.utils.buffers.RingBuffer.RingBuffer;
+import frc.utils.math.StandardDeviations2D;
 import frc.utils.math.StatisticsMath;
 import frc.utils.pose.PoseUtil;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
@@ -44,6 +46,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	public String[] cams = {"limelight-front", "limelight-right", "limelight-left"};
 	public RobotPoseObservation[] poses = new RobotPoseObservation[3];
 	public boolean[] wasUpdated = new boolean[3];
+	public boolean useBestPose = false;
 
 	public WPILibPoseEstimatorWrapper(
 		String logPath,
@@ -216,7 +219,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void updateVision(RobotPoseObservation visionRobotPoseObservation, Limelight ll) {
-		addVisionMeasurement(visionRobotPoseObservation);
+//		addVisionMeasurement(visionRobotPoseObservation);
+		this.lastVisionObservation = visionRobotPoseObservation;
 
 //		double xdiff = Math.abs(lastVisionObservation.robotPose().getX() - getEstimatedPose().getX());
 //		double ydiff = Math.abs(lastVisionObservation.robotPose().getY() - getEstimatedPose().getY());
@@ -334,13 +338,51 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 					);
 				}
 			}
-			bestPose = new Pose2d(total.getX() / c, total.getY() / c, total.getRotation().div(c));
-			Logger.recordOutput("bestPose", bestPose);
+			if (c > 0) {
+				bestPose = new Pose2d(total.getX() / c, total.getY() / c, total.getRotation().div(c));
+				Logger.recordOutput("bestPose", bestPose);
+				useBestPose = true;
+			} else {
+				useBestPose = false;
+			}
 		}
 		Logger.recordOutput("wasUpdated", wasUpdated);
 		wasUpdated[0] = false;
 		wasUpdated[1] = false;
 		wasUpdated[2] = false;
+	}
+
+	@Override
+	public void updateByBestPose(List<Limelight> lls) {
+		if (useBestPose) {
+			double xdiff = Math.abs(bestPose.getX() - getEstimatedPose().getX());
+			double ydiff = Math.abs(bestPose.getY() - getEstimatedPose().getY());
+
+			if (xdiff + ydiff > 1) {
+				lls.forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poses -> {
+					poseEstimator.addVisionMeasurement(
+						poses.robotPose(),
+						poses.timestampSeconds(),
+						getCollisionCompensatedVisionStdDevs(poses).minus(new StandardDeviations2D(0.5).asColumnVector())
+					);
+					Logger.recordOutput(
+						limelight.getName() + " compensatedStdDevs",
+						new StandardDeviations2D(poses.stdDevs().xStandardDeviations() - 0.5)
+					);
+				}));
+				Logger.recordOutput("didCompensteByBestPose", true);
+			} else {
+				lls.forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poses -> {
+					poseEstimator.addVisionMeasurement(poses.robotPose(), poses.timestampSeconds(), getCollisionCompensatedVisionStdDevs(poses));
+				}));
+				Logger.recordOutput("didCompensteByBestPose", false);
+			}
+		} else {
+			lls.forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poses -> {
+				poseEstimator.addVisionMeasurement(poses.robotPose(), poses.timestampSeconds(), getCollisionCompensatedVisionStdDevs(poses));
+			}));
+			Logger.recordOutput("didCompensteByBestPose", false);
+		}
 	}
 
 	private void updateIsIMUOffsetCalibrated() {

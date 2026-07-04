@@ -324,6 +324,7 @@ public class Robot {
 		getLimelights()
 			.forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poses -> poseEstimator.updateVision(limelight, poses)));
 		poseEstimator.updateVisionPoses();
+		poseEstimator.updateByBestPose(getLimelights());
 
 		poseEstimator.log();
 		ShootingCalculations
