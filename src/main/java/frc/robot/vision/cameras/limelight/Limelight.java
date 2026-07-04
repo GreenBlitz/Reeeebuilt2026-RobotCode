@@ -34,6 +34,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private final ArrayList<DetectedObjectObservation> neuralDetections;
 	private final ArrayList<DetectedObjectObservation> colorDetections;
 
+	private final List<Consumer<Limelight>> pendingConnectedRequests;
+
 	private final LimelightInputsSet inputs;
 
 	private boolean isThrottleEnabled;
@@ -50,8 +52,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private Supplier<StandardDeviations2D> calculateMT2StdDevs;
 
 	private LimelightPipeline pipeline;
-
-	private final List<Consumer<Limelight>> pendingConnectedRequests;
 
 	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
 		this.name = name;
