@@ -209,12 +209,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	private void updateVision(RobotPoseObservation[] visionRobotPoseObservations) {
-		List<RobotPoseObservation> goodRobotPoseObservations = Arrays.stream(visionRobotPoseObservations)
+		List<RobotPoseObservation> similarVisionRobotPoseObservations = Arrays.stream(visionRobotPoseObservations)
 			.filter(observation -> Arrays.stream(visionRobotPoseObservations).anyMatch(other -> getAreObservationsSimilar(observation, other)))
 			.toList();
-
 		Arrays.stream(visionRobotPoseObservations)
-			.forEach(observation -> addVisionMeasurement(observation, goodRobotPoseObservations.contains(observation)));
+			.forEach(observation -> addVisionMeasurement(observation, similarVisionRobotPoseObservations.contains(observation)));
 
 		Arrays.stream(visionRobotPoseObservations).forEach(this::updateIMUOffset);
 
@@ -249,11 +248,11 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		isIMUOffsetCalibrated = false;
 	}
 
-	private void addVisionMeasurement(RobotPoseObservation visionObservation, boolean isGood) {
+	private void addVisionMeasurement(RobotPoseObservation visionObservation, boolean isObservationSimilar) {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getIDKCompensatedVisionStdDevs(getCollisionCompensatedVisionStdDevs(visionObservation), isGood).asColumnVector()
+			getSimilarityAccountedVisionStdDevs(getCollisionCompensatedVisionStdDevs(visionObservation), isObservationSimilar).asColumnVector()
 		);
 	}
 
@@ -274,10 +273,14 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs();
 	}
 
-	private StandardDeviations2D getIDKCompensatedVisionStdDevs(StandardDeviations2D visionStandardDeviations, boolean isGood) {
-		return isGood
+	private StandardDeviations2D getSimilarityAccountedVisionStdDevs(
+		StandardDeviations2D visionStandardDeviations,
+		boolean isObservationSimilar
+	) {
+		return isObservationSimilar
 			? new StandardDeviations2D(
-				visionStandardDeviations.asColumnVector().minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_IDK_REDUCTION.asColumnVector())
+				visionStandardDeviations.asColumnVector()
+					.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_SIMILARITY_REDUCTION.asColumnVector())
 			)
 			: visionStandardDeviations;
 	}
