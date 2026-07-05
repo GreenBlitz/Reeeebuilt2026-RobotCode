@@ -64,8 +64,8 @@ import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -324,14 +324,11 @@ public class Robot {
 		getLimelights().forEach(Limelight::updateHardwareInputs);
 		getLimelights().forEach(Limelight::updateMT1);
 
-		ArrayList<RobotPoseObservation> observations = new ArrayList<>();
-		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(observations::add));
-		RobotPoseObservation[] observationsArray = observations.toArray(new RobotPoseObservation[0]);
-
-		ArrayList<RobotPoseObservation[]> listOfObservationArrays = new ArrayList<>();
-		listOfObservationArrays.add(observationsArray);
-
-		poseEstimator.updateVision(listOfObservationArrays.toArray(RobotPoseObservation[][]::new));
+		RobotPoseObservation[] observationsArray = getLimelights().stream()
+			.map(Limelight::getIndependentRobotPose)
+			.flatMap(Optional::stream)
+			.toArray(RobotPoseObservation[]::new);
+		poseEstimator.updateVision(new RobotPoseObservation[][] {observationsArray});
 
 		poseEstimator.log();
 		ShootingCalculations
