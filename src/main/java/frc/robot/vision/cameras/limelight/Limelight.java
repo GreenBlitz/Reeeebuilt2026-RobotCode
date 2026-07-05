@@ -18,7 +18,6 @@ import org.littletonrobotics.junction.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -34,7 +33,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private final ArrayList<DetectedObjectObservation> neuralDetections;
 	private final ArrayList<DetectedObjectObservation> colorDetections;
 
-	private final List<Consumer<Limelight>> pendingConnectedRequests;
+	private final List<Runnable> pendingConnectedRequests;
 
 	private final LimelightInputsSet inputs;
 
@@ -78,8 +77,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.pipeline = pipeline;
 
 		this.pendingConnectedRequests = new ArrayList<>();
-		addPendingConnectedRequest(limelight -> limelight.setRobotRelativeCameraPose(robotRelativeCameraPose));
-		addPendingConnectedRequest(limelight -> limelight.setPipeline(pipeline));
+		addPendingConnectedRequest(() -> setRobotRelativeCameraPose(robotRelativeCameraPose));
+		addPendingConnectedRequest(() -> setPipeline(pipeline));
 	}
 
 	public void updateNeuralDetection() {
@@ -178,7 +177,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	public void updatePendingRequests() {
 		if (!pendingConnectedRequests.isEmpty() && inputs.hardwareInputs().connected) {
-			pendingConnectedRequests.forEach(consumer -> consumer.accept(this));
+			pendingConnectedRequests.forEach(Runnable::run);
 			pendingConnectedRequests.clear();
 		}
 	}
@@ -297,7 +296,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		Logger.recordOutput(logPath + "/isThrottleEnabled", enableThrottle);
 	}
 
-	public void addPendingConnectedRequest(Consumer<Limelight> request) {
+	public void addPendingConnectedRequest(Runnable request) {
 		pendingConnectedRequests.add(request);
 	}
 

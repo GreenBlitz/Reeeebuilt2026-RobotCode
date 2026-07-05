@@ -74,7 +74,7 @@ public class RobotManager extends LoggedRobot {
 		});
 
 		robot.getLimelights()
-			.forEach(limelight -> limelight.addPendingConnectedRequest(limelight1 -> limelight1.setThrottleState(!DriverStationUtil.isMatch())));
+			.forEach(limelight -> limelight.addPendingConnectedRequest(() -> limelight.setThrottleState(!DriverStationUtil.isMatch())));
 
 		alertsMessage = "Alerts: None";
 		Logger.recordOutput("AlertsMessage", alertsMessage);
