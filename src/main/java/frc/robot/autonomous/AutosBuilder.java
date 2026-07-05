@@ -10,6 +10,7 @@ import frc.utils.GamePeriodUtils;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -1220,6 +1221,7 @@ public class AutosBuilder {
 		).until(isReadyToReturnToMiddle(returnToMiddle, allianceSide))
 			.andThen(
 				new ParallelCommandGroup(
+						scoreSequence.get(),
 					openIntake.get(),
 					PathFollowingCommandsBuilder.followAdjustedPathThenStop(
 						robot.getSwerve(),
@@ -1249,11 +1251,11 @@ public class AutosBuilder {
 	}
 
 
-	private static boolean hasStoppedThrowingBalls(Robot robot) {
+	public static boolean hasStoppedThrowingBalls(Robot robot) {
 		return isTimeBetweenBallsAboveThreshold(robot, AutonomousConstants.TIME_BETWEEN_BALLS_TO_RETURN_TO_MIDDLE_SECONDS);
 	}
 
-	private static boolean isReadyToCloseIntake(Robot robot) {
+	public static boolean isReadyToCloseIntake(Robot robot) {
 		return isTimeBetweenBallsAboveThreshold(robot, AutonomousConstants.TIME_BETWEEN_BALLS_TO_CLOSE_INTAKE_SECONDS);
 	}
 

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.643,
-        "y": 0.736
+        "x": 2.6390148830616584,
+        "y": 2.3733451452870304
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.410966233360837,
-        "y": 1.0471295424792166
+        "x": 2.8530911402987873,
+        "y": 2.50246275093143
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost alliance wait"
     },
     {
       "anchor": {
-        "x": 2.942740963855422,
-        "y": 2.341204819277109
+        "x": 2.908993621545004,
+        "y": 2.5790432317505316
       },
       "prevControl": {
-        "x": -0.5548631101832293,
-        "y": -0.026744505700506238
+        "x": 2.6390148830616584,
+        "y": 2.4183416017009214
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost middle return"
     }
   ],
   "rotationTargets": [],
@@ -56,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 131.63353933657012
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 130.9800700830008
   },
   "useDefaultConstraints": true
 }

@@ -341,6 +341,9 @@ public class Robot {
 
 		GamePeriodUtils.log();
 
+		Logger.recordOutput("IsReadyToCloseIntakeForAutonomous", AutosBuilder.isReadyToCloseIntake(this));
+		Logger.recordOutput("HasStoppedThrowingBallsForAutonomous", AutosBuilder.hasStoppedThrowingBalls(this));
+
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
