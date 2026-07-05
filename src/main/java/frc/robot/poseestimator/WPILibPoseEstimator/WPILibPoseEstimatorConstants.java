@@ -31,7 +31,7 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final int POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE = 50;
 
-	public static double MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV = 0.0025;
+	public static double MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV = 0.0005;
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
