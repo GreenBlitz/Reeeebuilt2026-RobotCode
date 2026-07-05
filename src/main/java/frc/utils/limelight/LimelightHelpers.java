@@ -694,7 +694,7 @@ public class LimelightHelpers {
 		double tagSpan,
 		double avgTagDist,
 		double avgTagArea,
-		RawFiducial[] rawFiducials,
+//		RawFiducial[] rawFiducials,
 		boolean isMegaTag2
 	) {
 
@@ -702,7 +702,9 @@ public class LimelightHelpers {
 		 * Instantiates a PoseEstimate object with default values
 		 */
 		public PoseEstimate() {
-			this(new Pose2d(), 0, 0, 0, 0, 0, 0, new RawFiducial[] {}, false);
+			this(new Pose2d(), 0, 0, 0, 0, 0, 0,
+//					new RawFiducial[] {},
+					false);
 		}
 
 		@Override
@@ -720,7 +722,8 @@ public class LimelightHelpers {
 				&& Double.compare(that.avgTagDist, avgTagDist) == 0
 				&& Double.compare(that.avgTagArea, avgTagArea) == 0
 				&& pose.equals(that.pose)
-				&& Arrays.equals(rawFiducials, that.rawFiducials);
+//				&& Arrays.equals(rawFiducials, that.rawFiducials)
+				;
 		}
 
 	}
@@ -897,7 +900,9 @@ public class LimelightHelpers {
 			}
 		}
 
-		return new PoseEstimate(pose, adjustedTimestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials, isMegaTag2);
+		return new PoseEstimate(pose, adjustedTimestamp, latency, tagCount, tagSpan, tagDist, tagArea,
+//				rawFiducials,
+				isMegaTag2);
 	}
 
 	/**
@@ -1045,29 +1050,29 @@ public class LimelightHelpers {
 		System.out.printf("Is MegaTag2: %b%n", pose.isMegaTag2);
 		System.out.println();
 
-		if (pose.rawFiducials == null || pose.rawFiducials.length == 0) {
-			System.out.println("No RawFiducials data available.");
-			return;
-		}
+//		if (pose.rawFiducials == null || pose.rawFiducials.length == 0) {
+//			System.out.println("No RawFiducials data available.");
+//			return;
+//		}
 
-		System.out.println("Raw Fiducials Details:");
-		for (int i = 0; i < pose.rawFiducials.length; i++) {
-			RawFiducial fiducial = pose.rawFiducials[i];
-			System.out.printf(" Fiducial #%d:%n", i + 1);
-			System.out.printf("  ID: %d%n", fiducial.id);
-			System.out.printf("  TXNC: %.2f%n", fiducial.txnc);
-			System.out.printf("  TYNC: %.2f%n", fiducial.tync);
-			System.out.printf("  TA: %.2f%n", fiducial.ta);
-			System.out.printf("  Distance to Camera: %.2f meters%n", fiducial.distToCamera);
-			System.out.printf("  Distance to Robot: %.2f meters%n", fiducial.distToRobot);
-			System.out.printf("  Ambiguity: %.2f%n", fiducial.ambiguity);
-			System.out.println();
-		}
+//		System.out.println("Raw Fiducials Details:");
+//		for (int i = 0; i < pose.rawFiducials.length; i++) {
+//			RawFiducial fiducial = pose.rawFiducials[i];
+//			System.out.printf(" Fiducial #%d:%n", i + 1);
+//			System.out.printf("  ID: %d%n", fiducial.id);
+//			System.out.printf("  TXNC: %.2f%n", fiducial.txnc);
+//			System.out.printf("  TYNC: %.2f%n", fiducial.tync);
+//			System.out.printf("  TA: %.2f%n", fiducial.ta);
+//			System.out.printf("  Distance to Camera: %.2f meters%n", fiducial.distToCamera);
+//			System.out.printf("  Distance to Robot: %.2f meters%n", fiducial.distToRobot);
+//			System.out.printf("  Ambiguity: %.2f%n", fiducial.ambiguity);
+//			System.out.println();
+//		}
 	}
 
-	public static Boolean validPoseEstimate(PoseEstimate pose) {
-		return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
-	}
+//	public static Boolean validPoseEstimate(PoseEstimate pose) {
+//		return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
+//	}
 
 	public static NetworkTable getLimelightNTTable(String tableName) {
 		return NetworkTableInstance.getDefault().getTable(sanitizeName(tableName));
