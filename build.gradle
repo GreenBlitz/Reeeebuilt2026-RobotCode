@@ -231,7 +231,7 @@ spotless {
 			include "**/*.gradle"
 			exclude "**/build/**", "**/build-*/**"
 		}
-		greclipse()
+		greclipse('4.28')
 		indentWithTabs(4)
 		trimTrailingWhitespace()
 	}
