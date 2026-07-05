@@ -15,7 +15,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -704,7 +703,8 @@ public class LimelightHelpers {
 		public PoseEstimate() {
 			this(new Pose2d(), 0, 0, 0, 0, 0, 0,
 //					new RawFiducial[] {},
-					false);
+				false
+			);
 		}
 
 		@Override
@@ -723,7 +723,7 @@ public class LimelightHelpers {
 				&& Double.compare(that.avgTagArea, avgTagArea) == 0
 				&& pose.equals(that.pose)
 //				&& Arrays.equals(rawFiducials, that.rawFiducials)
-				;
+			;
 		}
 
 	}
@@ -902,7 +902,8 @@ public class LimelightHelpers {
 
 		return new PoseEstimate(pose, adjustedTimestamp, latency, tagCount, tagSpan, tagDist, tagArea,
 //				rawFiducials,
-				isMegaTag2);
+			isMegaTag2
+		);
 	}
 
 	/**
