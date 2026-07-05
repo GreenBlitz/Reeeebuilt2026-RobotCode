@@ -2,6 +2,7 @@ package frc.robot.poseestimator.WPILibPoseEstimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.constants.MathConstants;
 import frc.utils.math.StandardDeviations2D;
 
 
@@ -38,5 +39,9 @@ public class WPILibPoseEstimatorConstants {
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
 	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
+
+	public static double SIMILAR_POSE_TRANSLATION_NORM_TOLERANCE_METERS = 1;
+
+	public static Rotation2d SIMILAR_POSE_ROTATION_TOLERANCE = MathConstants.QUARTER_CIRCLE;
 
 }

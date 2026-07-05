@@ -87,8 +87,12 @@ public class PoseUtil {
 		};
 	}
 
-	public static double getDifference(Pose2d pose1, Pose2d pose2) {
-		return Math.abs(pose1.minus(pose2).getTranslation().getNorm()) + Math.abs(pose1.getRotation().minus(pose2.getRotation()).getRadians());
+	public static double getDifference(Translation2d Translation1, Translation2d Translation2) {
+		return Translation1.minus(Translation2).getNorm();
+	}
+
+	public static double getDifferenceRadians(Rotation2d rotation1, Rotation2d rotation2) {
+		return Math.abs(rotation1.minus(rotation2).getRadians());
 	}
 
 	public static boolean getIsColliding(Translation2d imuAccelerationG, double minimumCollisionIMUAccelerationG) {

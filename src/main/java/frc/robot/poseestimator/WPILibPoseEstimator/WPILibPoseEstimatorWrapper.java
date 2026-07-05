@@ -212,28 +212,32 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		List<RobotPoseObservation> goodRobotPoseObservations = Arrays.stream(visionRobotPoseObservations)
 			.filter(
 				observation -> Arrays.stream(visionRobotPoseObservations)
-					.anyMatch(other -> !observation.equals(other) && PoseUtil.getDifference(observation.robotPose(), other.robotPose()) < 1)
+					.anyMatch(other -> !observation.equals(other) && getArePosesSimilar(observation, other))
 			)
 			.toList();
 
 		Arrays.stream(visionRobotPoseObservations)
 			.forEach(observation -> addVisionMeasurement(observation, goodRobotPoseObservations.contains(observation)));
 
-		Arrays.stream(visionRobotPoseObservations).forEach(observation -> {
-			getEstimatedPoseToIMUYawDifference(imuYawBuffer.getSample(observation.timestampSeconds()), observation.timestampSeconds())
-				.ifPresent(yawDifference -> {
-					poseToIMUYawDifferenceBuffer.insert(yawDifference);
-
-					if (!isIMUOffsetCalibrated) {
-						updateIsIMUOffsetCalibrated();
-					}
-				});
-		});
+		Arrays.stream(visionRobotPoseObservations).forEach(this::updateIMUOffset);
 
 		lastVisionUpdateTimestamp = Arrays.stream(visionRobotPoseObservations)
 			.max(Comparator.comparingDouble(RobotPoseObservation::timestampSeconds))
 			.orElse(new RobotPoseObservation())
 			.timestampSeconds();
+	}
+
+	public void updateIMUOffset(RobotPoseObservation visionRobotPoseObservation) {
+		getEstimatedPoseToIMUYawDifference(
+			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
+			visionRobotPoseObservation.timestampSeconds()
+		).ifPresent(yawDifference -> {
+			poseToIMUYawDifferenceBuffer.insert(yawDifference);
+
+			if (!isIMUOffsetCalibrated) {
+				updateIsIMUOffsetCalibrated();
+			}
+		});
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
@@ -292,6 +296,13 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 				kinematics.toChassisSpeeds(lastOdometryData.getWheelStates())
 					.toTwist2d(WPILibPoseEstimatorConstants.ODOMETRY_POSE_PREDICTION_TIME_SECONDS)
 			);
+	}
+
+	private boolean getArePosesSimilar(RobotPoseObservation robotPoseObservation, RobotPoseObservation other) {
+		return PoseUtil.getDifference(robotPoseObservation.robotPose().getTranslation(), other.robotPose().getTranslation())
+			< WPILibPoseEstimatorConstants.SIMILAR_POSE_TRANSLATION_NORM_TOLERANCE_METERS
+			&& PoseUtil.getDifferenceRadians(robotPoseObservation.robotPose().getRotation(), other.robotPose().getRotation())
+				< WPILibPoseEstimatorConstants.SIMILAR_POSE_ROTATION_TOLERANCE.getRadians();
 	}
 
 }
