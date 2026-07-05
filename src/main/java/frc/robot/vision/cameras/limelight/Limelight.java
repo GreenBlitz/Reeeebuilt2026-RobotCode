@@ -75,7 +75,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT1StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 		this.calculateMT2StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 
-		setPipeline(pipeline);
+		this.pipeline = pipeline;
 
 		this.pendingConnectedRequests = new ArrayList<>();
 		addPendingConnectedRequest(limelight -> limelight.setRobotRelativeCameraPose(robotRelativeCameraPose));
