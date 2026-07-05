@@ -210,10 +210,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 
 	private void updateVision(RobotPoseObservation[] visionRobotPoseObservations) {
 		List<RobotPoseObservation> goodRobotPoseObservations = Arrays.stream(visionRobotPoseObservations)
-			.filter(
-				observation -> Arrays.stream(visionRobotPoseObservations)
-					.anyMatch(other -> !observation.equals(other) && getArePosesSimilar(observation, other))
-			)
+			.filter(observation -> Arrays.stream(visionRobotPoseObservations).anyMatch(other -> getAreObservationsSimilar(observation, other)))
 			.toList();
 
 		Arrays.stream(visionRobotPoseObservations)
@@ -298,10 +295,17 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			);
 	}
 
-	private boolean getArePosesSimilar(RobotPoseObservation robotPoseObservation, RobotPoseObservation other) {
-		return PoseUtil.getDifference(robotPoseObservation.robotPose().getTranslation(), other.robotPose().getTranslation())
+	private boolean getAreObservationsSimilar(RobotPoseObservation observation, RobotPoseObservation other) {
+		return !observation.equals(other)
+			&& Math.abs(observation.timestampSeconds() - other.timestampSeconds())
+				< WPILibPoseEstimatorConstants.SIMILAR_POSE_TIMESTAMP_TOLERANCE_SECONDS
+			&& getArePosesSimilar(observation.robotPose(), other.robotPose());
+	}
+
+	private boolean getArePosesSimilar(Pose2d pose, Pose2d other) {
+		return PoseUtil.getDifference(pose.getTranslation(), other.getTranslation())
 			< WPILibPoseEstimatorConstants.SIMILAR_POSE_TRANSLATION_NORM_TOLERANCE_METERS
-			&& PoseUtil.getDifferenceRadians(robotPoseObservation.robotPose().getRotation(), other.robotPose().getRotation())
+			&& PoseUtil.getDifferenceRadians(pose.getRotation(), other.getRotation())
 				< WPILibPoseEstimatorConstants.SIMILAR_POSE_ROTATION_TOLERANCE.getRadians();
 	}
 

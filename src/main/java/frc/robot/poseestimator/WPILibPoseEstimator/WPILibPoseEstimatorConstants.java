@@ -44,4 +44,6 @@ public class WPILibPoseEstimatorConstants {
 
 	public static Rotation2d SIMILAR_POSE_ROTATION_TOLERANCE = MathConstants.QUARTER_CIRCLE;
 
+	public static double SIMILAR_POSE_TIMESTAMP_TOLERANCE_SECONDS = 0.2;
+
 }
