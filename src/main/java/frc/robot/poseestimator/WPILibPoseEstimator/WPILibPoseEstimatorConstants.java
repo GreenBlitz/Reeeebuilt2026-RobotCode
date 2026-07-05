@@ -15,6 +15,8 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
 
+	public static final StandardDeviations2D VISION_STD_DEV_IDK_REDUCTION = new StandardDeviations2D(0.1, 0.1, 0.1);
+
 	public static final double MINIMUM_COLLISION_IMU_ACCELERATION_G = 2;
 
 	public static final Rotation2d MINIMUM_TILT_IMU_ROLL = Rotation2d.fromDegrees(4);

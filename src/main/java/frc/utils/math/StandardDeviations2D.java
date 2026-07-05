@@ -19,6 +19,10 @@ public record StandardDeviations2D(double xStandardDeviations, double yStandardD
 		this(standardDeviations2D.xStandardDeviations, standardDeviations2D.yStandardDeviations, standardDeviations2D.angleStandardDeviations);
 	}
 
+	public StandardDeviations2D(Matrix<N3, N1> columnVector) {
+		this(columnVector.get(0, 0), columnVector.get(1, 0), columnVector.get(2, 0));
+	}
+
 	public Matrix<N3, N1> asColumnVector() {
 		return VecBuilder.fill(xStandardDeviations, yStandardDeviations, angleStandardDeviations);
 	}

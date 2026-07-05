@@ -5,7 +5,7 @@ import frc.robot.vision.RobotPoseObservation;
 
 public interface IVisionEstimator {
 
-	void updateVision(RobotPoseObservation... robotPoseVisionData);
+	void updateVision(RobotPoseObservation[]... robotPoseVisionData);
 
 	Pose2d getEstimatedPose();
 

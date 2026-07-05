@@ -1,6 +1,5 @@
 package frc.robot.poseestimator.WPILibPoseEstimator;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,16 +11,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.OdometryData;
 import frc.utils.buffers.RingBuffer.RingBuffer;
+import frc.utils.math.StandardDeviations2D;
 import frc.utils.math.StatisticsMath;
 import frc.utils.pose.PoseUtil;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
@@ -33,8 +34,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	private final RingBuffer<Rotation2d> poseToIMUYawDifferenceBuffer;
 	private final TimeInterpolatableBuffer<Rotation2d> imuYawBuffer;
 	private final TimeInterpolatableBuffer<Translation2d> imuXYAccelerationGBuffer;
-	private RobotPoseObservation lastVisionObservation;
 	private OdometryData lastOdometryData;
+	private double lastVisionUpdateTimestamp;
 	private boolean isIMUOffsetCalibrated;
 
 	public WPILibPoseEstimatorWrapper(
@@ -125,8 +126,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
-	public void updateVision(RobotPoseObservation... visionRobotPoseObservations) {
-		for (RobotPoseObservation visionRobotPoseObservation : visionRobotPoseObservations) {
+	public void updateVision(RobotPoseObservation[]... visionRobotPoseObservations) {
+		for (RobotPoseObservation[] visionRobotPoseObservation : visionRobotPoseObservations) {
 			updateVision(visionRobotPoseObservation);
 		}
 	}
@@ -170,8 +171,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		Logger.recordOutput(logPath + "/estimatedPose", getEstimatedPose());
 		Logger.recordOutput(logPath + "/odometryPose", getOdometryPose());
 		Logger.recordOutput(logPath + "/predictedOdometryPose", getPredictedOdometryPose());
-		if (lastVisionObservation != null) {
-			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
+		if (lastVisionUpdateTimestamp != 0) {
+			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionUpdateTimestamp);
 		}
 		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
@@ -207,19 +208,32 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		);
 	}
 
-	private void updateVision(RobotPoseObservation visionRobotPoseObservation) {
-		addVisionMeasurement(visionRobotPoseObservation);
+	private void updateVision(RobotPoseObservation[] visionRobotPoseObservations) {
+		List<RobotPoseObservation> goodRobotPoseObservations = Arrays.stream(visionRobotPoseObservations)
+			.filter(
+				observation -> Arrays.stream(visionRobotPoseObservations)
+					.anyMatch(other -> !observation.equals(other) && PoseUtil.getDifference(observation.robotPose(), other.robotPose()) < 1)
+			)
+			.toList();
 
-		getEstimatedPoseToIMUYawDifference(
-			imuYawBuffer.getSample(visionRobotPoseObservation.timestampSeconds()),
-			visionRobotPoseObservation.timestampSeconds()
-		).ifPresent(yawDifference -> {
-			poseToIMUYawDifferenceBuffer.insert(yawDifference);
+		Arrays.stream(visionRobotPoseObservations)
+			.forEach(observation -> addVisionMeasurement(observation, goodRobotPoseObservations.contains(observation)));
 
-			if (!isIMUOffsetCalibrated) {
-				updateIsIMUOffsetCalibrated();
-			}
+		Arrays.stream(visionRobotPoseObservations).forEach(observation -> {
+			getEstimatedPoseToIMUYawDifference(imuYawBuffer.getSample(observation.timestampSeconds()), observation.timestampSeconds())
+				.ifPresent(yawDifference -> {
+					poseToIMUYawDifferenceBuffer.insert(yawDifference);
+
+					if (!isIMUOffsetCalibrated) {
+						updateIsIMUOffsetCalibrated();
+					}
+				});
 		});
+
+		lastVisionUpdateTimestamp = Arrays.stream(visionRobotPoseObservations)
+			.max(Comparator.comparingDouble(RobotPoseObservation::timestampSeconds))
+			.orElse(new RobotPoseObservation())
+			.timestampSeconds();
 	}
 
 	private void updateIsIMUOffsetCalibrated() {
@@ -234,16 +248,15 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		isIMUOffsetCalibrated = false;
 	}
 
-	private void addVisionMeasurement(RobotPoseObservation visionObservation) {
+	private void addVisionMeasurement(RobotPoseObservation visionObservation, boolean isGood) {
 		poseEstimator.addVisionMeasurement(
 			visionObservation.robotPose(),
 			visionObservation.timestampSeconds(),
-			getCollisionCompensatedVisionStdDevs(visionObservation)
+			getIDKCompensatedVisionStdDevs(getCollisionCompensatedVisionStdDevs(visionObservation), isGood).asColumnVector()
 		);
-		this.lastVisionObservation = visionObservation;
 	}
 
-	private Matrix<N3, N1> getCollisionCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
+	private StandardDeviations2D getCollisionCompensatedVisionStdDevs(RobotPoseObservation visionObservation) {
 		boolean isColliding = imuXYAccelerationGBuffer.getSample(visionObservation.timestampSeconds())
 			.map(
 				(imuAccelerationG) -> PoseUtil
@@ -252,10 +265,20 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.orElse(false);
 
 		return isColliding
-			? visionObservation.stdDevs()
-				.asColumnVector()
-				.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
-			: visionObservation.stdDevs().asColumnVector();
+			? new StandardDeviations2D(
+				visionObservation.stdDevs()
+					.asColumnVector()
+					.minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_COLLISION_REDUCTION.asColumnVector())
+			)
+			: visionObservation.stdDevs();
+	}
+
+	private StandardDeviations2D getIDKCompensatedVisionStdDevs(StandardDeviations2D visionStandardDeviations, boolean isGood) {
+		return isGood
+			? new StandardDeviations2D(
+				visionStandardDeviations.asColumnVector().minus(WPILibPoseEstimatorConstants.VISION_STD_DEV_IDK_REDUCTION.asColumnVector())
+			)
+			: visionStandardDeviations;
 	}
 
 	private Optional<Rotation2d> getEstimatedPoseToIMUYawDifference(Optional<Rotation2d> gyroYaw, double timestampSeconds) {
