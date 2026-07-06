@@ -111,6 +111,7 @@ public class GamePeriodUtils {
 			- ((TimeUtil.getTimeSinceTeleopInitSeconds() - TRANSITION_SHIFT_DURATION_SECONDS) % GamePeriodUtils.ALLIANCE_SHIFT_DURATION_SECONDS);
 	}
 
+
 	public static double getTimeUntilAutonomousEnds() {
 		if (!DriverStationUtil.isAutonomous()) {
 			return -1;
