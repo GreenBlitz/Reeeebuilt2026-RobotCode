@@ -477,6 +477,7 @@ public class Robot {
 			autonomousOpenIntakeCommand,
 			autonomousCloseIntakeCommand,
 			autonomousScoringSequenceCommand,
+				() -> getRobotCommander().setState(RobotState.NEUTRAL),
 			autonomousPassSequenceCommand,
 			autonomousOuttakeCommand,
 			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,

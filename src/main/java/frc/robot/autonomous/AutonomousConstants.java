@@ -39,7 +39,7 @@ public class AutonomousConstants {
 	public static final double TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START = 4.0;
 	public static final double TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START = 6.0;
 	public static final double MINIMUM_TIME_AFTER_STARTING_TO_SHOOT_TO_RETURN_TO_MIDDLE = 1.0;
-	public static final double MINIMUM_TIME_AFTER_CLOSING_INTAKE_TO_RETURN_TO_MIDDLE = 1.3;
+	public static final double MINIMUM_TIME_AFTER_CLOSING_INTAKE_TO_RETURN_TO_MIDDLE = 1.2;
 
 	public static final Double DEFAULT_STUCK_DEBOUNCE_SECONDS = 2.0;
 
