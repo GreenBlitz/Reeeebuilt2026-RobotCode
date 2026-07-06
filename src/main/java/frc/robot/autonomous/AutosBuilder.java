@@ -1262,7 +1262,7 @@ public class AutosBuilder {
 					)
 				),
 			scoreSequence.get()
-		).until(isReadyToReturnToMiddle(returnToMiddle, allianceSide))
+		).until(() -> isReadyToReturnToMiddle(returnToMiddle, allianceSide).getAsBoolean())
 			.andThen(
 				new ParallelCommandGroup(
 						dontScoreSequence.get(),
@@ -1311,7 +1311,14 @@ public class AutosBuilder {
 		return TimeUtil.getCurrentTimeSeconds() - lastBallTimestamp > threshold;
 	}
 
-	private static BooleanSupplier isReadyToReturnToMiddle(BooleanSupplier returnToMiddleByTimer, AllianceSide allianceSide) {
+	public static BooleanSupplier isReadyToReturnToMiddle(BooleanSupplier returnToMiddleByTimer, AllianceSide allianceSide) {
+		Logger.recordOutput("isReadyToReturnToMiddleForAutonomus", (returnToMiddleByTimer.getAsBoolean()
+				&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
+				> GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS
+				- (allianceSide == AllianceSide.OUTPOST
+				? AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_OUTPOST_START
+				: AutonomousConstants.TIME_BEFORE_AUTO_END_TO_RETURN_TO_MIDDLE_SECONDS_ON_DEPOT_START)));
+
 		return () -> (returnToMiddleByTimer.getAsBoolean()
 			&& TimeUtil.getCurrentTimeSeconds() - TimeUtil.getAutonomousStartTimeSeconds()
 				> GamePeriodUtils.AUTONOMOUS_DURATION_SECONDS
