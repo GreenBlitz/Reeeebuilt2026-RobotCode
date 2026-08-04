@@ -102,7 +102,7 @@ public class JoysticksBindings {
 			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
 		).onTrue(preShiftEndJoystickRumble(usedJoystick));
 
-        usedJoystick.A.whileTrue(new DeferredCommand(() -> new RunCommand((() ->robot.getSwerve().applySpeeds(AimAssistMath.getObjectAssistedSpeedsSlowedDownByRotation(AimAssistMath.getRotationAssistedSpeeds(SwerveMath.powersToSpeeds(chassisDriverInputs, robot.getSwerve().getConstants()),robot.getPoseEstimator().getEstimatedPose().getRotation(),new Rotation2d(),true,robot.getSwerve().getConstants()),robot.getPoseEstimator().getEstimatedPose(), DriverStation.getAlliance().equals(DriverStation.Alliance.Red) ? Rotation2d.kCCW_90deg : Rotation2d.kCW_90deg,new Translation2d(2,4),robot.getSwerve().getConstants(), SwerveState.DEFAULT_DRIVE,0.3,false),SwerveState.DEFAULT_DRIVE))), Set.of(robot.getSwerve())));
+        usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		// Shoot & Pass...
 		usedJoystick.R1.onTrue(
