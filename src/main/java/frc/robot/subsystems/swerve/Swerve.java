@@ -207,9 +207,9 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public TimedValue<Rotation2d> getIMUAbsoluteYaw() {
-		TimedValue<Rotation2d> latestGyroYaw = imuSignals.yawSignal().getLatestTimedValue();
-		Rotation2d latestGyroAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestGyroYaw.getValue().getRadians()));
-		return new TimedValue<>(latestGyroAbsoluteYaw, latestGyroYaw.getTimestamp());
+		TimedValue<Rotation2d> latestIMUYaw = imuSignals.yawSignal().getLatestTimedValue();
+		Rotation2d latestIMUAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestIMUYaw.getValue().getRadians()));
+		return new TimedValue<>(latestIMUAbsoluteYaw, latestIMUYaw.getTimestamp());
 	}
 
 	public Rotation2d getAbsoluteHeading() {
@@ -343,7 +343,7 @@ public class Swerve extends GBSubsystem {
 		// Let it rotate some rotations then output will be in log under Calibrations/.
 		joystick.POV_DOWN.whileTrue(getCommandsBuilder().wheelRadiusCalibration());
 
-		// ROBOT RELATIVE DRIVE - FOR GYRO TEST
+		// ROBOT RELATIVE DRIVE - FOR IMU TEST
 		joystick.POV_UP
 			.whileTrue(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE)));
 
