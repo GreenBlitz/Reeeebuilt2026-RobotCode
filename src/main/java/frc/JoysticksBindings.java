@@ -1,6 +1,8 @@
 package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -13,12 +15,16 @@ import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
+import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.utils.HubUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.utilcommands.ExecuteEndCommand;
+
+import java.util.Set;
 
 public class JoysticksBindings {
 
@@ -96,7 +102,7 @@ public class JoysticksBindings {
 			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
 		).onTrue(preShiftEndJoystickRumble(usedJoystick));
 
-		usedJoystick.A.onTrue(driveActionChooser(robot));
+        usedJoystick.A.whileTrue(new DeferredCommand(() -> new RunCommand((() ->robot.getSwerve().applySpeeds(AimAssistMath.getObjectAssistedSpeedsSlowedDownByRotation(AimAssistMath.getRotationAssistedSpeeds(SwerveMath.powersToSpeeds(chassisDriverInputs, robot.getSwerve().getConstants()),robot.getPoseEstimator().getEstimatedPose().getRotation(),new Rotation2d(),true,robot.getSwerve().getConstants()),robot.getPoseEstimator().getEstimatedPose(), DriverStation.getAlliance().equals(DriverStation.Alliance.Red) ? Rotation2d.kCCW_90deg : Rotation2d.kCW_90deg,new Translation2d(2,4),robot.getSwerve().getConstants(), SwerveState.DEFAULT_DRIVE,0.3,false),SwerveState.DEFAULT_DRIVE))), Set.of(robot.getSwerve())));
 
 		// Shoot & Pass...
 		usedJoystick.R1.onTrue(
