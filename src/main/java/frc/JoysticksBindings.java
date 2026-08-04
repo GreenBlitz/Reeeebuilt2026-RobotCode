@@ -96,7 +96,7 @@ public class JoysticksBindings {
 			() -> HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()) <= TIME_BEFORE_SHIFT_END_TO_RUMBLE
 		).onTrue(preShiftEndJoystickRumble(usedJoystick));
 
-        usedJoystick.A.onTrue(driveActionChooser(robot));
+		usedJoystick.A.onTrue(driveActionChooser(robot));
 
 		// Shoot & Pass...
 		usedJoystick.R1.onTrue(
