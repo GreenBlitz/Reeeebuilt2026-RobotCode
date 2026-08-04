@@ -1,8 +1,6 @@
 package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,16 +13,12 @@ import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
-import frc.robot.subsystems.swerve.SwerveMath;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.robot.subsystems.swerve.states.aimassist.AimAssistMath;
 import frc.utils.HubUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.utilcommands.ExecuteEndCommand;
-
-import java.util.Set;
 
 public class JoysticksBindings {
 
