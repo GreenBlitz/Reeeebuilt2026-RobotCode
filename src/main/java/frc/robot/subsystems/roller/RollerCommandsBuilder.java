@@ -11,41 +11,41 @@ import java.util.function.Supplier;
 
 public class RollerCommandsBuilder {
 
-	private final Roller roller;
+	private final Roller motor;
 
-	protected RollerCommandsBuilder(Roller roller) {
-		this.roller = roller;
+	protected RollerCommandsBuilder(Roller motor) {
+		this.motor = motor;
 	}
 
 	public Command setVoltage(double voltage) {
-		return roller.asSubsystemCommand(new RunCommand(() -> roller.setVoltage(voltage)), "Set roller voltage to " + voltage);
+		return motor.asSubsystemCommand(new RunCommand(() -> motor.setVoltage(voltage)), "Set motor voltage to " + voltage);
 	}
 
 	public Command setVoltage(Supplier<Double> voltage) {
-		return roller.asSubsystemCommand(new RunCommand(() -> roller.setVoltage(voltage.get())), "Set roller voltage");
+		return motor.asSubsystemCommand(new RunCommand(() -> motor.setVoltage(voltage.get())), "Set motor voltage");
 	}
 
 	public Command stop() {
-		return roller.asSubsystemCommand(new RunCommand(roller::stop), "Stop roller");
+		return motor.asSubsystemCommand(new RunCommand(motor::stop), "Stop motor");
 	}
 
 	public Command setPower(Supplier<Double> supplier) {
-		return roller.asSubsystemCommand(new RunCommand(() -> roller.setPower(supplier.get())), "Set power with supplier");
+		return motor.asSubsystemCommand(new RunCommand(() -> motor.setPower(supplier.get())), "Set power with supplier");
 	}
 
 	public Command setPower(Double power) {
-		return roller.asSubsystemCommand(new RunCommand(() -> roller.setPower(power)), "Set power to " + power);
+		return motor.asSubsystemCommand(new RunCommand(() -> motor.setPower(power)), "Set power to " + power);
 	}
 
 	public Command rollRotationsAtVoltageForwards(double rotations, double voltage) {
 		double finalVoltage = Math.abs(voltage);
-		return roller.asSubsystemCommand(
+		return motor.asSubsystemCommand(
 			new DeferredCommand(
 				() -> new InitExecuteCommand(
-					() -> roller.updateTargetPosition(Rotation2d.fromRotations(rotations + roller.getPosition().getRotations())),
-					() -> roller.setVoltage(finalVoltage)
-				).until(roller::isPastTargetPosition),
-				Set.of(roller)
+					() -> motor.updateTargetPosition(Rotation2d.fromRotations(rotations + motor.getPosition().getRotations())),
+					() -> motor.setVoltage(finalVoltage)
+				).until(motor::isPastTargetPosition),
+				Set.of(motor)
 			),
 			"Roll " + rotations + " rotations"
 		);
@@ -53,13 +53,13 @@ public class RollerCommandsBuilder {
 
 	public Command rollRotationsAtVoltageBackwards(double rotations, double voltage) {
 		double finalVoltage = -Math.abs(voltage);
-		return roller.asSubsystemCommand(
+		return motor.asSubsystemCommand(
 			new DeferredCommand(
 				() -> new InitExecuteCommand(
-					() -> roller.updateTargetPosition(Rotation2d.fromRotations(roller.getPosition().getRotations() - rotations)),
-					() -> roller.setVoltage(finalVoltage)
-				).until(roller::isBehindTargetPosition),
-				Set.of(roller)
+					() -> motor.updateTargetPosition(Rotation2d.fromRotations(motor.getPosition().getRotations() - rotations)),
+					() -> motor.setVoltage(finalVoltage)
+				).until(motor::isBehindTargetPosition),
+				Set.of(motor)
 			),
 			"Roll " + rotations + " rotations backwards"
 		);
