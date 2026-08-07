@@ -2,6 +2,7 @@ package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
 import frc.robot.vision.DetectedObjectObservation;
+import frc.robot.vision.DetectedObjectType;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
 import frc.robot.vision.interfaces.ObjectDetector;
@@ -21,10 +22,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static frc.robot.vision.cameras.limelight.ObjectDetectionMath.*;
+
 public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, OrientationRequiringRobotPoseSupplier {
 
 	private static final int THROTTLE_ENABLE_VALUE = 200;
 	private static final int THROTTLE_DISABLE_VALUE = 0;
+	private static final double THREE_FOURTHS_OBJECT_FACTOR = 1.5;
 
 	private final String name;
 	private final String logPath;
@@ -32,6 +36,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private final ArrayList<DetectedObjectObservation> neuralDetections;
 	private final ArrayList<DetectedObjectObservation> colorDetections;
+	private final ArrayList<DetectedObjectObservation> weirdObjectThing;
+
+	private final Rotation2d horizontalFOV;
+	private final Rotation2d verticalFOV;
 
 	private final LimelightInputsSet inputs;
 
@@ -50,7 +58,14 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 	private LimelightPipeline pipeline;
 
-	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
+	public Limelight(
+		String name,
+		String logPathPrefix,
+		Pose3d robotRelativeCameraPose,
+		LimelightPipeline pipeline,
+		Rotation2d horizontalFOV,
+		Rotation2d verticalFOV
+	) {
 		this.name = name;
 		this.logPath = logPathPrefix + "/" + name;
 
@@ -59,6 +74,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 		this.neuralDetections = new ArrayList<>();
 		this.colorDetections = new ArrayList<>();
+		this.weirdObjectThing = new ArrayList<>();
+
+		this.horizontalFOV = horizontalFOV;
+		this.verticalFOV = verticalFOV;
 
 		this.mt1PoseObservation = new RobotPoseObservation();
 		this.mt2PoseObservation = new RobotPoseObservation();
@@ -107,6 +126,34 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			}
 			Logger.recordOutput(logPath + "/neuralDetections", neuralDetections.toArray(new DetectedObjectObservation[0]));
 		}
+	}
+
+	public void updateHeatMapObjectDetection() {
+		double tx = LimelightHelpers.getTX(name);
+		double ty = LimelightHelpers.getTY(name);
+
+		Rotation2d yawOffset = Rotation2d.fromDegrees(tx);
+		Rotation2d pitchOffset = Rotation2d.fromDegrees(ty);
+		double objectRelativeToCameraX = getCameraRelativeObjectX(
+			robotRelativeCameraPose,
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters() * THREE_FOURTHS_OBJECT_FACTOR,
+			pitchOffset
+		);
+
+		double objectRelativeToCameraY = getCameraRelativeObjectY(
+			robotRelativeCameraPose,
+			DetectedObjectType.FUEL.getCenterHeightFromFloorMeters() * THREE_FOURTHS_OBJECT_FACTOR,
+			yawOffset,
+			objectRelativeToCameraX
+		);
+
+		Translation2d objectRelativeToCamera = new Translation2d(objectRelativeToCameraX, objectRelativeToCameraY);
+		Translation2d objectRelativeToField = objectRelativeToCamera.rotateBy(robotRelativeCameraPose.getRotation().toRotation2d());
+
+		Logger.recordOutput(logPath + "/objectRelativeToCamera", objectRelativeToCamera);
+		Logger.recordOutput(logPath + "/objectDetection", objectRelativeToField);
+		Logger.recordOutput(logPath + "/tx", tx);
+		Logger.recordOutput(logPath + "/ty", ty);
 	}
 
 	public void updateColorDetection() {

@@ -176,7 +176,9 @@ public class Robot {
 				new Translation3d(0.297, -0.143, 0.361),
 				new Rotation3d(Math.toRadians(-0.18), Math.toRadians(27.38), Math.toRadians(-0.35))
 			),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG,
+			Rotation2d.fromDegrees(82),
+			Rotation2d.fromDegrees(56.2)
 		);
 		this.limelightRight = new Limelight(
 			"limelight-right",
@@ -185,16 +187,20 @@ public class Robot {
 				new Translation3d(-0.06, 0.367, 0.469),
 				new Rotation3d(Math.toRadians(-177.78), Math.toRadians(20.64), Math.toRadians(-90.7))
 			),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG,
+			Rotation2d.fromDegrees(82),
+			Rotation2d.fromDegrees(56.2)
 		);
 		this.limelightLeft = new Limelight(
-			"limelight-left",
+			"limelight-two",
 			"Vision",
 			new Pose3d(
 				new Translation3d(-0.125, -0.37, 0.481),
 				new Rotation3d(Math.toRadians(-179.25), Math.toRadians(20.05), Math.toRadians(90.35))
 			),
-			LimelightPipeline.APRIL_TAG
+			LimelightPipeline.APRIL_TAG,
+			Rotation2d.fromDegrees(62.5),
+			Rotation2d.fromDegrees(48.9)
 		);
 
 		this.limelights = List.of(limelightFront, limelightRight, limelightLeft);
@@ -322,6 +328,18 @@ public class Robot {
 		getLimelights().forEach(Limelight::updateHardwareInputs);
 		getLimelights().forEach(Limelight::updateMT1);
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+		limelightFront.updateHardwareInputs();
+		limelightRight.updateHardwareInputs();
+		limelightLeft.updateHardwareInputs();
+
+		limelightFront.updateMT1();
+		limelightRight.updateMT1();
+		limelightLeft.updateMT1();
+		limelightLeft.updateHeatMapObjectDetection();
+
+		limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
+		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
+		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 
 		poseEstimator.log();
 		ShootingCalculations
