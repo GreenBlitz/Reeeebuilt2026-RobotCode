@@ -47,6 +47,7 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
+import frc.robot.vision.RobotPoseObservation;
 import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
@@ -64,6 +65,7 @@ import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -321,7 +323,12 @@ public class Robot {
 
 		getLimelights().forEach(Limelight::updateHardwareInputs);
 		getLimelights().forEach(Limelight::updateMT1);
-		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+
+		RobotPoseObservation[] observationsArray = getLimelights().stream()
+			.map(Limelight::getIndependentRobotPose)
+			.flatMap(Optional::stream)
+			.toArray(RobotPoseObservation[]::new);
+		poseEstimator.updateVision(new RobotPoseObservation[][] {observationsArray});
 
 		poseEstimator.log();
 		ShootingCalculations
