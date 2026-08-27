@@ -5,7 +5,7 @@ public enum ShooterState {
 	STAY_IN_PLACE,
 	NEUTRAL,
 	SHOOT,
-	RESET_SUBSYSTEMS,
+	ס,
 	CALIBRATION
 
 }
