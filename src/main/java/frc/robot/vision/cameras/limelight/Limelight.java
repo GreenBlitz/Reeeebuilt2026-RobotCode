@@ -151,7 +151,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 				getMT1RawData().pose(),
 				calculateMT1StdDevs.get(),
 				name
-
 			);
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/mt1/poseObservation", mt1PoseObservation);
@@ -170,7 +169,6 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 				getMT2RawData().pose(),
 				calculateMT2StdDevs.get(),
 				name
-
 			);
 			if (doesObservationExist(mt2PoseObservation)) {
 				Logger.recordOutput(logPath + "/mt2/poseObservation", mt2PoseObservation);
