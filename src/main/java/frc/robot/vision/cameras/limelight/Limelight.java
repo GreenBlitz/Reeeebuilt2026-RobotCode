@@ -146,7 +146,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			inputs.mt1Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
 			Logger.processInputs(logPath + "/mt1Inputs", inputs.mt1Inputs());
 
-			mt1PoseObservation = new RobotPoseObservation(getMT1RawData().timestampSeconds(), getMT1RawData().pose(), calculateMT1StdDevs.get());
+			mt1PoseObservation = new RobotPoseObservation(
+				getMT1RawData().timestampSeconds(),
+				getMT1RawData().pose(),
+				calculateMT1StdDevs.get(),
+				name
+			);
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/mt1/poseObservation", mt1PoseObservation);
 			}
@@ -159,7 +164,12 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 			inputs.mt2Inputs().primaryTagPoseInCameraSpace = LimelightHelpers.getTargetPose3d_CameraSpace(name);
 			Logger.processInputs(logPath + "/mt2Inputs", inputs.mt2Inputs());
 
-			mt2PoseObservation = new RobotPoseObservation(getMT2RawData().timestampSeconds(), getMT2RawData().pose(), calculateMT2StdDevs.get());
+			mt2PoseObservation = new RobotPoseObservation(
+				getMT2RawData().timestampSeconds(),
+				getMT2RawData().pose(),
+				calculateMT2StdDevs.get(),
+				name
+			);
 			if (doesObservationExist(mt2PoseObservation)) {
 				Logger.recordOutput(logPath + "/mt2/poseObservation", mt2PoseObservation);
 			}
