@@ -173,7 +173,6 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		if (lastVisionObservation != null) {
 			Logger.recordOutput(logPath + "/lastVisionUpdate", lastVisionObservation.timestampSeconds());
 			Logger.recordOutput(logPath + "/lastVisionObservation", lastVisionObservation);
-			Logger.recordOutput(logPath + "/lastName", lastVisionObservation.camera());
 		}
 		Logger.recordOutput(logPath + "/lastOdometryUpdate", lastOdometryData.getTimestampSeconds());
 		Logger.recordOutput(logPath + "/isIMUOffsetCalibrated", isIMUOffsetCalibrated);
