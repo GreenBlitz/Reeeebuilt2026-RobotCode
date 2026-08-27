@@ -1,6 +1,7 @@
 package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
+import frc.robot.vision.Camera;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
@@ -148,9 +149,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 			mt1PoseObservation = new RobotPoseObservation(
 				getMT1RawData().timestampSeconds(),
+				Camera.getCameraByName(name),
 				getMT1RawData().pose(),
-				calculateMT1StdDevs.get(),
-				name
+				calculateMT1StdDevs.get()
 			);
 			if (doesObservationExist(mt1PoseObservation)) {
 				Logger.recordOutput(logPath + "/mt1/poseObservation", mt1PoseObservation);
@@ -166,9 +167,9 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 
 			mt2PoseObservation = new RobotPoseObservation(
 				getMT2RawData().timestampSeconds(),
+				Camera.getCameraByName(name),
 				getMT2RawData().pose(),
-				calculateMT2StdDevs.get(),
-				name
+				calculateMT2StdDevs.get()
 			);
 			if (doesObservationExist(mt2PoseObservation)) {
 				Logger.recordOutput(logPath + "/mt2/poseObservation", mt2PoseObservation);
