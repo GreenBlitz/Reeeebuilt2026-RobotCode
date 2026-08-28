@@ -10,4 +10,3 @@ public record RobotPoseObservation(double timestampSeconds, Pose2d robotPose, St
 	}
 
 }
-
