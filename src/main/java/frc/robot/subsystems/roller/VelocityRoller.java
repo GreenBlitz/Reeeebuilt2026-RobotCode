@@ -10,11 +10,19 @@ public class VelocityRoller extends Roller {
 
 	private final InputSignal<Rotation2d> velocitySignal;
 	private final IRequest<Rotation2d> velocityRequest;
+<<<<<<< HEAD
 	private final VelocityRollerCommandBuilder commandsBuilder;
 
 	public VelocityRoller(
 		String logPath,
 		ControllableMotor roller,
+=======
+	private final VelocityRollerCommandsBuilder commandsBuilder;
+
+	public VelocityRoller(
+		String logPath,
+		ControllableMotor motor,
+>>>>>>> template/master
 		InputSignal<Double> voltageSignal,
 		InputSignal<Double> currentSignal,
 		InputSignal<Rotation2d> positionSignal,
@@ -22,15 +30,26 @@ public class VelocityRoller extends Roller {
 		IRequest<Double> voltageRequest,
 		IRequest<Rotation2d> velocityRequest
 	) {
+<<<<<<< HEAD
 		super(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest);
 		this.velocitySignal = velocitySignal;
 		this.velocityRequest = velocityRequest;
 		this.commandsBuilder = new VelocityRollerCommandBuilder(this);
+=======
+		super(logPath, motor, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest);
+		this.velocitySignal = velocitySignal;
+		this.velocityRequest = velocityRequest;
+		this.commandsBuilder = new VelocityRollerCommandsBuilder(this);
+>>>>>>> template/master
 		setDefaultCommand(commandsBuilder.stop());
 	}
 
 	@Override
+<<<<<<< HEAD
 	public VelocityRollerCommandBuilder getCommandsBuilder() {
+=======
+	public VelocityRollerCommandsBuilder getCommandsBuilder() {
+>>>>>>> template/master
 		return commandsBuilder;
 	}
 
@@ -50,7 +69,11 @@ public class VelocityRoller extends Roller {
 
 	@Override
 	public void update() {
+<<<<<<< HEAD
 		super.update();
+=======
+		super.stop();
+>>>>>>> template/master
 		Logger.recordOutput(getLogPath() + "/TargetVelocity", velocityRequest.getSetPoint());
 		motor.updateInputs(velocitySignal);
 	}

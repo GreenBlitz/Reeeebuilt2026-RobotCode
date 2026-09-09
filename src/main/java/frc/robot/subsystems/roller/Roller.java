@@ -32,12 +32,18 @@ public class Roller extends GBSubsystem {
 	) {
 		super(logPath);
 		this.motor = motor;
+<<<<<<< HEAD
 
+=======
+>>>>>>> template/master
 		this.voltageSignal = voltageSignal;
 		this.currentSignal = currentSignal;
 		this.positionSignal = positionSignal;
 		this.velocitySignal = velocitySignal;
+<<<<<<< HEAD
 
+=======
+>>>>>>> template/master
 		this.voltageRequest = voltageRequest;
 
 		this.commandsBuilder = new RollerCommandsBuilder(this);
@@ -106,10 +112,13 @@ public class Roller extends GBSubsystem {
 		return isBehindPosition(targetPosition);
 	}
 
+<<<<<<< HEAD
 	public boolean isAtVelocity(Rotation2d velocity, Rotation2d tolerance) {
 		return velocitySignal.isNear(velocity, tolerance);
 	}
 
+=======
+>>>>>>> template/master
 	public void update() {
 		motor.updateSimulation();
 		motor.updateInputs(voltageSignal, currentSignal, positionSignal, velocitySignal);

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+<<<<<<< HEAD
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.*;
@@ -15,6 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+=======
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+>>>>>>> template/master
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
@@ -46,6 +53,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+<<<<<<< HEAD
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
@@ -65,6 +73,18 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.List;
 import java.util.function.Supplier;
+=======
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
+import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.battery.BatteryUtil;
+import frc.robot.hardware.interfaces.IIMU;
+import frc.utils.brakestate.BrakeMode;
+import frc.utils.brakestate.BrakeStateManager;
+
+import java.util.List;
+>>>>>>> template/master
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -98,6 +118,7 @@ public class Robot {
 	private SendableChooser<Boolean> returnToMiddle;
 
 	private final IPoseEstimator poseEstimator;
+	private final List<Limelight> limelights;
 
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
@@ -158,15 +179,48 @@ public class Robot {
 			IMUFactory.createSignals(imu)
 		);
 		BrakeStateManager.add(() -> swerve.getModules().setBrake(true), () -> swerve.getModules().setBrake(false));
+<<<<<<< HEAD
 
+=======
+>>>>>>> template/master
 		this.poseEstimator = new WPILibPoseEstimatorWrapper(
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
+<<<<<<< HEAD
 			swerve.getIMUOrientation(),
 			swerve.getIMUAccelerationG().toTranslation2d(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
+=======
+			swerve.getOrientationFromIMU(),
+			swerve.getIMUAccelerationG(),
+			swerve.getIMUAbsoluteYaw().getTimestamp()
+		);
+
+		this.limelights = List.of();
+		limelights.forEach(
+			limelight -> limelight.setMT1StdDevsCalculation(
+				LimelightStdDevCalculations.getMT1StdDevsCalculation(
+					limelight,
+					RobotConstants.DEFAULT_TAG_DISTANCE_FACTORS,
+					RobotConstants.DEFAULT_STD_DEV_FACTORS,
+					RobotConstants.DEFAULT_VISIBLE_TAGS_EXPONENTS,
+					RobotConstants.DEFAULT_STD_DEV_ADDITIONS
+				)
+			)
+		);
+		limelights.forEach(
+			limelight -> limelight.setMT1PoseFilter(
+				LimelightFilters.megaTag1Filter(
+					limelight,
+					timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+					poseEstimator::isIMUOffsetCalibrated,
+					LimelightFilters.DEFAULT_IN_FIELD_TOLERANCE_METERS,
+					LimelightFilters.DEFAULT_YAW_AT_ANGLE_TOLERANCE
+				)
+			)
+>>>>>>> template/master
 		);
 
 		this.limelightFront = new Limelight(
@@ -224,6 +278,7 @@ public class Robot {
 		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
+<<<<<<< HEAD
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
@@ -310,6 +365,14 @@ public class Robot {
 
 	public boolean isTurretMoveLegal() {
 		return TurretCalculations.isTurretMoveLegal(ShootingCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
+=======
+
+		configureBrakeStateChooser();
+	}
+
+	public void updateSubsystems() {
+		swerve.update();
+>>>>>>> template/master
 	}
 
 	public void periodic() {
@@ -317,6 +380,10 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
+<<<<<<< HEAD
+=======
+		updateSubsystems();
+>>>>>>> template/master
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		getLimelights().forEach(Limelight::updateHardwareInputs);
@@ -392,6 +459,7 @@ public class Robot {
 		return swerve;
 	}
 
+<<<<<<< HEAD
 	public IPoseEstimator getPoseEstimator() {
 		return poseEstimator;
 	}
@@ -408,10 +476,13 @@ public class Robot {
 		return limelightLeft;
 	}
 
+=======
+>>>>>>> template/master
 	public List<Limelight> getLimelights() {
 		return limelights;
 	}
 
+<<<<<<< HEAD
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -482,6 +553,18 @@ public class Robot {
 		);
 
 		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
+=======
+	public PathPlannerAutoWrapper getAutonomousCommand() {
+		return new PathPlannerAutoWrapper();
+>>>>>>> template/master
+	}
+
+	private void configureBrakeStateChooser() {
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Brake", BrakeMode.BRAKE);
+		brakeStateChooser.addOption("Coast", BrakeMode.COAST);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
 
 }

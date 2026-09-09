@@ -10,10 +10,15 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+<<<<<<< HEAD
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
+=======
+import frc.robot.Robot;
+import frc.robot.autonomous.AutonomousConstants;
+>>>>>>> template/master
 import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
@@ -39,9 +44,13 @@ public class RobotManager extends LoggedRobot {
 	private final Robot robot;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
+<<<<<<< HEAD
 	private static double teleopStartTimeSeconds = -1;
 	private String alertsMessage;
 	private final Field2d field2d;
+=======
+	private String alertsMessage;
+>>>>>>> template/master
 
 	public RobotManager() {
 		StatusLogger.disableAutoLogging();
@@ -59,6 +68,7 @@ public class RobotManager extends LoggedRobot {
 		JoysticksBindings.configureBindings(robot);
 
 		Threads.setCurrentThreadPriority(true, 10);
+<<<<<<< HEAD
 
 		field2d = new Field2d();
 		SmartDashboard.putData(field2d);
@@ -78,12 +88,25 @@ public class RobotManager extends LoggedRobot {
 		alertsMessage = "Alerts: None";
 		Logger.recordOutput("AlertsMessage", alertsMessage);
 		logDriverAlerts();
+=======
+
+		alertsMessage = "Alerts: None";
+		logCriticalAlerts();
+	}
+
+	@Override
+	public void disabledInit() {
+		if (!DriverStationUtil.isMatch()) {
+			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
+		}
+>>>>>>> template/master
 	}
 
 	@Override
 	public void disabledExit() {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
+<<<<<<< HEAD
 		}
 		robot.getLimelights().forEach(limelight -> limelight.setThrottleState(false));
 	}
@@ -92,6 +115,8 @@ public class RobotManager extends LoggedRobot {
 	public void disabledInit() {
 		if (!DriverStationUtil.isMatch()) {
 			BrakeStateManager.setBrakeMode(BrakeMode.COAST);
+=======
+>>>>>>> template/master
 		}
 	}
 
@@ -145,7 +170,27 @@ public class RobotManager extends LoggedRobot {
 		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
+<<<<<<< HEAD
 		logElasticRelatedInfo();
+=======
+		logCriticalAlerts();
+	}
+
+	private void createAutoReadyForConstructionChooser() {
+		SendableChooser<Boolean> autoReadyForConstructionSendableChooser = new SendableChooser<>();
+		autoReadyForConstructionSendableChooser.setDefaultOption("false", false);
+		autoReadyForConstructionSendableChooser.addOption("true", true);
+		autoReadyForConstructionSendableChooser.onChange(isReady -> {
+			if (isReady) {
+				this.autonomousCommand = robot.getAutonomousCommand();
+				BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
+			} else {
+				BrakeStateManager.setBrakeMode(BrakeMode.COAST);
+			}
+			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
+		});
+		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);
+>>>>>>> template/master
 	}
 
 	private void updateTimeRelatedData() {
@@ -154,6 +199,7 @@ public class RobotManager extends LoggedRobot {
 		TimeUtil.updateCycleTime(roborioCycles);
 	}
 
+<<<<<<< HEAD
 	private void logElasticRelatedInfo() {
 		Logger.recordOutput("isAutoWinner", HubUtil.isRobotAllianceAutoWinnerForLog());
 		Logger.recordOutput("TimeUntilNextShift", HubUtil.timeUntilCurrentShiftEndsSeconds(TimeUtil.getTimeSinceTeleopInitSeconds()));
@@ -170,6 +216,12 @@ public class RobotManager extends LoggedRobot {
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 
 		String newAlertsMessage = alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+=======
+	private void logCriticalAlerts() {
+		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
+
+		String newAlertsMessage = alerts.stream().filter(Alert::isCritical).map(Alert::getName).collect(Collectors.joining(", "));
+>>>>>>> template/master
 
 		boolean areAlertsOk = newAlertsMessage.isEmpty();
 
@@ -179,8 +231,16 @@ public class RobotManager extends LoggedRobot {
 
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;
+<<<<<<< HEAD
 			Logger.recordOutput("AlertsMessage", alertsMessage);
 		}
 	}
 
+=======
+			Logger.recordOutput("Alerts", alertsMessage);
+		}
+	}
+
+
+>>>>>>> template/master
 }

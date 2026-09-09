@@ -10,11 +10,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public class ArmCommandBuilder {
+public class ArmCommandsBuilder {
 
 	private final Arm arm;
 
-	protected ArmCommandBuilder(Arm arm) {
+	protected ArmCommandsBuilder(Arm arm) {
 		this.arm = arm;
 	}
 
@@ -39,7 +39,7 @@ public class ArmCommandBuilder {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setTargetPosition(target.get())), "Set target with Supplier");
 	}
 
-	public Command setVoltage(double voltage) {
+	public Command setVoltage(Double voltage) {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setVoltage(voltage)), "Set voltage to: " + voltage);
 	}
 
@@ -55,6 +55,4 @@ public class ArmCommandBuilder {
 			)
 			.until(isFinished);
 	}
-
-}
 

@@ -108,6 +108,10 @@ public class Pigeon2Wrapper extends Pigeon2 {
 
 	public Pigeon2Wrapper(Phoenix6DeviceID deviceID) {
 		super(deviceID.id(), deviceID.busChain().getCANBus());
+<<<<<<< HEAD
+=======
+		this.busChain = deviceID.busChain();
+>>>>>>> template/master
 		this.rollOffSetDegrees = 0;
 		this.busChain = deviceID.busChain();
 		this.pitchOffSetDegrees = 0;
@@ -134,7 +138,7 @@ public class Pigeon2Wrapper extends Pigeon2 {
 	 * yourself that it won't be affected by "setRoll". If for some reason you want to get the needed offset to make the returned value affected
 	 * by resets use "getRollOffset".
 	 *
-	 * @param newRoll - the wanted roll of the gyro to have
+	 * @param newRoll - the wanted roll of the IMU to have
 	 */
 	public void setRoll(Rotation2d newRoll) {
 		rollOffSetDegrees = calculateOffset(newRoll.getDegrees(), getRoll().getValue().in(Degrees));
@@ -145,7 +149,7 @@ public class Pigeon2Wrapper extends Pigeon2 {
 	 * to yourself that it won't be affected by "setPitch". If for some reason you want to get the needed offset to make the returned value
 	 * affected by resets use "getPitchOffset".
 	 *
-	 * @param newPitch - the wanted pitch of the gyro to have
+	 * @param newPitch - the wanted pitch of the IMU to have
 	 */
 	public void setPitch(Rotation2d newPitch) {
 		pitchOffSetDegrees = calculateOffset(newPitch.getDegrees(), getPitch().getValue().in(Degrees));

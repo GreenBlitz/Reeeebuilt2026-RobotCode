@@ -55,6 +55,7 @@ public abstract class SparkMaxMotor implements IMotor {
 
 	private void createFaultAlerts() {
 		//@formatter:off
+<<<<<<< HEAD
 		AlertManager.addAlert(
 			new PeriodicAlert(
 					Alert.AlertType.ERROR,
@@ -127,10 +128,85 @@ public abstract class SparkMaxMotor implements IMotor {
 			)
 		);
 		//@formatter:on
+=======
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "OtherErrorAt",
+                        () -> faults.other,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "MotorTypeMismatchAt",
+                        () -> faults.motorType,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "ConnectedSensorFaultAt",
+                        () -> faults.sensor,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "CANFatalFaultAt",
+                        () -> faults.can,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "OverHeatingAt",
+                        () -> faults.temperature,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "GateDriveCircuitryFaultAt",
+                        () -> faults.gateDriver,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "ClosedLoopControllerMemoryFaultAt",
+                        () -> faults.escEeprom,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.ERROR,
+                        logPath + "FirmwareFaultAt",
+                        () -> faults.firmware,
+                        true
+                )
+        );
+        //@formatter:on
+>>>>>>> template/master
 	}
 
 	private void createWarningAlerts() {
 		//@formatter:off
+<<<<<<< HEAD
 		AlertManager.addAlert(
 			new PeriodicAlert(
 				Alert.AlertType.WARNING,
@@ -175,23 +251,70 @@ public abstract class SparkMaxMotor implements IMotor {
 					true
 			)
 		);
+=======
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "SignificantVoltageDropAt",
+                        () -> warnings.brownout,
+                        true
+                )
+        );
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "MotorStalledAt",
-				() -> warnings.stall
-			)
-		);
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "OverCurrentDrawAt",
+                        () -> warnings.overcurrent,
+                        true
+                )
+        );
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "MotorHasResetAt",
-				() -> warnings.hasReset
-			)
-		);
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "ClosedLoopControllerMemoryWarningAt",
+                        () -> warnings.escEeprom,
+                        true
+                )
+        );
 
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "ExternalMemoryWarningAt",
+                        () -> warnings.extEeprom,
+                        true
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "ConnectedSensorWarningAt",
+                        () -> warnings.sensor,
+                        true
+                )
+        );
+>>>>>>> template/master
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "MotorStalledAt",
+                        () -> warnings.stall
+                )
+        );
+
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "MotorHasResetAt",
+                        () -> warnings.hasReset
+                )
+        );
+
+<<<<<<< HEAD
 		AlertManager.addAlert(
 			new PeriodicAlert(
 				Alert.AlertType.WARNING,
@@ -201,6 +324,17 @@ public abstract class SparkMaxMotor implements IMotor {
 			)
 		);
 		//@formatter:on
+=======
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "OtherWarningAt",
+                        () -> warnings.other,
+                        true
+                )
+        );
+        //@formatter:on
+>>>>>>> template/master
 	}
 
 	@Override

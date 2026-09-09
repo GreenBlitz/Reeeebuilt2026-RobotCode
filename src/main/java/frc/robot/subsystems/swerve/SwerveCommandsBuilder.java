@@ -138,14 +138,22 @@ public class SwerveCommandsBuilder {
 	public Command driveByPowersWithSupplier(Supplier<ChassisPowers> powersSupplier, Supplier<SwerveState> state) {
 		return swerve.asSubsystemCommand(
 			new DeferredCommand(() -> driveByPowersWithSupplier(powersSupplier, state.get()), Set.of(swerve)),
+<<<<<<< HEAD
 			"Drive by chassis powers supplier and state supplier"
+=======
+			"Drive by chassis powers supplier with state supplier"
+>>>>>>> template/master
 		);
 	}
 
 	public Command driveByPowersWithSupplier(Supplier<ChassisPowers> chassisPowersSupplier, SwerveState state) {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByState(chassisPowersSupplier.get(), state)),
+<<<<<<< HEAD
 			"Drive by chassis powers supplier and state"
+=======
+			"Drive by chassis powers supplier with state"
+>>>>>>> template/master
 		);
 	}
 

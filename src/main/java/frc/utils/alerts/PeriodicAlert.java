@@ -6,8 +6,13 @@ public class PeriodicAlert extends Alert {
 
 	private final BooleanSupplier reportCondition;
 
+<<<<<<< HEAD
 	public PeriodicAlert(AlertType type, String name, BooleanSupplier reportCondition, boolean isDriverRelevant) {
 		super(type, name, isDriverRelevant);
+=======
+	public PeriodicAlert(AlertType type, String name, BooleanSupplier reportCondition, boolean isCritical) {
+		super(type, name, isCritical);
+>>>>>>> template/master
 		this.reportCondition = reportCondition;
 	}
 

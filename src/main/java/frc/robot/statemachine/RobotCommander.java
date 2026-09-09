@@ -61,6 +61,7 @@ public class RobotCommander extends GBSubsystem {
 			new ConditionalCommand(
 				asSubsystemCommand(Commands.none(), "Disabled"),
 				new InstantCommand(
+<<<<<<< HEAD
 					() -> CommandScheduler.getInstance()
 						.schedule(
 							new DeferredCommand(
@@ -79,6 +80,11 @@ public class RobotCommander extends GBSubsystem {
 						)
 				),
 				this::isRunningIndependently
+=======
+					() -> CommandScheduler.getInstance().schedule(new DeferredCommand(() -> endState(currentState), Set.of(this, swerve)))
+				),
+				this::isSubsystemRunningIndependently
+>>>>>>> template/master
 			)
 		);
 	}
@@ -105,11 +111,16 @@ public class RobotCommander extends GBSubsystem {
 			|| robot.getUpperRoller().isRunningIndependently();
 	}
 
+<<<<<<< HEAD
 	public void update() {
 		intakeStateHandler.periodic();
 		funnelStateHandler.periodic();
 		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
+=======
+	public boolean isSubsystemRunningIndependently() {
+		return superstructure.isSubsystemRunningIndependently() || swerve.isRunningIndependently();
+>>>>>>> template/master
 	}
 
 	public Command setState(RobotState robotState) {

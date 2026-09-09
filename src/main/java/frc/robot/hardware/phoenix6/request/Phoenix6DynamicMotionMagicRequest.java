@@ -49,14 +49,23 @@ public class Phoenix6DynamicMotionMagicRequest extends Phoenix6MotionMagicReques
 	}
 
 	@Override
+<<<<<<< HEAD
 	public IDynamicMotionMagicRequest withMaxAccelerationRPSSquared(Rotation2d maxAccelerationRPSSquared) {
 		maxAcceleration = maxAccelerationRPSSquared;
+=======
+	public IDynamicMotionMagicRequest withMaxAccelerationRPS(Rotation2d maxAccelerationRPS) {
+		maxAcceleration = maxAccelerationRPS;
+>>>>>>> template/master
 		setMaxAcceleration.accept(maxAcceleration);
 		return this;
 	}
 
 	@Override
+<<<<<<< HEAD
 	public Rotation2d getMaxAccelerationRPSSquared() {
+=======
+	public Rotation2d getMaxAccelerationRPS() {
+>>>>>>> template/master
 		return maxAcceleration;
 	}
 

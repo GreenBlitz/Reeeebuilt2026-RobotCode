@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import java.util.function.Supplier;
 
-public class CurrentControlArmCommandsBuilder extends ArmCommandBuilder {
+public class CurrentControlArmCommandsBuilder extends ArmCommandsBuilder {
 
 	private final CurrentControlArm arm;
 
@@ -27,8 +27,7 @@ public class CurrentControlArmCommandsBuilder extends ArmCommandBuilder {
 	}
 
 	public Command setCurrentWithoutLimit(Supplier<Double> current) {
-		return arm
-			.asSubsystemCommand(new RunCommand(() -> arm.setCurrentWithoutLimit(current.get())), "Set current without limit by" + " supplier");
+		return arm.asSubsystemCommand(new RunCommand(() -> arm.setCurrentWithoutLimit(current.get())), "Set current without limit by supplier");
 	}
 
 }

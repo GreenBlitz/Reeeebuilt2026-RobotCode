@@ -10,10 +10,19 @@ public class Phoenix6RequestBuilder {
 
 	public static Phoenix6VelocityPositionRequest build(PositionVoltage positionVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
 		return new Phoenix6VelocityPositionRequest(
+<<<<<<< HEAD
 			setPoint -> positionVoltage.withVelocity(setPoint.getRotations()),
 			setPoint -> positionVoltage.withPosition(setPoint.getRotations()),
+=======
+>>>>>>> template/master
 			Rotation2d.fromRotations(positionVoltage.Position),
+			Rotation2d.fromRotations(positionVoltage.Velocity),
 			positionVoltage.withEnableFOC(enableFOC),
+<<<<<<< HEAD
+=======
+			setPoint -> positionVoltage.withVelocity(setPoint.getRotations()),
+			setPoint -> positionVoltage.withPosition(setPoint.getRotations()),
+>>>>>>> template/master
 			positionVoltage::withFeedForward,
 			defaultArbitraryFeedForward,
 			Rotation2d.fromRotations(positionVoltage.Velocity)
@@ -92,14 +101,29 @@ public class Phoenix6RequestBuilder {
 		return new Phoenix6Request<>(torqueCurrentFOC.Output, torqueCurrentFOC, torqueCurrentFOC::withOutput);
 	}
 
+<<<<<<< HEAD
 	public static Phoenix6Request<Rotation2d> buildBangBangRequest(Supplier<Rotation2d> currentVelocity, double maxPower, boolean enableFOC) {
+=======
+	public static Phoenix6Request<Rotation2d> buildBangBangRequest(
+		Supplier<Rotation2d> currentVelocity,
+		double maxForwardPower,
+		double maxBackwardPower,
+		boolean enableFOC
+	) {
+>>>>>>> template/master
 		BangBangController bangBangController = new BangBangController();
 		DutyCycleOut dutyCycleOut = new DutyCycleOut(0).withEnableFOC(enableFOC);
 		return new Phoenix6Request<>(
 			Rotation2d.kZero,
 			dutyCycleOut,
 			(Rotation2d targetVelocity) -> dutyCycleOut.withOutput(
+<<<<<<< HEAD
 				bangBangController.calculate(currentVelocity.get().getRotations(), targetVelocity.getRotations()) == 0 ? -maxPower : maxPower
+=======
+				bangBangController.calculate(currentVelocity.get().getRotations(), targetVelocity.getRotations()) == 0
+					? maxBackwardPower
+					: maxForwardPower
+>>>>>>> template/master
 			)
 		);
 	}

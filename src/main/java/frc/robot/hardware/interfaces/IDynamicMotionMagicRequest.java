@@ -11,8 +11,8 @@ public interface IDynamicMotionMagicRequest extends IMotionMagicRequest {
 
 	Rotation2d getMaxVelocityRPS();
 
-	IDynamicMotionMagicRequest withMaxAccelerationRPSSquared(Rotation2d maxAccelerationRPSSquared);
+	IDynamicMotionMagicRequest withMaxAccelerationRPS(Rotation2d maxAccelerationRPSSquared);
 
-	Rotation2d getMaxAccelerationRPSSquared();
+	Rotation2d getMaxAccelerationRPS();
 
 }

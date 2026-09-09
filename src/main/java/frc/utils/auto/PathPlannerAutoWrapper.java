@@ -61,6 +61,22 @@ public class PathPlannerAutoWrapper extends PathPlannerAuto {
 
 	public PathPlannerAutoWrapper asProxyAuto() {
 		return new PathPlannerAutoWrapper(this.asProxy(), this.getStartingPose(), this.getName(), this.paths);
+<<<<<<< HEAD
+=======
+	}
+
+	public List<Pose2d> getPath(boolean flip) {
+		List<Pose2d> finalList = new ArrayList<>();
+		if (paths != null) {
+			for (PathPlannerPath path : paths) {
+				if (flip) {
+					path = path.flipPath();
+				}
+				finalList.addAll(path.getPathPoses());
+			}
+		}
+		return finalList;
+>>>>>>> template/master
 	}
 
 	public List<Pose2d> getPath(boolean flip) {

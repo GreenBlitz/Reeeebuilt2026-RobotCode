@@ -27,12 +27,20 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final Pose2d STARTING_ODOMETRY_POSE = new Pose2d();
 
+	public static final double ODOMETRY_POSE_PREDICTION_TIME_SECONDS = 1;
+
 	public static final int POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE = 50;
 
 	public static double MAX_POSE_TO_IMU_YAW_DIFFERENCE_STD_DEV = 0.0025;
 
 	public static double IMU_YAW_BUFFER_SIZE_SECONDS = 2;
 
+<<<<<<< HEAD
 	public static double IMU_XY_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
+=======
+	public static double IMU_3D_ACCELERATION_G_BUFFER_SIZE_SECONDS = 2;
+
+	public static double MAXIMUM_NEGLIGIBLE_VECTOR_NORM = 1e-6;
+>>>>>>> template/master
 
 }

@@ -1,7 +1,11 @@
 package frc.robot.poseestimator;
 
 import edu.wpi.first.math.geometry.Rotation3d;
+<<<<<<< HEAD
 import edu.wpi.first.math.geometry.Translation2d;
+=======
+import edu.wpi.first.math.geometry.Translation3d;
+>>>>>>> template/master
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -13,7 +17,11 @@ public class OdometryData {
 	private SwerveModulePosition[] wheelPositions = new SwerveModulePosition[4];
 	private SwerveModuleState[] wheelStates = new SwerveModuleState[4];
 	private Optional<Rotation3d> imuOrientation = Optional.empty();
+<<<<<<< HEAD
 	private Optional<Translation2d> imuXYAccelerationG = Optional.empty();
+=======
+	private Optional<Translation3d> imu3DAccelerationG = Optional.empty();
+>>>>>>> template/master
 
 	public OdometryData() {}
 
@@ -22,13 +30,21 @@ public class OdometryData {
 		SwerveModulePosition[] wheelPositions,
 		SwerveModuleState[] wheelStates,
 		Optional<Rotation3d> imuOrientation,
+<<<<<<< HEAD
 		Optional<Translation2d> imuXYAccelerationG
+=======
+		Optional<Translation3d> imu3DAccelerationG
+>>>>>>> template/master
 	) {
 		this.timestampSeconds = timestampSeconds;
 		this.wheelPositions = wheelPositions;
 		this.wheelStates = wheelStates;
 		this.imuOrientation = imuOrientation;
+<<<<<<< HEAD
 		this.imuXYAccelerationG = imuXYAccelerationG;
+=======
+		this.imu3DAccelerationG = imu3DAccelerationG;
+>>>>>>> template/master
 	}
 
 	public double getTimestampSeconds() {
@@ -47,8 +63,13 @@ public class OdometryData {
 		return imuOrientation;
 	}
 
+<<<<<<< HEAD
 	public Optional<Translation2d> getIMUXYAccelerationG() {
 		return imuXYAccelerationG;
+=======
+	public Optional<Translation3d> getIMU3DAccelerationG() {
+		return imu3DAccelerationG;
+>>>>>>> template/master
 	}
 
 	public void setTimestamp(double timestampSeconds) {
@@ -71,12 +92,21 @@ public class OdometryData {
 		setIMUOrientation(Optional.of(imuOrientation));
 	}
 
+<<<<<<< HEAD
 	public void setIMUXYAcceleration(Optional<Translation2d> imuXYAccelerationG) {
 		this.imuXYAccelerationG = imuXYAccelerationG;
 	}
 
 	public void setIMUXYAcceleration(Translation2d imuXYAccelerationG) {
 		setIMUXYAcceleration(Optional.of(imuXYAccelerationG));
+=======
+	public void setIMU3DAcceleration(Optional<Translation3d> imu3DAccelerationG) {
+		this.imu3DAccelerationG = imu3DAccelerationG;
+	}
+
+	public void setIMU3DAcceleration(Translation3d imu3DAccelerationG) {
+		setIMU3DAcceleration(Optional.of(imu3DAccelerationG));
+>>>>>>> template/master
 	}
 
 }

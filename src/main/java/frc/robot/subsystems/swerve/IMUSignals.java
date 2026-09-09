@@ -15,26 +15,7 @@ public record IMUSignals(
 	InputSignal<Double> zAccelerationGSignal
 ) {
 
-	public Rotation2d[] getLatestAngularVelocity() {
-		return new Rotation2d[] {
-			rollAngularVelocitySignal.getLatestValue(),
-			pitchAngularVelocitySignal.getLatestValue(),
-			yawAngularVelocitySignal.getLatestValue()};
-	}
-
-	public Rotation3d[] getAllOrientations() {
-		Rotation2d[] allRollValues = rollSignal.asArray();
-		Rotation2d[] allPitchValues = pitchSignal.asArray();
-		Rotation2d[] allYawValues = yawSignal.asArray();
-		Rotation3d[] allOrientations = new Rotation3d[Math.min(Math.min(allRollValues.length, allPitchValues.length), allYawValues.length)];
-
-		for (int i = 0; i < allOrientations.length; i++) {
-			allOrientations[i] = new Rotation3d(allRollValues[i].getRadians(), allPitchValues[i].getRadians(), allYawValues[i].getRadians());
-		}
-		return allOrientations;
-	}
-
-	public Rotation3d getLatestOrientation() {
+	public Rotation3d getAngularVelocity() {
 		return new Rotation3d(
 			rollSignal.getLatestValue().getRadians(),
 			pitchSignal.getLatestValue().getRadians(),

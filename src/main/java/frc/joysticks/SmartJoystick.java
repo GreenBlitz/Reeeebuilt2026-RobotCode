@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Robot;
 import frc.utils.alerts.Alert;
 import frc.utils.alerts.AlertManager;
 import frc.utils.alerts.PeriodicAlert;
@@ -29,12 +30,21 @@ public class SmartJoystick {
 		this(new Joystick(joystickPort.getPort()), deadzone, false);
 	}
 
+<<<<<<< HEAD
 	public SmartJoystick(JoystickPorts joystickPort, boolean alertOnDisconnect) {
 		this(joystickPort, DEADZONE, alertOnDisconnect);
 	}
 
 	public SmartJoystick(JoystickPorts joystickPort, double deadzone, boolean alertOnDisconnect) {
 		this(new Joystick(joystickPort.getPort()), deadzone, alertOnDisconnect);
+=======
+	public SmartJoystick(JoystickPorts joystickPorts, boolean alertOnDisconnect) {
+		this(new Joystick(joystickPorts.getPort()), DEADZONE, alertOnDisconnect);
+	}
+
+	public SmartJoystick(JoystickPorts joystickPorts, double deadzone, boolean alertOnDisconnect) {
+		this(new Joystick(joystickPorts.getPort()), deadzone, alertOnDisconnect);
+>>>>>>> template/master
 	}
 
 	private SmartJoystick(Joystick joystick, double deadzone, boolean alertOnDisconnect) {
@@ -61,7 +71,11 @@ public class SmartJoystick {
 		this.POV_DOWN = new POVButton(this.joystick, ButtonID.POV_DOWN.getId());
 		this.POV_LEFT = new POVButton(this.joystick, ButtonID.POV_LEFT.getId());
 
+<<<<<<< HEAD
 		if (alertOnDisconnect) {
+=======
+		if (Robot.ROBOT_TYPE.isReal() && alertOnDisconnect) {
+>>>>>>> template/master
 			AlertManager.addAlert(new PeriodicAlert(Alert.AlertType.ERROR, logPath + "/DisconnectedAt", () -> !isConnected(), true));
 		}
 	}
