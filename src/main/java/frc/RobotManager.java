@@ -156,7 +156,7 @@ public class RobotManager extends LoggedRobot {
 		autoReadyForConstructionSendableChooser.addOption("true", true);
 		autoReadyForConstructionSendableChooser.onChange(isReady -> {
 			if (isReady) {
-				this.autonomousCommand = robot.getAutonomousCommand();
+				this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
 				BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
 			} else {
 				BrakeStateManager.setBrakeMode(BrakeMode.COAST);

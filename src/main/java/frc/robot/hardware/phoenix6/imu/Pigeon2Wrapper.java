@@ -110,7 +110,6 @@ public class Pigeon2Wrapper extends Pigeon2 {
 		super(deviceID.id(), deviceID.busChain().getCANBus());
 		this.busChain = deviceID.busChain();
 		this.rollOffSetDegrees = 0;
-		this.busChain = deviceID.busChain();
 		this.pitchOffSetDegrees = 0;
 	}
 

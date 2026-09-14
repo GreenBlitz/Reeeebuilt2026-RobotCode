@@ -17,7 +17,6 @@ public record SwerveConstants(
 	PIDController yMetersPIDController,
 	PIDController wraplessRotationDegreesPIDController,
 	PIDController rotationDegreesPIDController,
-	PIDController wraplessRotationDegreesPIDController,
 	PPHolonomicDriveController pathPlannerHolonomicDriveController
 ) {
 

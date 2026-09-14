@@ -15,8 +15,8 @@ public class Phoenix6RequestBuilder {
 			Rotation2d.fromRotations(positionVoltage.Position),
 			Rotation2d.fromRotations(positionVoltage.Velocity),
 			positionVoltage.withEnableFOC(enableFOC),
-			defaultArbitraryFeedForward,
-			Rotation2d.fromRotations(positionVoltage.Velocity)
+			positionVoltage::withFeedForward,
+			defaultArbitraryFeedForward
 		);
 	}
 

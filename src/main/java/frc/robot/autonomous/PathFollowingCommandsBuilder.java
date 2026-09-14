@@ -12,7 +12,6 @@ import frc.utils.auto.PathPlannerUtil;
 import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;

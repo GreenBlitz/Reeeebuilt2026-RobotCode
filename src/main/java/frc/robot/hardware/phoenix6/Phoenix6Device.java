@@ -75,10 +75,6 @@ public abstract class Phoenix6Device implements IDevice {
 		logSignals(validSignals);
 	}
 
-	public BusChain getBusChain() {
-		return busChain;
-	}
-
 	public abstract ParentDevice getDevice();
 
 	public BusChain getBusChain() {
