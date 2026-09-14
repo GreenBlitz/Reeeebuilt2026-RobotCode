@@ -101,16 +101,20 @@ public class Swerve extends GBSubsystem {
 		return stateHandler;
 	}
 
-	public Rotation2d[] getIMUAngularVelocityRPS() {
+	public Rotation2d[] getAngularVelocityFromIMURPS() {
 		return imuSignals.getLatestAngularVelocity();
 	}
 
-	public Rotation3d getIMUOrientation() {
+	public Rotation3d getOrientationFromIMU() {
 		return imuSignals.getLatestOrientation();
 	}
 
 	public Translation3d getIMUAccelerationG() {
 		return imuSignals.getLatestAccelerationG();
+	}
+
+	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
+		return getIMUAccelerationG().times(RobotConstants.G);
 	}
 
 	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
@@ -195,7 +199,7 @@ public class Swerve extends GBSubsystem {
 				modules.getWheelPositions(i),
 				modules.getCurrentStates(),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d())
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i])
 			);
 		}
 
@@ -207,9 +211,9 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public TimedValue<Rotation2d> getIMUAbsoluteYaw() {
-		TimedValue<Rotation2d> latestGyroYaw = imuSignals.yawSignal().getLatestTimedValue();
-		Rotation2d latestGyroAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestGyroYaw.getValue().getRadians()));
-		return new TimedValue<>(latestGyroAbsoluteYaw, latestGyroYaw.getTimestamp());
+		TimedValue<Rotation2d> latestIMUYaw = imuSignals.yawSignal().getLatestTimedValue();
+		Rotation2d latestIMUAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestIMUYaw.getValue().getRadians()));
+		return new TimedValue<>(latestIMUAbsoluteYaw, latestIMUYaw.getTimestamp());
 	}
 
 	public Rotation2d getAbsoluteHeading() {
@@ -239,6 +243,10 @@ public class Swerve extends GBSubsystem {
 			return speeds;
 		}
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
+	}
+
+	public double getIMUAcceleration() {
+		return imuSignals.getLatestAccelerationG().getNorm();
 	}
 
 	protected void moveToPoseByPID(Pose2d currentPose, Pose2d targetPose) {
@@ -336,6 +344,10 @@ public class Swerve extends GBSubsystem {
 		return isAtHeading && isStopping;
 	}
 
+	public boolean isCollisionDetected() {
+		return imuSignals.getLatestAccelerationG().toTranslation2d().getNorm() > SwerveConstants.MIN_COLLISION_G_FORCE;
+	}
+
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
 		// Calibrate steer ks with phoenix tuner x
 		// Calibrate steer pid with phoenix tuner x
@@ -343,7 +355,7 @@ public class Swerve extends GBSubsystem {
 		// Let it rotate some rotations then output will be in log under Calibrations/.
 		joystick.POV_DOWN.whileTrue(getCommandsBuilder().wheelRadiusCalibration());
 
-		// ROBOT RELATIVE DRIVE - FOR GYRO TEST
+		// ROBOT RELATIVE DRIVE - FOR IMU TEST
 		joystick.POV_UP
 			.whileTrue(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE)));
 
@@ -400,13 +412,14 @@ public class Swerve extends GBSubsystem {
 
 		// max velocity at 12 volts (put a really high value in max vel and max rot vel for it to work)
 		// after calibrating max vel at 12 volts use this to calibrate kS
-		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
+		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().driveByPowersWithSupplier(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.xPower = calibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
 			return powers;
-		}), Set.of(this)));
+		}, SwerveState.DEFAULT_DRIVE.withLoopMode(LoopMode.OPEN)), Set.of(this)));
 
-		// max rotational velocity calbration
+
+		// max rotational velocity calibration
 		joystick.BACK.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.rotationalPower = 1;

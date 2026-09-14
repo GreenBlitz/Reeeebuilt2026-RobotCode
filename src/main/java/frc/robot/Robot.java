@@ -15,6 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
@@ -46,6 +50,9 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
@@ -57,6 +64,11 @@ import frc.robot.vision.cameras.limelight.LimelightPipeline;
 import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
+import frc.robot.hardware.interfaces.IIMU;
+import frc.utils.brakestate.BrakeMode;
+import frc.utils.brakestate.BrakeStateManager;
+
+import java.util.List;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 import frc.utils.math.StandardDeviations2D;
@@ -158,14 +170,13 @@ public class Robot {
 			IMUFactory.createSignals(imu)
 		);
 		BrakeStateManager.add(() -> swerve.getModules().setBrake(true), () -> swerve.getModules().setBrake(false));
-
 		this.poseEstimator = new WPILibPoseEstimatorWrapper(
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
-			swerve.getIMUOrientation(),
-			swerve.getIMUAccelerationG().toTranslation2d(),
+			swerve.getOrientationFromIMU(),
+			swerve.getIMUAccelerationG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
@@ -441,15 +452,6 @@ public class Robot {
 	public TimeInterpolatableBuffer<Double> getBallsBufferWithoutPassing() {
 		return ballsBufferWithoutPassing;
 	}
-
-	private void configureBrakeStateChooser() {
-		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("Coast", BrakeMode.COAST);
-		brakeStateChooser.addOption("Brake", BrakeMode.BRAKE);
-		SmartDashboard.putData("BrakeState", brakeStateChooser);
-		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
-	}
-
 	private void configureAuto() {
 		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
@@ -484,6 +486,14 @@ public class Robot {
 		);
 
 		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
+	}
+
+	private void configureBrakeStateChooser() {
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Brake", BrakeMode.BRAKE);
+		brakeStateChooser.addOption("Coast", BrakeMode.COAST);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
 
 }
