@@ -202,5 +202,4 @@ public class RobotManager extends LoggedRobot {
 		}
 	}
 
-
 }
