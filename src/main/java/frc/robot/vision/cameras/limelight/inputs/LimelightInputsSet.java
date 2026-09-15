@@ -1,6 +1,5 @@
 package frc.robot.vision.cameras.limelight.inputs;
 
-
 import frc.robot.hardware.ConnectedInputAutoLogged;
 
 public record LimelightInputsSet(

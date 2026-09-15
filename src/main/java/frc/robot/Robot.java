@@ -170,6 +170,7 @@ public class Robot {
 			IMUFactory.createSignals(imu)
 		);
 		BrakeStateManager.add(() -> swerve.getModules().setBrake(true), () -> swerve.getModules().setBrake(false));
+
 		this.poseEstimator = new WPILibPoseEstimatorWrapper(
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
@@ -453,6 +454,14 @@ public class Robot {
 		return ballsBufferWithoutPassing;
 	}
 
+	private void configureBrakeStateChooser() {
+		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
+		brakeStateChooser.setDefaultOption("Brake", BrakeMode.BRAKE);
+		brakeStateChooser.addOption("Coast", BrakeMode.COAST);
+		SmartDashboard.putData("BrakeState", brakeStateChooser);
+		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
+	}
+
 	private void configureAuto() {
 		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
@@ -487,14 +496,6 @@ public class Robot {
 		);
 
 		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
-	}
-
-	private void configureBrakeStateChooser() {
-		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("Brake", BrakeMode.BRAKE);
-		brakeStateChooser.addOption("Coast", BrakeMode.COAST);
-		SmartDashboard.putData("BrakeState", brakeStateChooser);
-		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
 
 }
