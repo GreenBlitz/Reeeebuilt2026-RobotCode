@@ -18,6 +18,7 @@ import frc.robot.RobotConstants;
 import frc.robot.hardware.empties.EmptyIMU;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.poseestimator.OdometryData;
+import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.module.Modules;
 import frc.robot.subsystems.swerve.states.DriveRelative;
@@ -101,11 +102,11 @@ public class Swerve extends GBSubsystem {
 		return stateHandler;
 	}
 
-	public Rotation2d[] getIMUAngularVelocityRPS() {
+	public Rotation2d[] getAngularVelocityFromIMURPS() {
 		return imuSignals.getLatestAngularVelocity();
 	}
 
-	public Rotation3d getIMUOrientation() {
+	public Rotation3d getOrientationFromIMU() {
 		return imuSignals.getLatestOrientation();
 	}
 
@@ -113,8 +114,12 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getLatestAccelerationG();
 	}
 
+	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
+		return getIMUAccelerationG().times(RobotConstants.G);
+	}
+
 	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
-		return getIMUAccelerationG().times(RobotConstants.G_METERS_PER_SECOND_SQUARED_ISRAEL);
+		return getIMUAccelerationG().times(RobotConstants.G);
 	}
 
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
@@ -195,7 +200,7 @@ public class Swerve extends GBSubsystem {
 				modules.getWheelPositions(i),
 				modules.getCurrentStates(),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
-				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d())
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i])
 			);
 		}
 
@@ -207,9 +212,9 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public TimedValue<Rotation2d> getIMUAbsoluteYaw() {
-		TimedValue<Rotation2d> latestGyroYaw = imuSignals.yawSignal().getLatestTimedValue();
-		Rotation2d latestGyroAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestGyroYaw.getValue().getRadians()));
-		return new TimedValue<>(latestGyroAbsoluteYaw, latestGyroYaw.getTimestamp());
+		TimedValue<Rotation2d> latestIMUYaw = imuSignals.yawSignal().getLatestTimedValue();
+		Rotation2d latestIMUAbsoluteYaw = Rotation2d.fromRadians(MathUtil.angleModulus(latestIMUYaw.getValue().getRadians()));
+		return new TimedValue<>(latestIMUAbsoluteYaw, latestIMUYaw.getTimestamp());
 	}
 
 	public Rotation2d getAbsoluteHeading() {
@@ -239,6 +244,10 @@ public class Swerve extends GBSubsystem {
 			return speeds;
 		}
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
+	}
+
+	public double getIMUAcceleration() {
+		return imuSignals.getLatestAccelerationG().getNorm();
 	}
 
 	protected void moveToPoseByPID(Pose2d currentPose, Pose2d targetPose) {
@@ -336,6 +345,11 @@ public class Swerve extends GBSubsystem {
 		return isAtHeading && isStopping;
 	}
 
+	public boolean isCollisionDetected() {
+		return imuSignals.getLatestAccelerationG().toTranslation2d().getNorm()
+			> WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G;
+	}
+
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
 		// Calibrate steer ks with phoenix tuner x
 		// Calibrate steer pid with phoenix tuner x
@@ -343,7 +357,7 @@ public class Swerve extends GBSubsystem {
 		// Let it rotate some rotations then output will be in log under Calibrations/.
 		joystick.POV_DOWN.whileTrue(getCommandsBuilder().wheelRadiusCalibration());
 
-		// ROBOT RELATIVE DRIVE - FOR GYRO TEST
+		// ROBOT RELATIVE DRIVE - FOR IMU TEST
 		joystick.POV_UP
 			.whileTrue(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE.withDriveRelative(DriveRelative.ROBOT_RELATIVE)));
 
@@ -400,13 +414,14 @@ public class Swerve extends GBSubsystem {
 
 		// max velocity at 12 volts (put a really high value in max vel and max rot vel for it to work)
 		// after calibrating max vel at 12 volts use this to calibrate kS
-		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
+		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().driveByPowersWithSupplier(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.xPower = calibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
 			return powers;
-		}), Set.of(this)));
+		}, SwerveState.DEFAULT_DRIVE.withLoopMode(LoopMode.OPEN)), Set.of(this)));
 
-		// max rotational velocity calbration
+
+		// max rotational velocity calibration
 		joystick.BACK.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.rotationalPower = 1;

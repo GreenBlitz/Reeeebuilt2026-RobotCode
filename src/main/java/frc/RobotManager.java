@@ -8,6 +8,7 @@ import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.constants.field.Field;
@@ -16,6 +17,8 @@ import frc.utils.GamePeriodUtils;
 import frc.utils.HubUtil;
 import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
+import frc.utils.driverstation.DriverStationUtil;
+import frc.robot.autonomous.AutonomousConstants;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -76,8 +79,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getLimelights().forEach(limelight -> limelight.setThrottleState(!DriverStationUtil.isMatch()));
 
 		alertsMessage = "Alerts: None";
-		Logger.recordOutput("AlertsMessage", alertsMessage);
-		logDriverAlerts();
+		logCriticalAlerts();
 	}
 
 	@Override
@@ -148,6 +150,22 @@ public class RobotManager extends LoggedRobot {
 		logElasticRelatedInfo();
 	}
 
+	private void createAutoReadyForConstructionChooser() {
+		SendableChooser<Boolean> autoReadyForConstructionSendableChooser = new SendableChooser<>();
+		autoReadyForConstructionSendableChooser.setDefaultOption("false", false);
+		autoReadyForConstructionSendableChooser.addOption("true", true);
+		autoReadyForConstructionSendableChooser.onChange(isReady -> {
+			if (isReady) {
+				this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
+				BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
+			} else {
+				BrakeStateManager.setBrakeMode(BrakeMode.COAST);
+			}
+			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
+		});
+		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);
+	}
+
 	private void updateTimeRelatedData() {
 		roborioCycles++;
 		Logger.recordOutput("RoborioCycles", roborioCycles);
@@ -161,15 +179,15 @@ public class RobotManager extends LoggedRobot {
 		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.getTimeUntilGameEnds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
 
-		logDriverAlerts();
+		logCriticalAlerts();
 
 		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
 	}
 
-	private void logDriverAlerts() {
+	private void logCriticalAlerts() {
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 
-		String newAlertsMessage = alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+		String newAlertsMessage = alerts.stream().filter(Alert::isCritical).map(Alert::getName).collect(Collectors.joining(", "));
 
 		boolean areAlertsOk = newAlertsMessage.isEmpty();
 
@@ -179,7 +197,7 @@ public class RobotManager extends LoggedRobot {
 
 		if (!newAlertsMessage.equals(alertsMessage)) {
 			alertsMessage = newAlertsMessage;
-			Logger.recordOutput("AlertsMessage", alertsMessage);
+			Logger.recordOutput("Alerts", alertsMessage);
 		}
 	}
 
