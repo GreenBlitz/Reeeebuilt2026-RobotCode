@@ -184,7 +184,6 @@ public class RobotManager extends LoggedRobot {
 		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
 	}
 
-
 	private void logCriticalAlerts() {
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 

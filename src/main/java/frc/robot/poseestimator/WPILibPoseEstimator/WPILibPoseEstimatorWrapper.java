@@ -39,7 +39,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		SwerveModulePosition[] initialModulePositions,
 		SwerveModuleState[] initialModuleStates,
 		Rotation3d initialIMUOrientation,
-		Translation3d initialIMUXYAccelerationG,
+		Translation3d initialIMU3DAccelerationG,
 		double initialTimestampSeconds
 	) {
 		this.logPath = logPath;
@@ -61,7 +61,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			initialModulePositions,
 			initialModuleStates,
 			Optional.of(initialIMUOrientation),
-			Optional.of(initialIMUXYAccelerationG)
+			Optional.of(initialIMU3DAccelerationG)
 		);
 		this.isIMUOffsetCalibrated = false;
 		this.poseToIMUYawDifferenceBuffer = new RingBuffer<>(WPILibPoseEstimatorConstants.POSE_TO_IMU_YAW_DIFFERENCE_BUFFER_SIZE);
