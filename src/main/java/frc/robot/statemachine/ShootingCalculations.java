@@ -1,5 +1,7 @@
 package frc.robot.statemachine;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -115,6 +117,23 @@ public class ShootingCalculations {
 		);
 	}
 
+	private static ShootingParams calculateScoringToTagParams(
+			Pose2d robotPose,
+			int tagID,
+			ChassisSpeeds fieldRelativeSpeeds,
+			Rotation2d gyroYawAngularVelocity
+	) {
+		return calculateShootingParams(
+				robotPose,
+				fieldRelativeSpeeds,
+				gyroYawAngularVelocity,
+				HOOD_SCORING_INTERPOLATION_MAP,
+				FLYWHEEL_SCORING_INTERPOLATION_MAP,
+				AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark).getTagPose(tagID).get().getTranslation().toTranslation2d(),
+				ShootingCalculations::getDistanceFromHub,
+				SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
+		);
+	}
 	private static ShootingParams calculatePassingParams(
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
@@ -287,6 +306,14 @@ public class ShootingCalculations {
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		} else {
+			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+		}
+	}
+
+	public static void updateShootingToTagParams(Pose2d robotPose, int tagID, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
+		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+			shootingParams = calculateScoringToTagParams(robotPose, tagID, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
