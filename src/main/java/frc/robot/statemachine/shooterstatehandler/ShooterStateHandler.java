@@ -138,7 +138,7 @@ public class ShooterStateHandler {
 						() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot")
 				),
 				new InstantCommand(() -> currentState = ShooterState.SHOOT),
-				turret.getCommandsBuilder().setTargetPosition(shootingParamsSupplier.get().targetTurretPosition()),
+				turret.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetTurretPosition()),
 				hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(27)),
 				flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(45))
 		);

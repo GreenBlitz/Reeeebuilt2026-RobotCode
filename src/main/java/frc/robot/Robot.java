@@ -327,7 +327,7 @@ public class Robot {
 
 		poseEstimator.log();
 		ShootingCalculations
-			.updateShootingToTagParams(poseEstimator.getEstimatedPose(), 10, swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+			.updateShootingToTagParams(poseEstimator.getEstimatedPose(), 7, swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 		Logger.recordOutput("TAG_10", new Pose2d(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark).getTagPose(10).get().getTranslation().toTranslation2d(), new Rotation2d()));
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
