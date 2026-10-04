@@ -11,21 +11,18 @@ import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
-import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
-import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
-import frc.robot.subsystems.swerve.factories.constants.RealSwerveConstants;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathHelper;
+import frc.utils.HubUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.utilcommands.ExecuteEndCommand;
-import org.littletonrobotics.junction.Logger;
 
 public class JoysticksBindings {
 
@@ -33,7 +30,7 @@ public class JoysticksBindings {
 	private static final double PRE_SHIFT_END_RUMBLE_POWER = 0.5;
 	private static final double TIME_BEFORE_SHIFT_END_TO_RUMBLE = 5.0;
 
-	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
+	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN, true);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
 	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD);
 	private static final SmartJoystick FOURTH_JOYSTICK = new SmartJoystick(JoystickPorts.FOURTH);
@@ -108,13 +105,20 @@ public class JoysticksBindings {
 		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(new Pose2d())));
 
 		// Intake binds...
-		robot.getRobotCommander()
-			.getIntakeStateHandler()
-			.setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER), usedJoystick.L1);
+		robot.getRobotCommander().getIntakeStateHandler().setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
-		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED)));
+		usedJoystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED));
+		usedJoystick.POV_RIGHT.onTrue(
+			robot.getRobotCommander()
+				.getIntakeStateHandler()
+				.setState(IntakeState.SLOW_CLOSE)
+				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
+		);
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
+		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
+		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(true)));
+		usedJoystick.X.onFalse(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(false)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
@@ -141,58 +145,6 @@ public class JoysticksBindings {
 	private static void sixthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SIXTH_JOYSTICK;
 		// bindings...
-	}
-
-	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().scoreSequence());
-
-		new EventTrigger("pre_shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.STOP).asProxy());
-		new EventTrigger("shoot").onTrue(robot.getRobotCommander().getFunnelStateHandler().setState(FunnelState.SHOOT).asProxy());
-
-		PathPlannerPath depotToOutpost = PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost");
-		usedJoystick.B.onTrue(
-			new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindToPose(
-					depotToOutpost.flipPath().getStartingHolonomicPose().get(),
-					new PathConstraints(
-						RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
-						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
-						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
-						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					),
-					robot.getSwerve().getLogPath()
-				),
-				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(depotToOutpost, robot.getSwerve().getLogPath())
-						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-					robot.getRobotCommander().scoreSequence()
-				)
-			)
-		);
-
-		PathPlannerPath outpostToDepot = PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot");
-		usedJoystick.X.onTrue(
-			new SequentialCommandGroup(
-				PathFollowingCommandsBuilder.pathfindToPose(
-					outpostToDepot.flipPath().getStartingHolonomicPose().get(),
-					new PathConstraints(
-						RealSwerveConstants.VELOCITY_AT_12_VOLTS_METERS_PER_SECOND,
-						RealSwerveConstants.ACCELERATION_AT_12_VOLTS_METERS_PER_SECOND_SQUARED,
-						RealSwerveConstants.MAX_ROTATIONAL_VELOCITY_PER_SECOND.getRadians(),
-						RealSwerveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND
-					),
-					robot.getSwerve().getLogPath()
-				),
-				robot.getRobotCommander().setState(RobotState.PRE_SCORE).until(() -> robot.getRobotCommander().isReadyToScore()),
-				new ParallelCommandGroup(
-					PathFollowingCommandsBuilder.followPath(outpostToDepot, robot.getSwerve().getLogPath())
-						.alongWith(new InstantCommand(() -> Logger.recordOutput("StartedPath", TimeUtil.getCurrentTimeSeconds()))),
-					robot.getRobotCommander().scoreSequence()
-				)
-			)
-		);
 	}
 
 	private static void applyInterpolationCalibrationBindings(SmartJoystick joystick, Robot robot) {
@@ -223,14 +175,14 @@ public class JoysticksBindings {
 		joystick.POV_LEFT.onTrue(turret.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
 	}
 
-	private static void applyFourBarCalibrationBindings(Arm fourBar, SmartJoystick joystick, double calibrationMaxPower) {
+	private static void applyPivotCalibrationBindings(Arm pivot, SmartJoystick joystick, double calibrationMaxPower) {
 		// Check limits
-		joystick.R1.whileTrue(fourBar.getCommandsBuilder().setPower(() -> joystick.getAxisValue(Axis.LEFT_Y) * calibrationMaxPower));
+		joystick.R1.whileTrue(pivot.getCommandsBuilder().setPower(() -> joystick.getAxisValue(Axis.LEFT_Y) * calibrationMaxPower));
 
-		fourBar.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
+		pivot.getSysIdCalibrator().setAllButtonsForCalibration(joystick);
 
-		joystick.POV_RIGHT.onTrue(fourBar.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(20)));
-		joystick.POV_LEFT.onTrue(fourBar.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
+		joystick.POV_RIGHT.onTrue(pivot.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(20)));
+		joystick.POV_LEFT.onTrue(pivot.getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(50)));
 	}
 
 	private static void applyHoodCalibrationBindings(Arm hood, SmartJoystick joystick, double calibrationMaxPower) {

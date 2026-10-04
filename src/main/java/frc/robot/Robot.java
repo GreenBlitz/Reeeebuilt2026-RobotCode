@@ -33,7 +33,7 @@ import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.conveyor.ConveyorConstants;
 import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
-import frc.robot.subsystems.constants.fourBar.FourBarConstants;
+import frc.robot.subsystems.constants.pivot.PivotConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.subsystems.constants.magazine.MagazineConstant;
@@ -79,7 +79,7 @@ public class Robot {
 	private final VelocityPositionArm turret;
 	private final Arm hood;
 
-	private final CurrentControlArm fourBar;
+	private final CurrentControlArm pivot;
 	private final Roller intakeRoller;
 
 	private final VelocityRoller magazine;
@@ -102,6 +102,7 @@ public class Robot {
 	private final Limelight limelightFront;
 	private final Limelight limelightRight;
 	private final Limelight limelightLeft;
+	private final List<Limelight> limelights;
 
 	private static double ballCounterIncludingPassing;
 	private static double ballCounterWithoutPassing;
@@ -131,9 +132,9 @@ public class Robot {
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		this.fourBar = FourBarConstants.createFourBar();
-		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
+		this.pivot = PivotConstants.createPivot();
+		pivot.setPosition(PivotConstants.MAXIMUM_POSITION);
+		BrakeStateManager.add(() -> pivot.setBrake(true), () -> pivot.setBrake(false));
 
 		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
@@ -177,26 +178,6 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
-
-		limelightFront.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightFront,
-				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.15),
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.011)
-			)
-		);
-		limelightFront.setMT1PoseFilter(
-			LimelightFilters.megaTag1Filter(
-				limelightFront,
-				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(0.1, 0.1),
-				Rotation2d.fromDegrees(10)
-			)
-		);
-
 		this.limelightRight = new Limelight(
 			"limelight-right",
 			"Vision",
@@ -206,25 +187,6 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
-		limelightRight.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightRight,
-				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.15),
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.011)
-			)
-		);
-		limelightRight.setMT1PoseFilter(
-			LimelightFilters.megaTag1Filter(
-				limelightRight,
-				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(0.1, 0.1),
-				Rotation2d.fromDegrees(10)
-			)
-		);
-
 		this.limelightLeft = new Limelight(
 			"limelight-left",
 			"Vision",
@@ -234,22 +196,28 @@ public class Robot {
 			),
 			LimelightPipeline.APRIL_TAG
 		);
-		limelightLeft.setMT1StdDevsCalculation(
-			LimelightStdDevCalculations.getMT1StdDevsCalculation(
-				limelightLeft,
-				new StandardDeviations2D(0.5),
-				new StandardDeviations2D(0.15),
-				new StandardDeviations2D(0.4),
-				new StandardDeviations2D(0.011)
+
+		this.limelights = List.of(limelightFront, limelightRight, limelightLeft);
+		limelights.forEach(
+			limelight -> limelight.setMT1StdDevsCalculation(
+				LimelightStdDevCalculations.getMT1StdDevsCalculation(
+					limelight,
+					new StandardDeviations2D(0.5),
+					new StandardDeviations2D(0.15),
+					new StandardDeviations2D(0.4),
+					new StandardDeviations2D(0.011)
+				)
 			)
 		);
-		limelightLeft.setMT1PoseFilter(
-			LimelightFilters.megaTag1Filter(
-				limelightLeft,
-				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
-				poseEstimator::isIMUOffsetCalibrated,
-				new Translation2d(0.1, 0.1),
-				Rotation2d.fromDegrees(10)
+		limelights.forEach(
+			limelight -> limelight.setMT1PoseFilter(
+				LimelightFilters.megaTag1Filter(
+					limelight,
+					timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+					poseEstimator::isIMUOffsetCalibrated,
+					new Translation2d(0.1, 0.1),
+					Rotation2d.fromDegrees(10)
+				)
 			)
 		);
 
@@ -332,7 +300,7 @@ public class Robot {
 		flyWheel.update();
 		turret.update();
 		hood.update();
-		fourBar.update();
+		pivot.update();
 		intakeRoller.update();
 		magazine.update();
 		conveyor.update();
@@ -351,17 +319,9 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		limelightFront.updateIsConnected();
-		limelightRight.updateIsConnected();
-		limelightLeft.updateIsConnected();
-
-		limelightFront.updateMT1();
-		limelightRight.updateMT1();
-		limelightLeft.updateMT1();
-
-		limelightFront.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-		limelightRight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
-		limelightLeft.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
+		getLimelights().forEach(Limelight::updateHardwareInputs);
+		getLimelights().forEach(Limelight::updateMT1);
+		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
 		poseEstimator.log();
 		ShootingCalculations
@@ -378,6 +338,8 @@ public class Robot {
 		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
 		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
 		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
+
+		GamePeriodUtils.log();
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
@@ -404,8 +366,8 @@ public class Robot {
 		return hood;
 	}
 
-	public CurrentControlArm getFourBar() {
-		return fourBar;
+	public CurrentControlArm getPivot() {
+		return pivot;
 	}
 
 	public Roller getIntakeRoller() {
@@ -436,6 +398,22 @@ public class Robot {
 		return poseEstimator;
 	}
 
+	public Limelight getLimelightFront() {
+		return limelightFront;
+	}
+
+	public Limelight getLimelightRight() {
+		return limelightRight;
+	}
+
+	public Limelight getLimelightLeft() {
+		return limelightLeft;
+	}
+
+	public List<Limelight> getLimelights() {
+		return limelights;
+	}
+
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -450,18 +428,6 @@ public class Robot {
 
 	public SendableChooser<Boolean> getReturnToMiddleChooser() {
 		return returnToMiddle;
-	}
-
-	public Limelight getLimelightFront() {
-		return limelightFront;
-	}
-
-	public Limelight getLimelightLeft() {
-		return limelightLeft;
-	}
-
-	public Limelight getLimelightRight() {
-		return limelightRight;
 	}
 
 	public Supplier<Double> getLastBallThrownTimestamp() {
@@ -485,7 +451,7 @@ public class Robot {
 	}
 
 	private void configureAuto() {
-		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().openFourBarForAutonomous();
+		Supplier<Command> autonomousOpenIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE);
 		Supplier<Command> autonomousCloseIntakeCommand = () -> getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED);
 
 		Supplier<Command> autonomousScoringSequenceCommand = () -> getRobotCommander().scoreSequence();

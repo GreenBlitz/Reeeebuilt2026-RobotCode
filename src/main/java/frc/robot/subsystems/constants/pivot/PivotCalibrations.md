@@ -1,4 +1,4 @@
-FourBar calibrations
+Pivot calibrations
 --------------------
 
 #### IDs
@@ -15,15 +15,15 @@ FourBar calibrations
 - [x] Min position
 
 #### FeedForward
-- [ ] kS
-- [ ] kG
+- [x] kS
+- [x] kG
 - [ ] kA
 - [ ] kV
 ##### (SysId)
 
 #### PID
-- [ ] kP
-- [ ] kI
+- [x] kP
+- [x] kI
 - [ ] kD
 
 #### Sim PID
@@ -31,19 +31,13 @@ FourBar calibrations
 - [x] kI
 - [x] kD
 
-#### MotionMagic
-- [ ] Default max acceleration per second squared
-- [ ] Default max velocity per second
-
 #### Reset
 - [x] Reset voltage
 - [x] Current threshold to reset
 
 #### General Constants
-- [x] FourBar length
+- [x] Pivot length
 
 #### Open State Constants
-- [x] Position to switch to lower current
-- [x] Hold Current
-- [x] Relaxed Current
-- [x] Current to hold intake closed
+- [x] Position to switch to rest current
+- [ ] Rest Current

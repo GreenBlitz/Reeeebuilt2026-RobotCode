@@ -1,7 +1,10 @@
 package frc.utils.time;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.RobotManager;
+import frc.robot.Robot;
+import frc.utils.GamePeriodUtils;
 import frc.utils.alerts.Alert;
 import frc.utils.alerts.AlertManager;
 import frc.utils.alerts.PeriodicAlert;
@@ -13,6 +16,7 @@ public class TimeUtil {
 
 	private static double lastCycleStartingTimeSeconds = 0;
 	private static double currentCycleStartingTimeSeconds = 0;
+	private static double autonomousStartTimeSeconds = 0;
 
 	static {
 		AlertManager.addAlert(
@@ -46,10 +50,21 @@ public class TimeUtil {
 	}
 
 	public static double getTimeSinceTeleopInitSeconds() {
+		if (Robot.ROBOT_TYPE.isReal()) {
+			return GamePeriodUtils.TELEOP_DURATION_SECONDS - DriverStation.getMatchTime();
+		}
 		if (RobotManager.getTeleopStartTimeSeconds() == -1) {
 			return -1;
 		}
 		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTimeSeconds();
+	}
+
+	public static double getAutonomousStartTimeSeconds() {
+		return autonomousStartTimeSeconds;
+	}
+
+	public static void setAutonomousStartTimeSeconds(double autonomousStartTimeSeconds) {
+		TimeUtil.autonomousStartTimeSeconds = autonomousStartTimeSeconds;
 	}
 
 }

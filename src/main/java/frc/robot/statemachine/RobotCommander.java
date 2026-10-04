@@ -13,6 +13,7 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
+import frc.utils.utilcommands.CommandUtils;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Set;
@@ -28,15 +29,17 @@ public class RobotCommander extends GBSubsystem {
 
 	private RobotState currentState;
 	private final String logPath;
+	private Boolean isInDefenceMode;
 
 	public RobotCommander(String logPath, Robot robot) {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
+		this.isInDefenceMode = false;
 
 		this.logPath = logPath;
 
-		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), logPath);
+		this.intakeStateHandler = new IntakeStateHandler(robot.getPivot(), robot.getIntakeRoller(), logPath);
 
 		this.funnelStateHandler = new FunnelStateHandler(
 			robot.getMagazine(),
@@ -128,7 +131,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command driveWith(RobotState state, Command command) {
-		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
+		Command swerveDriveCommand = CommandUtils.dynamicChooseBetweenTwoCommands(
+			() -> isInDefenceMode,
+			swerve.getCommandsBuilder().pointWheelsInX(),
+			swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState())
+		);
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
@@ -140,7 +147,11 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command driveWithChangingState(RobotState state, Command command, Supplier<SwerveState> swerveState) {
-		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get());
+		Command swerveDriveCommand = CommandUtils.dynamicChooseBetweenTwoCommands(
+			() -> isInDefenceMode,
+			swerve.getCommandsBuilder().pointWheelsInX(),
+			swerve.getCommandsBuilder().driveByDriversInputsWithChangingState(() -> swerveState.get())
+		);
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
@@ -166,9 +177,13 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private Command resetSubsystems() {
-		return new ParallelDeadlineGroup(new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS)
-//				intakeStateHandler.setState(IntakeState.RESET_FOUR_BAR)
-		), funnelStateHandler.setState(FunnelState.STOP));
+		return new ParallelDeadlineGroup(
+			new ParallelCommandGroup(
+				shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+				intakeStateHandler.setState(IntakeState.RESET_PIVOT)
+			),
+			funnelStateHandler.setState(FunnelState.STOP)
+		);
 	}
 
 	private Command outtake() {
@@ -313,9 +328,12 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command towerAssist() {
-		return new ParallelCommandGroup(
-			setState(RobotState.NEUTRAL),
-			swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
+		return new SequentialCommandGroup(
+			new InstantCommand(() -> swerve.getStateHandler().updateRobotTowerEnter()),
+			new ParallelCommandGroup(
+				setState(RobotState.NEUTRAL),
+				swerve.getCommandsBuilder().driveByDriversInputs(() -> SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.TOWER_ASSIST))
+			).onlyIf(() -> swerve.getStateHandler().isTowerAssistLegal)
 		);
 	}
 
@@ -342,6 +360,10 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};
+	}
+
+	public void setIsInDefenceMode(Boolean isInDefenceMode) {
+		this.isInDefenceMode = isInDefenceMode;
 	}
 
 	public IntakeStateHandler getIntakeStateHandler() {

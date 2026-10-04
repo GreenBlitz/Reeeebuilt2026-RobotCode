@@ -2,8 +2,11 @@ Intake States Calibration
 ---------------------------------
 
 #### Intake
-- [ ] Power for roller
-- [ ] Position for four bar
+- [x] Power for roller
+- [x] Position for pivot
 
 #### Closed
-- [ ] Position for four bar
+- [x] Position for pivot
+- 
+#### Slow Closed
+- [ ] Position for pivot
