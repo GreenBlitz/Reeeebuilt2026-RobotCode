@@ -43,6 +43,8 @@ public class ShootingCalculations {
 		Function<Translation2d, Double> distanceCalculator,
 		InterpolationMap<Double, Double> distanceToFlightTime
 	) {
+
+		Logger.recordOutput("TARGET_TRANS", new Pose2d(targetTranslation, new Rotation2d()));
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);

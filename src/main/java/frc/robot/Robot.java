@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
@@ -326,6 +328,7 @@ public class Robot {
 		poseEstimator.log();
 		ShootingCalculations
 			.updateShootingToTagParams(poseEstimator.getEstimatedPose(), 10, swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+		Logger.recordOutput("TAG_10", new Pose2d(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark).getTagPose(10).get().getTranslation().toTranslation2d(), new Rotation2d()));
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(

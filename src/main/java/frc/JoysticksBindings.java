@@ -102,23 +102,25 @@ public class JoysticksBindings {
 		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
 		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
 
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER).onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE));
+
 		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(new Pose2d())));
 
 		// Intake binds...
 		robot.getRobotCommander().getIntakeStateHandler().setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE));
 		usedJoystick.L1.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.CLOSED));
-		usedJoystick.POV_RIGHT.onTrue(
-			robot.getRobotCommander()
-				.getIntakeStateHandler()
-				.setState(IntakeState.SLOW_CLOSE)
-				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
-		);
+//		usedJoystick.POV_RIGHT.onTrue(
+//			robot.getRobotCommander()
+//				.getIntakeStateHandler()
+//				.setState(IntakeState.SLOW_CLOSE)
+//				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
+//		);
 		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
-		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
-		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
-		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(true)));
-		usedJoystick.X.onFalse(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(false)));
+//		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
+//		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
+//		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(true)));
+//		usedJoystick.X.onFalse(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(false)));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
