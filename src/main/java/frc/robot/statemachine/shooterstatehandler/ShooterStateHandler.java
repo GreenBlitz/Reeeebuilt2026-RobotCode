@@ -10,6 +10,7 @@ import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -24,6 +25,7 @@ public class ShooterStateHandler {
 	private boolean hasHoodBeenReset;
 	private boolean hasTurretBeenReset;
 	private ShooterState currentState;
+	private double resetStartTime;
 
 	public ShooterStateHandler(
 		VelocityPositionArm turret,
@@ -40,6 +42,7 @@ public class ShooterStateHandler {
 		this.hasHoodBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.hasTurretBeenReset = Robot.ROBOT_TYPE.isSimulation();
 		this.logPath = logPath + "/ShooterStateHandler";
+		this.resetStartTime = 0;
 	}
 
 	public ShooterState getCurrentState() {
@@ -102,7 +105,9 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return new ParallelCommandGroup(
+		return new ParallelCommandGroup(new InstantCommand(() -> {
+			resetStartTime = TimeUtil.getCurrentTimeSeconds();
+		}),
 			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE, () -> hasHoodBeenReset()),
 			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, () -> hasTurretBeenReset())
 		);
@@ -110,7 +115,7 @@ public class ShooterStateHandler {
 
 	private Command calibration() {
 		return new ParallelCommandGroup(
-			turret.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.turretCalibrationAngle.get()),
+			turret.getCommandsBuilder().setTargetPosition(() -> ShootingCalculations.getShootingParams().targetTurretPosition()),
 			hood.getCommandsBuilder().setTargetPosition(() -> ShooterConstants.hoodCalibrationAngle.get()),
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> ShooterConstants.flywheelCalibrationRotations.get())
 		);
@@ -139,7 +144,11 @@ public class ShooterStateHandler {
 		if (!hasHoodBeenReset && hood.getCurrent() > HoodConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
 			hasHoodBeenReset = true;
 		}
-		if (!hasTurretBeenReset && turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION) {
+		if (
+			TimeUtil.getCurrentTimeSeconds() - resetStartTime > TurretConstants.RESET_START_IGNORANCE_TIME_SECONDS
+				&& !hasTurretBeenReset
+				&& turret.getCurrent() > TurretConstants.CURRENT_THRESHOLD_TO_RESET_POSITION
+		) {
 			hasTurretBeenReset = true;
 		}
 
