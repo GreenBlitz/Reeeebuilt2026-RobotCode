@@ -124,7 +124,7 @@ public class ShooterStateHandler {
 	public Command friends(Rotation2d turretAngle) {
 		return new ParallelCommandGroup(
 			new InstantCommand(
-				() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a  degrees angle")
+					() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a " + turretAngle.getDegrees() + " degrees angle")
 			),
 			new InstantCommand(() -> currentState = ShooterState.SHOOT),
 			turret.getCommandsBuilder().setTargetPosition(turretAngle),
@@ -135,7 +135,7 @@ public class ShooterStateHandler {
 	public Command friends() {
 		return new ParallelCommandGroup(
 				new InstantCommand(
-						() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a  degrees angle")
+						() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot")
 				),
 				new InstantCommand(() -> currentState = ShooterState.SHOOT),
 				turret.getCommandsBuilder().setTargetPosition(shootingParamsSupplier.get().targetTurretPosition()),
