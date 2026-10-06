@@ -59,6 +59,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.math.FieldMath;
 import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -326,7 +327,7 @@ public class Robot {
 		poseEstimator.log();
 		ShootingCalculations.updateShootingToTagParams(
 			poseEstimator.getEstimatedPose(),
-			7,
+			this,
 			swerve.getFieldRelativeVelocity(),
 			swerve.getIMUAngularVelocityRPS()[2]
 		);
@@ -416,6 +417,18 @@ public class Robot {
 
 	public List<Limelight> getLimelights() {
 		return limelights;
+	}
+
+	public Translation2d getTagTranslationFromCameras() {
+		Translation2d tagInRobotSpace;
+		if (!limelightFront.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
+			tagInRobotSpace = limelightFront.getTargetPose3d_RobotSpace();
+		} else if (!limelightLeft.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
+			tagInRobotSpace = limelightLeft.getTargetPose3d_RobotSpace();
+		} else {
+			tagInRobotSpace = limelightRight.getTargetPose3d_RobotSpace();
+		}
+		return FieldMath.getRelativeTranslation(poseEstimator.getEstimatedPose(), tagInRobotSpace);
 	}
 
 	public RobotCommander getRobotCommander() {

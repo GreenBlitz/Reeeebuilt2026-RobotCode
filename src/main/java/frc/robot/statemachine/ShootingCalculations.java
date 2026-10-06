@@ -1,7 +1,5 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,6 +7,7 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
+import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -119,8 +118,8 @@ public class ShootingCalculations {
 	}
 
 	private static ShootingParams calculateScoringToTagParams(
+		Robot robot,
 		Pose2d robotPose,
-		int tagID,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
 	) {
@@ -130,7 +129,7 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_SCORING_INTERPOLATION_MAP,
 			FLYWHEEL_SCORING_INTERPOLATION_MAP,
-			AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark).getTagPose(tagID).get().getTranslation().toTranslation2d(),
+			robot.getTagTranslationFromCameras(),
 			ShootingCalculations::getDistanceFromHub,
 			SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 		);
@@ -319,11 +318,11 @@ public class ShootingCalculations {
 
 	public static void updateShootingToTagParams(
 		Pose2d robotPose,
-		int tagID,
+		Robot robot,
 		ChassisSpeeds speedsFieldRelative,
 		Rotation2d gyroYawAngularVelocity
 	) {
-		shootingParams = calculateScoringToTagParams(robotPose, tagID, speedsFieldRelative, gyroYawAngularVelocity);
+		shootingParams = calculateScoringToTagParams(robot, robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 	}
 
 }

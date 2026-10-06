@@ -158,6 +158,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
+	public Translation2d getTargetPose3d_RobotSpace() {
+		return LimelightHelpers.getTargetPose3d_RobotSpace(name).getTranslation().toTranslation2d();
+	}
+
 	public void updateMT2() {
 		if (pipeline.isUsingMT()) {
 			inputs.mt2Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
