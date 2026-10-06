@@ -145,6 +145,7 @@ public class RobotCommander extends GBSubsystem {
 		Command wantedCommand = friendsShoot(turretAngle).deadlineFor(swerveDriveCommand);
 		return asSubsystemCommand(wantedCommand, state);
 	}
+
 	public Command driveWithFriends(RobotState state) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
 		Command wantedCommand = friendsShoot().deadlineFor(swerveDriveCommand);
@@ -344,14 +345,15 @@ public class RobotCommander extends GBSubsystem {
 
 	private Command friendsShoot(Rotation2d turretAngle) {
 		return asSubsystemCommand(
-				new ParallelCommandGroup(shooterStateHandler.friends(turretAngle), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
-				RobotState.PASS
+			new ParallelCommandGroup(shooterStateHandler.friends(turretAngle), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
+			RobotState.PASS
 		);
 	}
+
 	private Command friendsShoot() {
 		return asSubsystemCommand(
-				new ParallelCommandGroup(shooterStateHandler.friends(), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
-				RobotState.PASS
+			new ParallelCommandGroup(shooterStateHandler.friends(), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
+			RobotState.PASS
 		);
 	}
 

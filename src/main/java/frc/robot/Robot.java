@@ -6,8 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
@@ -323,12 +321,15 @@ public class Robot {
 
 		getLimelights().forEach(Limelight::updateHardwareInputs);
 		getLimelights().forEach(Limelight::updateMT1);
-		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+//		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
 		poseEstimator.log();
-		ShootingCalculations
-			.updateShootingToTagParams(poseEstimator.getEstimatedPose(), 7, swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
-		Logger.recordOutput("TAG_10", new Pose2d(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark).getTagPose(10).get().getTranslation().toTranslation2d(), new Rotation2d()));
+		ShootingCalculations.updateShootingToTagParams(
+			poseEstimator.getEstimatedPose(),
+			7,
+			swerve.getFieldRelativeVelocity(),
+			swerve.getIMUAngularVelocityRPS()[2]
+		);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(

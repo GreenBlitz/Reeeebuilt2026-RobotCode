@@ -1,8 +1,5 @@
 package frc;
 
-import com.pathplanner.lib.events.EventTrigger;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -18,10 +15,7 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.robot.subsystems.swerve.states.DriveSpeed;
 import frc.robot.subsystems.swerve.states.SwerveState;
-import frc.utils.auto.PathHelper;
-import frc.utils.HubUtil;
 import frc.utils.battery.BatteryUtil;
-import frc.utils.time.TimeUtil;
 import frc.utils.utilcommands.ExecuteEndCommand;
 
 public class JoysticksBindings {

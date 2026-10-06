@@ -124,7 +124,7 @@ public class ShooterStateHandler {
 	public Command friends(Rotation2d turretAngle) {
 		return new ParallelCommandGroup(
 			new InstantCommand(
-					() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a " + turretAngle.getDegrees() + " degrees angle")
+				() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot at a " + turretAngle.getDegrees() + " degrees angle")
 			),
 			new InstantCommand(() -> currentState = ShooterState.SHOOT),
 			turret.getCommandsBuilder().setTargetPosition(turretAngle),
@@ -132,15 +132,14 @@ public class ShooterStateHandler {
 			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(45))
 		);
 	}
+
 	public Command friends() {
 		return new ParallelCommandGroup(
-				new InstantCommand(
-						() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot")
-				),
-				new InstantCommand(() -> currentState = ShooterState.SHOOT),
-				turret.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetTurretPosition()),
-				hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(27)),
-				flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(45))
+			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot")),
+			new InstantCommand(() -> currentState = ShooterState.SHOOT),
+			turret.getCommandsBuilder().setTargetPosition(shootingParamsSupplier.get().targetTurretPosition()),
+			hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(27)),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(45))
 		);
 	}
 
