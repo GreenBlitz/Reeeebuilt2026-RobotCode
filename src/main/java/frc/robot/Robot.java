@@ -423,11 +423,16 @@ public class Robot {
 		Translation2d tagInRobotSpace;
 		if (!limelightFront.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
 			tagInRobotSpace = limelightFront.getTargetPose3d_RobotSpace();
+			Logger.recordOutput("aaaaa", "front");
 		} else if (!limelightLeft.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
 			tagInRobotSpace = limelightLeft.getTargetPose3d_RobotSpace();
+			Logger.recordOutput("aaaaa", "left");
 		} else {
 			tagInRobotSpace = limelightRight.getTargetPose3d_RobotSpace();
+			Logger.recordOutput("aaaaa", "right");
 		}
+		Logger.recordOutput("bbbbb", new Pose2d(tagInRobotSpace, new Rotation2d()));
+		Logger.recordOutput("ccccc", new Pose2d(FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace), new Rotation2d()));
 		return FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace);
 	}
 

@@ -92,11 +92,11 @@ public class JoysticksBindings {
 
 		usedJoystick.A.onTrue(driveActionChooser(robot));
 
-		usedJoystick.POV_UP.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.kZero));
-		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(50)));
-		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE, Rotation2d.fromDegrees(-50)));
+		usedJoystick.POV_UP.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.NEUTRAL, Rotation2d.kZero));
+		usedJoystick.POV_LEFT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.NEUTRAL, Rotation2d.fromDegrees(50)));
+		usedJoystick.POV_RIGHT.onTrue(robot.getRobotCommander().driveWithFriends(RobotState.NEUTRAL, Rotation2d.fromDegrees(-50)));
 
-		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER).onTrue(robot.getRobotCommander().driveWithFriends(RobotState.SCORE));
+		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER).onTrue(robot.getRobotCommander().driveWithFriends(RobotState.NEUTRAL));
 
 		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(new Pose2d())));
 
