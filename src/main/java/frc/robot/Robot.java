@@ -320,8 +320,8 @@ public class Robot {
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		getLimelights().forEach(Limelight::updateHardwareInputs);
-		getLimelights().forEach(Limelight::updateMT1);
+//		getLimelights().forEach(Limelight::updateHardwareInputs);
+//		getLimelights().forEach(Limelight::updateMT1);
 //		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
 		poseEstimator.log();
@@ -428,7 +428,7 @@ public class Robot {
 		} else {
 			tagInRobotSpace = limelightRight.getTargetPose3d_RobotSpace();
 		}
-		return FieldMath.getRelativeTranslation(poseEstimator.getEstimatedPose(), tagInRobotSpace);
+		return FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace);
 	}
 
 	public RobotCommander getRobotCommander() {
