@@ -169,24 +169,24 @@ public class FunnelStateHandler {
 
 	private Command friends() {
 		return new ParallelCommandGroup(
-				magazine.getCommandsBuilder().setVelocity(FunnelState.FRIENDS_SHOOT.getMagazineVelocity()),
-				new SequentialCommandGroup(
-					new ParallelCommandGroup(
-						conveyor.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage()),
-						upperRoller.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getUpperRollerVoltage())
-					).withTimeout(FunnelConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
-					new ParallelCommandGroup(
-						conveyor.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getConveyorVoltage()),
-						upperRoller.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getUpperRollerVoltage())
-					).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_ACCELERATE_SECONDS),
-					new ParallelCommandGroup(
-						conveyor.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getConveyorVoltage()),
-						upperRoller.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getUpperRollerVoltage())
-					)
+			magazine.getCommandsBuilder().setVelocity(FunnelState.FRIENDS_SHOOT.getMagazineVelocity()),
+			new SequentialCommandGroup(
+				new ParallelCommandGroup(
+					conveyor.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getConveyorVoltage()),
+					upperRoller.getCommandsBuilder().setVoltage(FunnelState.PRE_SHOOT.getUpperRollerVoltage())
+				).withTimeout(FunnelConstants.TIME_FOR_MAGAZINE_TO_ACCELERATE_SECONDS),
+				new ParallelCommandGroup(
+					conveyor.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getConveyorVoltage()),
+					upperRoller.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getUpperRollerVoltage())
+				).withTimeout(FunnelConstants.TIME_FOR_CONVEYOR_TO_ACCELERATE_SECONDS),
+				new ParallelCommandGroup(
+					conveyor.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getConveyorVoltage()),
+					upperRoller.getCommandsBuilder().setVoltage(FunnelState.FRIENDS_SHOOT.getUpperRollerVoltage())
 				)
+			)
 		);
-
 	}
+
 	public void periodic() {
 		ballSensor.updateInputs(sensorInputsAutoLogged);
 
