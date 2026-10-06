@@ -15,7 +15,6 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ShootingCalculations {
