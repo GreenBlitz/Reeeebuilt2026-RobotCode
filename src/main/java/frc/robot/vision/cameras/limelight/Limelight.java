@@ -159,7 +159,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	}
 
 	public Translation2d getTargetPose3d_RobotSpace() {
-		return LimelightHelpers.getTargetPose3d_RobotSpace(name).getTranslation().toTranslation2d();
+		Translation3d wackyAhLimelightTag = LimelightHelpers.getTargetPose3d_RobotSpace(name).getTranslation();
+		return new Translation2d(wackyAhLimelightTag.getZ(), -wackyAhLimelightTag.getX());
 	}
 
 	public void updateMT2() {

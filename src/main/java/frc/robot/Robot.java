@@ -112,6 +112,8 @@ public class Robot {
 	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
 	private final Supplier<Double> lastBallThrownTimestamp;
 
+	private Translation2d lastSeenTagPose = new Translation2d();
+
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
@@ -424,15 +426,23 @@ public class Robot {
 		if (!limelightFront.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
 			tagInRobotSpace = limelightFront.getTargetPose3d_RobotSpace();
 			Logger.recordOutput("aaaaa", "front");
+			lastSeenTagPose = tagInRobotSpace;
 		} else if (!limelightLeft.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
 			tagInRobotSpace = limelightLeft.getTargetPose3d_RobotSpace();
 			Logger.recordOutput("aaaaa", "left");
-		} else {
+			lastSeenTagPose = tagInRobotSpace;
+		} else if (!limelightRight.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
 			tagInRobotSpace = limelightRight.getTargetPose3d_RobotSpace();
 			Logger.recordOutput("aaaaa", "right");
+			lastSeenTagPose = tagInRobotSpace;
+		} else {
+			tagInRobotSpace = lastSeenTagPose;
 		}
 		Logger.recordOutput("bbbbb", new Pose2d(tagInRobotSpace, new Rotation2d()));
-		Logger.recordOutput("ccccc", new Pose2d(FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace), new Rotation2d()));
+		Logger.recordOutput(
+			"ccccc",
+			new Pose2d(FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace), new Rotation2d())
+		);
 		return FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace);
 	}
 
