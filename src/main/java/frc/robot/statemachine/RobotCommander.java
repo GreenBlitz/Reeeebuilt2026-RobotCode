@@ -146,6 +146,12 @@ public class RobotCommander extends GBSubsystem {
 		return asSubsystemCommand(wantedCommand, state);
 	}
 
+	public Command driveWithFriends(RobotState state) {
+		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
+		Command wantedCommand = new ConditionalCommand(friendsShoot().deadlineFor(swerveDriveCommand), shoot(), () -> robot.isTagShoot());
+		return asSubsystemCommand(wantedCommand, state);
+	}
+
 	public Command driveWithChangingState(RobotState state, Command command, Supplier<SwerveState> swerveState) {
 		Command swerveDriveCommand = CommandUtils.dynamicChooseBetweenTwoCommands(
 			() -> isInDefenceMode,
@@ -340,6 +346,13 @@ public class RobotCommander extends GBSubsystem {
 	private Command friendsShoot(Rotation2d turretAngle) {
 		return asSubsystemCommand(
 			new ParallelCommandGroup(shooterStateHandler.friends(turretAngle), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
+			RobotState.PASS
+		);
+	}
+
+	private Command friendsShoot() {
+		return asSubsystemCommand(
+			new ParallelCommandGroup(shooterStateHandler.friends(), funnelStateHandler.setState(FunnelState.FRIENDS_SHOOT)),
 			RobotState.PASS
 		);
 	}

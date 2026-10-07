@@ -59,6 +59,7 @@ import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.math.FieldMath;
 import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
@@ -110,6 +111,13 @@ public class Robot {
 	private final TimeInterpolatableBuffer<Double> ballsBufferIncludingPassing;
 	private final TimeInterpolatableBuffer<Double> ballsBufferWithoutPassing;
 	private final Supplier<Double> lastBallThrownTimestamp;
+
+	private Translation2d lastSeenTagPose = new Translation2d();
+	private Translation2d lastSeenTagPoseInField = new Translation2d();
+
+	public boolean isTagShoot = false;
+
+	public static double latSeenTagID = 1;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -279,6 +287,10 @@ public class Robot {
 		configureAuto();
 	}
 
+	public boolean isTagShoot() {
+		return isTagShoot;
+	}
+
 	public RobotConfig getRobotConfig() {
 		return new RobotConfig(
 			RobotConstants.ROBOT_MASS_KG,
@@ -317,15 +329,27 @@ public class Robot {
 		updateAllSubsystems();
 		robotCommander.update();
 
+		getLastSeenTagIDFromCameras();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
-		getLimelights().forEach(Limelight::updateHardwareInputs);
-		getLimelights().forEach(Limelight::updateMT1);
-		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
-
+		if (!isTagShoot) {
+			getLimelights().forEach(Limelight::updateHardwareInputs);
+			getLimelights().forEach(Limelight::updateMT1);
+			getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
+			Logger.recordOutput("updateing", TimeUtil.getCurrentTimeSeconds());
+		}
 		poseEstimator.log();
-		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+		if (isTagShoot) {
+			ShootingCalculations.updateShootingToTagParams(
+				poseEstimator.getEstimatedPose(),
+				this,
+				swerve.getFieldRelativeVelocity(),
+				swerve.getIMUAngularVelocityRPS()[2]
+			);
+		} else {
+			ShootingCalculations
+				.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+		}
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(
@@ -335,6 +359,8 @@ public class Robot {
 					? TimeUtil.getCurrentTimeSeconds()
 					: ballsBufferIncludingPassing.getInternalBuffer().floorKey(TimeUtil.getCurrentTimeSeconds()))
 		);
+		Logger.recordOutput("isTagShoot", isTagShoot);
+		Logger.recordOutput("lastseentag", latSeenTagID);
 		Logger.recordOutput("BallCounterIncludingPassing", ballCounterIncludingPassing);
 		Logger.recordOutput("BallCounterWithoutPassing", ballCounterWithoutPassing);
 		Logger.recordOutput("CurrentBPS", getAverageBPSForLastXSeconds(RobotConstants.TIME_FOR_AVERAGE_BPS_CALCULATION_SECONDS));
@@ -414,6 +440,57 @@ public class Robot {
 		return limelights;
 	}
 
+	public double getLastSeenTagIDFromCameras() {
+		double tagID;
+		if (limelightFront.getSeenTagID() != -1) {
+			tagID = limelightFront.getSeenTagID();
+			Logger.recordOutput("ttttt", tagID);
+			latSeenTagID = tagID;
+		} else if (limelightLeft.getSeenTagID() != -1) {
+			tagID = limelightLeft.getSeenTagID();
+			Logger.recordOutput("ttttt", tagID);
+			latSeenTagID = tagID;
+		} else if (limelightRight.getSeenTagID() != -1) {
+			tagID = limelightRight.getSeenTagID();
+			Logger.recordOutput("ttttt", tagID);
+			latSeenTagID = tagID;
+		} else {
+			Logger.recordOutput("ttttt", -8.0);
+
+			return latSeenTagID;
+		}
+		Logger.recordOutput("lastSeenTagId", latSeenTagID);
+
+		return latSeenTagID;
+	}
+
+	public Translation2d getTagTranslationFromCameras() {
+		Translation2d tagInRobotSpace;
+		if (!limelightFront.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
+			tagInRobotSpace = limelightFront.getTargetPose3d_RobotSpace();
+			Logger.recordOutput("aaaaa", "front");
+			lastSeenTagPose = tagInRobotSpace;
+		} else if (!limelightLeft.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
+			tagInRobotSpace = limelightLeft.getTargetPose3d_RobotSpace();
+			Logger.recordOutput("aaaaa", "left");
+			lastSeenTagPose = tagInRobotSpace;
+		} else if (!limelightRight.getTargetPose3d_RobotSpace().equals(new Translation2d())) {
+			tagInRobotSpace = limelightRight.getTargetPose3d_RobotSpace();
+			Logger.recordOutput("aaaaa", "right");
+			lastSeenTagPose = tagInRobotSpace;
+		} else {
+			return lastSeenTagPoseInField;
+		}
+		Logger.recordOutput("bbbbb", new Pose2d(tagInRobotSpace, new Rotation2d()));
+		Logger.recordOutput(
+			"ccccc",
+			new Pose2d(FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace), new Rotation2d())
+		);
+		Translation2d tagInField = FieldMath.getTranslationRelativeToZero(poseEstimator.getEstimatedPose(), tagInRobotSpace);
+		lastSeenTagPoseInField = tagInField;
+		return lastSeenTagPoseInField;
+	}
+
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
 	}
@@ -484,6 +561,10 @@ public class Robot {
 		);
 
 		this.autonomousChooser = new AutonomousChooser("Autonomous Chooser", autos);
+	}
+
+	public void setIsTageShoot(boolean isTageShoot) {
+		this.isTagShoot = isTageShoot;
 	}
 
 }

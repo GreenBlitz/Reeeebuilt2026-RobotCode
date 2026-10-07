@@ -133,6 +133,16 @@ public class ShooterStateHandler {
 		);
 	}
 
+	public Command friends() {
+		return new ParallelCommandGroup(
+			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "friends shoot")),
+			new InstantCommand(() -> currentState = ShooterState.SHOOT),
+			turret.getCommandsBuilder().setTargetPosition(() -> shootingParamsSupplier.get().targetTurretPosition()),
+			hood.getCommandsBuilder().setTargetPosition(() -> Rotation2d.fromDegrees(32)),
+			flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> Rotation2d.fromRotations(45))
+		);
+	}
+
 	public void periodic() {
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians() && !hasHoodBeenReset) {
 			hood.setPosition(HoodConstants.MINIMUM_POSITION);
