@@ -98,7 +98,9 @@ public class JoysticksBindings {
 
 		usedJoystick.getAxisAsButton(Axis.RIGHT_TRIGGER).onTrue(robot.getRobotCommander().driveWithFriends(RobotState.NEUTRAL));
 
-		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(new Pose2d())));
+		usedJoystick.B.onTrue(new InstantCommand(() -> robot.getPoseEstimator().resetPose(new Pose2d())));
+		usedJoystick.X.onTrue(new InstantCommand(() -> robot.setIsTageShoot(false)));
+		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.setIsTageShoot(true)));
 
 		// Intake binds...
 		robot.getRobotCommander().getIntakeStateHandler().setIntakeButtonsSuppliers(usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER));
@@ -110,7 +112,7 @@ public class JoysticksBindings {
 //				.setState(IntakeState.SLOW_CLOSE)
 //				.andThen(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.INTAKE))
 //		);
-		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
+//		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.OUTTAKE));
 //		usedJoystick.Y.onTrue(robot.getRobotCommander().getIntakeStateHandler().setState(IntakeState.OUTTAKE));
 //		usedJoystick.POV_DOWN.onTrue(robot.getRobotCommander().driveWith(RobotState.CONVEYOR_OUTTAKE));
 //		usedJoystick.X.onTrue(new InstantCommand(() -> robot.getRobotCommander().setIsInDefenceMode(true)));

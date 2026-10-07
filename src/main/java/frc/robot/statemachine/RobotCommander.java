@@ -148,7 +148,7 @@ public class RobotCommander extends GBSubsystem {
 
 	public Command driveWithFriends(RobotState state) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
-		Command wantedCommand = friendsShoot().deadlineFor(swerveDriveCommand);
+		Command wantedCommand = new ConditionalCommand(friendsShoot().deadlineFor(swerveDriveCommand), shoot(), () -> robot.isTagShoot());
 		return asSubsystemCommand(wantedCommand, state);
 	}
 
