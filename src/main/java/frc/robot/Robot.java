@@ -227,8 +227,8 @@ public class Robot {
 					limelight,
 					timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 					poseEstimator::isIMUOffsetCalibrated,
-					new Translation2d(0.1, 0.1),
-					Rotation2d.fromDegrees(10)
+					LimelightFilters.DEFAULT_IN_FIELD_TOLERANCE_METERS,
+					LimelightFilters.DEFAULT_YAW_AT_ANGLE_TOLERANCE
 				)
 			)
 		);

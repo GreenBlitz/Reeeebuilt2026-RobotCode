@@ -115,11 +115,11 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
-		return getIMUAccelerationG().times(RobotConstants.G);
+		return getIMUAccelerationG().times(RobotConstants.ISRAEL_G);
 	}
 
 	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
-		return getIMUAccelerationG().times(RobotConstants.G);
+		return getIMUAccelerationG().times(RobotConstants.ISRAEL_G);
 	}
 
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
