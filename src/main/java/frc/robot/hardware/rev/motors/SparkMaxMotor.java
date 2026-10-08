@@ -176,31 +176,31 @@ public abstract class SparkMaxMotor implements IMotor {
 			)
 		);
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "MotorStalledAt",
-				() -> warnings.stall
-			)
-		);
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "MotorStalledAt",
+                        () -> warnings.stall
+                )
+        );
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "MotorHasResetAt",
-				() -> warnings.hasReset
-			)
-		);
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "MotorHasResetAt",
+                        () -> warnings.hasReset
+                )
+        );
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "OtherWarningAt",
-				() -> warnings.other,
-					true
-			)
-		);
-		//@formatter:on
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "OtherWarningAt",
+                        () -> warnings.other,
+                        true
+                )
+        );
+        //@formatter:on
 	}
 
 	@Override
