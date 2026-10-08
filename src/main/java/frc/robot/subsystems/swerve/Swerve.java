@@ -246,7 +246,7 @@ public class Swerve extends GBSubsystem {
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
 	}
 
-	public double getIMUAcceleration() {
+	public double getIMUAccelerationNorm() {
 		return imuSignals.getLatestAccelerationG().getNorm();
 	}
 
