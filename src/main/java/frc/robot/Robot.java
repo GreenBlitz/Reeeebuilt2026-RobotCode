@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
+import frc.constants.field.AllianceSide;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
@@ -341,6 +342,10 @@ public class Robot {
 
 		GamePeriodUtils.log();
 
+		Logger.recordOutput("IsReadyToCloseIntakeForAutonomous", AutosBuilder.isReadyToCloseIntake(this));
+		Logger.recordOutput("HasStoppedThrowingBallsForAutonomous", AutosBuilder.hasStoppedThrowingBalls(this));
+
+		AutosBuilder.isReadyToReturnToMiddle(() -> returnToMiddle.getSelected() != null && returnToMiddle.getSelected(), AllianceSide.DEPOT);
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
@@ -474,6 +479,7 @@ public class Robot {
 			autonomousOpenIntakeCommand,
 			autonomousCloseIntakeCommand,
 			autonomousScoringSequenceCommand,
+				() -> getRobotCommander().setState(RobotState.NEUTRAL),
 			autonomousPassSequenceCommand,
 			autonomousOuttakeCommand,
 			AutonomousConstants.DEFAULT_PATHFINDING_CONSTRAINTS,
