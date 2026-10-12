@@ -15,6 +15,7 @@ Hood calibrations
 - [x] Min position
 - [x] Forward limit
 - [x] Backwards limit
+- [ ] Min angle for trench
 
 #### FeedForward
 - [x] kS
@@ -39,3 +40,4 @@ Hood calibrations
 
 #### General Constants
 - [x] Arm length
+- [ ] Time to close hood
