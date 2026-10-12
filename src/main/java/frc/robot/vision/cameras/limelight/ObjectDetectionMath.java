@@ -37,13 +37,13 @@ public class ObjectDetectionMath {
 		return new DetectedObjectObservation(objectType, robotRelativeObjectTranslation, timestampSeconds);
 	}
 
-	private static double getCameraRelativeObjectX(Pose3d cameraPose, double objectCenterHeightMeters, Rotation2d objectToCrosshairPitchOffset) {
+	public static double getCameraRelativeObjectX(Pose3d cameraPose, double objectCenterHeightMeters, Rotation2d objectToCrosshairPitchOffset) {
 		double objectAndCameraHeightDifferenceMeters = objectCenterHeightMeters - cameraPose.getZ();
 		Rotation2d objectAndCameraTotalPitch = objectToCrosshairPitchOffset.plus(Rotation2d.fromRadians(cameraPose.getRotation().getY()));
 		return objectAndCameraHeightDifferenceMeters / objectAndCameraTotalPitch.getTan();
 	}
 
-	private static double getCameraRelativeObjectY(
+	public static double getCameraRelativeObjectY(
 		Pose3d cameraPose,
 		double objectCenterHeightMeters,
 		Rotation2d objectToCrosshairYawOffset,
