@@ -95,7 +95,7 @@ public class Module {
 	}
 
 	public double toDriveMeters(Rotation2d angle) {
-		return Conversions.angleToDistance(angle, constants.wheelDiameterMeters());
+		return Conversions.rotation2dToDistance(angle, constants.wheelDiameterMeters());
 	}
 
 
@@ -224,7 +224,7 @@ public class Module {
 
 	public void setTargetClosedLoopVelocity(double targetVelocityMetersPerSecond) {
 		setClosedLoop(true);
-		Rotation2d targetVelocityPerSecond = Conversions.distanceToAngle(targetVelocityMetersPerSecond, constants.wheelDiameterMeters());
+		Rotation2d targetVelocityPerSecond = Conversions.distanceToRotation2d(targetVelocityMetersPerSecond, constants.wheelDiameterMeters());
 		Rotation2d coupledVelocityPerSecond = ModuleUtil
 			.coupleDriveAngle(targetVelocityPerSecond, steerSignals.velocity().getLatestValue(), constants.couplingRatio());
 		drive.applyRequest(driveRequests.velocity().withSetPoint(coupledVelocityPerSecond));

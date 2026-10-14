@@ -2,6 +2,7 @@ package frc.utils.pose;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -9,11 +10,11 @@ import frc.utils.math.ToleranceMath;
 
 public class PoseUtil {
 
-	public static boolean isAccelerationHigh(Translation2d imuAccelerationG, double minimumIMUAccelerationG) {
+	public static boolean isAccelerationDetectingCollision(Translation3d imuAccelerationG, double minimumIMUAccelerationG) {
 		return imuAccelerationG.getNorm() >= minimumIMUAccelerationG;
 	}
 
-	public static boolean isTilted(Rotation2d imuRoll, Rotation2d imuPitch, Rotation2d minimumTiltIMURoll, Rotation2d minimumTiltIMUPitch) {
+	public static boolean isRobotTilted(Rotation2d imuRoll, Rotation2d imuPitch, Rotation2d minimumTiltIMURoll, Rotation2d minimumTiltIMUPitch) {
 		return Math.abs(imuRoll.getRadians()) >= minimumTiltIMURoll.getRadians()
 			|| Math.abs(imuPitch.getRadians()) >= minimumTiltIMUPitch.getRadians();
 	}

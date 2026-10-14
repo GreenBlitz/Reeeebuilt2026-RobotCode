@@ -15,8 +15,8 @@ public class Phoenix6VelocityPositionRequest extends Phoenix6FeedForwardRequest 
 	public Phoenix6VelocityPositionRequest(
 		Consumer<Rotation2d> setVelocity,
 		Consumer<Rotation2d> setPosition,
-		Rotation2d position,
 		Rotation2d velocity,
+		Rotation2d position,
 		ControlRequest controlRequest,
 		Consumer<Double> setFeedForward,
 		double defaultArbitraryFeedForward
