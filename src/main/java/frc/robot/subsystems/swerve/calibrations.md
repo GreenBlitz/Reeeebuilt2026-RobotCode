@@ -5,13 +5,15 @@ States:
 SwerveConstants:
 -----------------------
 - [x] Velocity at 12 volts (meters per second)
+- [x] Acceleration at 12 volts (meters per second squared)
+- [x] Max angular acceleration (radians per second)
 - [x] Max rotational velocity (angle per second)
 - [ ] Translation PID (for x,y PID controllers)
 - [ ] Rotational degrees PID 
 - [x] Drive radius meters
 - [ ] PathPlanner RealTimeConstraints (in AutonomousConstants)
 
-Gyro:
+IMU:
 -----------------------
 - [x] ID
 - [x] Mount pose

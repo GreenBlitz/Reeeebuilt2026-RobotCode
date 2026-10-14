@@ -10,11 +10,11 @@ public class VelocityRoller extends Roller {
 
 	private final InputSignal<Rotation2d> velocitySignal;
 	private final IRequest<Rotation2d> velocityRequest;
-	private final VelocityRollerCommandBuilder commandsBuilder;
+	private final VelocityRollerCommandsBuilder commandsBuilder;
 
 	public VelocityRoller(
 		String logPath,
-		ControllableMotor roller,
+		ControllableMotor motor,
 		InputSignal<Double> voltageSignal,
 		InputSignal<Double> currentSignal,
 		InputSignal<Rotation2d> positionSignal,
@@ -22,15 +22,15 @@ public class VelocityRoller extends Roller {
 		IRequest<Double> voltageRequest,
 		IRequest<Rotation2d> velocityRequest
 	) {
-		super(logPath, roller, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest);
+		super(logPath, motor, voltageSignal, currentSignal, positionSignal, velocitySignal, voltageRequest);
 		this.velocitySignal = velocitySignal;
 		this.velocityRequest = velocityRequest;
-		this.commandsBuilder = new VelocityRollerCommandBuilder(this);
+		this.commandsBuilder = new VelocityRollerCommandsBuilder(this);
 		setDefaultCommand(commandsBuilder.stop());
 	}
 
 	@Override
-	public VelocityRollerCommandBuilder getCommandsBuilder() {
+	public VelocityRollerCommandsBuilder getCommandsBuilder() {
 		return commandsBuilder;
 	}
 
