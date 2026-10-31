@@ -13,6 +13,14 @@ public class WPILibPoseEstimatorConstants {
 
 	public static final StandardDeviations2D DEFAULT_VISION_STD_DEV = new StandardDeviations2D(0.0003, 0.0003, 0.003);
 
+	public static final StandardDeviations2D DEFAULT_TAG_DISTANCE_FACTORS = new StandardDeviations2D(0.5);
+
+	public static final StandardDeviations2D DEFAULT_STD_DEV_FACTORS = new StandardDeviations2D(0.15);
+
+	public static final StandardDeviations2D DEFAULT_VISIBLE_TAGS_EXPONENTS = new StandardDeviations2D(0.4);
+
+	public static final StandardDeviations2D DEFAULT_STD_DEV_ADDITIONS = new StandardDeviations2D(0.011);
+
 	public static final StandardDeviations2D VISION_STD_DEV_COLLISION_REDUCTION = new StandardDeviations2D();
 
 	public static final double MINIMUM_COLLISION_IMU_ACCELERATION_G = 2;

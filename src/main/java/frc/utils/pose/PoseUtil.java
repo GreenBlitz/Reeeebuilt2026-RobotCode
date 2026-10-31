@@ -10,7 +10,7 @@ import frc.utils.math.ToleranceMath;
 
 public class PoseUtil {
 
-	public static boolean isAccelerationDetectingCollision(Translation3d imuAccelerationG, double minimumIMUAccelerationG) {
+	public static boolean IsCollidingByAcceleration(Translation3d imuAccelerationG, double minimumIMUAccelerationG) {
 		return imuAccelerationG.getNorm() >= minimumIMUAccelerationG;
 	}
 

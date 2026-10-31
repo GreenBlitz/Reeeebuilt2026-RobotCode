@@ -12,6 +12,9 @@ calculating robot position based on capturing april tags
 - **G** : earth's gravitational acceleration
 
 
+- **FOC** : Field-Oriented Control
+
+
 - **RPS** : rotations per second
 
 

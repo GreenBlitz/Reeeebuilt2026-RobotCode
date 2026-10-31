@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
@@ -58,24 +56,17 @@ import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
-import frc.robot.vision.cameras.limelight.Limelight;
-import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
-import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
-import frc.robot.hardware.interfaces.IIMU;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
 
 import java.util.List;
-import frc.utils.brakestate.BrakeMode;
-import frc.utils.brakestate.BrakeStateManager;
-import frc.utils.math.StandardDeviations2D;
+
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -177,7 +168,7 @@ public class Robot {
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
 			swerve.getOrientationFromIMU(),
-			swerve.getIMUAccelerationG(),
+			swerve.getAccelerationFromIMUG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
@@ -214,10 +205,10 @@ public class Robot {
 			limelight -> limelight.setMT1StdDevsCalculation(
 				LimelightStdDevCalculations.getMT1StdDevsCalculation(
 					limelight,
-					new StandardDeviations2D(0.5),
-					new StandardDeviations2D(0.15),
-					new StandardDeviations2D(0.4),
-					new StandardDeviations2D(0.011)
+					WPILibPoseEstimatorConstants.DEFAULT_TAG_DISTANCE_FACTORS,
+					WPILibPoseEstimatorConstants.DEFAULT_STD_DEV_FACTORS,
+					WPILibPoseEstimatorConstants.DEFAULT_VISIBLE_TAGS_EXPONENTS,
+					WPILibPoseEstimatorConstants.DEFAULT_STD_DEV_ADDITIONS
 				)
 			)
 		);
