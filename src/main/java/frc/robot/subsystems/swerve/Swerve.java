@@ -118,6 +118,10 @@ public class Swerve extends GBSubsystem {
 		return getAccelerationFromIMUG().times(RobotConstants.LOCAL_G);
 	}
 
+	public double getIMUAccelerationNorm() {
+		return getAccelerationFromIMUG().getNorm();
+	}
+
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
 		PathPlannerUtil.configPathPlanner(
 			currentPoseSupplier,
@@ -240,10 +244,6 @@ public class Swerve extends GBSubsystem {
 			return speeds;
 		}
 		return SwerveMath.allianceToRobotRelativeSpeeds(speeds, getAllianceRelativeHeading());
-	}
-
-	public double getIMUAccelerationNorm() {
-		return getAccelerationFromIMUG().getNorm();
 	}
 
 	protected void moveToPoseByPID(Pose2d currentPose, Pose2d targetPose) {
