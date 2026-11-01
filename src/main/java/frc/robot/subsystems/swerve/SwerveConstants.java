@@ -15,8 +15,8 @@ public record SwerveConstants(
 	Rotation2d maxRotationalVelocityPerSecond,
 	PIDController xMetersPIDController,
 	PIDController yMetersPIDController,
-	PIDController rotationDegreesPIDController,
 	PIDController wraplessRotationDegreesPIDController,
+	PIDController rotationDegreesPIDController,
 	PPHolonomicDriveController pathPlannerHolonomicDriveController
 ) {
 

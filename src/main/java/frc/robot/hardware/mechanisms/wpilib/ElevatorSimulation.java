@@ -19,12 +19,12 @@ public class ElevatorSimulation implements WPILibMechanismSimulation {
 
 	@Override
 	public Rotation2d getMechanismPosition() {
-		return Conversions.distanceToAngle(elevatorSimulation.getPositionMeters(), drumDiameter);
+		return Conversions.distanceToRotation2d(elevatorSimulation.getPositionMeters(), drumDiameter);
 	}
 
 	@Override
-	public Rotation2d getMechanismVelocityAnglesPerSecond() {
-		return Conversions.distanceToAngle(elevatorSimulation.getVelocityMetersPerSecond(), drumDiameter);
+	public Rotation2d getMechanismVelocityRPS() {
+		return Conversions.distanceToRotation2d(elevatorSimulation.getVelocityMetersPerSecond(), drumDiameter);
 	}
 
 	@Override

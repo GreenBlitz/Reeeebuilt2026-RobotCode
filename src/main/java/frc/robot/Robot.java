@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
@@ -46,24 +48,25 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
-import frc.robot.vision.cameras.limelight.Limelight;
-import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
-import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
-import frc.utils.math.StandardDeviations2D;
+
+import java.util.List;
+
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -164,8 +167,8 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
-			swerve.getIMUOrientation(),
-			swerve.getIMUAccelerationG().toTranslation2d(),
+			swerve.getOrientationFromIMU(),
+			swerve.getAccelerationFromIMUG(),
 			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
@@ -202,10 +205,10 @@ public class Robot {
 			limelight -> limelight.setMT1StdDevsCalculation(
 				LimelightStdDevCalculations.getMT1StdDevsCalculation(
 					limelight,
-					new StandardDeviations2D(0.5),
-					new StandardDeviations2D(0.15),
-					new StandardDeviations2D(0.4),
-					new StandardDeviations2D(0.011)
+					WPILibPoseEstimatorConstants.DEFAULT_TAG_DISTANCE_FACTORS,
+					WPILibPoseEstimatorConstants.DEFAULT_STD_DEV_FACTORS,
+					WPILibPoseEstimatorConstants.DEFAULT_VISIBLE_TAGS_EXPONENTS,
+					WPILibPoseEstimatorConstants.DEFAULT_STD_DEV_ADDITIONS
 				)
 			)
 		);
@@ -215,8 +218,8 @@ public class Robot {
 					limelight,
 					timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 					poseEstimator::isIMUOffsetCalibrated,
-					new Translation2d(0.1, 0.1),
-					Rotation2d.fromDegrees(10)
+					LimelightFilters.DEFAULT_IN_FIELD_TOLERANCE_METERS,
+					LimelightFilters.DEFAULT_YAW_AT_ANGLE_TOLERANCE
 				)
 			)
 		);
@@ -325,7 +328,7 @@ public class Robot {
 
 		poseEstimator.log();
 		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getAngularVelocityFromIMURPS()[2]);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(
@@ -444,8 +447,8 @@ public class Robot {
 
 	private void configureBrakeStateChooser() {
 		SendableChooser<BrakeMode> brakeStateChooser = new SendableChooser<>();
-		brakeStateChooser.setDefaultOption("Coast", BrakeMode.COAST);
-		brakeStateChooser.addOption("Brake", BrakeMode.BRAKE);
+		brakeStateChooser.setDefaultOption("Brake", BrakeMode.BRAKE);
+		brakeStateChooser.addOption("Coast", BrakeMode.COAST);
 		SmartDashboard.putData("BrakeState", brakeStateChooser);
 		brakeStateChooser.onChange(BrakeStateManager::setBrakeMode);
 	}
