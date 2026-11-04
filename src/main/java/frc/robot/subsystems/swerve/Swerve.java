@@ -118,8 +118,12 @@ public class Swerve extends GBSubsystem {
 		return getAccelerationFromIMUG().times(RobotConstants.LOCAL_G);
 	}
 
-	public double getIMUAccelerationNorm() {
+	public double getIMU3DAccelerationNormG() {
 		return getAccelerationFromIMUG().getNorm();
+	}
+
+	public double getIMUXYAccelerationNormG() {
+		return getAccelerationFromIMUG().toTranslation2d().getNorm();
 	}
 
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
@@ -342,7 +346,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isCollisionDetected() {
-		return getAccelerationFromIMUG().toTranslation2d().getNorm() > WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G;
+		return getIMUXYAccelerationNormG() > WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G;
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {

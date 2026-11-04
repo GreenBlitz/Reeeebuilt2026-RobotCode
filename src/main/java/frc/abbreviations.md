@@ -18,4 +18,4 @@ calculating robot position based on capturing april tags
 - **RPS** : rotations per second
 
 
-- **rot** : rotations
+- **rot** : rotation
