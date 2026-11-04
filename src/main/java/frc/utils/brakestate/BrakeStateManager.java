@@ -7,7 +7,6 @@ import java.util.List;
 
 public class BrakeStateManager {
 
-
 	private static final ArrayList<Runnable> brakeRunnables = new ArrayList<>();
 	private static final ArrayList<Runnable> coastRunnables = new ArrayList<>();
 	private static BrakeMode currentMode = BrakeMode.UNKNOWN;
@@ -25,6 +24,7 @@ public class BrakeStateManager {
 		for (Runnable setMode : setModes) {
 			setMode.run();
 		}
+		log();
 	}
 
 	public static void setBrakeMode(BrakeMode brakeMode) {
@@ -32,7 +32,6 @@ public class BrakeStateManager {
 			case BRAKE -> setBrakeMode(BrakeMode.BRAKE, brakeRunnables);
 			case COAST -> setBrakeMode(BrakeMode.COAST, coastRunnables);
 		}
-		log();
 	}
 
 	public static void log() {

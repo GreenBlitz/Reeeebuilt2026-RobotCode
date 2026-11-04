@@ -143,7 +143,7 @@ public class Conversions {
 	 * @param wheelDiameter the wheel diameter
 	 * @return the distance
 	 */
-	public static double angleToDistance(Rotation2d angle, double wheelDiameter) {
+	public static double rotation2dToDistance(Rotation2d angle, double wheelDiameter) {
 		return angle.getRotations() * wheelDiameter * MathConstants.HALF_CIRCLE.getRadians();
 	}
 
@@ -154,7 +154,7 @@ public class Conversions {
 	 * @param wheelDiameter the wheel diameter
 	 * @return the angle
 	 */
-	public static Rotation2d distanceToAngle(double distance, double wheelDiameter) {
+	public static Rotation2d distanceToRotation2d(double distance, double wheelDiameter) {
 		return Rotation2d.fromRotations(distance / (wheelDiameter * MathConstants.HALF_CIRCLE.getRadians()));
 	}
 

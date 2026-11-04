@@ -34,7 +34,7 @@ public class ShootingCalculations {
 	private static ShootingParams calculateShootingParams(
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
-		Rotation2d gyroYawAngularVelocity,
+		Rotation2d imuYawAngularVelocity,
 		InterpolationMap<Double, Rotation2d> hoodInterpolation,
 		InterpolationMap<Double, Rotation2d> flywheelInterpolation,
 		Translation2d targetTranslation,
@@ -53,7 +53,7 @@ public class ShootingCalculations {
 		// Turret Field Relative Velocity
 		Translation2d turretTangentialVelocity = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(Rotation2d.kCCW_90deg)
-			.times(gyroYawAngularVelocity.getRadians())
+			.times(imuYawAngularVelocity.getRadians())
 			.rotateBy(robotPose.getRotation());
 		Translation2d turretFieldRelativeVelocity = robotTranslationalVelocity.plus(turretTangentialVelocity);
 
@@ -72,7 +72,7 @@ public class ShootingCalculations {
 		Rotation2d targetTurretVelocityCausedByTranslation = Rotation2d
 			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretPredictedPoseToTarget);
 		Rotation2d turretTargetVelocityRPS = Rotation2d
-			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
+			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - imuYawAngularVelocity.getRadians());
 
 		Rotation2d turretTargetPosition = predictedAngleToTarget.minus(robotPose.getRotation());
 		Rotation2d hoodTargetPosition = hoodInterpolation.get(distanceFromTurretPredictedPoseToTarget);
@@ -98,15 +98,11 @@ public class ShootingCalculations {
 		);
 	}
 
-	private static ShootingParams calculateScoringParams(
-		Pose2d robotPose,
-		ChassisSpeeds fieldRelativeSpeeds,
-		Rotation2d gyroYawAngularVelocity
-	) {
+	private static ShootingParams calculateScoringParams(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d IMUYawAngularVelocity) {
 		return calculateShootingParams(
 			robotPose,
 			fieldRelativeSpeeds,
-			gyroYawAngularVelocity,
+			IMUYawAngularVelocity,
 			HOOD_SCORING_INTERPOLATION_MAP,
 			FLYWHEEL_SCORING_INTERPOLATION_MAP,
 			Field.getHubMiddle(),
@@ -115,15 +111,11 @@ public class ShootingCalculations {
 		);
 	}
 
-	private static ShootingParams calculatePassingParams(
-		Pose2d robotPose,
-		ChassisSpeeds fieldRelativeSpeeds,
-		Rotation2d gyroYawAngularVelocity
-	) {
+	private static ShootingParams calculatePassingParams(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d imuYawAngularVelocity) {
 		return calculateShootingParams(
 			robotPose,
 			fieldRelativeSpeeds,
-			gyroYawAngularVelocity,
+			imuYawAngularVelocity,
 			HOOD_PASSING_INTERPOLATION_MAP,
 			FLYWHEEL_PASSING_INTERPOLATION_MAP,
 			getOptimalPassingPosition(getFieldRelativeTurretPosition(robotPose)),
@@ -284,11 +276,11 @@ public class ShootingCalculations {
 		return interpolationMap;
 	}
 
-	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
+	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d imuYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, imuYawAngularVelocity);
 		} else {
-			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, imuYawAngularVelocity);
 		}
 	}
 
