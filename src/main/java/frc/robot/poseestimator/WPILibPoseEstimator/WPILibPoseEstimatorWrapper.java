@@ -256,8 +256,8 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			: visionObservation.stdDevs().asColumnVector();
 	}
 
-	private Optional<Rotation2d> getEstimatedPoseToIMUYawDifference(Optional<Rotation2d> IMUYaw, double timestampSeconds) {
-		return getEstimatedPoseAtTimestamp(timestampSeconds).flatMap(estimatedPose -> IMUYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
+	private Optional<Rotation2d> getEstimatedPoseToIMUYawDifference(Optional<Rotation2d> imuYaw, double timestampSeconds) {
+		return getEstimatedPoseAtTimestamp(timestampSeconds).flatMap(estimatedPose -> imuYaw.map(yaw -> estimatedPose.getRotation().minus(yaw)));
 	}
 
 	private Pose2d getPredictedOdometryPose() {

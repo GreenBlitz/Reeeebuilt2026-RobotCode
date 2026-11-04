@@ -114,15 +114,15 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getLatestAccelerationG();
 	}
 
-	public Translation3d getAccelerationFromIMUMetersPerSecondSquared() {
+	public Translation3d get3DAccelerationFromIMUMetersPerSecondSquared() {
 		return getAccelerationFromIMUG().times(RobotConstants.LOCAL_G);
 	}
 
-	public double getIMU3DAccelerationNormG() {
+	public double get3DAccelerationNormFromIMUG() {
 		return getAccelerationFromIMUG().getNorm();
 	}
 
-	public double getIMUXYAccelerationNormG() {
+	public double getXYAccelerationNormFromIMUG() {
 		return getAccelerationFromIMUG().toTranslation2d().getNorm();
 	}
 
@@ -188,7 +188,7 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
-		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", getAccelerationFromIMUMetersPerSecondSquared());
+		Logger.recordOutput(getLogPath() + "/IMU/Acceleration", get3DAccelerationFromIMUMetersPerSecondSquared());
 	}
 
 	public int getNumberOfOdometrySamples() {
@@ -346,7 +346,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isCollisionDetected() {
-		return getIMUXYAccelerationNormG() > WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G;
+		return getXYAccelerationNormFromIMUG() > WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G;
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {

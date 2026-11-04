@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public class WheelRadiusCharacterization extends Command {
 
-	private final Supplier<Rotation2d> IMUAngleSupplier;
+	private final Supplier<Rotation2d> imuAngleSupplier;
 	private final Supplier<Rotation2d[]> wheelDriveDistanceSupplier;
 	private final Consumer<Rotation2d> velocityControl;
 	private final Rotation2d characterizationSpeed;
@@ -36,21 +36,21 @@ public class WheelRadiusCharacterization extends Command {
 		double driveRadiusMeters,
 		Rotation2d characterizationSpeed,
 		Supplier<Rotation2d[]> wheelDriveDistanceSupplier,
-		Supplier<Rotation2d> IMUAngleSupplier,
+		Supplier<Rotation2d> imuAngleSupplier,
 		Consumer<Rotation2d> velocityControl,
 		Runnable onEnd
 	) {
 		this.characterizationSpeed = characterizationSpeed;
 		this.driveRadiusMeters = driveRadiusMeters;
 		this.wheelDriveDistanceSupplier = wheelDriveDistanceSupplier;
-		this.IMUAngleSupplier = IMUAngleSupplier;
+		this.imuAngleSupplier = imuAngleSupplier;
 		this.velocityControl = velocityControl;
 		this.onEnd = onEnd;
 		addRequirements(drive);
 	}
 
 	private void updateAnglePassedFromStart() {
-		double currentIMUYawRadians = IMUAngleSupplier.get().getRadians();
+		double currentIMUYawRadians = imuAngleSupplier.get().getRadians();
 		accumulatedIMUYawRadians += MathUtil.angleModulus(currentIMUYawRadians - lastIMUYawRadians);
 		lastIMUYawRadians = currentIMUYawRadians;
 	}
@@ -70,7 +70,7 @@ public class WheelRadiusCharacterization extends Command {
 
 	@Override
 	public void initialize() {
-		lastIMUYawRadians = IMUAngleSupplier.get().getRadians();
+		lastIMUYawRadians = imuAngleSupplier.get().getRadians();
 		accumulatedIMUYawRadians = 0.0;
 
 		startWheelPositions = wheelDriveDistanceSupplier.get();
