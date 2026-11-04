@@ -28,7 +28,7 @@ public class WheelRadiusCharacterization extends Command {
 
 	private Rotation2d[] startWheelPositions;
 	private double lastIMUYawRadians = 0.0;
-	private double accumulateIMUYawRadians = 0.0;
+	private double accumulatedIMUYawRadians = 0.0;
 	private double wheelRadiusMeters = 0.0;
 
 	public WheelRadiusCharacterization(
@@ -51,12 +51,12 @@ public class WheelRadiusCharacterization extends Command {
 
 	private void updateAnglePassedFromStart() {
 		double currentIMUYawRadians = IMUAngleSupplier.get().getRadians();
-		accumulateIMUYawRadians += MathUtil.angleModulus(currentIMUYawRadians - lastIMUYawRadians);
+		accumulatedIMUYawRadians += MathUtil.angleModulus(currentIMUYawRadians - lastIMUYawRadians);
 		lastIMUYawRadians = currentIMUYawRadians;
 	}
 
 	private double getDriveDistanceMeters() {
-		return accumulateIMUYawRadians * driveRadiusMeters;
+		return accumulatedIMUYawRadians * driveRadiusMeters;
 	}
 
 	private double getAverageDriveDistanceRadians() {
@@ -71,7 +71,7 @@ public class WheelRadiusCharacterization extends Command {
 	@Override
 	public void initialize() {
 		lastIMUYawRadians = IMUAngleSupplier.get().getRadians();
-		accumulateIMUYawRadians = 0.0;
+		accumulatedIMUYawRadians = 0.0;
 
 		startWheelPositions = wheelDriveDistanceSupplier.get();
 	}
@@ -89,7 +89,7 @@ public class WheelRadiusCharacterization extends Command {
 	@Override
 	public void end(boolean interrupted) {
 		onEnd.run();
-		String output = accumulateIMUYawRadians <= MathConstants.FULL_CIRCLE.getRadians()
+		String output = accumulatedIMUYawRadians <= MathConstants.FULL_CIRCLE.getRadians()
 			? "Not enough data for characterization"
 			: wheelRadiusMeters + " meters";
 		Logger.recordOutput(WheelRadiusConstants.LOG_PATH, output);

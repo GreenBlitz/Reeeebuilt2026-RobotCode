@@ -10,8 +10,8 @@ import frc.utils.math.ToleranceMath;
 
 public class PoseUtil {
 
-	public static boolean IsCollidingByAcceleration(Translation3d imuAccelerationG, double minimumIMUAccelerationG) {
-		return imuAccelerationG.getNorm() >= minimumIMUAccelerationG;
+	public static boolean isRobotColliding(Translation3d imuAccelerationG, double minimumCollisionIMUAccelerationG) {
+		return imuAccelerationG.getNorm() >= minimumCollisionIMUAccelerationG;
 	}
 
 	public static boolean isRobotTilted(Rotation2d imuRoll, Rotation2d imuPitch, Rotation2d minimumTiltIMURoll, Rotation2d minimumTiltIMUPitch) {

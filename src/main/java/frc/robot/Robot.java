@@ -325,8 +325,11 @@ public class Robot {
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
 		poseEstimator.log();
-		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getAngularVelocityFromIMURPS()[2]);
+		ShootingCalculations.updateShootingParams(
+			poseEstimator.getEstimatedPose(),
+			swerve.getFieldRelativeVelocity(),
+			Rotation2d.fromRadians(swerve.getOrientationFromIMU().getZ())
+		);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(

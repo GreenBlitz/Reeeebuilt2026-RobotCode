@@ -177,7 +177,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 			.ifPresent(
 				(imu3DAcceleration) -> Logger.recordOutput(
 					logPath + "/IsCollidingByAcceleration",
-					PoseUtil.IsCollidingByAcceleration(imu3DAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
+					PoseUtil.isRobotColliding(imu3DAcceleration, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
 				)
 			);
 
@@ -245,7 +245,7 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 		boolean isColliding = imu3DAccelerationGBuffer.getSample(visionObservation.timestampSeconds())
 			.map(
 				(imuAccelerationG) -> PoseUtil
-					.IsCollidingByAcceleration(imuAccelerationG, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
+					.isRobotColliding(imuAccelerationG, WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G)
 			)
 			.orElse(false);
 
