@@ -234,13 +234,13 @@ public class ShootingCalculations {
 	static {
 		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.6));
 		HOOD_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(27.6));
-		HOOD_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(34));
-		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(50));
+		HOOD_SCORING_INTERPOLATION_MAP.put(2.173, Rotation2d.fromDegrees(39));
+		HOOD_SCORING_INTERPOLATION_MAP.put(6.43, Rotation2d.fromDegrees(50));
 
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(-2000.0));
 		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(16800));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17000));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26500));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.173, Rotation2d.fromDegrees(19800));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(6.43, Rotation2d.fromDegrees(26500));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
 		HOOD_PASSING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(54.5));
@@ -285,7 +285,7 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
+		if (true) {
 			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
