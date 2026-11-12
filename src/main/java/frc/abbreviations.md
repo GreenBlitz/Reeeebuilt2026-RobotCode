@@ -9,7 +9,7 @@ data is
 calculating robot position based on capturing april tags
 
 
-- **G** : earth's gravitational acceleration
+- **G** : earth's gravitational acceleration(Meters per second squared)
 
 
 - **FOC** : Field-Oriented Control
