@@ -328,7 +328,7 @@ public class Robot {
 		ShootingCalculations.updateShootingParams(
 			poseEstimator.getEstimatedPose(),
 			swerve.getFieldRelativeVelocity(),
-			swerve.getAngularVelocityFromIMURPS()[2]
+			Rotation2d.fromRadians(swerve.getAngularVelocityFromIMURPS().getZ())
 		);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
