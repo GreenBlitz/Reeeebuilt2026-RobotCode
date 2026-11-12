@@ -70,10 +70,10 @@ public class PoseUtil {
 		SwerveModuleState moduleRotationalState,
 		double maximumNegligibleVectorNorm
 	) {
-		Translation2d velocityDifference = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
+		Translation2d moduleTranslationalVelocity = new Translation2d(moduleState.speedMetersPerSecond, moduleState.angle)
 			.minus(new Translation2d(moduleRotationalState.speedMetersPerSecond, moduleRotationalState.angle));
-		return velocityDifference.getNorm() > maximumNegligibleVectorNorm
-			? new SwerveModuleState(velocityDifference.getNorm(), velocityDifference.getAngle())
+		return moduleTranslationalVelocity.getNorm() > maximumNegligibleVectorNorm
+			? new SwerveModuleState(moduleTranslationalVelocity.getNorm(), moduleTranslationalVelocity.getAngle())
 			: new SwerveModuleState();
 	}
 
