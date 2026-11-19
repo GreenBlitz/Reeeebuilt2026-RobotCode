@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve.factories.imu;
+package frc.robot.imu.factories;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -13,7 +13,7 @@ import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
 import frc.robot.hardware.phoenix6.signal.SignalGetter;
 import frc.robot.hardware.signal.AngleSignal;
 import frc.robot.hardware.signal.DoubleSignal;
-import frc.robot.subsystems.swerve.IMUSignals;
+import frc.robot.imu.IMUSignals;
 import frc.utils.AngleUnit;
 import frc.utils.alerts.Alert;
 
@@ -41,15 +41,21 @@ public class Pigeon2IMUBuilder {
 	}
 
 	private static Phoenix6AngleSignal buildAnglePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
-		return Phoenix6SignalBuilder.build(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
+		return Phoenix6SignalBuilder.buildAngleSignal(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
 	}
 
 	private static AngleSignal buildAnglePigeonSignal(StatusSignal<?> signal, SignalGetter signalSlope, BusChain busChain) {
-		return Phoenix6SignalBuilder.build(signal, signalSlope, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
+		return Phoenix6SignalBuilder.buildLatencySignalWithoutRegisteringSlope(
+			signal,
+			signalSlope.getSignal(),
+			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+			AngleUnit.DEGREES,
+			busChain
+		);
 	}
 
 	private static DoubleSignal buildDoublePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
-		return Phoenix6SignalBuilder.build(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, busChain);
+		return Phoenix6SignalBuilder.buildDoubleSignal(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, busChain);
 	}
 
 	static IMUSignals buildSignals(Pigeon2IMU pigeon2imu) {

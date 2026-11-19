@@ -14,7 +14,7 @@ import frc.robot.IDs;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.RobotType;
-import frc.robot.hardware.mechanisms.wpilib.FlywheelSimulation;
+import frc.robot.hardware.simulations.wpilib.FlywheelSimulation;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
@@ -55,13 +55,13 @@ public class KrakenX60FlyWheelBuilder {
 		TalonFXMotor motor = new TalonFXMotor(logPath, motorID, followerConfig, buildSysidConfig(logPath), simulationMotor);
 
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
-			.build(motor.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, motorID.busChain());
+			.buildAngleSignal(motor.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, motorID.busChain());
 		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
-			.build(motor.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
+			.buildDoubleSignal(motor.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
-			.build(motor.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
+			.buildDoubleSignal(motor.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
 
-		Phoenix6Request<Rotation2d> velocityVoltageRequest = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
+		Phoenix6Request<Rotation2d> velocityVoltageRequest = Phoenix6RequestBuilder.buildVelocityVoltageRequest(new VelocityVoltage(0), 0, true);
 		Phoenix6Request<Rotation2d> velocityBangBangRequest = Phoenix6RequestBuilder.buildBangBangRequest(
 			velocitySignal::getLatestValue,
 			FlywheelConstants.MAX_BANG_BANG_POWER,
@@ -69,7 +69,7 @@ public class KrakenX60FlyWheelBuilder {
 			true
 		);
 
-		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
+		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.buildVoltageOutRequest(new VoltageOut(0), true);
 
 		motor.applyConfiguration(buildConfig());
 

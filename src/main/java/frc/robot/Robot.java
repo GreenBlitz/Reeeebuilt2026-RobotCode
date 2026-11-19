@@ -21,7 +21,7 @@ import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.interfaces.IIMU;
+import frc.robot.imu.IMUWrapper;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
@@ -46,7 +46,7 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
-import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
+import frc.robot.imu.factories.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.vision.cameras.limelight.Limelight;
 import frc.robot.vision.cameras.limelight.LimelightFilters;
@@ -98,6 +98,7 @@ public class Robot {
 	private AutonomousChooser autonomousChooser;
 	private SendableChooser<Boolean> returnToMiddle;
 
+	private final IMUWrapper imu;
 	private final IPoseEstimator poseEstimator;
 
 	private final Limelight limelightFront;
@@ -151,12 +152,11 @@ public class Robot {
 
 		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 
-		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
+		this.imu = IMUFactory.createIMUWrapper("IMU/");
 		this.swerve = new Swerve(
 			SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
 			ModulesFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
-			imu,
-			IMUFactory.createSignals(imu)
+			imu
 		);
 		BrakeStateManager.add(() -> swerve.getModules().setBrake(true), () -> swerve.getModules().setBrake(false));
 
@@ -165,9 +165,9 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
-			swerve.getOrientationFromIMU(),
-			swerve.getAccelerationFromIMUG(),
-			swerve.getIMUAbsoluteYaw().getTimestamp()
+			imu.getLatestOrientation(),
+			imu.getLatestAccelerationG(),
+			imu.getWrappedYaw().getTimestamp()
 		);
 
 		this.limelightFront = new Limelight(
@@ -315,9 +315,9 @@ public class Robot {
 
 	public void periodic() {
 		BusChain.refreshAll();
+		imu.updateIMU();
 		updateAllSubsystems();
 		robotCommander.update();
-
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		getLimelights().forEach(Limelight::updateHardwareInputs);
@@ -328,7 +328,7 @@ public class Robot {
 		ShootingCalculations.updateShootingParams(
 			poseEstimator.getEstimatedPose(),
 			swerve.getFieldRelativeVelocity(),
-			Rotation2d.fromRadians(swerve.getAngularVelocityFromIMURPS().getZ())
+			Rotation2d.fromRadians(imu.getLatestAngularVelocity().getZ())
 		);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
