@@ -54,8 +54,12 @@ public class KrakenX60FlyWheelBuilder {
 
 		TalonFXMotor motor = new TalonFXMotor(logPath, motorID, followerConfig, buildSysidConfig(logPath), simulationMotor);
 
-		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
-			.buildAngleSignal(motor.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, motorID.busChain());
+		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder.buildAngleSignal(
+			motor.getDevice().getVelocity(),
+			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+			AngleUnit.ROTATIONS,
+			motorID.busChain()
+		);
 		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
 			.buildDoubleSignal(motor.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, motorID.busChain());
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
