@@ -8,7 +8,6 @@ import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.constants.field.Field;
@@ -18,7 +17,6 @@ import frc.utils.HubUtil;
 import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
-import frc.robot.autonomous.AutonomousConstants;
 import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -148,22 +146,6 @@ public class RobotManager extends LoggedRobot {
 		robot.periodic();
 		AlertManager.reportAlerts();
 		logElasticRelatedInfo();
-	}
-
-	private void createAutoReadyForConstructionChooser() {
-		SendableChooser<Boolean> autoReadyForConstructionSendableChooser = new SendableChooser<>();
-		autoReadyForConstructionSendableChooser.setDefaultOption("false", false);
-		autoReadyForConstructionSendableChooser.addOption("true", true);
-		autoReadyForConstructionSendableChooser.onChange(isReady -> {
-			if (isReady) {
-				this.autonomousCommand = robot.getAutonomousChooser().getChosenValue();
-				BrakeStateManager.setBrakeMode(BrakeMode.BRAKE);
-			} else {
-				BrakeStateManager.setBrakeMode(BrakeMode.COAST);
-			}
-			Logger.recordOutput(AutonomousConstants.LOG_PATH_PREFIX + "/ReadyToConstruct", isReady);
-		});
-		SmartDashboard.putData("AutoReadyForConstruction", autoReadyForConstructionSendableChooser);
 	}
 
 	private void updateTimeRelatedData() {
