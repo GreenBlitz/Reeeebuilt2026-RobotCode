@@ -14,8 +14,10 @@ public class VelocityRollerCommandsBuilder extends RollerCommandsBuilder {
 	}
 
 	public Command setVelocity(Rotation2d velocityRPS) {
-		return roller
-			.asSubsystemCommand(new RunCommand(() -> roller.setVelocity(velocityRPS)), "set velocity to " + velocityRPS.getRotations() + " RPS");
+		return roller.asSubsystemCommand(
+			new RunCommand(() -> roller.setVelocity(velocityRPS)),
+			"set velocity to " + velocityRPS.getRotations() + " rotations per second"
+		);
 	}
 
 }

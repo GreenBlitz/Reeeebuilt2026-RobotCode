@@ -47,7 +47,7 @@ public class Pigeon2IMUBuilder {
 	private static AngleSignal buildAnglePigeonSignal(StatusSignal<?> signal, SignalGetter signalSlope, BusChain busChain) {
 		return Phoenix6SignalBuilder.buildLatencySignalWithoutRegisteringSlope(
 			signal,
-			signalSlope.getSignal(),
+			signalSlope,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			AngleUnit.DEGREES,
 			busChain

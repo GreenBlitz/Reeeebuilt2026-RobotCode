@@ -460,7 +460,7 @@ public class TalonFXArmBuilder {
 			velocity,
 			Phoenix6SignalBuilder.buildLatencySignalWithoutRegisteringSlope(
 				motor.getDevice().getPosition(),
-				velocity.getSignal(),
+				velocity,
 				signalFrequency,
 				AngleUnit.ROTATIONS,
 				busChain

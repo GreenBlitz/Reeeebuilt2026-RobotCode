@@ -364,11 +364,11 @@ public class Swerve extends GBSubsystem {
 
 		// max velocity at 12 volts (put a really high value in max vel and max rot vel for it to work)
 		// after calibrating max vel at 12 volts use this to calibrate kS
-		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().driveByPowersWithSupplier(() -> {
+		joystick.R3.whileTrue(new DeferredCommand(() -> getCommandsBuilder().drive(() -> {
 			ChassisPowers powers = new ChassisPowers();
 			powers.xPower = calibrationVoltageTunable.getAsDouble() / BatteryUtil.getCurrentVoltage();
 			return powers;
-		}, SwerveState.DEFAULT_DRIVE.withLoopMode(LoopMode.OPEN)), Set.of(this)));
+		}), Set.of(this)));
 
 
 		// max rotational velocity calibration

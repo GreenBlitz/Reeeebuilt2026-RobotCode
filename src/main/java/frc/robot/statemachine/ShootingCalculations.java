@@ -98,11 +98,11 @@ public class ShootingCalculations {
 		);
 	}
 
-	private static ShootingParams calculateScoringParams(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d IMUYawAngularVelocity) {
+	private static ShootingParams calculateScoringParams(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds, Rotation2d imuYawAngularVelocity) {
 		return calculateShootingParams(
 			robotPose,
 			fieldRelativeSpeeds,
-			IMUYawAngularVelocity,
+			imuYawAngularVelocity,
 			HOOD_SCORING_INTERPOLATION_MAP,
 			FLYWHEEL_SCORING_INTERPOLATION_MAP,
 			Field.getHubMiddle(),

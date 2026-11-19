@@ -30,7 +30,6 @@ public class Phoenix6SignalBuilder {
 		return new Phoenix6AngleSignal(signalClone.getName(), signalClone, angleUnit);
 	}
 
-	/** use this if you already registered your slope signal */
 	public static Phoenix6LatencySignal buildLatencySignal(
 		StatusSignal<?> signal,
 		StatusSignal<?> signalSlope,
@@ -43,16 +42,17 @@ public class Phoenix6SignalBuilder {
 		return new Phoenix6LatencySignal(signalClone.getName(), signalClone, signalSlopeClone, angleUnit);
 	}
 
+	/** use this if you already registered your slope signal */
 	public static Phoenix6LatencySignal buildLatencySignalWithoutRegisteringSlope(
 		StatusSignal<?> signal,
-		StatusSignal<?> signalSlope,
+		SignalGetter signalSlope,
 		double frequency,
 		AngleUnit angleUnit,
 		BusChain busChain
 	) {
 		StatusSignal<?> signalClone = cloneWithFrequency(signal, frequency, busChain);
-		setFrequencyWithRetry(signalSlope, frequency);
-		return new Phoenix6LatencySignal(signalClone.getName(), signalClone, signalSlope, angleUnit);
+		setFrequencyWithRetry(signalSlope.getSignal(), frequency);
+		return new Phoenix6LatencySignal(signalClone.getName(), signalClone, signalSlope.getSignal(), angleUnit);
 	}
 
 }

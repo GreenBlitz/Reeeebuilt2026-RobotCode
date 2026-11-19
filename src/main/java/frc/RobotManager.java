@@ -17,7 +17,6 @@ import frc.utils.HubUtil;
 import frc.utils.alerts.Alert;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.driverstation.DriverStationUtil;
-import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
