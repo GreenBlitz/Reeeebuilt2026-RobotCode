@@ -7,7 +7,7 @@ import frc.robot.Robot;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.hardware.interfaces.IMotor;
 import frc.robot.hardware.interfaces.InputSignal;
-import frc.robot.hardware.mechanisms.MechanismSimulation;
+import frc.robot.hardware.simulations.MechanismSimulation;
 import frc.robot.hardware.rev.motors.simulation.SparkMaxSimulation;
 import frc.robot.hardware.signal.supplied.SuppliedAngleSignal;
 import frc.robot.hardware.signal.supplied.SuppliedDoubleSignal;
@@ -176,31 +176,31 @@ public abstract class SparkMaxMotor implements IMotor {
 			)
 		);
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "MotorStalledAt",
-				() -> warnings.stall
-			)
-		);
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "MotorStalledAt",
+                        () -> warnings.stall
+                )
+        );
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "MotorHasResetAt",
-				() -> warnings.hasReset
-			)
-		);
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "MotorHasResetAt",
+                        () -> warnings.hasReset
+                )
+        );
 
-		AlertManager.addAlert(
-			new PeriodicAlert(
-				Alert.AlertType.WARNING,
-				logPath + "OtherWarningAt",
-				() -> warnings.other,
-					true
-			)
-		);
-		//@formatter:on
+        AlertManager.addAlert(
+                new PeriodicAlert(
+                        Alert.AlertType.WARNING,
+                        logPath + "OtherWarningAt",
+                        () -> warnings.other,
+                        true
+                )
+        );
+        //@formatter:on
 	}
 
 	@Override

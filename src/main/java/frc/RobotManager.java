@@ -76,8 +76,7 @@ public class RobotManager extends LoggedRobot {
 		robot.getLimelights().forEach(limelight -> limelight.setThrottleState(!DriverStationUtil.isMatch()));
 
 		alertsMessage = "Alerts: None";
-		Logger.recordOutput("AlertsMessage", alertsMessage);
-		logDriverAlerts();
+		logCriticalAlerts();
 	}
 
 	@Override
@@ -161,15 +160,15 @@ public class RobotManager extends LoggedRobot {
 		Logger.recordOutput("TimeLeftForGame", GamePeriodUtils.getTimeUntilGameEnds());
 		Logger.recordOutput("CurrentGamePeriod", GamePeriodUtils.getCurrentGamePeriod());
 
-		logDriverAlerts();
+		logCriticalAlerts();
 
 		field2d.setRobotPose(robot.getPoseEstimator().getEstimatedPose());
 	}
 
-	private void logDriverAlerts() {
+	private void logCriticalAlerts() {
 		ArrayList<Alert> alerts = AlertManager.getReportedAlerts();
 
-		String newAlertsMessage = alerts.stream().filter(Alert::isDriverRelevant).map(Alert::getName).collect(Collectors.joining(", "));
+		String newAlertsMessage = alerts.stream().filter(Alert::isCritical).map(Alert::getName).collect(Collectors.joining(", "));
 
 		boolean areAlertsOk = newAlertsMessage.isEmpty();
 

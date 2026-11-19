@@ -26,7 +26,7 @@ public record ModuleSpecificConstants(
 			logPathPrefix + ModuleConstants.MODULES_LOG_PATH_ADDITION + "/" + modulePosition,
 			wheelDiameterMeters,
 			couplingRatio,
-			Conversions.distanceToAngle(velocityAt12VoltsMetersPerSecond, wheelDiameterMeters),
+			Conversions.distanceToRotation2d(velocityAt12VoltsMetersPerSecond, wheelDiameterMeters),
 			positionFromCenterMeters
 		);
 	}

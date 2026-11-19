@@ -15,11 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
-import frc.robot.hardware.interfaces.IIMU;
+import frc.robot.imu.IMUWrapper;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
@@ -44,22 +46,21 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.VelocityRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
-import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
+import frc.robot.imu.factories.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.GamePeriodUtils;
 import frc.utils.auto.AutonomousChooser;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
-import frc.robot.vision.cameras.limelight.Limelight;
-import frc.robot.vision.cameras.limelight.LimelightFilters;
 import frc.robot.vision.cameras.limelight.LimelightPipeline;
-import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeMode;
 import frc.utils.brakestate.BrakeStateManager;
-import frc.utils.math.StandardDeviations2D;
 import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -97,6 +98,7 @@ public class Robot {
 	private AutonomousChooser autonomousChooser;
 	private SendableChooser<Boolean> returnToMiddle;
 
+	private final IMUWrapper imu;
 	private final IPoseEstimator poseEstimator;
 
 	private final Limelight limelightFront;
@@ -150,12 +152,11 @@ public class Robot {
 
 		this.magazineBallSensor = MagazineConstant.createMagazineBallSensor();
 
-		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
+		this.imu = IMUFactory.createIMUWrapper("IMU/");
 		this.swerve = new Swerve(
 			SwerveConstantsFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
 			ModulesFactory.create(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve"),
-			imu,
-			IMUFactory.createSignals(imu)
+			imu
 		);
 		BrakeStateManager.add(() -> swerve.getModules().setBrake(true), () -> swerve.getModules().setBrake(false));
 
@@ -164,9 +165,9 @@ public class Robot {
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
-			swerve.getIMUOrientation(),
-			swerve.getIMUAccelerationG().toTranslation2d(),
-			swerve.getIMUAbsoluteYaw().getTimestamp()
+			imu.getLatestOrientation(),
+			imu.getLatestAccelerationG(),
+			imu.getWrappedYaw().getTimestamp()
 		);
 
 		this.limelightFront = new Limelight(
@@ -202,10 +203,10 @@ public class Robot {
 			limelight -> limelight.setMT1StdDevsCalculation(
 				LimelightStdDevCalculations.getMT1StdDevsCalculation(
 					limelight,
-					new StandardDeviations2D(0.5),
-					new StandardDeviations2D(0.15),
-					new StandardDeviations2D(0.4),
-					new StandardDeviations2D(0.011)
+					WPILibPoseEstimatorConstants.DEFAULT_TAG_DISTANCE_FACTORS,
+					WPILibPoseEstimatorConstants.DEFAULT_STD_DEV_FACTORS,
+					WPILibPoseEstimatorConstants.DEFAULT_VISIBLE_TAGS_EXPONENTS,
+					WPILibPoseEstimatorConstants.DEFAULT_STD_DEV_ADDITIONS
 				)
 			)
 		);
@@ -215,8 +216,8 @@ public class Robot {
 					limelight,
 					timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
 					poseEstimator::isIMUOffsetCalibrated,
-					new Translation2d(0.1, 0.1),
-					Rotation2d.fromDegrees(10)
+					LimelightFilters.DEFAULT_IN_FIELD_TOLERANCE_METERS,
+					LimelightFilters.DEFAULT_YAW_AT_ANGLE_TOLERANCE
 				)
 			)
 		);
@@ -314,9 +315,9 @@ public class Robot {
 
 	public void periodic() {
 		BusChain.refreshAll();
+		imu.updateIMU();
 		updateAllSubsystems();
 		robotCommander.update();
-
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 
 		getLimelights().forEach(Limelight::updateHardwareInputs);
@@ -324,8 +325,11 @@ public class Robot {
 		getLimelights().forEach(limelight -> limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision));
 
 		poseEstimator.log();
-		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
+		ShootingCalculations.updateShootingParams(
+			poseEstimator.getEstimatedPose(),
+			swerve.getFieldRelativeVelocity(),
+			Rotation2d.fromRadians(imu.getLatestAngularVelocity().getZ())
+		);
 
 		Logger.recordOutput("lastBallThrownTimestamp", lastBallThrownTimestamp.get());
 		Logger.recordOutput(
