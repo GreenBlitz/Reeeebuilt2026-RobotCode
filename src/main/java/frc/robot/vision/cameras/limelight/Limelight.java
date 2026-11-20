@@ -1,6 +1,8 @@
 package frc.robot.vision.cameras.limelight;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.DetectedObjectObservation;
 import frc.robot.vision.RobotPoseObservation;
 import frc.robot.vision.cameras.limelight.inputs.LimelightInputsSet;
@@ -49,6 +51,7 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 	private Supplier<StandardDeviations2D> calculateMT2StdDevs;
 
 	private LimelightPipeline pipeline;
+	public NetworkTable table;
 
 	public Limelight(String name, String logPathPrefix, Pose3d robotRelativeCameraPose, LimelightPipeline pipeline) {
 		this.name = name;
@@ -76,6 +79,8 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		this.calculateMT2StdDevs = () -> LimelightStdDevCalculations.DEFAULT_STD_DEVS;
 
 		setPipeline(pipeline);
+
+		table = NetworkTableInstance.getDefault().getTable(name);
 	}
 
 	public void updateNeuralDetection() {
@@ -140,6 +145,10 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 		}
 	}
 
+	public double getSeenTagID() {
+		return table.getEntry("tid").getDouble(-1);
+	}
+
 	public void updateMT1() {
 		if (pipeline.isUsingMT()) {
 			inputs.mt1Inputs().mtRawData = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
@@ -156,6 +165,11 @@ public class Limelight implements ObjectDetector, IndependentRobotPoseSupplier, 
 				Logger.recordOutput(logPath + "/mt1/poseObservation", mt1PoseObservation);
 			}
 		}
+	}
+
+	public Translation2d getTargetPose3d_RobotSpace() {
+		Translation3d wackyAhLimelightTag = LimelightHelpers.getTargetPose3d_RobotSpace(name).getTranslation();
+		return new Translation2d(wackyAhLimelightTag.getZ(), -wackyAhLimelightTag.getX());
 	}
 
 	public void updateMT2() {

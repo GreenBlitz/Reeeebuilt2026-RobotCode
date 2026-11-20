@@ -1,5 +1,7 @@
 package frc.robot.statemachine;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -7,6 +9,7 @@ import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.constants.field.Field;
+import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -41,6 +44,7 @@ public class ShootingCalculations {
 		Function<Translation2d, Double> distanceCalculator,
 		InterpolationMap<Double, Double> distanceToFlightTime
 	) {
+		Logger.recordOutput("TARGET_TRANS", new Pose2d(targetTranslation, new Rotation2d()));
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
 		double distanceFromTurretToTargetMeters = targetTranslation.getDistance(fieldRelativeTurretTranslation);
@@ -109,7 +113,34 @@ public class ShootingCalculations {
 			gyroYawAngularVelocity,
 			HOOD_SCORING_INTERPOLATION_MAP,
 			FLYWHEEL_SCORING_INTERPOLATION_MAP,
-			Field.getHubMiddle(),
+			AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField)
+				.getTagPose((int) Robot.latSeenTagID)
+				.get()
+				.getTranslation()
+				.toTranslation2d(),
+			(Translation2d pose) -> AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField)
+				.getTagPose((int) Robot.latSeenTagID)
+				.get()
+				.getTranslation()
+				.toTranslation2d()
+				.getDistance(pose),
+			SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
+		);
+	}
+
+	private static ShootingParams calculateScoringToTagParams(
+		Robot robot,
+		Pose2d robotPose,
+		ChassisSpeeds fieldRelativeSpeeds,
+		Rotation2d gyroYawAngularVelocity
+	) {
+		return calculateShootingParams(
+			robotPose,
+			fieldRelativeSpeeds,
+			gyroYawAngularVelocity,
+			HOOD_SCORING_INTERPOLATION_MAP,
+			FLYWHEEL_SCORING_INTERPOLATION_MAP,
+			robot.getTagTranslationFromCameras(),
 			ShootingCalculations::getDistanceFromHub,
 			SCORING_DISTANCE_TO_BALL_FLIGHT_TIME_INTERPOLATION_MAP
 		);
@@ -184,6 +215,10 @@ public class ShootingCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
+	public static double getDistanceFromTarget(Translation2d pose, Translation2d target) {
+		return target.getDistance(pose);
+	}
+
 	public static double getDistanceFromPassingTarget(Translation2d pose) {
 		return getOptimalPassingPosition(pose).getDistance(pose);
 	}
@@ -233,14 +268,14 @@ public class ShootingCalculations {
 
 	static {
 		HOOD_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(27.6));
-		HOOD_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(27.6));
-		HOOD_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(34));
-		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(50));
+//		HOOD_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(27.6));
+//		HOOD_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(34));
+		HOOD_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(60));
 
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(-2000.0));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(16800));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17000));
-		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(26500));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(10000));
+//		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(1.19, Rotation2d.fromDegrees(16800));
+//		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(2.02, Rotation2d.fromDegrees(17000));
+		FLYWHEEL_SCORING_INTERPOLATION_MAP.put(7.0, Rotation2d.fromDegrees(40000));
 
 		HOOD_PASSING_INTERPOLATION_MAP.put(0.0, Rotation2d.fromDegrees(54));
 		HOOD_PASSING_INTERPOLATION_MAP.put(8.5, Rotation2d.fromDegrees(54.5));
@@ -285,11 +320,16 @@ public class ShootingCalculations {
 	}
 
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
-		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-		} else {
-			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
-		}
+		shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+	}
+
+	public static void updateShootingToTagParams(
+		Pose2d robotPose,
+		Robot robot,
+		ChassisSpeeds speedsFieldRelative,
+		Rotation2d gyroYawAngularVelocity
+	) {
+		shootingParams = calculateScoringToTagParams(robot, robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 	}
 
 }
