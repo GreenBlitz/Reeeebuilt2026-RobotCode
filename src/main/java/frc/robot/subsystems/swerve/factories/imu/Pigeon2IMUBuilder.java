@@ -48,6 +48,11 @@ public class Pigeon2IMUBuilder {
 		return Phoenix6SignalBuilder.build(signal, signalSlope, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
 	}
 
+	private static AngleSignal buildThreadedAnglePigeonSignal(StatusSignal<?> signal, StatusSignal<?> signalSlope, BusChain busChain) {
+		return Phoenix6SignalBuilder
+			.buildThreaded(signal, signalSlope, RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
+	}
+
 	private static DoubleSignal buildDoublePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
 		return Phoenix6SignalBuilder.build(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, busChain);
 	}
@@ -68,7 +73,11 @@ public class Pigeon2IMUBuilder {
 		return new IMUSignals(
 			buildAnglePigeonSignal(pigeon2imu.getDevice().getRoll(), angularVelocityXWorld, pigeon2imu.getBusChain()),
 			buildAnglePigeonSignal(pigeon2imu.getDevice().getPitch(), angularVelocityYWorld, pigeon2imu.getBusChain()),
-			buildAnglePigeonSignal(pigeon2imu.getDevice().getYaw(), angularVelocityZWorld, pigeon2imu.getBusChain()),
+			buildThreadedAnglePigeonSignal(
+				pigeon2imu.getDevice().getYaw(),
+				pigeon2imu.getDevice().getAngularVelocityZWorld(),
+				pigeon2imu.getBusChain()
+			),
 			angularVelocityXWorld,
 			angularVelocityYWorld,
 			angularVelocityZWorld,

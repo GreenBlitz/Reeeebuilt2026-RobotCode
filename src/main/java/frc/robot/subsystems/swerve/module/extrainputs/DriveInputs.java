@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.AutoLog;
 @AutoLog
 public class DriveInputs {
 
+	public Rotation2d uncoupledPosition = new Rotation2d();
 	public Rotation2d uncoupledVelocityAnglesPerSecond = new Rotation2d();
 	public Rotation2d[] uncoupledPositions = new Rotation2d[0];
 

@@ -112,6 +112,10 @@ public class Modules {
 		return Arrays.stream(modules).map(Module::getCurrentState).toArray(SwerveModuleState[]::new);
 	}
 
+	public SwerveModulePosition[] getCurrentWheelPositions() {
+		return Arrays.stream(modules).map(Module::getCurrentPosition).toArray(SwerveModulePosition[]::new);
+	}
+
 	public Rotation2d[] getDrivesPositions() {
 		return Arrays.stream(modules).map(Module::getDrivePosition).toArray(Rotation2d[]::new);
 	}

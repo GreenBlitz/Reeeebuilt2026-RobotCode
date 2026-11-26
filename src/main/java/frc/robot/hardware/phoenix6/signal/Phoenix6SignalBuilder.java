@@ -1,7 +1,11 @@
 package frc.robot.hardware.phoenix6.signal;
 
 import com.ctre.phoenix6.StatusSignal;
+import frc.robot.Robot;
+import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.BusChain;
+import frc.robot.hardware.phoenix6.Phoenix6OdometryThread;
+import frc.robot.hardware.signal.AngleSignal;
 import frc.utils.AngleUnit;
 import frc.robot.hardware.phoenix6.Phoenix6Util;
 
@@ -56,6 +60,28 @@ public class Phoenix6SignalBuilder {
 		StatusSignal<?> signalClone = cloneWithFrequency(signal, frequency, busChain);
 		StatusSignal<?> signalSlopeClone = cloneWithFrequency(signalSlope, frequency, busChain);
 		return new Phoenix6LatencyAndSlopeSignal(signalClone.getName(), signalClone, signalSlopeClone, angleUnit);
+	}
+
+	public static AngleSignal buildThreaded(
+		StatusSignal<?> signal,
+		StatusSignal<?> signalSlope,
+		double frequency,
+		AngleUnit angleUnit,
+		BusChain busChain
+	) {
+		if (!RobotConstants.ENABLE_ODOMETRY_THREAD || Robot.ROBOT_TYPE.isSimulation()) {
+			return build(signal, signalSlope, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, angleUnit, busChain);
+		}
+		Phoenix6OdometryThread.SignalQueues queues = Phoenix6OdometryThread.getInstance()
+			.registerLatencySignal(signal, signalSlope, frequency, busChain);
+		return new Phoenix6ThreadLatencySignal(
+			queues.clonedSignal().getName(),
+			queues.clonedSignal(),
+			signalSlope,
+			angleUnit,
+			queues.values(),
+			queues.timestamps()
+		);
 	}
 
 }
