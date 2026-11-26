@@ -28,6 +28,7 @@ import frc.robot.subsystems.swerve.states.heading.HeadingControl;
 import frc.robot.subsystems.swerve.states.heading.HeadingStabilizer;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.pose.PoseUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -145,7 +146,13 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/OdometrySamples", getNumberOfOdometrySamples());
 
-		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
+		Logger.recordOutput(
+			getLogPath() + "/isAccelerationDetectingCollision",
+			PoseUtil.isAccelerationDetectingCollision(
+				imu.getLatestAccelerationG().toTranslation2d(),
+				WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G
+			)
+		);
 	}
 
 	public int getNumberOfOdometrySamples() {
@@ -294,10 +301,6 @@ public class Swerve extends GBSubsystem {
 		boolean isStopping = Math.abs(rotationVelocityRadiansPerSecond) < velocityDeadbandAnglesPerSecond.getRadians();
 
 		return isAtHeading && isStopping;
-	}
-
-	public boolean isCollisionDetected() {
-		return imu.getLatestAccelerationG().toTranslation2d().getNorm() > WPILibPoseEstimatorConstants.MINIMUM_COLLISION_IMU_ACCELERATION_G;
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {

@@ -33,7 +33,7 @@ public class IMUWrapper {
 		return imuSignals.yawSignal();
 	}
 
-	public Rotation3d getLatestAngularVelocity() {
+	public Rotation2d[] getLatestAngularVelocity() {
 		return imuSignals.getLatestAngularVelocity();
 	}
 

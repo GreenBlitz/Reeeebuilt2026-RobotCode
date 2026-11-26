@@ -15,12 +15,11 @@ public record IMUSignals(
 	InputSignal<Double> zAccelerationGSignal
 ) {
 
-	public Rotation3d getLatestAngularVelocity() {
-		return new Rotation3d(
-			rollAngularVelocitySignal.getLatestValue().getRadians(),
-			pitchAngularVelocitySignal.getLatestValue().getRadians(),
-			yawAngularVelocitySignal.getLatestValue().getRadians()
-		);
+	public Rotation2d[] getLatestAngularVelocity() {
+		return new Rotation2d[] {
+			rollAngularVelocitySignal.getLatestValue(),
+			pitchAngularVelocitySignal.getLatestValue(),
+			yawAngularVelocitySignal.getLatestValue()};
 	}
 
 	public Rotation3d[] getAllOrientations() {
