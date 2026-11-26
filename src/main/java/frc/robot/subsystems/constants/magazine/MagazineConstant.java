@@ -4,12 +4,14 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
 import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
+import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.subsystems.roller.TalonFXRollerBuilder;
 import frc.robot.subsystems.roller.VelocityRoller;
 
@@ -56,10 +58,13 @@ public class MagazineConstant {
 			IDs.TalonFXIDs.MAGAZINE,
 			REAL_SLOTS_CONFIG,
 			SIMULATION_SLOTS_CONFIG,
+			new TalonFXFollowerConfig(),
+			new SysIdRoutine.Config(),
 			CURRENT_LIMIT,
 			FEEDBACK_CONFIGS,
 			MOMENT_OF_INERTIA,
-			IS_INVERTED
+			IS_INVERTED,
+			false
 		);
 	}
 

@@ -13,6 +13,7 @@ import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.subsystems.swerve.module.ModuleConstants;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.Modules;
+import frc.robot.subsystems.swerve.states.DriveAcceleration;
 import frc.robot.subsystems.swerve.states.RotateAxis;
 import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.auto.PathPlannerUtil;
@@ -67,7 +68,6 @@ public class SwerveCommandsBuilder {
 		);
 	}
 
-
 	public Command pointWheels(Rotation2d targetSteerPosition, boolean optimize) {
 		return swerve.asSubsystemCommand(
 			new RunCommand(() -> modules.pointWheels(targetSteerPosition, optimize)),
@@ -83,10 +83,13 @@ public class SwerveCommandsBuilder {
 		return swerve.asSubsystemCommand(new RunCommand(modules::pointWheelsInX), "Point wheels in X");
 	}
 
-
-	public Command setTargetModuleStates(Supplier<SwerveModuleState[]> statesSupplier, boolean isClosedLoop) {
+	public Command setTargetModuleStates(
+		Supplier<SwerveModuleState[]> statesSupplier,
+		boolean isClosedLoop,
+		DriveAcceleration driveAcceleration
+	) {
 		return swerve.asSubsystemCommand(
-			new RunCommand(() -> modules.setTargetStates(statesSupplier.get(), isClosedLoop)),
+			new RunCommand(() -> modules.setTargetStates(statesSupplier.get(), isClosedLoop, driveAcceleration.getSlewRateLimiter())),
 			"Set states by " + "supplier"
 		);
 	}
@@ -138,14 +141,14 @@ public class SwerveCommandsBuilder {
 	public Command driveByPowersWithSupplier(Supplier<ChassisPowers> powersSupplier, Supplier<SwerveState> state) {
 		return swerve.asSubsystemCommand(
 			new DeferredCommand(() -> driveByPowersWithSupplier(powersSupplier, state.get()), Set.of(swerve)),
-			"Drive by chassis powers supplier and state supplier"
+			"Drive by chassis powers supplier with state supplier"
 		);
 	}
 
 	public Command driveByPowersWithSupplier(Supplier<ChassisPowers> chassisPowersSupplier, SwerveState state) {
 		return swerve.asSubsystemCommand(
 			new InitExecuteCommand(swerve::resetPIDControllers, () -> swerve.driveByState(chassisPowersSupplier.get(), state)),
-			"Drive by chassis powers supplier and state"
+			"Drive by chassis powers supplier with state"
 		);
 	}
 
