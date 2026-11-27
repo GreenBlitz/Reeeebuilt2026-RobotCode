@@ -55,6 +55,10 @@ public class TimeUtil {
 		return currentCycleStartingTimeSeconds - lastCycleStartingTimeSeconds;
 	}
 
+	public static double getCurrentCycleStartingTimeSeconds() {
+		return currentCycleStartingTimeSeconds;
+	}
+
 	public static double getTimeSinceTeleopInitSeconds() {
 		if (Robot.ROBOT_TYPE.isReal()) {
 			return GamePeriodUtils.TELEOP_DURATION_SECONDS - DriverStation.getMatchTime();

@@ -162,7 +162,7 @@ public class Robot {
 		this.poseEstimator = new WPILibPoseEstimatorWrapper(
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
-			swerve.getModules().getCurrentWheelPositions(),
+			swerve.getModules().getWheelPositions(0),
 			swerve.getModules().getCurrentStates(),
 			swerve.getIMUOrientation(),
 			swerve.getIMUAccelerationG().toTranslation2d(),

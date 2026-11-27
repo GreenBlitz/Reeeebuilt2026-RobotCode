@@ -22,12 +22,15 @@ import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
 import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
-import frc.robot.hardware.phoenix6.signal.Phoenix6LatencySignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
+import frc.robot.hardware.phoenix6.signal.threaded.Phoenix6ThreadSignalBuilder;
+import frc.robot.hardware.signal.AngleSignal;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.records.SteerRequests;
 import frc.robot.subsystems.swerve.module.records.SteerSignals;
 import frc.utils.AngleUnit;
+
+import java.util.function.Function;
 
 class KrakenX60SteerBuilder {
 
@@ -35,6 +38,7 @@ class KrakenX60SteerBuilder {
 	private static final double BACK_MODULES_GEAR_RATIO = 18.75;
 
 	private static final double MOMENT_OF_INERTIA_METERS_SQUARED = 0.00001;
+	private static final double ODOMETRY_FREQUENCY_HERTZ = 250;
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
 		return new SysIdRoutine.Config(
@@ -144,23 +148,42 @@ class KrakenX60SteerBuilder {
 		);
 	}
 
-	static SteerSignals buildSignals(TalonFXMotor steer) {
+	private static SteerSignals buildSignals(TalonFXMotor steer, Function<Phoenix6AngleSignal, AngleSignal> positionSignalBuilder) {
 		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
 			.build(steer.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, steer.getBusChain());
 		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
 			.build(steer.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, steer.getBusChain());
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
 			.build(steer.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, steer.getBusChain());
-		Phoenix6LatencySignal positionSignal = Phoenix6SignalBuilder.build(
-			steer.getDevice().getPosition(),
-			steer.getDevice().getVelocity(),
-			RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ,
-			AngleUnit.ROTATIONS,
-			steer.getBusChain(),
-			true
-		);
+		AngleSignal positionSignal = positionSignalBuilder.apply(velocitySignal);
 
 		return new SteerSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);
+	}
+
+	static SteerSignals buildSignals(TalonFXMotor steer) {
+		return buildSignals(
+			steer,
+			velocitySignal -> Phoenix6SignalBuilder.build(
+				steer.getDevice().getPosition(),
+				velocitySignal,
+				RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
+				AngleUnit.ROTATIONS,
+				steer.getBusChain()
+			)
+		);
+	}
+
+	static SteerSignals buildThreadedSignals(TalonFXMotor steer) {
+		return buildSignals(
+			steer,
+			velocitySignal -> Phoenix6ThreadSignalBuilder.build(
+				steer.getDevice().getPosition(),
+				steer.getDevice().getVelocity(),
+				ODOMETRY_FREQUENCY_HERTZ,
+				AngleUnit.ROTATIONS,
+				steer.getBusChain()
+			)
+		);
 	}
 
 }

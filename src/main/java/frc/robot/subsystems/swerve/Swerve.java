@@ -183,39 +183,20 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public int getNumberOfOdometrySamples() {
-		int imuSampleCount = Math.min(imuSignals.yawSignal().asArray().length, imuSignals.yawSignal().getTimestamps().length);
-		return Math.min(imuSampleCount, modules.getNumberOfOdometrySamples());
+		return Math.min(imuSignals.yawSignal().asArray().length, modules.getNumberOfOdometrySamples());
 	}
 
 	public OdometryData[] getAllOdometryData() {
-		int sampleCount = getNumberOfOdometrySamples();
-		OdometryData[] odometryData = new OdometryData[sampleCount];
-		if (sampleCount == 0) {
-			return odometryData;
-		}
+		OdometryData[] odometryData = new OdometryData[getNumberOfOdometrySamples()];
 
-		double[] timestamps = imuSignals.yawSignal().getTimestamps();
-		Rotation2d[] yawSamples = imuSignals.yawSignal().asArray();
-		SwerveModuleState[] currentStates = modules.getCurrentStates();
-		boolean isEmptyIMU = imu instanceof EmptyIMU;
-		Rotation3d[] allOrientations = isEmptyIMU ? new Rotation3d[0] : imuSignals.getAllOrientations();
-		Rotation3d latestOrientation = isEmptyIMU ? Rotation3d.kZero : imuSignals.getLatestOrientation();
-		Translation3d[] allAccelerationsG = isEmptyIMU ? new Translation3d[0] : imuSignals.getAllAccelerationsG();
-		Translation2d latestXYAccelerationG = isEmptyIMU ? Translation2d.kZero : imuSignals.getLatestAccelerationG().toTranslation2d();
-
-		for (int i = 0; i < sampleCount; i++) {
-			Optional<Rotation3d> orientation = isEmptyIMU
-				? Optional.empty()
-				: Optional.of(
-					i < allOrientations.length
-						? allOrientations[i]
-						: new Rotation3d(latestOrientation.getX(), latestOrientation.getY(), yawSamples[i].getRadians())
-				);
-			Optional<Translation2d> xyAccelerationG = isEmptyIMU
-				? Optional.empty()
-				: Optional.of(i < allAccelerationsG.length ? allAccelerationsG[i].toTranslation2d() : latestXYAccelerationG);
-
-			odometryData[i] = new OdometryData(timestamps[i], modules.getWheelPositions(i), currentStates, orientation, xyAccelerationG);
+		for (int i = 0; i < odometryData.length; i++) {
+			odometryData[i] = new OdometryData(
+				imuSignals.yawSignal().getTimestamps()[i],
+				modules.getWheelPositions(i),
+				modules.getCurrentStates(),
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllOrientations()[i]),
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d())
+			);
 		}
 
 		return odometryData;

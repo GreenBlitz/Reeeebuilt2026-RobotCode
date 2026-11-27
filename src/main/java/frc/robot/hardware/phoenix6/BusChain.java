@@ -2,12 +2,11 @@ package frc.robot.hardware.phoenix6;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.CANBus.CANBusStatus;
-import frc.robot.hardware.phoenix6.signal.SignalGetter;
 import frc.utils.alerts.Alert;
 import frc.utils.alerts.AlertManager;
 import frc.utils.alerts.PeriodicAlert;
 import org.littletonrobotics.junction.Logger;
+import com.ctre.phoenix6.CANBus.CANBusStatus;
 
 public enum BusChain {
 
@@ -21,7 +20,6 @@ public enum BusChain {
 
 	private final CANBus canBus;
 	private final String logPath;
-	private final Phoenix6SignalThread signalThread;
 	private CANBusStatus currentBusStatus;
 	private CANBusStatus lastBusStatus;
 	private BaseStatusSignal[] signals;
@@ -29,7 +27,6 @@ public enum BusChain {
 	BusChain(String chainName) {
 		this.canBus = new CANBus(chainName);
 		this.logPath = LOG_PATH_PREFIX + "/" + getCANBus().getName();
-		this.signalThread = new Phoenix6SignalThread(chainName, canBus);
 		this.currentBusStatus = canBus.getStatus();
 		this.lastBusStatus = new CANBusStatus();
 		this.signals = new BaseStatusSignal[0];
@@ -103,7 +100,6 @@ public enum BusChain {
 		Logger.recordOutput(logPath + "/FullCount", currentBusStatus.TxFullCount);
 		Logger.recordOutput(logPath + "/ReceiveError", currentBusStatus.REC);
 		Logger.recordOutput(logPath + "/TransmitError", currentBusStatus.TEC);
-		signalThread.logStatus(logPath + "/SignalThread");
 	}
 
 	public static void logChainsStatuses() {
@@ -127,7 +123,6 @@ public enum BusChain {
 		if (signals.length > 0) {
 			BaseStatusSignal.refreshAll(signals);
 		}
-		signalThread.refreshLatestSamples();
 	}
 
 	public static void refreshAll() {
@@ -141,10 +136,6 @@ public enum BusChain {
 		System.arraycopy(signals, 0, newSignals, 0, signals.length);
 		newSignals[newSignals.length - 1] = signal;
 		signals = newSignals;
-	}
-
-	public void registerThreadedSignal(SignalGetter signalWrapper, double frequencyHertz, BaseStatusSignal... statusSignals) {
-		signalThread.registerSignal(signalWrapper, frequencyHertz, statusSignals);
 	}
 
 }

@@ -103,18 +103,12 @@ public class Module {
 		driveInputs.uncoupledVelocityAnglesPerSecond = ModuleUtil
 			.uncoupleDriveAngle(driveSignals.velocity().getLatestValue(), steerSignals.velocity().getLatestValue(), constants.couplingRatio());
 
-		Rotation2d latestSteerDelta = Rotation2d
-			.fromRotations(steerSignals.position().getLatestValue().getRotations() - startingSteerPosition.getRotations());
-		driveInputs.uncoupledPosition = ModuleUtil
-			.uncoupleDriveAngle(driveSignals.position().getLatestValue(), latestSteerDelta, constants.couplingRatio());
-
-		Rotation2d[] drivePositions = driveSignals.position().asArray();
-		Rotation2d[] steerPositions = steerSignals.position().asArray();
-		int sampleCount = Math.min(drivePositions.length, steerPositions.length);
-		driveInputs.uncoupledPositions = new Rotation2d[sampleCount];
-		for (int i = 0; i < sampleCount; i++) {
-			Rotation2d steerDelta = Rotation2d.fromRotations(steerPositions[i].getRotations() - startingSteerPosition.getRotations());
-			driveInputs.uncoupledPositions[i] = ModuleUtil.uncoupleDriveAngle(drivePositions[i], steerDelta, constants.couplingRatio());
+		driveInputs.uncoupledPositions = new Rotation2d[driveSignals.position().asArray().length];
+		for (int i = 0; i < driveInputs.uncoupledPositions.length; i++) {
+			Rotation2d steerDelta = Rotation2d
+				.fromRotations(steerSignals.position().asArray()[i].getRotations() - startingSteerPosition.getRotations());
+			driveInputs.uncoupledPositions[i] = ModuleUtil
+				.uncoupleDriveAngle(driveSignals.position().asArray()[i], steerDelta, constants.couplingRatio());
 		}
 	}
 
@@ -275,12 +269,8 @@ public class Module {
 		return new SwerveModuleState(getDriveVelocityMetersPerSecond(), getSteerPosition());
 	}
 
-	public SwerveModulePosition getCurrentPosition() {
-		return new SwerveModulePosition(toDriveMeters(driveInputs.uncoupledPosition), getSteerPosition());
-	}
-
 	public Rotation2d getDrivePosition() {
-		return driveInputs.uncoupledPosition;
+		return driveInputs.uncoupledPositions[driveInputs.uncoupledPositions.length - 1];
 	}
 
 	public double getDriveVelocityMetersPerSecond() {
