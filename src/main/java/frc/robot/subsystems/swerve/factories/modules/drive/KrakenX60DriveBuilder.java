@@ -22,8 +22,8 @@ import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
 import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
+import frc.robot.hardware.phoenix6.signal.Phoenix6LatencySignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
-import frc.robot.hardware.signal.AngleSignal;
 import frc.robot.subsystems.swerve.module.records.DriveRequests;
 import frc.robot.subsystems.swerve.module.records.DriveSignals;
 import frc.utils.AngleUnit;
@@ -123,12 +123,13 @@ public class KrakenX60DriveBuilder {
 			.build(drive.getDevice().getTorqueCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, drive.getBusChain());
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
 			.build(drive.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, drive.getBusChain());
-		AngleSignal positionSignal = Phoenix6SignalBuilder.buildThreaded(
+		Phoenix6LatencySignal positionSignal = Phoenix6SignalBuilder.build(
 			drive.getDevice().getPosition(),
 			drive.getDevice().getVelocity(),
 			RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ,
 			AngleUnit.ROTATIONS,
-			drive.getBusChain()
+			drive.getBusChain(),
+			true
 		);
 
 		return new DriveSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);

@@ -17,7 +17,6 @@ import frc.joysticks.SmartJoystick;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.empties.EmptyIMU;
 import frc.robot.hardware.interfaces.IIMU;
-import frc.robot.hardware.phoenix6.Phoenix6OdometryThread;
 import frc.robot.poseestimator.OdometryData;
 import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.swerve.module.Modules;
@@ -74,7 +73,6 @@ public class Swerve extends GBSubsystem {
 		this.commandsBuilder = new SwerveCommandsBuilder(this);
 
 		this.calibrationVoltageTunable = new LoggedNetworkNumber("Tunable/SwerveDriveCalibrationVoltage", 0);
-		Phoenix6OdometryThread.getInstance().start();
 		update();
 		setDefaultCommand(commandsBuilder.driveByDriversInputs(SwerveState.DEFAULT_DRIVE));
 	}
@@ -141,13 +139,8 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public void setHeading(Rotation2d heading) {
-		Phoenix6OdometryThread.ODOMETRY_LOCK.lock();
-		try {
-			imu.setYaw(heading);
-			updateIMU();
-		} finally {
-			Phoenix6OdometryThread.ODOMETRY_LOCK.unlock();
-		}
+		imu.setYaw(heading);
+		updateIMU();
 		headingStabilizer.unlockTarget();
 		headingStabilizer.setTargetHeading(heading);
 	}
@@ -173,15 +166,9 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public void update() {
-		Phoenix6OdometryThread.ODOMETRY_LOCK.lock();
-		try {
-			updateIMU();
-			modules.updateInputs();
-		} finally {
-			Phoenix6OdometryThread.ODOMETRY_LOCK.unlock();
-		}
+		updateIMU();
+		modules.updateInputs();
 
-		Phoenix6OdometryThread.getInstance().logStatus(getLogPath() + "/OdometryThread");
 		currentState.log(constants.stateLogPath());
 
 		ChassisSpeeds allianceRelativeSpeeds = getAllianceRelativeVelocity();

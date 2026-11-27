@@ -4,10 +4,8 @@ import com.ctre.phoenix6.StatusSignal;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.BusChain;
-import frc.robot.hardware.phoenix6.Phoenix6OdometryThread;
-import frc.robot.hardware.signal.AngleSignal;
-import frc.utils.AngleUnit;
 import frc.robot.hardware.phoenix6.Phoenix6Util;
+import frc.utils.AngleUnit;
 
 public class Phoenix6SignalBuilder {
 
@@ -17,7 +15,24 @@ public class Phoenix6SignalBuilder {
 		Phoenix6Util.checkStatusCodeWithRetry(() -> signal.setUpdateFrequency(frequency), UPDATE_FREQUENCY_RETRIES);
 	}
 
-	private static StatusSignal<?> cloneWithFrequency(StatusSignal<?> signal, double frequency, BusChain busChain) {
+	private static boolean shouldUseThread(boolean useThread) {
+		return useThread && RobotConstants.ENABLE_ODOMETRY_THREAD && !Robot.ROBOT_TYPE.isSimulation();
+	}
+
+	private static double resolveAppliedFrequency(double frequency, boolean useThread, boolean threadedActive) {
+		return useThread && !threadedActive ? RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ : frequency;
+	}
+
+	private static StatusSignal<?> cloneWithFrequency(StatusSignal<?> signal, double frequency, BusChain busChain, boolean threadedActive) {
+		if (threadedActive) {
+			if (!Robot.ROBOT_TYPE.isReal()) {
+				return signal;
+			}
+			StatusSignal<?> signalClone = signal.clone();
+			setFrequencyWithRetry(signalClone, frequency);
+			signalClone.refresh();
+			return signalClone;
+		}
 		StatusSignal<?> signalClone = signal.clone();
 		setFrequencyWithRetry(signalClone, frequency);
 		busChain.registerSignal(signalClone);
@@ -25,13 +40,39 @@ public class Phoenix6SignalBuilder {
 	}
 
 	public static Phoenix6DoubleSignal build(StatusSignal<?> signal, double frequency, BusChain busChain) {
-		StatusSignal<?> signalClone = cloneWithFrequency(signal, frequency, busChain);
-		return new Phoenix6DoubleSignal(signalClone.getName(), signalClone);
+		return build(signal, frequency, busChain, false);
+	}
+
+	public static Phoenix6DoubleSignal build(StatusSignal<?> signal, double frequency, BusChain busChain, boolean useThread) {
+		boolean threadedActive = shouldUseThread(useThread);
+		double appliedFrequency = resolveAppliedFrequency(frequency, useThread, threadedActive);
+		StatusSignal<?> signalClone = cloneWithFrequency(signal, appliedFrequency, busChain, threadedActive);
+		Phoenix6DoubleSignal phoenixSignal = new Phoenix6DoubleSignal(signalClone.getName(), signalClone);
+		if (threadedActive) {
+			busChain.registerThreadedSignal(phoenixSignal, appliedFrequency, signalClone);
+		}
+		return phoenixSignal;
 	}
 
 	public static Phoenix6AngleSignal build(StatusSignal<?> signal, double frequency, AngleUnit angleUnit, BusChain busChain) {
-		StatusSignal<?> signalClone = cloneWithFrequency(signal, frequency, busChain);
-		return new Phoenix6AngleSignal(signalClone.getName(), signalClone, angleUnit);
+		return build(signal, frequency, angleUnit, busChain, false);
+	}
+
+	public static Phoenix6AngleSignal build(
+		StatusSignal<?> signal,
+		double frequency,
+		AngleUnit angleUnit,
+		BusChain busChain,
+		boolean useThread
+	) {
+		boolean threadedActive = shouldUseThread(useThread);
+		double appliedFrequency = resolveAppliedFrequency(frequency, useThread, threadedActive);
+		StatusSignal<?> signalClone = cloneWithFrequency(signal, appliedFrequency, busChain, threadedActive);
+		Phoenix6AngleSignal phoenixSignal = new Phoenix6AngleSignal(signalClone.getName(), signalClone, angleUnit);
+		if (threadedActive) {
+			busChain.registerThreadedSignal(phoenixSignal, appliedFrequency, signalClone);
+		}
+		return phoenixSignal;
 	}
 
 	public static Phoenix6LatencySignal build(
@@ -41,9 +82,28 @@ public class Phoenix6SignalBuilder {
 		AngleUnit angleUnit,
 		BusChain busChain
 	) {
-		StatusSignal<?> signalClone = cloneWithFrequency(signal, frequency, busChain);
-		setFrequencyWithRetry(signalSlope.getSignal(), frequency);
-		return new Phoenix6LatencySignal(signalClone.getName(), signalClone, signalSlope.getSignal(), angleUnit);
+		return build(signal, signalSlope, frequency, angleUnit, busChain, false);
+	}
+
+	public static Phoenix6LatencySignal build(
+		StatusSignal<?> signal,
+		SignalGetter signalSlope,
+		double frequency,
+		AngleUnit angleUnit,
+		BusChain busChain,
+		boolean useThread
+	) {
+		boolean threadedActive = shouldUseThread(useThread);
+		double appliedFrequency = resolveAppliedFrequency(frequency, useThread, threadedActive);
+		StatusSignal<?> signalClone = cloneWithFrequency(signal, appliedFrequency, busChain, threadedActive);
+		if (!threadedActive || Robot.ROBOT_TYPE.isReal()) {
+			setFrequencyWithRetry(signalSlope.getSignal(), appliedFrequency);
+		}
+		Phoenix6LatencySignal phoenixSignal = new Phoenix6LatencySignal(signalClone.getName(), signalClone, signalSlope.getSignal(), angleUnit);
+		if (threadedActive) {
+			busChain.registerThreadedSignal(phoenixSignal, appliedFrequency, signalClone, signalSlope.getSignal());
+		}
+		return phoenixSignal;
 	}
 
 	/**
@@ -57,31 +117,31 @@ public class Phoenix6SignalBuilder {
 		AngleUnit angleUnit,
 		BusChain busChain
 	) {
-		StatusSignal<?> signalClone = cloneWithFrequency(signal, frequency, busChain);
-		StatusSignal<?> signalSlopeClone = cloneWithFrequency(signalSlope, frequency, busChain);
-		return new Phoenix6LatencyAndSlopeSignal(signalClone.getName(), signalClone, signalSlopeClone, angleUnit);
+		return build(signal, signalSlope, frequency, angleUnit, busChain, false);
 	}
 
-	public static AngleSignal buildThreaded(
+	public static Phoenix6LatencyAndSlopeSignal build(
 		StatusSignal<?> signal,
 		StatusSignal<?> signalSlope,
 		double frequency,
 		AngleUnit angleUnit,
-		BusChain busChain
+		BusChain busChain,
+		boolean useThread
 	) {
-		if (!RobotConstants.ENABLE_ODOMETRY_THREAD || Robot.ROBOT_TYPE.isSimulation()) {
-			return build(signal, signalSlope, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, angleUnit, busChain);
-		}
-		Phoenix6OdometryThread.SignalQueues queues = Phoenix6OdometryThread.getInstance()
-			.registerLatencySignal(signal, signalSlope, frequency, busChain);
-		return new Phoenix6ThreadLatencySignal(
-			queues.clonedSignal().getName(),
-			queues.clonedSignal(),
-			signalSlope,
-			angleUnit,
-			queues.values(),
-			queues.timestamps()
+		boolean threadedActive = shouldUseThread(useThread);
+		double appliedFrequency = resolveAppliedFrequency(frequency, useThread, threadedActive);
+		StatusSignal<?> signalClone = cloneWithFrequency(signal, appliedFrequency, busChain, threadedActive);
+		StatusSignal<?> signalSlopeClone = cloneWithFrequency(signalSlope, appliedFrequency, busChain, threadedActive);
+		Phoenix6LatencyAndSlopeSignal phoenixSignal = new Phoenix6LatencyAndSlopeSignal(
+			signalClone.getName(),
+			signalClone,
+			signalSlopeClone,
+			angleUnit
 		);
+		if (threadedActive) {
+			busChain.registerThreadedSignal(phoenixSignal, appliedFrequency, signalClone, signalSlopeClone);
+		}
+		return phoenixSignal;
 	}
 
 }

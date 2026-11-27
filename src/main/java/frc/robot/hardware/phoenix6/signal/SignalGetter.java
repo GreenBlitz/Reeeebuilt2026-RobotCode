@@ -9,4 +9,10 @@ public interface SignalGetter {
 	 */
 	StatusSignal<?> getSignal();
 
+	void enableThreading(int maxSamples);
+
+	void recordThreadedSample(double batchTimestampSeconds, int maxSamples);
+
+	void drainThreadedSamples();
+
 }

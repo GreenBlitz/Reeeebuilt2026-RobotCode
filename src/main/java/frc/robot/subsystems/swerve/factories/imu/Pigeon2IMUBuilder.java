@@ -9,10 +9,10 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.imu.Pigeon2IMU;
 import frc.robot.hardware.phoenix6.imu.Pigeon2Wrapper;
 import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
+import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
+import frc.robot.hardware.phoenix6.signal.Phoenix6LatencySignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
 import frc.robot.hardware.phoenix6.signal.SignalGetter;
-import frc.robot.hardware.signal.AngleSignal;
-import frc.robot.hardware.signal.DoubleSignal;
 import frc.robot.subsystems.swerve.IMUSignals;
 import frc.utils.AngleUnit;
 import frc.utils.alerts.Alert;
@@ -41,20 +41,16 @@ public class Pigeon2IMUBuilder {
 	}
 
 	private static Phoenix6AngleSignal buildAnglePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
-		return Phoenix6SignalBuilder.build(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
+		return Phoenix6SignalBuilder.build(signal, RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain, true);
 	}
 
-	private static AngleSignal buildAnglePigeonSignal(StatusSignal<?> signal, SignalGetter signalSlope, BusChain busChain) {
-		return Phoenix6SignalBuilder.build(signal, signalSlope, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
-	}
-
-	private static AngleSignal buildThreadedAnglePigeonSignal(StatusSignal<?> signal, StatusSignal<?> signalSlope, BusChain busChain) {
+	private static Phoenix6LatencySignal buildAnglePigeonSignal(StatusSignal<?> signal, SignalGetter signalSlope, BusChain busChain) {
 		return Phoenix6SignalBuilder
-			.buildThreaded(signal, signalSlope, RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain);
+			.build(signal, signalSlope, RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ, AngleUnit.DEGREES, busChain, true);
 	}
 
-	private static DoubleSignal buildDoublePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
-		return Phoenix6SignalBuilder.build(signal, RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, busChain);
+	private static Phoenix6DoubleSignal buildDoublePigeonSignal(StatusSignal<?> signal, BusChain busChain) {
+		return Phoenix6SignalBuilder.build(signal, RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ, busChain, true);
 	}
 
 	static IMUSignals buildSignals(Pigeon2IMU pigeon2imu) {
@@ -73,11 +69,7 @@ public class Pigeon2IMUBuilder {
 		return new IMUSignals(
 			buildAnglePigeonSignal(pigeon2imu.getDevice().getRoll(), angularVelocityXWorld, pigeon2imu.getBusChain()),
 			buildAnglePigeonSignal(pigeon2imu.getDevice().getPitch(), angularVelocityYWorld, pigeon2imu.getBusChain()),
-			buildThreadedAnglePigeonSignal(
-				pigeon2imu.getDevice().getYaw(),
-				pigeon2imu.getDevice().getAngularVelocityZWorld(),
-				pigeon2imu.getBusChain()
-			),
+			buildAnglePigeonSignal(pigeon2imu.getDevice().getYaw(), angularVelocityZWorld, pigeon2imu.getBusChain()),
 			angularVelocityXWorld,
 			angularVelocityYWorld,
 			angularVelocityZWorld,

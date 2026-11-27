@@ -22,8 +22,8 @@ import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
 import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
+import frc.robot.hardware.phoenix6.signal.Phoenix6LatencySignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
-import frc.robot.hardware.signal.AngleSignal;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.records.SteerRequests;
 import frc.robot.subsystems.swerve.module.records.SteerSignals;
@@ -151,12 +151,13 @@ class KrakenX60SteerBuilder {
 			.build(steer.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, steer.getBusChain());
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
 			.build(steer.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, steer.getBusChain());
-		AngleSignal positionSignal = Phoenix6SignalBuilder.buildThreaded(
+		Phoenix6LatencySignal positionSignal = Phoenix6SignalBuilder.build(
 			steer.getDevice().getPosition(),
 			steer.getDevice().getVelocity(),
 			RobotConstants.ODOMETRY_SIGNALS_FREQUENCY_HERTZ,
 			AngleUnit.ROTATIONS,
-			steer.getBusChain()
+			steer.getBusChain(),
+			true
 		);
 
 		return new SteerSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);
