@@ -30,11 +30,19 @@ public class ThreadedAngleSignal extends AngleSignal implements SignalGetter {
 
 		TimedValue<Rotation2d> initialValue = getLatestTimedValue();
 		if (!Robot.ROBOT_TYPE.isReplay() && signal != null) {
-			initialValue.setValue(angleUnit.toRotation2d(signal.getValueAsDouble()));
-			initialValue.setTimestamp(TimeUtil.getCurrentTimeSeconds());
+			setInitialSample(angleUnit.toRotation2d(signal.getValueAsDouble()), TimeUtil.getCurrentTimeSeconds());
+		} else {
+			this.samples = new Rotation2d[] {initialValue.getValue()};
+			this.timestampsSeconds = new double[] {initialValue.getTimestamp()};
 		}
-		this.samples = new Rotation2d[] {initialValue.getValue()};
-		this.timestampsSeconds = new double[] {initialValue.getTimestamp()};
+	}
+
+	protected void setInitialSample(Rotation2d value, double timestampSeconds) {
+		TimedValue<Rotation2d> initialValue = getLatestTimedValue();
+		initialValue.setValue(value);
+		initialValue.setTimestamp(timestampSeconds);
+		this.samples = new Rotation2d[] {value};
+		this.timestampsSeconds = new double[] {timestampSeconds};
 	}
 
 	protected void insertSample(double rawValue, double timestampSeconds) {

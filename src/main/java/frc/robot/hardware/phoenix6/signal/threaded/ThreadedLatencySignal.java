@@ -2,10 +2,8 @@ package frc.robot.hardware.phoenix6.signal.threaded;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Robot;
 import frc.utils.AngleUnit;
-import frc.utils.TimedValue;
 import frc.utils.time.TimeUtil;
 
 public class ThreadedLatencySignal extends ThreadedAngleSignal {
@@ -17,11 +15,8 @@ public class ThreadedLatencySignal extends ThreadedAngleSignal {
 		this.slopeSignal = slopeSignal;
 
 		if (!Robot.ROBOT_TYPE.isReplay() && signal != null && slopeSignal != null) {
-			TimedValue<Rotation2d> initialValue = getLatestTimedValue();
 			double compensatedValue = BaseStatusSignal.getLatencyCompensatedValueAsDouble(signal, slopeSignal);
-			initialValue.setValue(angleUnit.toRotation2d(compensatedValue));
-			initialValue.setTimestamp(TimeUtil.getCurrentTimeSeconds());
-			updateValue(initialValue);
+			setInitialSample(angleUnit.toRotation2d(compensatedValue), TimeUtil.getCurrentTimeSeconds());
 		}
 	}
 
