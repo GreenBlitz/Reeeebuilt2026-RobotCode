@@ -24,6 +24,9 @@ import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6LatencySignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
+import frc.robot.hardware.phoenix6.signal.threaded.Phoenix6ThreadSignalBuilder;
+import frc.robot.hardware.phoenix6.signal.threaded.ThreadedAngleSignal;
+import frc.robot.hardware.phoenix6.signal.threaded.ThreadedLatencySignal;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.robot.subsystems.swerve.module.records.SteerRequests;
 import frc.robot.subsystems.swerve.module.records.SteerSignals;
@@ -35,6 +38,7 @@ class KrakenX60SteerBuilder {
 	private static final double BACK_MODULES_GEAR_RATIO = 18.75;
 
 	private static final double MOMENT_OF_INERTIA_METERS_SQUARED = 0.00001;
+	private static final double ODOMETRY_FREQUENCY_HERTZ = 250;
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
 		return new SysIdRoutine.Config(
@@ -158,6 +162,19 @@ class KrakenX60SteerBuilder {
 			AngleUnit.ROTATIONS,
 			steer.getBusChain()
 		);
+
+		return new SteerSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);
+	}
+
+	static SteerSignals buildThreadedSignals(TalonFXMotor steer) {
+		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
+			.build(steer.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, steer.getBusChain());
+		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
+			.build(steer.getDevice().getStatorCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, steer.getBusChain());
+		ThreadedAngleSignal velocitySignal = Phoenix6ThreadSignalBuilder
+			.build(steer.getDevice().getVelocity(), ODOMETRY_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, steer.getBusChain());
+		ThreadedLatencySignal positionSignal = Phoenix6ThreadSignalBuilder
+			.build(steer.getDevice().getPosition(), velocitySignal, ODOMETRY_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, steer.getBusChain());
 
 		return new SteerSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);
 	}

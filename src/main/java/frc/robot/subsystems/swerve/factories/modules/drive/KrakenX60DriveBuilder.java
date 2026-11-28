@@ -24,6 +24,9 @@ import frc.robot.hardware.phoenix6.signal.Phoenix6AngleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6DoubleSignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6LatencySignal;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
+import frc.robot.hardware.phoenix6.signal.threaded.Phoenix6ThreadSignalBuilder;
+import frc.robot.hardware.phoenix6.signal.threaded.ThreadedAngleSignal;
+import frc.robot.hardware.phoenix6.signal.threaded.ThreadedLatencySignal;
 import frc.robot.subsystems.swerve.module.records.DriveRequests;
 import frc.robot.subsystems.swerve.module.records.DriveSignals;
 import frc.utils.AngleUnit;
@@ -33,6 +36,7 @@ public class KrakenX60DriveBuilder {
 	public static final double SLIP_CURRENT = 40;
 	public static final double GEAR_RATIO = 7.13;
 	private static final double MOMENT_OF_INERTIA_METERS_SQUARED = 0.001;
+	private static final double ODOMETRY_FREQUENCY_HERTZ = 250;
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
 		return new SysIdRoutine.Config(
@@ -130,6 +134,19 @@ public class KrakenX60DriveBuilder {
 			AngleUnit.ROTATIONS,
 			drive.getBusChain()
 		);
+
+		return new DriveSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);
+	}
+
+	static DriveSignals buildThreadedSignals(TalonFXMotor drive) {
+		Phoenix6DoubleSignal voltageSignal = Phoenix6SignalBuilder
+			.build(drive.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, drive.getBusChain());
+		Phoenix6DoubleSignal currentSignal = Phoenix6SignalBuilder
+			.build(drive.getDevice().getTorqueCurrent(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, drive.getBusChain());
+		ThreadedAngleSignal velocitySignal = Phoenix6ThreadSignalBuilder
+			.build(drive.getDevice().getVelocity(), ODOMETRY_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, drive.getBusChain());
+		ThreadedLatencySignal positionSignal = Phoenix6ThreadSignalBuilder
+			.build(drive.getDevice().getPosition(), velocitySignal, ODOMETRY_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, drive.getBusChain());
 
 		return new DriveSignals(positionSignal, velocitySignal, currentSignal, voltageSignal);
 	}

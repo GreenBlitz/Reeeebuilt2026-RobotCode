@@ -1,9 +1,11 @@
 package frc.utils.time;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import frc.RobotManager;
 import frc.robot.Robot;
+import frc.utils.Conversions;
 import frc.utils.GamePeriodUtils;
 import frc.utils.alerts.Alert;
 import frc.utils.alerts.AlertManager;
@@ -45,8 +47,16 @@ public class TimeUtil {
 		return Timer.getTimestamp();
 	}
 
+	public static double getRealTimeSeconds() {
+		return Conversions.microSecondsToSeconds(RobotController.getFPGATime());
+	}
+
 	public static double getLatestCycleTimeSeconds() {
 		return currentCycleStartingTimeSeconds - lastCycleStartingTimeSeconds;
+	}
+
+	public static double getCurrentCycleStartingTimeSeconds() {
+		return currentCycleStartingTimeSeconds;
 	}
 
 	public static double getTimeSinceTeleopInitSeconds() {

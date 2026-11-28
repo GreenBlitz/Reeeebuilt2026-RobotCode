@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve.factories.modules.steer;
 
 import frc.robot.IDs;
+import frc.robot.Robot;
 import frc.robot.hardware.interfaces.ControllableMotor;
 import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
 import frc.robot.subsystems.swerve.module.ModuleConstants;
@@ -33,7 +34,10 @@ public class SteerFactory {
 	}
 
 	public static SteerSignals createSignals(ControllableMotor steer) {
-		return KrakenX60SteerBuilder.buildSignals((TalonFXMotor) steer);
+		return switch (Robot.ROBOT_TYPE) {
+			case REAL, REPLAY -> KrakenX60SteerBuilder.buildThreadedSignals((TalonFXMotor) steer);
+			case SIMULATION -> KrakenX60SteerBuilder.buildSignals((TalonFXMotor) steer);
+		};
 	}
 
 }
