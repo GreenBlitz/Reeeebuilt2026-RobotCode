@@ -24,6 +24,7 @@ class Phoenix6SignalThread extends Thread {
 	private static final int THREAD_REAL_TIME_PRIORITY = 20;
 	private static final double DEFAULT_FREQUENCY_HERTZ = 250.0;
 	private static final double FREQUENCY_WINDOW_SECONDS = 1.0;
+	private static final double MAX_SIGNAL_STALE_PERIODS = 5.0;
 	private static final int STALLED_CYCLE_THRESHOLD = 5;
 
 	private static final Map<BusChain, Phoenix6SignalThread> THREADS = new EnumMap<>(BusChain.class);
@@ -44,6 +45,7 @@ class Phoenix6SignalThread extends Thread {
 	private volatile boolean hasNewSignals;
 	private volatile boolean isRunning;
 	private volatile double targetFrequencyHertz;
+	private volatile double minAppliedFrequencyHertz;
 	private boolean isCANFD;
 	private double lastCycleStartTimeSeconds;
 	private boolean isAlertRegistered;
@@ -71,6 +73,7 @@ class Phoenix6SignalThread extends Thread {
 		this.hasNewSignals = false;
 		this.isRunning = false;
 		this.targetFrequencyHertz = DEFAULT_FREQUENCY_HERTZ;
+		this.minAppliedFrequencyHertz = 0.0;
 		this.isCANFD = false;
 		this.lastCycleStartTimeSeconds = Double.NaN;
 		this.isAlertRegistered = false;
@@ -122,12 +125,15 @@ class Phoenix6SignalThread extends Thread {
 
 		int updatesLastCycle;
 		long failedUpdates;
+		long droppedSamples;
 		double measuredFrequencyHertz;
 
 		lock.lock();
 		try {
+			droppedSamples = 0;
 			for (RegisteredSignal registeredSignal : registeredSignals) {
 				registeredSignal.queue().drainBufferedSamples();
+				droppedSamples += registeredSignal.queue().getDroppedSamples();
 			}
 
 			updatesLastCycle = validUpdatesSinceLastCycle;
@@ -145,7 +151,7 @@ class Phoenix6SignalThread extends Thread {
 		}
 
 		if (hasPeriodicStarted && !Robot.ROBOT_TYPE.isReplay()) {
-			logStatus(updatesLastCycle, failedUpdates, measuredFrequencyHertz);
+			logStatus(updatesLastCycle, failedUpdates, droppedSamples, measuredFrequencyHertz);
 		}
 	}
 
@@ -158,7 +164,7 @@ class Phoenix6SignalThread extends Thread {
 		}
 	}
 
-	private void logStatus(int updatesLastCycle, long failedUpdates, double measuredFrequencyHertz) {
+	private void logStatus(int updatesLastCycle, long failedUpdates, long droppedSamples, double measuredFrequencyHertz) {
 		if (!isAlertRegistered) {
 			isAlertRegistered = true;
 			AlertManager.addAlert(
@@ -175,6 +181,8 @@ class Phoenix6SignalThread extends Thread {
 		Logger.recordOutput(logPath + "/RegisteredSignalsCount", signalsArray.length);
 		Logger.recordOutput(logPath + "/ValidUpdatesLastCycle", updatesLastCycle);
 		Logger.recordOutput(logPath + "/FailedUpdatesTotal", failedUpdates);
+		Logger.recordOutput(logPath + "/DroppedSamplesTotal", droppedSamples);
+		Logger.recordOutput(logPath + "/MinAppliedFrequencyHz", minAppliedFrequencyHertz);
 		Logger.recordOutput(logPath + "/EffectiveFrequencyHz", measuredFrequencyHertz);
 	}
 
@@ -208,7 +216,7 @@ class Phoenix6SignalThread extends Thread {
 			if (Thread.currentThread().isInterrupted()) {
 				break;
 			}
-			recordValidSamples(activeSignals, statusCode, TimeUtil.getRealTimeSeconds());
+			recordValidSamples(activeSignals, statusCode);
 		}
 	}
 
@@ -248,31 +256,62 @@ class Phoenix6SignalThread extends Thread {
 		if (isCANFD && currentSignals.length > 0) {
 			BaseStatusSignal.setUpdateFrequencyForAll(targetFrequencyHertz, currentSignals);
 		}
+		minAppliedFrequencyHertz = computeMinAppliedFrequencyHertz(currentSignals);
 		return currentSignals;
 	}
 
-	private boolean hasAnyValidSignal(BaseStatusSignal[] activeSignals) {
-		for (BaseStatusSignal signal : activeSignals) {
-			if (signal.getStatus().isOK()) {
-				return true;
-			}
+	private double computeMinAppliedFrequencyHertz(BaseStatusSignal[] signals) {
+		if (signals.length == 0) {
+			return 0.0;
 		}
-		return false;
+		double minFrequencyHertz = Double.POSITIVE_INFINITY;
+		for (BaseStatusSignal signal : signals) {
+			minFrequencyHertz = Math.min(minFrequencyHertz, signal.getAppliedUpdateFrequency());
+		}
+		return minFrequencyHertz;
 	}
 
-	private void recordValidSamples(BaseStatusSignal[] activeSignals, StatusCode batchStatus, double timestampSeconds) {
-		boolean anyValidSignal = hasAnyValidSignal(activeSignals);
+	private boolean isBatchValid(BaseStatusSignal[] activeSignals, StatusCode batchStatus) {
+		if (activeSignals.length == 0 || !batchStatus.isOK() || !BaseStatusSignal.isAllGood(activeSignals)) {
+			return false;
+		}
+		if (isCANFD) {
+			return true;
+		}
+		return hasAnySignalUpdated(activeSignals) && areAllSignalsWithinMaxAge(activeSignals);
+	}
+
+	private boolean hasAnySignalUpdated(BaseStatusSignal[] activeSignals) {
+		boolean anyUpdated = false;
+		for (BaseStatusSignal signal : activeSignals) {
+			if (signal.hasUpdated()) {
+				anyUpdated = true;
+			}
+		}
+		return anyUpdated;
+	}
+
+	private boolean areAllSignalsWithinMaxAge(BaseStatusSignal[] activeSignals) {
+		double maxAgeSeconds = MAX_SIGNAL_STALE_PERIODS / targetFrequencyHertz;
+		for (BaseStatusSignal signal : activeSignals) {
+			if (signal.getTimestamp().getLatency() > maxAgeSeconds) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void recordValidSamples(BaseStatusSignal[] activeSignals, StatusCode batchStatus) {
+		boolean batchValid = isBatchValid(activeSignals, batchStatus);
 
 		lock.lock();
 		try {
-			if (!anyValidSignal) {
+			if (!batchValid) {
 				totalFailedUpdates++;
 				return;
 			}
-			if (!batchStatus.isOK()) {
-				totalFailedUpdates++;
-			}
 
+			double timestampSeconds = TimeUtil.getRealTimeSeconds();
 			for (RegisteredSignal registeredSignal : registeredSignals) {
 				registeredSignal.sampleRecorder().accept(timestampSeconds);
 			}

@@ -13,6 +13,7 @@ class SignalSampleQueue {
 
 	private int oldestIndex;
 	private int bufferedCount;
+	private long droppedSamples;
 
 	private double[] cycleValues;
 	private double[] cycleTimestampsSeconds;
@@ -23,6 +24,7 @@ class SignalSampleQueue {
 		this.bufferedTimestampsSeconds = new double[MAX_SAMPLES_PER_CYCLE];
 		this.oldestIndex = 0;
 		this.bufferedCount = 0;
+		this.droppedSamples = 0;
 		this.cycleValues = EMPTY_DOUBLES;
 		this.cycleTimestampsSeconds = EMPTY_DOUBLES;
 	}
@@ -35,6 +37,7 @@ class SignalSampleQueue {
 			bufferedCount++;
 		} else {
 			oldestIndex = (oldestIndex + 1) % bufferedValues.length;
+			droppedSamples++;
 		}
 	}
 
@@ -73,6 +76,10 @@ class SignalSampleQueue {
 
 	double[] getCycleTimestampsSeconds() {
 		return cycleTimestampsSeconds;
+	}
+
+	long getDroppedSamples() {
+		return droppedSamples;
 	}
 
 }
