@@ -3,6 +3,7 @@ package frc.robot.hardware.phoenix6.signal.threaded;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.Timestamp;
 import edu.wpi.first.wpilibj.Threads;
 import frc.robot.Robot;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -13,6 +14,7 @@ import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ class Phoenix6SignalThread extends Thread {
 	private volatile double targetFrequencyHertz;
 	private volatile double minAppliedFrequencyHertz;
 	private boolean isCANFD;
+	private double[] lastRecordedSignalTimestampsSeconds;
 	private double lastCycleStartTimeSeconds;
 	private boolean isAlertRegistered;
 
@@ -75,6 +78,7 @@ class Phoenix6SignalThread extends Thread {
 		this.targetFrequencyHertz = DEFAULT_FREQUENCY_HERTZ;
 		this.minAppliedFrequencyHertz = 0.0;
 		this.isCANFD = false;
+		this.lastRecordedSignalTimestampsSeconds = new double[0];
 		this.lastCycleStartTimeSeconds = Double.NaN;
 		this.isAlertRegistered = false;
 	}
@@ -125,15 +129,15 @@ class Phoenix6SignalThread extends Thread {
 
 		int updatesLastCycle;
 		long failedUpdates;
-		long droppedSamples;
+		long droppedBatches;
 		double measuredFrequencyHertz;
 
 		lock.lock();
 		try {
-			droppedSamples = 0;
+			droppedBatches = 0;
 			for (RegisteredSignal registeredSignal : registeredSignals) {
 				registeredSignal.queue().drainBufferedSamples();
-				droppedSamples += registeredSignal.queue().getDroppedSamples();
+				droppedBatches = Math.max(droppedBatches, registeredSignal.queue().getDroppedSamples());
 			}
 
 			updatesLastCycle = validUpdatesSinceLastCycle;
@@ -151,7 +155,7 @@ class Phoenix6SignalThread extends Thread {
 		}
 
 		if (hasPeriodicStarted && !Robot.ROBOT_TYPE.isReplay()) {
-			logStatus(updatesLastCycle, failedUpdates, droppedSamples, measuredFrequencyHertz);
+			logStatus(updatesLastCycle, failedUpdates, droppedBatches, measuredFrequencyHertz);
 		}
 	}
 
@@ -164,7 +168,7 @@ class Phoenix6SignalThread extends Thread {
 		}
 	}
 
-	private void logStatus(int updatesLastCycle, long failedUpdates, long droppedSamples, double measuredFrequencyHertz) {
+	private void logStatus(int updatesLastCycle, long failedUpdates, long droppedBatches, double measuredFrequencyHertz) {
 		if (!isAlertRegistered) {
 			isAlertRegistered = true;
 			AlertManager.addAlert(
@@ -181,7 +185,7 @@ class Phoenix6SignalThread extends Thread {
 		Logger.recordOutput(logPath + "/RegisteredSignalsCount", signalsArray.length);
 		Logger.recordOutput(logPath + "/ValidUpdatesLastCycle", updatesLastCycle);
 		Logger.recordOutput(logPath + "/FailedUpdatesTotal", failedUpdates);
-		Logger.recordOutput(logPath + "/DroppedSamplesTotal", droppedSamples);
+		Logger.recordOutput(logPath + "/DroppedBatchesTotal", droppedBatches);
 		Logger.recordOutput(logPath + "/MinAppliedFrequencyHz", minAppliedFrequencyHertz);
 		Logger.recordOutput(logPath + "/EffectiveFrequencyHz", measuredFrequencyHertz);
 	}
@@ -278,17 +282,36 @@ class Phoenix6SignalThread extends Thread {
 		if (isCANFD) {
 			return true;
 		}
-		return hasAnySignalUpdated(activeSignals) && areAllSignalsWithinMaxAge(activeSignals);
+		return haveAllSignalsUpdated(activeSignals) && areAllSignalsWithinMaxAge(activeSignals);
 	}
 
-	private boolean hasAnySignalUpdated(BaseStatusSignal[] activeSignals) {
-		boolean anyUpdated = false;
-		for (BaseStatusSignal signal : activeSignals) {
-			if (signal.hasUpdated()) {
-				anyUpdated = true;
+	private boolean haveAllSignalsUpdated(BaseStatusSignal[] activeSignals) {
+		syncLastRecordedTimestampsLength(activeSignals.length);
+		for (int i = 0; i < activeSignals.length; i++) {
+			Timestamp systemTimestamp = activeSignals[i].getAllTimestamps().getSystemTimestamp();
+			if (!systemTimestamp.isValid() || Double.compare(systemTimestamp.getTime(), lastRecordedSignalTimestampsSeconds[i]) == 0) {
+				return false;
 			}
 		}
-		return anyUpdated;
+		return true;
+	}
+
+	private void updateLastRecordedSignalTimestamps(BaseStatusSignal[] activeSignals) {
+		syncLastRecordedTimestampsLength(activeSignals.length);
+		for (int i = 0; i < activeSignals.length; i++) {
+			lastRecordedSignalTimestampsSeconds[i] = activeSignals[i].getAllTimestamps().getSystemTimestamp().getTime();
+		}
+	}
+
+	private void syncLastRecordedTimestampsLength(int signalCount) {
+		if (lastRecordedSignalTimestampsSeconds.length == signalCount) {
+			return;
+		}
+		int previousLength = lastRecordedSignalTimestampsSeconds.length;
+		lastRecordedSignalTimestampsSeconds = Arrays.copyOf(lastRecordedSignalTimestampsSeconds, signalCount);
+		if (signalCount > previousLength) {
+			Arrays.fill(lastRecordedSignalTimestampsSeconds, previousLength, signalCount, Double.NaN);
+		}
 	}
 
 	private boolean areAllSignalsWithinMaxAge(BaseStatusSignal[] activeSignals) {
@@ -303,6 +326,9 @@ class Phoenix6SignalThread extends Thread {
 
 	private void recordValidSamples(BaseStatusSignal[] activeSignals, StatusCode batchStatus) {
 		boolean batchValid = isBatchValid(activeSignals, batchStatus);
+		if (batchValid && !isCANFD) {
+			updateLastRecordedSignalTimestamps(activeSignals);
+		}
 
 		lock.lock();
 		try {
