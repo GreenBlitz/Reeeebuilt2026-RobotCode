@@ -37,13 +37,15 @@ class Phoenix6SignalThread extends Thread {
 
 	private record RegisteredSignal(SignalSampleQueue queue, DoubleConsumer sampleRecorder) {}
 
+	private record ActiveBatch(BaseStatusSignal[] statusSignals, RegisteredSignal[] registeredSignals) {}
+
 	private final ReentrantLock lock;
 	private final CANBus canBus;
 	private final String logPath;
 	private final List<BaseStatusSignal> statusSignals;
 	private final List<RegisteredSignal> registeredSignals;
 
-	private volatile BaseStatusSignal[] signalsArray;
+	private volatile ActiveBatch activeBatch;
 	private volatile boolean hasNewSignals;
 	private volatile boolean isRunning;
 	private volatile double targetFrequencyHertz;
@@ -72,7 +74,7 @@ class Phoenix6SignalThread extends Thread {
 		this.logPath = "Bus/" + busName + "/SignalThread";
 		this.statusSignals = new ArrayList<>();
 		this.registeredSignals = new ArrayList<>();
-		this.signalsArray = new BaseStatusSignal[0];
+		this.activeBatch = new ActiveBatch(new BaseStatusSignal[0], new RegisteredSignal[0]);
 		this.hasNewSignals = false;
 		this.isRunning = false;
 		this.targetFrequencyHertz = DEFAULT_FREQUENCY_HERTZ;
@@ -96,8 +98,8 @@ class Phoenix6SignalThread extends Thread {
 				for (BaseStatusSignal signal : signals) {
 					addUniqueSignal(signal);
 				}
-				hasNewSignals = true;
 			}
+			hasNewSignals = true;
 		} finally {
 			lock.unlock();
 		}
@@ -182,7 +184,7 @@ class Phoenix6SignalThread extends Thread {
 
 		Logger.recordOutput(logPath + "/Running", isRunning);
 		Logger.recordOutput(logPath + "/IsCANFD", isCANFD);
-		Logger.recordOutput(logPath + "/RegisteredSignalsCount", signalsArray.length);
+		Logger.recordOutput(logPath + "/RegisteredSignalsCount", activeBatch.statusSignals().length);
 		Logger.recordOutput(logPath + "/ValidUpdatesLastCycle", updatesLastCycle);
 		Logger.recordOutput(logPath + "/FailedUpdatesTotal", failedUpdates);
 		Logger.recordOutput(logPath + "/DroppedBatchesTotal", droppedBatches);
@@ -200,7 +202,7 @@ class Phoenix6SignalThread extends Thread {
 				return;
 			}
 			isCANFD = canBus.isNetworkFD();
-			signalsArray = statusSignals.toArray(BaseStatusSignal[]::new);
+			activeBatch = new ActiveBatch(statusSignals.toArray(BaseStatusSignal[]::new), registeredSignals.toArray(RegisteredSignal[]::new));
 			hasNewSignals = true;
 			windowStartTimeSeconds = TimeUtil.getRealTimeSeconds();
 		} finally {
@@ -215,12 +217,12 @@ class Phoenix6SignalThread extends Thread {
 	public void run() {
 		Threads.setCurrentThreadPriority(true, THREAD_REAL_TIME_PRIORITY);
 		while (isRunning) {
-			BaseStatusSignal[] activeSignals = getActiveSignals();
-			StatusCode statusCode = waitForNextBatch(activeSignals);
+			ActiveBatch currentBatch = getActiveBatch();
+			StatusCode statusCode = waitForNextBatch(currentBatch.statusSignals());
 			if (Thread.currentThread().isInterrupted()) {
 				break;
 			}
-			recordValidSamples(activeSignals, statusCode);
+			recordValidSamples(currentBatch, statusCode);
 		}
 	}
 
@@ -240,28 +242,32 @@ class Phoenix6SignalThread extends Thread {
 		return BaseStatusSignal.refreshAll(activeSignals);
 	}
 
-	private BaseStatusSignal[] getActiveSignals() {
-		BaseStatusSignal[] currentSignals = signalsArray;
+	private ActiveBatch getActiveBatch() {
+		ActiveBatch currentBatch = activeBatch;
 		if (!hasNewSignals) {
-			return currentSignals;
+			return currentBatch;
 		}
 
 		lock.lock();
 		try {
 			if (hasNewSignals) {
-				currentSignals = statusSignals.toArray(BaseStatusSignal[]::new);
-				signalsArray = currentSignals;
+				currentBatch = new ActiveBatch(
+					statusSignals.toArray(BaseStatusSignal[]::new),
+					registeredSignals.toArray(RegisteredSignal[]::new)
+				);
+				activeBatch = currentBatch;
 				hasNewSignals = false;
 			}
 		} finally {
 			lock.unlock();
 		}
 
+		BaseStatusSignal[] currentSignals = currentBatch.statusSignals();
 		if (isCANFD && currentSignals.length > 0) {
 			BaseStatusSignal.setUpdateFrequencyForAll(targetFrequencyHertz, currentSignals);
 		}
 		minAppliedFrequencyHertz = computeMinAppliedFrequencyHertz(currentSignals);
-		return currentSignals;
+		return currentBatch;
 	}
 
 	private double computeMinAppliedFrequencyHertz(BaseStatusSignal[] signals) {
@@ -324,7 +330,8 @@ class Phoenix6SignalThread extends Thread {
 		return true;
 	}
 
-	private void recordValidSamples(BaseStatusSignal[] activeSignals, StatusCode batchStatus) {
+	private void recordValidSamples(ActiveBatch currentBatch, StatusCode batchStatus) {
+		BaseStatusSignal[] activeSignals = currentBatch.statusSignals();
 		boolean batchValid = isBatchValid(activeSignals, batchStatus);
 		if (batchValid && !isCANFD) {
 			updateLastRecordedSignalTimestamps(activeSignals);
@@ -338,7 +345,7 @@ class Phoenix6SignalThread extends Thread {
 			}
 
 			double timestampSeconds = TimeUtil.getRealTimeSeconds();
-			for (RegisteredSignal registeredSignal : registeredSignals) {
+			for (RegisteredSignal registeredSignal : currentBatch.registeredSignals()) {
 				registeredSignal.sampleRecorder().accept(timestampSeconds);
 			}
 
